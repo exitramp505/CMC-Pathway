@@ -114,6 +114,8 @@ function groupCandidates(rows){
       phone:profile.phone||'',
       state:profile.state||'',
       married:'',
+      createdAt:profile.updated_at||profile.created_at||'',
+      profileIncomplete:Boolean(profile.profile_incomplete),
       reports:[],
       application:null,
       assignments:[],
@@ -165,7 +167,7 @@ function groupCandidates(rows){
   return Array.from(map.values()).map(person=>{
     person.reports.sort((a,b)=>new Date(b.submittedAt||b.created_at||0)-new Date(a.submittedAt||a.created_at||0));
     const appDate=person.application?.submittedAt||person.application?.submitted_at||person.application?.updatedAt||person.application?.updated_at||'';
-    person.latestAt=[person.reports[0]?.submittedAt||person.reports[0]?.created_at||'', appDate].filter(Boolean).sort((a,b)=>new Date(b)-new Date(a))[0]||'';
+    person.latestAt=[person.reports[0]?.submittedAt||person.reports[0]?.created_at||'', appDate, person.createdAt||''].filter(Boolean).sort((a,b)=>new Date(b)-new Date(a))[0]||'';
     person.highestOverall=person.reports.length?Math.max(...person.reports.map(r=>Number(r.overall||0))):0;
     person.lowestOverall=person.reports.length?Math.min(...person.reports.map(r=>Number(r.overall||0))):0;
     person.region=regionForState(person.state);
@@ -1528,4 +1530,3 @@ function isaReportHtml(record){
     ${isaInDepth(record.answers||{}, c)}
   </div>`;
 }
-

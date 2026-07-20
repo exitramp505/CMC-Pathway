@@ -273,12 +273,14 @@ exports.handler = async (event) => {
       {data:profiles,error:profileError},
       {data:reports,error:reportError},
       {data:apps,error:appError},
-      assignmentResult
+      assignmentResult,
+      authUsersResult
     ] = await Promise.all([
       supabase.from('candidate_profiles').select('*').order('created_at',{ascending:false}),
       supabase.from('assessment_results').select('*').order('created_at',{ascending:false}),
       supabase.from('candidate_applications').select('*').order('updated_at',{ascending:false}),
-      supabase.from('candidate_assignments').select('*').order('updated_at',{ascending:false})
+      supabase.from('candidate_assignments').select('*').order('updated_at',{ascending:false}),
+      supabase.auth.admin.listUsers({page:1,perPage:1000})
     ]);
 
     if(profileError) throw profileError;
@@ -293,9 +295,36 @@ exports.handler = async (event) => {
       assignmentRows = [];
     }
 
+    if(authUsersResult.error) throw authUsersResult.error;
+
+    const profileById = new Map((profiles || []).map(profile => [profile.id, profile]));
+    const visibleProfiles = [...(profiles || [])];
+
+    for(const user of authUsersResult.data?.users || []){
+      if(profileById.has(user.id)) continue;
+
+      const metadata = user.user_metadata || {};
+      visibleProfiles.push({
+        id:user.id,
+        email:user.email || '',
+        full_name:metadata.full_name || metadata.name || user.email || 'Incomplete signup',
+        phone:metadata.phone || '',
+        state:metadata.state || '',
+        region:metadata.region || '',
+        married:metadata.married || '',
+        created_at:user.created_at || '',
+        updated_at:user.updated_at || user.last_sign_in_at || user.created_at || '',
+        profile_incomplete:true
+      });
+    }
+
+    visibleProfiles.sort((a,b) =>
+      new Date(b.updated_at || b.created_at || 0) - new Date(a.updated_at || a.created_at || 0)
+    );
+
     return json(200,{
       ok:true,
-      profiles:profiles||[],
+      profiles:visibleProfiles,
       submissions:(reports||[]).map(normalizeReport),
       applications:(apps||[]).map(normalizeApplication),
       assignments:assignmentRows

@@ -1,57 +1,72 @@
 <!doctype html>
-<html>
+<html lang="en">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
-  <title>Candidate Dashboard | Discernment Center</title>
-  <link rel="stylesheet" href="style.css?v=64">
+  <title>Dashboard | CMC Pathway</title>
+  <link rel="stylesheet" href="style.css?v=80">
 </head>
-<body>
-<main>
-  <nav class="portalNav">
-    <strong>Discernment Center</strong>
-    <span></span>
-    <a href="dashboard.html">Dashboard</a>
+<body class="cmcPathwayBody">
+<header class="cmcHeader">
+  <a class="cmcBrand" href="dashboard.html" aria-label="CMC Pathway home">
+    <img class="cmcLogoImage" src="cmc-logo-mark.svg" alt="">
+    <span><strong>CMC Pathway</strong><small>Church Multiplication Collective</small></span>
+  </a>
+  <nav class="cmcNav">
+    <a class="active" href="dashboard.html">Dashboard</a>
     <a href="profile.html">Profile</a>
-    <button id="logoutBtn" type="button" class="linkButton">Logout</button>
+    <button id="logoutBtn" type="button">Logout</button>
   </nav>
+</header>
 
-  <section class="hero">
-    <div class="eyebrow">Candidate Portal</div>
-    <h1 id="welcomeTitle">Candidate Dashboard</h1>
-    <p>Track your application, complete assessments, and return to submitted reports during the Discernment Center process.</p>
-  </section>
-
-  <section class="candidateSummaryRow">
-    <div class="candidateSummaryCard">
-      <strong id="applicationSubmittedCount">0</strong>
-      <span>Application Submitted</span>
+<main class="cmcPathwayMain">
+  <section class="cmcWelcome">
+    <div>
+      <p class="cmcEyebrow">YOUR MULTIPLICATION PATHWAY</p>
+      <h1 id="welcomeTitle">Welcome.</h1>
+      <p class="cmcIntro">Begin with Discover. As you move forward, your next steps, assessments, and resources will appear here.</p>
     </div>
-    <div class="candidateSummaryCard">
-      <strong id="assessmentsCompletedCount">0</strong>
-      <span>Assessments Completed</span>
-    </div>
-    <div class="candidateSummaryCard">
-      <strong id="totalCompletedCount">0</strong>
-      <span>Total Items Completed</span>
-    </div>
-    <div class="candidateSummaryCard incomplete">
-      <strong id="stillToCompleteCount">0</strong>
-      <span>Still To Complete</span>
+    <div class="cmcProgressSummary">
+      <strong id="stagesUnderway">1 of 4</strong>
+      <span>stages underway</span>
+      <div><i id="journeyProgress"></i></div>
     </div>
   </section>
 
-  <div class="candidateSectionTitle">
-    <h2>Your Discernment Center Work</h2>
-  </div>
+  <section class="cmcJourney">
+    <div class="cmcSectionHeading">
+      <div>
+        <p class="cmcEyebrow">THE CMC PATHWAY</p>
+        <h2>Your next faithful step.</h2>
+      </div>
+      <p>Each stage builds on the one before it. You do not need to have the whole journey figured out to begin.</p>
+    </div>
 
-  <section id="candidateWorkList" class="candidateWorkGrid">
-    <p class="muted">Loading your dashboard...</p>
+    <div id="pathwayStages" class="cmcStageGrid">
+      <p class="cmcLoading">Loading your pathway…</p>
+    </div>
+  </section>
+
+  <section class="cmcUtilityGrid">
+    <article id="profilePrompt" class="cmcUtilityCard">
+      <p class="cmcEyebrow">YOUR PROFILE</p>
+      <h2>Keep your information current.</h2>
+      <p>Your details help us connect you with the right regional leader and personalize your pathway.</p>
+      <a href="profile.html">Review profile →</a>
+    </article>
+    <article class="cmcRegionCard">
+      <div id="regionInitial">—</div>
+      <span>
+        <p class="cmcEyebrow">YOUR REGION</p>
+        <h2 id="regionName">Open Bible Region</h2>
+        <p>Your CMC pathway stays connected to accountable regional relationships.</p>
+      </span>
+    </article>
   </section>
 </main>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="auth.js"></script>
-<script src="dashboard.js?v=64"></script>
+<script src="auth.js?v=80"></script>
+<script src="dashboard.js?v=80"></script>
 </body>
 </html>

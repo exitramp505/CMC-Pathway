@@ -48,7 +48,7 @@ exports.handler = async (event) => {
       .from('candidate_assignments')
       .select('*')
       .eq('user_id', user.id)
-      .eq('item_key', 'ministry_readiness')
+      .eq('item_key', 'discover_course')
       .maybeSingle();
 
     if(existingError) throw existingError;
@@ -65,8 +65,9 @@ exports.handler = async (event) => {
         user_id: user.id,
         candidate_email: candidateEmail,
         candidate_name: candidateName,
-        item_key: 'ministry_readiness',
-        item_type: 'assessment',
+        item_key: 'discover_course',
+        item_type: 'course',
+        stage_key: 'discover',
         status: 'assigned',
         assigned_at: now,
         updated_at: now

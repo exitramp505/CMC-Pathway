@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Regional Leader | CMC Pathway</title>
+  <link rel="stylesheet" href="style.css?v=80">
+</head>
+<body class="cmcPathwayBody">
+<header class="cmcHeader">
+  <a class="cmcBrand" href="leader.html" aria-label="CMC Pathway leader home">
+    <img class="cmcLogoImage" src="cmc-logo-mark.svg" alt="">
+    <span><strong>CMC Pathway</strong><small>Church Multiplication Collective</small></span>
+  </a>
+  <nav class="cmcNav">
+    <a class="active" href="leader.html">People</a>
+    <a href="profile.html">Profile</a>
+    <button id="logoutBtn" type="button">Logout</button>
+  </nav>
+</header>
+
+<main class="cmcPathwayMain cmcLeaderMain">
+  <section class="cmcLeaderWelcome">
+    <div>
+      <p id="leaderRegionLabel" class="cmcEyebrow">OPEN BIBLE REGION</p>
+      <h1>People in your pathway.</h1>
+      <p class="cmcIntro">See who has begun Discover, identify the people ready for a conversation, and assign their next step.</p>
+    </div>
+    <button id="inviteParticipantBtn" type="button" class="cmcInviteButton">Invite someone <span>＋</span></button>
+  </section>
+
+  <section class="cmcLeaderStats">
+    <article><span>Active participants</span><strong id="activeCount">0</strong><small id="activeCaption">In your region</small></article>
+    <article><span>Taking Discover</span><strong id="discoverCount">0</strong><small>Discover available automatically</small></article>
+    <article><span>Ready for follow-up</span><strong id="followupCount">0</strong><small>Completed Discover</small></article>
+    <article><span>In discernment</span><strong id="discernCount">0</strong><small>Assigned forms or assessments</small></article>
+  </section>
+
+  <section class="cmcPeoplePanel">
+    <div class="cmcPeopleHeading">
+      <div><p class="cmcEyebrow">REGIONAL PARTICIPANTS</p><h2>People</h2></div>
+      <div class="cmcPeopleTools">
+        <input id="peopleSearch" type="search" placeholder="Search by name, church, or city">
+        <select id="stageFilter" aria-label="Filter by pathway stage">
+          <option value="">All stages</option>
+          <option value="discover">Discover</option>
+          <option value="discern">Discern</option>
+          <option value="develop">Develop</option>
+          <option value="deploy">Deploy</option>
+        </select>
+      </div>
+    </div>
+
+    <div id="followupBanner" class="cmcFollowupBanner hidden">
+      <span>!</span>
+      <div><strong id="followupMessage"></strong><p>They have completed Discover and are ready for regional follow-up.</p></div>
+      <button id="showFollowupsBtn" type="button">View follow-ups →</button>
+    </div>
+
+    <div id="participantList" class="cmcParticipantList">
+      <p class="cmcLoading">Loading participants…</p>
+    </div>
+  </section>
+</main>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="auth.js?v=80"></script>
+<script src="leader.js?v=80"></script>
+</body>
+</html>

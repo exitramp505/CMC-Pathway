@@ -43,6 +43,9 @@
   form.phone.value = profile?.phone || '';
   form.state.value = profile?.state || '';
   form.married.value = profile?.married || '';
+  form.churchName.value = profile?.church_name || '';
+  form.ministryRole.value = profile?.ministry_role || '';
+  form.pathwayInterest.value = profile?.pathway_interest || '';
 
   form.addEventListener('submit', async e => {
     e.preventDefault();
@@ -57,10 +60,14 @@
         phone: String(fd.get('phone') || '').trim(),
         state: fd.get('state'),
         region: dcAuth.regionForState(fd.get('state')),
-        married: fd.get('married')
+        married: fd.get('married'),
+        church_name: String(fd.get('churchName') || '').trim(),
+        ministry_role: String(fd.get('ministryRole') || '').trim(),
+        pathway_interest: String(fd.get('pathwayInterest') || '').trim()
       });
 
       await ensureDefaultAssignments();
+      await requestDiscoverEnrollment().catch(() => null);
 
       setMessage('Profile saved.', 'success');
 
@@ -71,4 +78,15 @@
       setMessage(err.message || 'Could not save profile.', 'error');
     }
   });
+
+  async function requestDiscoverEnrollment(){
+    const sb = await dcAuth.getSupabaseClient();
+    const session = await sb.auth.getSession();
+    const accessToken = session.data?.session?.access_token || '';
+    if(!accessToken) return;
+    await fetch('/.netlify/functions/pathwright-enroll', {
+      method:'POST',
+      headers:{ Authorization:`Bearer ${accessToken}` }
+    });
+  }
 })();

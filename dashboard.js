@@ -1,274 +1,183 @@
 (async function(){
+  const PATHWRIGHT_DISCOVER_URL = 'https://acquire.pathwright.com/library/discover-church-multiplication-101-238879/725954/path/';
+
   dcAuth.setupLogout();
   const user = await dcAuth.requireUser();
   if (!user) return;
+
+  const profile = await dcAuth.getProfile(user.id).catch(() => null);
+  const profileComplete = Boolean(profile?.full_name && profile?.phone && profile?.state);
+  if (!profileComplete) {
+    window.location.href = 'profile.html?next=dashboard';
+    return;
+  }
+
+  setText('welcomeTitle', `Welcome${profile.full_name ? `, ${firstName(profile.full_name)}.` : '.'}`);
+  const region = profile.region || dcAuth.regionForState(profile.state);
+  setText('regionName', `Open Bible ${region} Region`);
+  setText('regionInitial', region ? region.slice(0, 1).toUpperCase() : '—');
 
   const sb = await dcAuth.getSupabaseClient();
   const session = await sb.auth.getSession();
   const accessToken = session.data?.session?.access_token || '';
 
-  const profile = await dcAuth.getProfile(user.id).catch(() => null);
-  const profileComplete = Boolean(profile?.full_name && profile?.phone && profile?.state && profile?.married);
-  if(!profileComplete){
-    window.location.href = 'profile.html?next=dashboard';
-    return;
-  }
-  document.getElementById('welcomeTitle').textContent = `Welcome${profile?.full_name ? `, ${profile.full_name}` : ''}`;
+  await ensureDiscoverAssignment(accessToken);
+  const assignments = await getAssignments(accessToken);
+  const assignedKeys = new Set(assignments.map(item => item.item_key));
 
-  const workList = document.getElementById('candidateWorkList');
-
-  let applicationRecord = null;
-  let assignments = [];
-
-  try {
-    const res = await fetch('/.netlify/functions/application-get', {
-      headers: { Authorization: `Bearer ${accessToken}` }
-    });
-    const data = await res.json().catch(() => ({}));
-    if (data.ok && data.application) applicationRecord = data.application;
-  } catch (_) {}
-
-  try {
-    const res = await fetch('/.netlify/functions/candidate-assignments-get', {
-      headers: { Authorization: `Bearer ${accessToken}` }
-    });
-    const data = await res.json().catch(() => ({}));
-    if (data.ok && Array.isArray(data.assignments)) assignments = data.assignments;
-  } catch (_) {}
-
-  const assignedKeys = new Set(assignments.filter(a => a.status === 'assigned').map(a => a.item_key));
-
-  const { data: reports, error } = await sb
+  const { data: reports } = await sb
     .from('assessment_results')
-    .select('id,created_at,candidate,scores,state,region,overall,overall_label,email_sent')
+    .select('id,created_at,scores,overall,overall_label')
     .eq('user_id', user.id)
     .order('created_at', { ascending: false });
 
-  if (error) {
-    workList.innerHTML = `<div class="card"><p class="warningText">${escapeHtml(error.message)}</p></div>`;
-    return;
+  const completedKeys = new Set();
+  for (const report of reports || []) {
+    const type = report.scores?.assessmentType || '';
+    if (type === 'isa_readiness') completedKeys.add('ministry_readiness');
+    else if (type === 'ministry_style') completedKeys.add('ministry_style');
+    else completedKeys.add('character_qualities');
   }
 
-  const allReports = reports || [];
-  const characterReport = allReports.find(r => !['isa_readiness','ministry_style'].includes(r.scores?.assessmentType || ''));
-  const isaReport = allReports.find(r => r.scores?.assessmentType === 'isa_readiness');
-  const ministryStyleReport = allReports.find(r => r.scores?.assessmentType === 'ministry_style');
+  const discoverAssignment = assignments.find(item => item.item_key === 'discover_course');
+  const discoverProgress = Number(discoverAssignment?.progress || 0);
+  const discoverComplete = discoverProgress >= 100 || discoverAssignment?.external_status === 'completed';
+  const discernKeys = ['discernment_application','ministry_readiness','ministry_style','character_qualities'];
+  const discernAssignments = discernKeys.filter(key => assignedKeys.has(key));
+  const discernCompleteCount = discernAssignments.filter(key => completedKeys.has(key)).length;
+  const hasDiscern = discernAssignments.length > 0;
+  const hasDevelop = assignments.some(item => item.stage_key === 'develop');
+  const hasDeploy = assignments.some(item => item.stage_key === 'deploy');
 
-  const assignedItems = [
-    assignedKeys.has('discernment_application') ? applicationCard(applicationRecord) : '',
-    assignedKeys.has('ministry_readiness') ? assessmentCard({
-      title: 'Ministry Readiness Inventory',
-      description: 'Church planting, entrepreneurial leadership, ministry experience, and relational evangelism readiness profile.',
-      report: isaReport,
-      draftKey: `discernment_isa_draft_${(profile?.email || user.email || '').toLowerCase()}`,
-      startUrl: 'isa-assessment.html',
-      retakeUrl: 'isa-assessment.html',
-      unit: '%'
-    }) : '',
-    assignedKeys.has('ministry_style') ? assessmentCard({
-      title: 'Ministry Style Inventory',
-      description: 'DISC-informed ministry behavior inventory focused on leadership, communication, team dynamics, and church multiplication.',
-      report: ministryStyleReport,
-      draftKey: `ministry_style_draft_${(profile?.email || user.email || '').toLowerCase()}`,
-      startUrl: 'ministry-style.html',
-      retakeUrl: 'ministry-style.html',
-      unit: ''
-    }) : '',
-    assignedKeys.has('character_qualities') ? assessmentCard({
-      title: 'Character Qualities Assessment',
-      description: 'Fifteen character qualities used to help the Discernment Center team discuss readiness, strengths, and growth areas.',
-      report: characterReport,
-      draftKey: `discernment_character_draft_${(profile?.email || user.email || '').toLowerCase()}`,
-      startUrl: 'assessment.html',
-      retakeUrl: 'assessment.html',
-      unit: ''
-    }) : ''
-  ].filter(Boolean);
+  const activeStageCount = 1 + Number(hasDiscern) + Number(hasDevelop) + Number(hasDeploy);
+  setText('stagesUnderway', `${activeStageCount} of 4`);
+  document.getElementById('journeyProgress').style.width = `${activeStageCount * 25}%`;
 
-  const applicationSubmitted = applicationRecord?.status === 'submitted';
-  const assessmentsCompleted = [
-    assignedKeys.has('character_qualities') && characterReport,
-    assignedKeys.has('ministry_readiness') && isaReport,
-    assignedKeys.has('ministry_style') && ministryStyleReport
-  ].filter(Boolean).length;
-  const totalCompleted = (assignedKeys.has('discernment_application') && applicationSubmitted ? 1 : 0) + assessmentsCompleted;
-  const totalAssigned = assignedKeys.size;
-  const stillToComplete = Math.max(totalAssigned - totalCompleted, 0);
+  document.getElementById('pathwayStages').innerHTML = [
+    stageCard({
+      number:'01',
+      key:'discover',
+      label:'START HERE',
+      title:'Discover',
+      description:'Learn the biblical foundation, shared language, and models of church multiplication through a short online course.',
+      symbol:'✦',
+      state: discoverComplete ? 'complete' : 'current',
+      status: discoverComplete ? 'Completed' : discoverProgress ? `${discoverProgress}% complete` : 'Ready to begin',
+      actionUrl: PATHWRIGHT_DISCOVER_URL,
+      actionText: discoverProgress ? 'Continue Discover' : 'Begin Discover'
+    }),
+    stageCard({
+      number:'02',
+      key:'discern',
+      label:'CLARIFY CALLING',
+      title:'Discern',
+      description:'Explore calling, character, capacity, context, and readiness with trusted leaders.',
+      symbol:'◇',
+      state: hasDiscern ? 'available' : 'locked',
+      status: hasDiscern ? `${discernCompleteCount} of ${discernAssignments.length} complete` : 'Assigned as you progress',
+      actionUrl: hasDiscern ? '#assigned-work' : '',
+      actionText: hasDiscern ? 'View assigned work' : ''
+    }),
+    stageCard({
+      number:'03',
+      key:'develop',
+      label:'PREPARE WELL',
+      title:'Develop',
+      description:'Build a ministry plan, strengthen essential skills, and prepare with coaching and practical resources.',
+      symbol:'＋',
+      state: hasDevelop ? 'available' : 'locked',
+      status: hasDevelop ? 'Resources assigned' : 'Future stage',
+      actionUrl: hasDevelop ? '#assigned-work' : '',
+      actionText: hasDevelop ? 'View development plan' : ''
+    }),
+    stageCard({
+      number:'04',
+      key:'deploy',
+      label:'MOVE INTO MISSION',
+      title:'Deploy',
+      description:'Move toward launch with accountable relationships, regional support, and a clear plan for multiplication.',
+      symbol:'↗',
+      state: hasDeploy ? 'available' : 'locked',
+      status: hasDeploy ? 'Next steps assigned' : 'Future stage',
+      actionUrl: hasDeploy ? '#assigned-work' : '',
+      actionText: hasDeploy ? 'View launch steps' : ''
+    })
+  ].join('');
 
-  setText('applicationSubmittedCount', applicationSubmitted && assignedKeys.has('discernment_application') ? '1' : '0');
-  setText('assessmentsCompletedCount', String(assessmentsCompleted));
-  setText('totalCompletedCount', String(totalCompleted));
-  setText('stillToCompleteCount', String(stillToComplete));
-
-  if (!assignedItems.length) {
-    workList.innerHTML = `<article class="candidateTaskCard compact">
-      <div class="candidateTaskHead">
-        <div class="candidateTaskTitleRow">
-          <div class="candidateCheckIcon">•</div>
-          <div class="candidateTaskTitleText">
-            <h3>No Assigned Items Yet</h3>
-            <p>Your Discernment Center coordinator has not assigned any forms or assessments to your account yet. Please check back later.</p>
-          </div>
-          <span class="candidatePill pending">Waiting</span>
-        </div>
-      </div>
-    </article>`;
-  } else {
-    workList.innerHTML = assignedItems.join('');
+  const assignedWork = buildAssignedWork(assignments, completedKeys);
+  if (assignedWork) {
+    document.querySelector('.cmcJourney').insertAdjacentHTML('afterend', assignedWork);
   }
 
-  function applicationCard(app) {
-    const submitted = app?.status === 'submitted';
-    const started = Boolean(app);
-    const completion = app?.completion ?? 0;
-    const submittedDate = app?.submitted_at || app?.submittedAt || app?.updated_at || app?.updatedAt;
-    const hasPhoto = Boolean(app?.photo_name || app?.photoName);
-    const hasResume = Boolean(app?.resume_name || app?.resumeName);
-    const uploadText = hasPhoto || hasResume
-      ? `${hasPhoto ? 'Photo' : ''}${hasPhoto && hasResume ? ' + ' : ''}${hasResume ? 'Resume' : ''}`
-      : 'Not Uploaded';
-
-    if (!submitted) {
-      return `<article class="candidateTaskCard compact">
-        <div class="candidateTaskHead">
-          <div class="candidateTaskTitleRow">
-            <div class="candidateCheckIcon">•</div>
-            <div class="candidateTaskTitleText">
-              <h3>Discernment Center Application</h3>
-              <p>${started ? `${completion || 0}% complete. Finish and submit your application when ready.` : 'Begin your Discernment Center Application.'}</p>
-            </div>
-            <span class="candidatePill ${started ? 'draft' : 'pending'}">${started ? 'Draft' : 'Not Started'}</span>
-          </div>
-          <div class="candidateTaskActions">
-            <a class="candidateBtn" href="application.html">${started ? 'Finish Application' : 'Start Application'}</a>
-          </div>
-        </div>
-      </article>`;
-    }
-
-    return `<article class="candidateTaskCard completed">
-      <div class="candidateTaskHead">
-        <div class="candidateTaskTitleRow">
-          <div class="candidateCheckIcon">✓</div>
-          <div class="candidateTaskTitleText">
-            <h3>Discernment Center Application</h3>
-            <p>Personal information, family, faith story, ministry experience, financial overview, planting vision, waiver, photo, and resume.</p>
-          </div>
-          <span class="candidatePill done">Submitted</span>
-        </div>
-        <div class="candidateTaskActions">
-          <a class="candidateBtn green" href="application-report.html">View Submitted Application</a>
-          <a class="candidateBtn secondary" href="application.html">Edit Application</a>
-        </div>
-      </div>
-      <div class="candidateTaskMeta">
-        <div class="candidateMetric primary">
-          <strong>${completion || 100}%</strong>
-          <span>Complete</span>
-        </div>
-        <div class="candidateMetric">
-          <strong>${submittedDate ? formatShortDate(submittedDate) : '—'}</strong>
-          <span>Submitted</span>
-        </div>
-        <div class="candidateMetric">
-          <strong>${escapeHtml(uploadText)}</strong>
-          <span>Uploads</span>
-        </div>
-      </div>
-    </article>`;
-  }
-
-  function assessmentCard({ title, description, report, draftKey, startUrl, retakeUrl, unit }) {
-    const completed = Boolean(report);
-    const hasDraft = !completed && hasLocalDraft(draftKey);
-
-    if (!completed) {
-      return `<article class="candidateTaskCard compact">
-        <div class="candidateTaskHead">
-          <div class="candidateTaskTitleRow">
-            <div class="candidateCheckIcon">•</div>
-            <div class="candidateTaskTitleText">
-              <h3>${escapeHtml(title)}</h3>
-              <p>${hasDraft ? 'Progress has been saved. Continue and finish the assessment when ready.' : escapeHtml(description)}</p>
-            </div>
-            <span class="candidatePill ${hasDraft ? 'draft' : 'pending'}">${hasDraft ? 'In Progress' : 'Not Started'}</span>
-          </div>
-          <div class="candidateTaskActions">
-            <a class="candidateBtn" href="${startUrl}">${hasDraft ? 'Finish Assessment' : 'Start Assessment'}</a>
-          </div>
-        </div>
-      </article>`;
-    }
-
-    const score = report?.overall ?? report?.scores?.overall ?? '—';
-    const label = report?.overall_label || report?.scores?.overallLabel || '—';
-    const date = report?.created_at || report?.submittedAt;
-    const reportUrl = `report.html?id=${encodeURIComponent(report.id)}`;
-
-    return `<article class="candidateTaskCard completed">
-      <div class="candidateTaskHead">
-        <div class="candidateTaskTitleRow">
-          <div class="candidateCheckIcon">✓</div>
-          <div class="candidateTaskTitleText">
-            <h3>${escapeHtml(title)}</h3>
-            <p>${escapeHtml(description)}</p>
-          </div>
-          <span class="candidatePill done">Completed</span>
-          <span class="candidatePill report">Report Available</span>
-        </div>
-        <div class="candidateTaskActions">
-          <a class="candidateBtn green" href="${reportUrl}">View Report</a>
-          <a class="candidateBtn secondary" href="${retakeUrl}">Retake Assessment</a>
-        </div>
-      </div>
-      <div class="candidateTaskMeta">
-        <div class="candidateMetric primary">
-          <strong>${escapeHtml(score)}${unit}</strong>
-          <span>Overall</span>
-        </div>
-        <div class="candidateMetric">
-          <strong>${escapeHtml(label)}</strong>
-          <span>Rating</span>
-        </div>
-        <div class="candidateMetric">
-          <strong>${date ? formatShortDate(date) : '—'}</strong>
-          <span>Completed</span>
-        </div>
-      </div>
-    </article>`;
-  }
-
-  function hasLocalDraft(key) {
+  async function ensureDiscoverAssignment(token) {
+    if (!token) return;
     try {
-      const raw = localStorage.getItem(key);
-      if (!raw) return false;
-      const draft = JSON.parse(raw);
-      return draft && draft.answers && Object.keys(draft.answers).length > 0;
-    } catch (_) {
-      return false;
-    }
+      await fetch('/.netlify/functions/candidate-default-assignments', {
+        method: 'POST',
+        headers: { Authorization: `Bearer ${token}` }
+      });
+    } catch (_) {}
   }
 
-  function setText(id, value) {
-    const el = document.getElementById(id);
-    if (el) el.textContent = value;
-  }
-
-  function formatShortDate(value) {
+  async function getAssignments(token) {
+    if (!token) return [];
     try {
-      return new Date(value).toLocaleDateString([], { month: 'short', day: 'numeric' });
+      const response = await fetch('/.netlify/functions/candidate-assignments-get', {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      const data = await response.json();
+      return data.ok && Array.isArray(data.assignments) ? data.assignments : [];
     } catch (_) {
-      return '—';
+      return [];
     }
   }
 
-  function escapeHtml(value) {
-    return String(value ?? '').replace(/[&<>"']/g, m => ({
-      '&': '&amp;',
-      '<': '&lt;',
-      '>': '&gt;',
-      '"': '&quot;',
-      "'": '&#039;'
-    }[m]));
+  function stageCard({number,key,label,title,description,symbol,state,status,actionUrl,actionText}) {
+    return `<article class="cmcStageCard ${escapeHtml(key)} ${escapeHtml(state)}">
+      <div class="cmcStageTop">
+        <span class="cmcStageNumber">${number}</span>
+        <span class="cmcStageStatus">${escapeHtml(status)}</span>
+      </div>
+      <div class="cmcStageSymbol" aria-hidden="true">${symbol}</div>
+      <div>
+        <p class="cmcStageLabel">${label}</p>
+        <h3>${title}</h3>
+        <p>${description}</p>
+      </div>
+      ${actionUrl
+        ? `<a href="${actionUrl}"${actionUrl.startsWith('http') ? ' target="_blank" rel="noopener"' : ''}>${escapeHtml(actionText)} <span>→</span></a>`
+        : `<span class="cmcFutureAction">${escapeHtml(status)}</span>`}
+    </article>`;
   }
+
+  function buildAssignedWork(items, completed) {
+    const visible = items.filter(item => item.item_key !== 'discover_course');
+    if (!visible.length) return '';
+
+    const info = {
+      discernment_application:['Discernment Application','application.html'],
+      ministry_readiness:['Ministry Readiness Inventory','isa-assessment.html'],
+      ministry_style:['Ministry Style Inventory','ministry-style.html'],
+      character_qualities:['Character Qualities Assessment','assessment.html']
+    };
+
+    return `<section id="assigned-work" class="cmcAssignedSection">
+      <div><p class="cmcEyebrow">ASSIGNED TO YOU</p><h2>Your current work.</h2></div>
+      <div class="cmcAssignedList">${visible.map(item => {
+        const details = info[item.item_key] || [titleCase(item.item_key), '#'];
+        const done = completed.has(item.item_key) || Number(item.progress) >= 100 || item.external_status === 'completed';
+        return `<article>
+          <span class="cmcAssignedCheck">${done ? '✓' : '•'}</span>
+          <div><h3>${escapeHtml(details[0])}</h3><p>${done ? 'Completed' : 'Ready when you are.'}</p></div>
+          <span class="cmcAssignedPill ${done ? 'done' : ''}">${done ? 'Complete' : 'Assigned'}</span>
+          <a href="${details[1]}">${done ? 'Review' : 'Begin'} →</a>
+        </article>`;
+      }).join('')}</div>
+    </section>`;
+  }
+
+  function setText(id,value){ const el=document.getElementById(id); if(el) el.textContent=value; }
+  function firstName(value){ return String(value || '').trim().split(/\s+/)[0] || ''; }
+  function titleCase(value){ return String(value || '').replace(/_/g,' ').replace(/\b\w/g,c=>c.toUpperCase()); }
+  function escapeHtml(value){ return String(value ?? '').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[m])); }
 })();

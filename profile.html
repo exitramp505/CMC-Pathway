@@ -3,13 +3,13 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
-  <title>Candidate Profile | Discernment Center</title>
+  <title>Your Profile | CMC Pathway</title>
   <link rel="stylesheet" href="style.css?v=68">
 </head>
 <body>
 <main class="profilePageMain">
   <nav class="portalNav">
-    <strong>Discernment Center</strong>
+    <strong>CMC Pathway</strong>
     <span></span>
     <a href="dashboard.html">Dashboard</a>
     <button id="logoutBtn" type="button" class="linkButton">Logout</button>
@@ -17,20 +17,20 @@
 
   <section class="profileShell">
     <aside class="profileIntroPanel">
-      <p class="eyebrow">Candidate Profile</p>
-      <h1>Complete Your Candidate Details</h1>
-      <p>These details help your Discernment Center team assign the right forms, assessments, and regional routing.</p>
+      <p class="eyebrow">Your CMC Profile</p>
+      <h1>Tell us a little about yourself.</h1>
+      <p>These details connect you with the right Open Bible region and help CMC leaders support your pathway.</p>
 
       <div class="profileMiniCard">
         <strong>Your login is already created.</strong>
-        <span>Now complete the candidate information used by the Discernment Center team.</span>
+        <span>Complete your profile to enter CMC Pathway and begin Discover.</span>
       </div>
     </aside>
 
     <section class="profileFormPanel">
       <div class="authFormHeader">
-        <h2>Candidate Details</h2>
-        <p>Complete all required fields, then continue to your dashboard.</p>
+        <h2>Profile Details</h2>
+        <p>Complete the required fields, then continue to your pathway.</p>
       </div>
 
       <form id="profileForm" class="profileFormGrid">
@@ -50,8 +50,35 @@
           <select name="state" id="state" required></select>
         </label>
 
+        <label class="full">Church or Ministry
+          <input name="churchName" autocomplete="organization" placeholder="Optional">
+        </label>
+
+        <label>Current Role
+          <select name="ministryRole">
+            <option value="">Select one</option>
+            <option>Pastor</option>
+            <option>Pioneer or Church Planter</option>
+            <option>Church Leader</option>
+            <option>Regional Leader</option>
+            <option>Exploring Multiplication</option>
+            <option>Other</option>
+          </select>
+        </label>
+
+        <label>Primary Interest
+          <select name="pathwayInterest">
+            <option value="">Select one</option>
+            <option>Learning about church multiplication</option>
+            <option>Exploring a call to pioneer</option>
+            <option>Multiplying through my church</option>
+            <option>Developing leaders</option>
+            <option>Supporting a pioneer</option>
+          </select>
+        </label>
+
         <label class="full">Are you married?
-          <select name="married" required>
+          <select name="married">
             <option value="">Select</option>
             <option>Yes</option>
             <option>No</option>

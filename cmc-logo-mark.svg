@@ -1,0 +1,12 @@
+<svg width="512" height="512" viewBox="0 0 512 512" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="title desc">
+  <title id="title">Church Multiplication Collective mark</title>
+  <desc id="desc">Rounded square mark with a multiplication symbol and four ember diamonds.</desc>
+  <rect width="512" height="512" rx="96" fill="#FBF0DE"/>
+  <rect x="64" y="64" width="384" height="384" rx="64" stroke="#293D48" stroke-width="28"/>
+  <line x1="174" y1="174" x2="338" y2="338" stroke="#293D48" stroke-width="52" stroke-linecap="round"/>
+  <line x1="338" y1="174" x2="174" y2="338" stroke="#293D48" stroke-width="52" stroke-linecap="round"/>
+  <rect x="239" y="111" width="34" height="34" transform="rotate(45 256 128)" fill="#EA9F43"/>
+  <rect x="239" y="367" width="34" height="34" transform="rotate(45 256 384)" fill="#EA9F43"/>
+  <rect x="111" y="239" width="34" height="34" transform="rotate(45 128 256)" fill="#EA9F43"/>
+  <rect x="367" y="239" width="34" height="34" transform="rotate(45 384 256)" fill="#EA9F43"/>
+</svg>

@@ -49,6 +49,7 @@
   const discoverAssignment = assignments.find(item => item.item_key === 'discover_course');
   const discoverProgress = Number(discoverAssignment?.progress || 0);
   const discoverComplete = discoverProgress >= 100 || discoverAssignment?.external_status === 'completed';
+  if (discoverComplete) showDiscoverCompletion();
   const discernKeys = ['discernment_application','ministry_readiness','ministry_style','character_qualities'];
   const discernAssignments = discernKeys.filter(key => assignedKeys.has(key));
   const discernCompleteCount = discernAssignments.filter(key => completedKeys.has(key)).length;
@@ -64,14 +65,14 @@
     stageCard({
       number:'01',
       key:'discover',
-      label:'START HERE',
+      label: discoverComplete ? 'COURSE COMPLETED' : 'START HERE',
       title:'Discover',
       description:'Learn the biblical foundation, shared language, and models of church multiplication through a short online course.',
-      symbol:'✦',
+      symbol: discoverComplete ? '✓' : '✦',
       state: discoverComplete ? 'complete' : 'current',
-      status: discoverComplete ? 'Completed' : discoverProgress ? `${discoverProgress}% complete` : 'Ready to begin',
+      status: discoverComplete ? 'Complete' : discoverProgress ? `${discoverProgress}% complete` : 'Ready to begin',
       actionUrl: PATHWRIGHT_DISCOVER_URL,
-      actionText: discoverProgress ? 'Continue Discover' : 'Begin Discover'
+      actionText: discoverComplete ? 'Review Discover' : discoverProgress ? 'Continue Discover' : 'Begin Discover'
     }),
     stageCard({
       number:'02',
@@ -155,6 +156,24 @@
         ? `<a href="${actionUrl}"${actionUrl.startsWith('http') ? ' target="_blank" rel="noopener"' : ''}>${escapeHtml(actionText)} <span>→</span></a>`
         : `<span class="cmcFutureAction">${escapeHtml(status)}</span>`}
     </article>`;
+  }
+
+  function showDiscoverCompletion() {
+    document.head.insertAdjacentHTML('beforeend', `<style>
+      .cmcStageCard.complete .cmcStageSymbol{display:grid;width:78px;height:78px;place-items:center;border:2px solid rgba(251,240,222,.72);border-radius:50%;background:var(--cmcSage);color:white;font-size:43px;font-weight:900;box-shadow:0 12px 30px rgba(77,167,156,.22)}
+      .cmcStageCard.complete .cmcStageLabel{color:#9ae0d8!important}
+      .cmcCourseCompletion{display:grid;grid-template-columns:auto 1fr auto;gap:18px;align-items:center;margin-top:18px;padding:20px 22px;border:1px solid rgba(77,167,156,.5);border-radius:18px;background:rgba(77,167,156,.13)}
+      .cmcCourseCompletion>span{display:grid;width:44px;height:44px;place-items:center;border-radius:50%;background:var(--cmcSage);color:white;font-size:24px;font-weight:900}
+      .cmcCourseCompletion strong{display:block;color:var(--cmcSand);font-size:17px}.cmcCourseCompletion p{margin:4px 0 0;color:rgba(251,240,222,.7);font-size:12px;line-height:1.5}
+      .cmcCourseCompletion a{padding:12px 15px;border:1px solid rgba(251,240,222,.22);border-radius:12px;color:var(--cmcSand);font-size:11px;font-weight:900;text-decoration:none}
+      @media(max-width:720px){.cmcCourseCompletion{grid-template-columns:auto 1fr}.cmcCourseCompletion a{grid-column:2;justify-self:start}}
+    </style>`);
+    document.getElementById('pathwayStages').insertAdjacentHTML('afterend', `
+      <div class="cmcCourseCompletion">
+        <span aria-hidden="true">✓</span>
+        <div><strong>Discover complete.</strong><p>Your regional leader can now see that you are ready for a follow-up conversation.</p></div>
+        <a href="${PATHWRIGHT_DISCOVER_URL}" target="_blank" rel="noopener">Review course →</a>
+      </div>`);
   }
 
   function buildAssignedWork(items, completed) {

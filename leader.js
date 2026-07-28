@@ -9,6 +9,9 @@
   const list = document.getElementById('participantList');
   let participants = [];
   let followupsOnly = false;
+  let viewer = null;
+  let accessProfiles = [];
+  let regions = [];
 
   try {
     const response = await fetch('/.netlify/functions/regional-participants', {
@@ -18,11 +21,13 @@
     if (!response.ok || !data.ok) throw new Error(data.error || 'Could not load participants.');
 
     participants = data.participants || [];
-    const region = data.viewer?.account_role === 'cmc_admin' ? 'ALL OPEN BIBLE REGIONS' : `OPEN BIBLE ${data.viewer?.region || ''} REGION`;
+    viewer = data.viewer || null;
+    const region = viewer?.account_role === 'cmc_admin' ? 'ALL OPEN BIBLE REGIONS' : `OPEN BIBLE ${viewer?.region || ''} REGION`;
     setText('leaderRegionLabel', region);
-    setText('activeCaption', data.viewer?.account_role === 'cmc_admin' ? 'Across all regions' : `Across ${data.viewer?.region || 'your'} Region`);
+    setText('activeCaption', viewer?.account_role === 'cmc_admin' ? 'Across all regions' : `Across ${viewer?.region || 'your'} Region`);
     updateSummary();
     render();
+    if (viewer?.account_role === 'cmc_admin') await loadLeaderManagement();
   } catch (error) {
     list.innerHTML = `<div class="cmcLeaderError"><strong>Unable to open the regional dashboard.</strong><p>${escapeHtml(error.message)}</p></div>`;
   }
@@ -37,6 +42,7 @@
   document.getElementById('inviteParticipantBtn').addEventListener('click', () => {
     window.alert('Participant invitations will be connected in the next build step.');
   });
+  document.getElementById('leaderAccessForm').addEventListener('submit', grantLeaderAccess);
 
   function updateSummary() {
     const discover = participants.filter(person => assignment(person,'discover_course')).length;
@@ -92,6 +98,93 @@
         <a class="cmcRowAction" href="admin.html?candidate=${encodeURIComponent(person.id)}">Open →</a>
       </article>`;
     }).join('');
+  }
+
+  async function loadLeaderManagement() {
+    const panel = document.getElementById('leaderManagement');
+    panel.classList.remove('hidden');
+    setAccessMessage('Loading accounts…');
+    try {
+      const response = await fetch('/.netlify/functions/admin-leaders', {
+        headers: { Authorization:`Bearer ${token}` }
+      });
+      const data = await response.json().catch(() => ({}));
+      if (!response.ok || !data.ok) throw new Error(data.error || 'Could not load leader access.');
+      accessProfiles = data.profiles || [];
+      regions = data.regions || [];
+      renderLeaderAccess();
+      setAccessMessage('');
+    } catch (error) {
+      setAccessMessage(error.message, true);
+    }
+  }
+
+  function renderLeaderAccess() {
+    const accountSelect = document.getElementById('leaderAccount');
+    const regionSelect = document.getElementById('leaderRegion');
+    const candidates = accessProfiles.filter(profile => profile.account_role === 'participant');
+    const leaders = accessProfiles.filter(profile => profile.account_role === 'regional_leader');
+
+    accountSelect.innerHTML = '<option value="">Choose an existing account</option>' +
+      candidates.map(profile => `<option value="${escapeHtml(profile.id)}">${escapeHtml(profile.full_name || profile.email)} · ${escapeHtml(profile.email)}</option>`).join('');
+    regionSelect.innerHTML = '<option value="">Choose a region</option>' +
+      regions.map(region => `<option value="${escapeHtml(region)}">${escapeHtml(region)}</option>`).join('');
+
+    setText('regionalLeaderCount', String(leaders.length));
+    const leaderList = document.getElementById('regionalLeaderList');
+    leaderList.innerHTML = leaders.length ? leaders.map(profile => `
+      <article>
+        <span class="cmcAvatar">${initials(profile.full_name)}</span>
+        <div><strong>${escapeHtml(profile.full_name || profile.email)}</strong><small>${escapeHtml(profile.email)}</small></div>
+        <span class="cmcLeaderRegion">${escapeHtml(profile.region || 'Region needed')}</span>
+        <button type="button" data-remove-leader="${escapeHtml(profile.id)}">Remove access</button>
+      </article>`).join('') : '<p class="cmcLeaderEmpty">No regional leaders have been assigned yet.</p>';
+
+    leaderList.querySelectorAll('[data-remove-leader]').forEach(button => {
+      button.addEventListener('click', () => removeLeaderAccess(button.dataset.removeLeader));
+    });
+  }
+
+  async function grantLeaderAccess(event) {
+    event.preventDefault();
+    const profileId = document.getElementById('leaderAccount').value;
+    const region = document.getElementById('leaderRegion').value;
+    if (!profileId || !region) return setAccessMessage('Choose an account and region.', true);
+    setAccessMessage('Granting access…');
+    await updateLeaderRole(profileId, 'regional_leader', region);
+  }
+
+  async function removeLeaderAccess(profileId) {
+    setAccessMessage('Removing regional access…');
+    await updateLeaderRole(profileId, 'participant', '');
+  }
+
+  async function updateLeaderRole(profileId, accountRole, region) {
+    try {
+      const response = await fetch('/.netlify/functions/admin-leaders', {
+        method:'POST',
+        headers:{
+          'Content-Type':'application/json',
+          Authorization:`Bearer ${token}`
+        },
+        body:JSON.stringify({ profile_id:profileId, account_role:accountRole, region })
+      });
+      const data = await response.json().catch(() => ({}));
+      if (!response.ok || !data.ok) throw new Error(data.error || 'Could not update leader access.');
+      const index = accessProfiles.findIndex(profile => profile.id === data.profile.id);
+      if (index >= 0) accessProfiles[index] = data.profile;
+      renderLeaderAccess();
+      document.getElementById('leaderAccessForm').reset();
+      setAccessMessage(accountRole === 'regional_leader' ? 'Regional access granted.' : 'Regional access removed.');
+    } catch (error) {
+      setAccessMessage(error.message, true);
+    }
+  }
+
+  function setAccessMessage(message, isError) {
+    const element = document.getElementById('leaderAccessMessage');
+    element.textContent = message || '';
+    element.classList.toggle('error', Boolean(isError));
   }
 
   function assignment(person,key){ return person.assignments.find(item => item.item_key === key && item.status === 'assigned'); }

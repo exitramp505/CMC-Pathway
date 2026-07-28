@@ -6,6 +6,13 @@
   if (!user) return;
 
   const profile = await dcAuth.getProfile(user.id).catch(() => null);
+  const isLeader = ['regional_leader','cmc_admin'].includes(profile?.account_role);
+  const participantView = new URLSearchParams(window.location.search).get('view') === 'participant';
+  if (isLeader && !participantView) {
+    window.location.replace('leader.html');
+    return;
+  }
+  if (isLeader) document.getElementById('leaderDashboardLink')?.classList.remove('hidden');
   const profileComplete = Boolean(profile?.full_name && profile?.phone && profile?.state);
   if (!profileComplete) {
     window.location.href = 'profile.html?next=dashboard';

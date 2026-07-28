@@ -14,6 +14,13 @@
     return `${window.location.origin}/dashboard.html`;
   }
 
+  async function routeSignedInUser(user){
+    const profile = await dcAuth.getProfile(user.id).catch(() => null);
+    window.location.href = ['regional_leader','cmc_admin'].includes(profile?.account_role)
+      ? 'leader.html'
+      : 'dashboard.html';
+  }
+
   async function signInWithGoogle(){
     setMessage('Redirecting to Google...');
     try{
@@ -38,12 +45,12 @@
 
       try{
         const sb = await dcAuth.getSupabaseClient();
-        const { error } = await sb.auth.signInWithPassword({
+        const { data, error } = await sb.auth.signInWithPassword({
           email: fd.get('email'),
           password: fd.get('password')
         });
         if(error) throw error;
-        window.location.href = 'dashboard.html';
+        await routeSignedInUser(data.user);
       }catch(err){
         setMessage(err.message || 'Could not log in.', 'error');
       }

@@ -3,28 +3,37 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
-  <title>Login | Discernment Center</title>
-  <link rel="stylesheet" href="style.css?v=71">
+  <title>Log In | CMC Pathway</title>
+  <link rel="stylesheet" href="style.css?v=90">
 </head>
-<body>
+<body class="cmcPathwayBody cmcAuthBody">
+<header class="cmcHeader">
+  <a class="cmcBrand" href="index.html" aria-label="CMC Pathway home">
+    <img class="cmcLogoImage" src="cmc-logo-mark.svg" alt="">
+    <span><strong>CMC Pathway</strong><small>Church Multiplication Collective</small></span>
+  </a>
+  <nav class="cmcNav cmcAuthNav"><a href="signup.html">Create account</a></nav>
+</header>
 <main class="authPageMain">
   <section class="authShell">
     <div class="authIntroPanel">
-      <p class="eyebrow">Discernment Center</p>
-      <h1>Welcome Back</h1>
-      <p class="authLead">Log in to continue your assigned application, assessments, uploads, and completed reports.</p>
+      <div>
+        <p class="cmcEyebrow">CMC PATHWAY</p>
+        <h1>Continue your pathway.</h1>
+        <p class="authLead">Return to Discover, review your progress, or continue work assigned by your CMC regional leader.</p>
+      </div>
 
       <div class="authPathMini">
-        <div><span>1</span><strong>Sign in</strong></div>
-        <div><span>2</span><strong>Complete assigned work</strong></div>
-        <div><span>3</span><strong>Review reports</strong></div>
+        <div><span>01</span><strong>Log in</strong></div>
+        <div><span>02</span><strong>Continue your current stage</strong></div>
+        <div><span>03</span><strong>See your next step</strong></div>
       </div>
     </div>
 
     <section class="authFormPanel">
       <div class="authFormHeader">
-        <h2>Candidate Login</h2>
-        <p>Use your account to access your personalized dashboard.</p>
+        <h2>Welcome back</h2>
+        <p>Log in to access your CMC Pathway dashboard.</p>
       </div>
 
       <div class="oauthStack">
@@ -56,7 +65,7 @@
 </main>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="auth.js?v=71"></script>
-<script src="login.js?v=81"></script>
+<script src="auth.js?v=90"></script>
+<script src="login.js?v=90"></script>
 </body>
 </html>

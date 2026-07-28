@@ -3,28 +3,37 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
-  <title>Create Account | Discernment Center</title>
-  <link rel="stylesheet" href="style.css?v=71">
+  <title>Create Account | CMC Pathway</title>
+  <link rel="stylesheet" href="style.css?v=90">
 </head>
-<body>
+<body class="cmcPathwayBody cmcAuthBody">
+<header class="cmcHeader">
+  <a class="cmcBrand" href="index.html" aria-label="CMC Pathway home">
+    <img class="cmcLogoImage" src="cmc-logo-mark.svg" alt="">
+    <span><strong>CMC Pathway</strong><small>Church Multiplication Collective</small></span>
+  </a>
+  <nav class="cmcNav cmcAuthNav"><a href="login.html">Log in</a></nav>
+</header>
 <main class="authPageMain signupPageMain">
   <section class="authShell signupShell">
     <div class="authIntroPanel signupIntroPanel">
-      <p class="eyebrow">Discernment Center</p>
-      <h1>Create Your Candidate Account</h1>
-      <p class="authLead">Create your login first. Then you’ll complete the candidate profile details needed for assignments, reports, and regional routing.</p>
+      <div>
+        <p class="cmcEyebrow">CHURCH MULTIPLICATION COLLECTIVE</p>
+        <h1>Create your CMC Pathway account.</h1>
+        <p class="authLead">Your account gives you access to Discover, keeps your progress in one place, and connects you with your Open Bible region.</p>
+      </div>
 
       <div class="authPathMini">
-        <div><span>1</span><strong>Create login</strong></div>
-        <div><span>2</span><strong>Complete candidate profile</strong></div>
-        <div><span>3</span><strong>View assigned work</strong></div>
+        <div><span>01</span><strong>Create your account</strong></div>
+        <div><span>02</span><strong>Complete your CMC profile</strong></div>
+        <div><span>03</span><strong>Begin Discover</strong></div>
       </div>
     </div>
 
     <section class="authFormPanel signupFormPanel">
       <div class="authFormHeader">
-        <h2>Candidate Signup</h2>
-        <p>Create your account with Google or email.</p>
+        <h2>Create your account</h2>
+        <p>Use Google or create a login with email.</p>
       </div>
 
       <div class="oauthStack">
@@ -46,7 +55,7 @@
         </label>
 
         <div class="profileNotice">
-          After creating your login, you’ll complete your candidate profile details.
+          Next, you’ll add a few details so we can connect you with the right Open Bible region.
         </div>
 
         <button type="submit" class="authSubmitBtn">Create Account</button>
@@ -60,7 +69,7 @@
 </main>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="auth.js?v=71"></script>
-<script src="signup.js?v=71"></script>
+<script src="auth.js?v=90"></script>
+<script src="signup.js?v=90"></script>
 </body>
 </html>

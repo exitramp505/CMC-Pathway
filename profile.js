@@ -36,6 +36,16 @@
 
   const profile = await dcAuth.getProfile(user.id).catch(() => null);
   dcAuth.renderRoleNavigation(profile, 'profile');
+  const isReturning = Boolean(profile?.full_name && profile?.phone && profile?.state);
+  if(isReturning){
+    setText('profileEyebrow','YOUR CMC PROFILE');
+    setText('profileIntroTitle','Keep your pathway details current.');
+    setText('profileIntroCopy','Accurate information helps your CMC regional leader stay connected and support your next steps.');
+    setText('profileCardTitle','Your pathway is already underway.');
+    setText('profileCardCopy','Update anything that has changed, then return to your dashboard. Discover and your assigned work remain there.');
+    setText('profileFormTitle','Update your profile');
+    setText('profileFormCopy','Review your information and save any changes.');
+  }
 
   form.email.value = user.email || '';
 
@@ -89,5 +99,10 @@
       method:'POST',
       headers:{ Authorization:`Bearer ${accessToken}` }
     });
+  }
+
+  function setText(id,text){
+    const element = document.getElementById(id);
+    if(element) element.textContent = text;
   }
 })();

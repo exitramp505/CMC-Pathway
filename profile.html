@@ -4,9 +4,9 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <title>Your Profile | CMC Pathway</title>
-  <link rel="stylesheet" href="style.css?v=82">
+  <link rel="stylesheet" href="style.css?v=90">
 </head>
-<body>
+<body class="cmcPathwayBody">
 <header class="cmcHeader">
   <a class="cmcBrand" href="dashboard.html" aria-label="CMC Pathway home">
     <img class="cmcLogoImage" src="cmc-logo-mark.svg" alt="">
@@ -17,20 +17,25 @@
 <main class="profilePageMain">
   <section class="profileShell">
     <aside class="profileIntroPanel">
-      <p class="eyebrow">Your CMC Profile</p>
-      <h1>Tell us a little about yourself.</h1>
-      <p>These details connect you with the right Open Bible region and help CMC leaders support your pathway.</p>
+      <div>
+        <p class="cmcEyebrow" id="profileEyebrow">BEFORE YOU BEGIN</p>
+        <h1 id="profileIntroTitle">Prepare for Discover.</h1>
+        <p id="profileIntroCopy">A few details help us connect you with your Open Bible region before you begin the course.</p>
+      </div>
 
       <div class="profileMiniCard">
-        <strong>Your login is already created.</strong>
-        <span>Complete your profile to enter CMC Pathway and begin Discover.</span>
+        <span class="profileMiniIcon" aria-hidden="true">01</span>
+        <div>
+          <strong id="profileCardTitle">Discover is ready for you.</strong>
+          <span id="profileCardCopy">Complete your profile, then your dashboard will take you directly to the course.</span>
+        </div>
       </div>
     </aside>
 
     <section class="profileFormPanel">
       <div class="authFormHeader">
-        <h2>Profile Details</h2>
-        <p>Complete the required fields, then continue to your pathway.</p>
+        <h2 id="profileFormTitle">Complete your profile</h2>
+        <p id="profileFormCopy">Add the required details, then continue to your pathway.</p>
       </div>
 
       <form id="profileForm" class="profileFormGrid">
@@ -94,7 +99,7 @@
 </main>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="auth.js?v=82"></script>
-<script src="profile.js?v=82"></script>
+<script src="auth.js?v=90"></script>
+<script src="profile.js?v=90"></script>
 </body>
 </html>

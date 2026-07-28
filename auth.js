@@ -20,5 +20,18 @@ async function signOut(){const sb=await getSupabaseClient(); await sb.auth.signO
 async function getProfile(userId){const sb=await getSupabaseClient(); const {data,error}=await sb.from('candidate_profiles').select('*').eq('id',userId).maybeSingle(); if(error) throw error; return data}
 async function upsertProfile(profile){const sb=await getSupabaseClient(); const {error}=await sb.from('candidate_profiles').upsert(profile,{onConflict:'id'}); if(error) throw error}
 function setupLogout(){document.querySelectorAll('#logoutBtn').forEach(btn=>btn.addEventListener('click',signOut))}
-window.dcAuth={fillStateSelect,regionForState,getSupabaseClient,getCurrentSession,requireUser,signOut,getProfile,upsertProfile,setupLogout,STATES,REGION_BY_STATE};
+function renderRoleNavigation(profile,activeKey){
+ const nav=document.getElementById('cmcRoleNav');
+ if(!nav)return;
+ const role=profile?.account_role||'participant';
+ const items=[
+  {key:'pathway',label:'My Pathway',href:role==='participant'?'dashboard.html':'dashboard.html?view=participant',show:true},
+  {key:'people',label:'People',href:'leader.html',show:['regional_leader','cmc_admin'].includes(role)},
+  {key:'leaders',label:'Manage Leaders',href:'manage-leaders.html',show:role==='cmc_admin'},
+  {key:'profile',label:'Profile',href:'profile.html',show:true}
+ ];
+ nav.innerHTML=items.filter(item=>item.show).map(item=>`<a${item.key===activeKey?' class="active"':''} href="${item.href}">${item.label}</a>`).join('')+'<button id="logoutBtn" type="button">Logout</button>';
+ setupLogout();
+}
+window.dcAuth={fillStateSelect,regionForState,getSupabaseClient,getCurrentSession,requireUser,signOut,getProfile,upsertProfile,setupLogout,renderRoleNavigation,STATES,REGION_BY_STATE};
 })();

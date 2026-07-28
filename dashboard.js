@@ -12,7 +12,7 @@
     window.location.replace('leader.html');
     return;
   }
-  if (isLeader) document.getElementById('leaderDashboardLink')?.classList.remove('hidden');
+  dcAuth.renderRoleNavigation(profile, 'pathway');
   const profileComplete = Boolean(profile?.full_name && profile?.phone && profile?.state);
   if (!profileComplete) {
     window.location.href = 'profile.html?next=dashboard';

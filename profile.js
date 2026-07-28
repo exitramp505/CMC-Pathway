@@ -35,6 +35,7 @@
   }
 
   const profile = await dcAuth.getProfile(user.id).catch(() => null);
+  dcAuth.renderRoleNavigation(profile, 'profile');
 
   form.email.value = user.email || '';
 

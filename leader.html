@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <title>Regional Leader | CMC Pathway</title>
-  <link rel="stylesheet" href="style.css?v=81">
+  <link rel="stylesheet" href="style.css?v=82">
 </head>
 <body class="cmcPathwayBody">
 <header class="cmcHeader">
@@ -12,12 +12,7 @@
     <img class="cmcLogoImage" src="cmc-logo-mark.svg" alt="">
     <span><strong>CMC Pathway</strong><small>Church Multiplication Collective</small></span>
   </a>
-  <nav class="cmcNav">
-    <a class="active" href="leader.html">People</a>
-    <a href="dashboard.html?view=participant">My Pathway</a>
-    <a href="profile.html">Profile</a>
-    <button id="logoutBtn" type="button">Logout</button>
-  </nav>
+  <nav id="cmcRoleNav" class="cmcNav"></nav>
 </header>
 
 <main class="cmcPathwayMain cmcLeaderMain">
@@ -63,42 +58,10 @@
     </div>
   </section>
 
-  <section id="leaderManagement" class="cmcLeaderManagement hidden">
-    <div class="cmcPeopleHeading">
-      <div>
-        <p class="cmcEyebrow">NATIONAL ADMINISTRATION</p>
-        <h2>Manage regional leaders.</h2>
-        <p>Grant or remove regional dashboard access without opening Supabase.</p>
-      </div>
-    </div>
-
-    <form id="leaderAccessForm" class="cmcLeaderAccessForm">
-      <label>
-        <span>Account</span>
-        <select id="leaderAccount" required>
-          <option value="">Choose an existing account</option>
-        </select>
-      </label>
-      <label>
-        <span>Open Bible region</span>
-        <select id="leaderRegion" required>
-          <option value="">Choose a region</option>
-        </select>
-      </label>
-      <button type="submit">Grant regional access</button>
-    </form>
-    <p id="leaderAccessMessage" class="cmcLeaderAccessMessage" aria-live="polite"></p>
-
-    <div class="cmcCurrentLeadersHeading">
-      <h3>Current regional leaders</h3>
-      <span id="regionalLeaderCount">0</span>
-    </div>
-    <div id="regionalLeaderList" class="cmcCurrentLeaderList"></div>
-  </section>
 </main>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="auth.js?v=81"></script>
-<script src="leader.js?v=81"></script>
+<script src="auth.js?v=82"></script>
+<script src="leader.js?v=82"></script>
 </body>
 </html>

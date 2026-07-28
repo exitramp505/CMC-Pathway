@@ -1,20 +1,20 @@
 <!doctype html>
-<html>
+<html lang="en">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <title>Your Profile | CMC Pathway</title>
-  <link rel="stylesheet" href="style.css?v=68">
+  <link rel="stylesheet" href="style.css?v=82">
 </head>
 <body>
+<header class="cmcHeader">
+  <a class="cmcBrand" href="dashboard.html" aria-label="CMC Pathway home">
+    <img class="cmcLogoImage" src="cmc-logo-mark.svg" alt="">
+    <span><strong>CMC Pathway</strong><small>Church Multiplication Collective</small></span>
+  </a>
+  <nav id="cmcRoleNav" class="cmcNav"></nav>
+</header>
 <main class="profilePageMain">
-  <nav class="portalNav">
-    <strong>CMC Pathway</strong>
-    <span></span>
-    <a href="dashboard.html">Dashboard</a>
-    <button id="logoutBtn" type="button" class="linkButton">Logout</button>
-  </nav>
-
   <section class="profileShell">
     <aside class="profileIntroPanel">
       <p class="eyebrow">Your CMC Profile</p>
@@ -94,7 +94,7 @@
 </main>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="auth.js?v=68"></script>
-<script src="profile.js?v=68"></script>
+<script src="auth.js?v=82"></script>
+<script src="profile.js?v=82"></script>
 </body>
 </html>

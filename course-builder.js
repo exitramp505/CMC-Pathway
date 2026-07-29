@@ -25,7 +25,6 @@
   });
   document.getElementById('collapseAllBtn').addEventListener('click', toggleAllModules);
   document.getElementById('courseDetailsToggle').addEventListener('click', toggleCourseDetails);
-  document.getElementById('saveDraftBtn').addEventListener('click', () => save('draft'));
   document.getElementById('publishBtn').addEventListener('click', () => save('published'));
   document.getElementById('courseTitle').addEventListener('input', suggestSlug);
   document.getElementById('courseAccess').addEventListener('change', updateAccessHelp);
@@ -352,7 +351,7 @@
       setAutosaveStatus('All changes saved');
       return true;
     } catch (error) {
-      if (options.automatic) setAutosaveStatus('Autosave paused. Use Save draft to retry.', true);
+      if (options.automatic) setAutosaveStatus('Autosave paused. Keep editing to retry.', true);
       else setMessage(error.message, true);
       return false;
     } finally {
@@ -378,7 +377,7 @@
       ? 'The course will appear automatically for every current and future participant once published.'
       : 'The course stays hidden until a regional or national leader assigns it to a participant.';
   }
-  function setWorking(value){document.getElementById('saveDraftBtn').disabled=value;document.getElementById('publishBtn').disabled=value}
+  function setWorking(value){document.getElementById('publishBtn').disabled=value}
   function setMessage(value,error){const el=document.getElementById('builderMessage');el.textContent=value||'';el.classList.toggle('error',Boolean(error))}
   function setAutosaveStatus(value,error){const el=document.getElementById('autosaveStatus');el.textContent=value;el.classList.toggle('error',Boolean(error))}
   function setValue(id,value){document.getElementById(id).value=value||''}

@@ -45,7 +45,7 @@ exports.handler = async (event) => {
 
     let participantQuery = supabase
       .from('candidate_profiles')
-      .select('id,full_name,email,phone,state,region,church_name,ministry_role,pathway_interest,married,created_at,updated_at')
+      .select('id,full_name,email,phone,state,region,church_name,ministry_role,pathway_interest,married,current_stage,stage_updated_at,created_at,updated_at')
       .eq('id', participantId)
       .eq('account_role', 'participant');
 
@@ -103,9 +103,14 @@ exports.handler = async (event) => {
 
     const courses = courseResult.data || [];
     const enrollments = enrollmentResult.data || [];
-    const courseByAssignmentKey = new Map(
-      courses.map(course => [`course_${course.slug}`, course])
-    );
+    const courseByAssignmentKey = new Map();
+    for (const course of courses) {
+      courseByAssignmentKey.set(`course_${course.slug}`, course);
+      courseByAssignmentKey.set(`course:${course.id}`, course);
+      if (course.slug === 'discover') {
+        courseByAssignmentKey.set('discover_course', course);
+      }
+    }
     const enrollmentByCourse = new Map(
       enrollments.map(enrollment => [enrollment.course_id, enrollment])
     );
@@ -145,13 +150,17 @@ exports.handler = async (event) => {
       overall_label:report.overall_label || report.scores?.overallLabel || ''
     }));
 
+    const application = applicationResult.data || null;
+    const activity = buildActivity(participant, assignments, reports, application);
+
     return json(200, {
       ok:true,
       viewer,
       participant,
       assignments,
       reports,
-      application:applicationResult.data || null
+      application,
+      activity
     });
   } catch (error) {
     return json(500, { ok:false, error:error.message || 'Could not load the participant dashboard.' });
@@ -162,6 +171,94 @@ function assessmentTitle(type) {
   if (type === 'isa_readiness') return 'Ministry Readiness Inventory';
   if (type === 'ministry_style') return 'Ministry Style Inventory';
   return 'Character Qualities Assessment';
+}
+
+function buildActivity(participant, assignments, reports, application) {
+  const activity = [];
+  if (participant.created_at) {
+    activity.push({
+      type:'profile',
+      title:'Joined CMC Pathway',
+      detail:'Participant account created.',
+      date:participant.created_at
+    });
+  }
+  if (participant.stage_updated_at) {
+    activity.push({
+      type:'stage',
+      title:`Moved to ${titleCase(participant.current_stage)}`,
+      detail:'Current pathway stage updated.',
+      date:participant.stage_updated_at
+    });
+  }
+  for (const assignment of assignments) {
+    if (assignment.completed_at || assignment.completed) {
+      activity.push({
+        type:'completion',
+        title:`Completed ${assignment.course?.title || itemTitle(assignment.item_key)}`,
+        detail:`${titleCase(assignment.stage_key)} work completed.`,
+        date:assignment.completed_at || assignment.updated_at
+      });
+    } else if (assignment.last_opened_at) {
+      activity.push({
+        type:'progress',
+        title:`Continued ${assignment.course?.title || itemTitle(assignment.item_key)}`,
+        detail:`${Number(assignment.progress || 0)}% complete.`,
+        date:assignment.last_opened_at
+      });
+    } else if (assignment.assigned_at) {
+      activity.push({
+        type:'assignment',
+        title:`Assigned ${assignment.course?.title || itemTitle(assignment.item_key)}`,
+        detail:`Added to the ${titleCase(assignment.stage_key)} stage.`,
+        date:assignment.assigned_at
+      });
+    }
+  }
+  for (const report of reports) {
+    activity.push({
+      type:'report',
+      title:`Completed ${report.title}`,
+      detail:report.overall_label || 'Assessment report available.',
+      date:report.created_at
+    });
+  }
+  if (application?.submitted_at) {
+    activity.push({
+      type:'application',
+      title:'Submitted Discernment Application',
+      detail:'The submitted application is available for review.',
+      date:application.submitted_at
+    });
+  } else if (application?.updated_at) {
+    activity.push({
+      type:'application',
+      title:'Updated Discernment Application',
+      detail:`${Number(application.completion || 0)}% complete.`,
+      date:application.updated_at
+    });
+  }
+  return activity
+    .filter(item => item.date)
+    .sort((a, b) => new Date(b.date) - new Date(a.date))
+    .slice(0, 12);
+}
+
+function itemTitle(key) {
+  return {
+    discover_course:'Discover: Church Multiplication 101',
+    discernment_application:'Discernment Application',
+    ministry_readiness:'Ministry Readiness Inventory',
+    ministry_style:'Ministry Style Inventory',
+    character_qualities:'Character Qualities Assessment',
+    pastoral_reference:'Pastoral Reference Form'
+  }[key] || titleCase(key);
+}
+
+function titleCase(value) {
+  return String(value || '')
+    .replace(/_/g, ' ')
+    .replace(/\b\w/g, character => character.toUpperCase());
 }
 
 function isUuid(value) {

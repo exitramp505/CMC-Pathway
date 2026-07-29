@@ -3,8 +3,8 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
-  <title>Assign Courses | CMC Pathway</title>
-  <link rel="stylesheet" href="style.css?v=91">
+  <title>Manage Participant Pathway | CMC Pathway</title>
+  <link rel="stylesheet" href="style.css?v=93">
 </head>
 <body class="cmcPathwayBody">
 <header class="cmcHeader">
@@ -19,16 +19,37 @@
   <section class="cmcCourseAssignmentIntro">
     <div>
       <a class="cmcBackLink" href="leader.html">← Back to people</a>
-      <p class="cmcEyebrow">COURSE ASSIGNMENTS</p>
-      <h1 id="assignmentTitle">Choose the next course.</h1>
+      <p class="cmcEyebrow">MANAGE PATHWAY</p>
+      <h1 id="assignmentTitle">Manage this participant.</h1>
       <p id="assignmentIntro">Loading participant details…</p>
     </div>
-    <button id="saveCourseAssignments" class="cmcPrimaryButton" type="button" disabled>Save assignments</button>
+    <button id="saveCourseAssignments" class="cmcPrimaryButton" type="button" disabled>Save pathway</button>
+  </section>
+
+  <section class="cmcPathwayStageManager">
+    <div class="cmcCourseAssignmentHeading">
+      <div><p class="cmcEyebrow">CURRENT STAGE</p><h2>Pathway stage</h2></div>
+      <p>This stage is set by a CMC leader. Assigning work in a future stage will not move the participant automatically.</p>
+    </div>
+    <div id="participantStageChoices" class="cmcParticipantStageChoices">
+      <label><input type="radio" name="current_stage" value="discover"><span><b>01</b><strong>Discover</strong><small>Shared foundation</small></span></label>
+      <label><input type="radio" name="current_stage" value="discern"><span><b>02</b><strong>Discern</strong><small>Calling and readiness</small></span></label>
+      <label><input type="radio" name="current_stage" value="develop"><span><b>03</b><strong>Develop</strong><small>Preparation and formation</small></span></label>
+      <label><input type="radio" name="current_stage" value="deploy"><span><b>04</b><strong>Deploy</strong><small>Movement into mission</small></span></label>
+    </div>
+  </section>
+
+  <section class="cmcPathwayStageManager">
+    <div class="cmcCourseAssignmentHeading">
+      <div><p class="cmcEyebrow">FORMS &amp; ASSESSMENTS</p><h2>Assigned work</h2></div>
+      <p>Select the forms and assessments this participant should see. Completed items remain in the participant record.</p>
+    </div>
+    <div id="pathwayItemAssignmentList" class="cmcAssignmentCourseGrid"></div>
   </section>
 
   <section class="cmcCourseAssignmentPanel">
     <div class="cmcCourseAssignmentHeading">
-      <div><p class="cmcEyebrow">LEADER-ASSIGNED COURSES</p><h2>Available courses</h2></div>
+      <div><p class="cmcEyebrow">COURSE ASSIGNMENTS</p><h2>Available courses</h2></div>
       <p>Automatic courses already appear for everyone. Select only the additional courses this participant should receive.</p>
     </div>
     <p id="courseAssignmentMessage" class="cmcAdminMessage">Loading courses…</p>
@@ -37,7 +58,7 @@
 </main>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="auth.js?v=91"></script>
-<script src="assign-courses.js?v=91"></script>
+<script src="auth.js?v=93"></script>
+<script src="assign-courses.js?v=93"></script>
 </body>
 </html>

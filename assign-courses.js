@@ -16,6 +16,8 @@
   const session = await sb.auth.getSession();
   const token = session.data?.session?.access_token || '';
   let courses = [];
+  let participant = null;
+  let pathwayItems = [];
 
   if (!participantId) {
     setMessage('Choose a participant from the People page.', true);
@@ -27,20 +29,33 @@
 
   async function load() {
     try {
-      const response = await fetch(`/.netlify/functions/leader-course-assignments?participant_id=${encodeURIComponent(participantId)}`, {
-        headers:{ Authorization:`Bearer ${token}` }
-      });
-      const data = await response.json().catch(() => ({}));
-      if (!response.ok || !data.ok) throw new Error(data.error || 'Could not load course assignments.');
+      const [courseResponse, pathwayResponse] = await Promise.all([
+        fetch(`/.netlify/functions/leader-course-assignments?participant_id=${encodeURIComponent(participantId)}`, {
+          headers:{ Authorization:`Bearer ${token}` }
+        }),
+        fetch(`/.netlify/functions/participant-manage?participant_id=${encodeURIComponent(participantId)}`, {
+          headers:{ Authorization:`Bearer ${token}` }
+        })
+      ]);
+      const data = await courseResponse.json().catch(() => ({}));
+      const pathwayData = await pathwayResponse.json().catch(() => ({}));
+      if (!courseResponse.ok || !data.ok) throw new Error(data.error || 'Could not load course assignments.');
+      if (!pathwayResponse.ok || !pathwayData.ok) throw new Error(pathwayData.error || 'Could not load pathway assignments.');
       courses = data.courses || [];
-      const participantName = data.participant?.full_name || data.participant?.email || 'this participant';
-      document.getElementById('assignmentTitle').textContent = `Courses for ${firstName(participantName)}.`;
+      pathwayItems = pathwayData.pathway_items || [];
+      participant = pathwayData.participant || data.participant || {};
+      const participantName = participant.full_name || participant.email || 'this participant';
+      document.getElementById('assignmentTitle').textContent = `Pathway for ${firstName(participantName)}.`;
       document.getElementById('assignmentIntro').textContent = [
         data.participant?.church_name,
         data.participant?.state,
         data.participant?.region ? `Open Bible ${data.participant.region} Region` : ''
       ].filter(Boolean).join(' · ');
+      const currentStage = participant.current_stage || 'discover';
+      const stageInput = document.querySelector(`input[name="current_stage"][value="${currentStage}"]`);
+      if (stageInput) stageInput.checked = true;
       render();
+      renderPathwayItems();
       saveButton.disabled = false;
       setMessage('');
     } catch (error) {
@@ -73,21 +88,68 @@
     }).join('');
   }
 
+  function renderPathwayItems() {
+    const container = document.getElementById('pathwayItemAssignmentList');
+    container.innerHTML = pathwayItems.map(item => `
+      <label class="cmcAssignmentCourseCard cmcLightAssignmentCard">
+        <input type="checkbox" value="${escapeHtml(item.key)}"${item.assigned ? ' checked' : ''}${item.automatic ? ' disabled' : ''}>
+        <span class="cmcAssignmentCourseCheck" aria-hidden="true">✓</span>
+        <span>
+          <strong>${escapeHtml(item.title)}</strong>
+          <small>${escapeHtml(item.description)}</small>
+          ${item.completed ? '<em>Completed</em>' : item.progress ? `<em>${item.progress}% complete</em>` : item.automatic ? '<em>Available automatically</em>' : ''}
+        </span>
+      </label>`).join('');
+  }
+
   async function save() {
-    const courseIds = [...document.querySelectorAll('.cmcAssignmentCourseCard input:checked')].map(input => input.value);
+    const courseIds = [...document.querySelectorAll('#courseAssignmentList input:checked')].map(input => input.value);
+    const pathwayItemKeys = [...document.querySelectorAll('#pathwayItemAssignmentList input:checked')].map(input => input.value);
+    const currentStage = document.querySelector('input[name="current_stage"]:checked')?.value || 'discover';
     saveButton.disabled = true;
-    setMessage('Saving assignments…');
+    setMessage('Saving pathway…');
     try {
-      const response = await fetch('/.netlify/functions/leader-course-assignments', {
-        method:'POST',
-        headers:{ 'Content-Type':'application/json', Authorization:`Bearer ${token}` },
-        body:JSON.stringify({ participant_id:participantId, course_ids:courseIds })
-      });
-      const data = await response.json().catch(() => ({}));
-      if (!response.ok || !data.ok) throw new Error(data.error || 'Could not save course assignments.');
-      courses = data.courses || [];
+      const [courseResponse, stageResponse, itemResponse] = await Promise.all([
+        fetch('/.netlify/functions/leader-course-assignments', {
+          method:'POST',
+          headers:{ 'Content-Type':'application/json', Authorization:`Bearer ${token}` },
+          body:JSON.stringify({ participant_id:participantId, course_ids:courseIds })
+        }),
+        fetch('/.netlify/functions/participant-manage', {
+          method:'POST',
+          headers:{ 'Content-Type':'application/json', Authorization:`Bearer ${token}` },
+          body:JSON.stringify({
+            action:'update_stage',
+            participant_id:participantId,
+            current_stage:currentStage
+          })
+        }),
+        fetch('/.netlify/functions/participant-manage', {
+          method:'POST',
+          headers:{ 'Content-Type':'application/json', Authorization:`Bearer ${token}` },
+          body:JSON.stringify({
+            action:'update_assignments',
+            participant_id:participantId,
+            item_keys:pathwayItemKeys
+          })
+        })
+      ]);
+      const courseData = await courseResponse.json().catch(() => ({}));
+      const stageData = await stageResponse.json().catch(() => ({}));
+      const itemData = await itemResponse.json().catch(() => ({}));
+      if (!courseResponse.ok || !courseData.ok) {
+        throw new Error(courseData.error || 'Could not save course assignments.');
+      }
+      if (!stageResponse.ok || !stageData.ok) {
+        throw new Error(stageData.error || 'Could not save the pathway stage.');
+      }
+      if (!itemResponse.ok || !itemData.ok) {
+        throw new Error(itemData.error || 'Could not save forms and assessments.');
+      }
+      courses = courseData.courses || [];
+      participant = { ...participant, ...stageData.participant };
       render();
-      setMessage('Course assignments saved.');
+      setMessage('Pathway saved.');
     } catch (error) {
       setMessage(error.message, true);
     } finally {

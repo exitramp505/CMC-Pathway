@@ -1,0 +1,34 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Participant Record | CMC Pathway</title>
+  <link rel="stylesheet" href="style.css?v=93">
+</head>
+<body class="cmcPathwayBody">
+<header class="cmcHeader noPrint">
+  <a class="cmcBrand" href="leader.html" aria-label="CMC Pathway leader home">
+    <img class="cmcLogoImage" src="cmc-logo-mark.svg" alt="">
+    <span><strong>CMC Pathway</strong><small>Church Multiplication Collective</small></span>
+  </a>
+  <nav id="cmcRoleNav" class="cmcNav"></nav>
+</header>
+
+<main class="cmcParticipantRecordPage">
+  <div class="cmcRecordPageControls noPrint">
+    <a id="backToParticipant" class="cmcBackLink" href="leader.html">← Back to participant</a>
+    <button type="button" class="cmcPrimaryButton" onclick="window.print()">Print / Save as PDF</button>
+  </div>
+  <section id="participantRecordShell" class="cmcParticipantRecordShell">
+    <p>Loading participant record…</p>
+  </section>
+</main>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="auth.js?v=93"></script>
+<script src="ministry-style-report.js?v=93"></script>
+<script src="report.js?v=93"></script>
+<script src="participant-record.js?v=93"></script>
+</body>
+</html>

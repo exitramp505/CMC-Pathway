@@ -130,7 +130,7 @@ async function requireLeader(event) {
 async function loadParticipant(supabase, viewer, id) {
   let query = supabase
     .from('candidate_profiles')
-    .select('id,full_name,email,state,region,church_name,account_role')
+    .select('id,full_name,email,state,region,church_name,current_stage,stage_updated_at,account_role')
     .eq('id', id)
     .eq('account_role', 'participant');
   if (viewer.account_role === 'regional_leader') {

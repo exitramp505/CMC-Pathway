@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <title>Participant Dashboard | CMC Pathway</title>
-  <link rel="stylesheet" href="style.css?v=92">
+  <link rel="stylesheet" href="style.css?v=99">
 </head>
 <body class="cmcPathwayBody">
 <header class="cmcHeader">
@@ -16,83 +16,156 @@
 </header>
 
 <main class="cmcPathwayMain cmcParticipantDetailMain">
-  <a class="cmcBackLink" href="leader.html">← Back to People</a>
-
   <div id="participantDetailLoading" class="cmcParticipantDetailLoading">
     <p>Loading participant dashboard…</p>
   </div>
 
   <div id="participantDetailContent" class="hidden">
-    <section class="cmcParticipantHero">
+    <section class="cmcParticipantHero cmcParticipantHeroCompact">
       <div class="cmcParticipantIdentity">
         <span id="participantAvatar" class="cmcParticipantAvatar">—</span>
         <div>
-          <p class="cmcEyebrow">PARTICIPANT DASHBOARD</p>
           <h1 id="participantName">Participant</h1>
           <p id="participantContext" class="cmcIntro"></p>
+          <p class="cmcParticipantStageLine">
+            <span>Current stage</span>
+            <strong id="participantStagePill">Discover</strong>
+          </p>
         </div>
       </div>
       <div class="cmcParticipantHeroActions">
-        <span id="participantStagePill" class="cmcDetailStagePill">Discover</span>
         <a id="emailParticipantLink" class="cmcSecondaryAction" href="#">Email participant</a>
-        <a id="manageCoursesLink" class="cmcPrimaryAction" href="#">Manage courses →</a>
+        <a class="cmcPrimaryAction" href="leader.html">← Back to People</a>
       </div>
     </section>
 
-    <section class="cmcParticipantStats">
-      <article>
-        <span>Current stage</span>
-        <strong id="currentStageStat">Discover</strong>
-        <small id="currentStageCaption">Beginning the pathway</small>
-      </article>
-      <article>
-        <span>Assigned work</span>
-        <strong id="assignedCountStat">0</strong>
-        <small>Courses, forms, and assessments</small>
-      </article>
-      <article>
-        <span>Completed</span>
-        <strong id="completedCountStat">0</strong>
-        <small id="completedCaption">Items finished</small>
-      </article>
-      <article>
-        <span>Latest activity</span>
-        <strong id="latestActivityStat">—</strong>
-        <small>Most recent recorded progress</small>
-      </article>
-    </section>
+    <nav class="cmcParticipantTabs" aria-label="Participant dashboard sections">
+      <button class="active" type="button" data-participant-tab="overview">Overview</button>
+      <button type="button" data-participant-tab="work">Assignments</button>
+      <button type="button" data-participant-tab="records">Reports</button>
+    </nav>
 
-    <div class="cmcParticipantDetailGrid">
-      <section class="cmcParticipantMainPanel">
+    <section class="cmcParticipantTabPanel active" data-participant-panel="overview">
+      <section class="cmcParticipantStats cmcParticipantStatsInOverview">
+        <article>
+          <span>Current stage</span>
+          <strong id="currentStageStat">Discover</strong>
+          <small id="currentStageCaption">Beginning the pathway</small>
+        </article>
+        <article>
+          <span>Assigned work</span>
+          <strong id="assignedCountStat">0</strong>
+          <small>Courses, forms, and assessments</small>
+        </article>
+        <article>
+          <span>Completed</span>
+          <strong id="completedCountStat">0</strong>
+          <small id="completedCaption">Items finished</small>
+        </article>
+        <article>
+          <span>Latest activity</span>
+          <strong id="latestActivityStat">—</strong>
+          <small>Most recent recorded progress</small>
+        </article>
+      </section>
+
+      <section class="cmcParticipantMainPanel cmcParticipantOverviewProgress">
         <div class="cmcDetailSectionHeading">
           <div>
-            <p class="cmcEyebrow">PATHWAY PROGRESS</p>
-            <h2>Work and progress</h2>
+            <p class="cmcEyebrow">CURRENT PROGRESS</p>
+            <h2>Assigned work</h2>
           </div>
-          <p>See what is available, underway, and complete for this participant.</p>
+          <p>Current assignments and recorded completion progress.</p>
         </div>
         <div id="participantWorkList" class="cmcParticipantWorkList"></div>
       </section>
 
-      <aside class="cmcParticipantSideColumn">
+      <div class="cmcParticipantOverviewGrid">
         <section class="cmcParticipantInfoCard">
-          <p class="cmcEyebrow">PROFILE &amp; CONTACT</p>
-          <h2>Participant details</h2>
+          <div class="cmcDetailCardHeading">
+            <div>
+              <p class="cmcEyebrow">PROFILE &amp; CONTACT</p>
+              <h2>Participant details</h2>
+            </div>
+            <button id="editParticipantButton" class="cmcTextAction" type="button">Edit</button>
+          </div>
           <dl id="participantProfileDetails"></dl>
+
+          <form id="participantProfileForm" class="cmcParticipantProfileForm hidden">
+            <div class="cmcProfileFieldGrid">
+              <label>Full name<input name="full_name" autocomplete="name"></label>
+              <label>Email<input name="email" type="email" readonly></label>
+              <label>Phone<input name="phone" autocomplete="tel"></label>
+              <label>State<select name="state" id="participantStateSelect"></select></label>
+              <label class="full">Church or ministry<input name="church_name"></label>
+              <label>Current role<input name="ministry_role"></label>
+              <label>Primary interest<input name="pathway_interest"></label>
+              <label>Married?<select name="married"><option value="">Not recorded</option><option>Yes</option><option>No</option></select></label>
+            </div>
+            <p id="participantProfileMessage" class="cmcAdminMessage"></p>
+            <div class="cmcProfileFormActions">
+              <button id="cancelParticipantEdit" class="cmcSecondaryButton" type="button">Cancel</button>
+              <button class="cmcPrimaryButton" type="submit">Save changes</button>
+            </div>
+          </form>
         </section>
 
         <section class="cmcParticipantInfoCard">
-          <p class="cmcEyebrow">RECORDS</p>
-          <h2>Applications and reports</h2>
-          <div id="participantRecordList" class="cmcParticipantRecordList"></div>
+          <div class="cmcDetailCardHeading">
+            <div>
+              <p class="cmcEyebrow">RECENT ACTIVITY</p>
+              <h2>Activity history</h2>
+            </div>
+          </div>
+          <div id="participantActivityList" class="cmcParticipantActivityList"></div>
         </section>
-      </aside>
-    </div>
+      </div>
+    </section>
+
+    <section class="cmcParticipantTabPanel" data-participant-panel="work">
+      <section class="cmcParticipantMainPanel cmcParticipantAssignmentPanel">
+        <div class="cmcDetailSectionHeading">
+          <div>
+            <p class="cmcEyebrow">PATHWAY MANAGEMENT</p>
+            <h2>Assignments</h2>
+          </div>
+          <p>Choose a stage to manage assignments and identify the participant’s current stage.</p>
+        </div>
+        <div id="participantManagementLoading" class="cmcDetailEmpty">Loading available assignments…</div>
+        <div id="participantManagementContent" class="hidden">
+          <section class="cmcStageAssignmentWorkspace">
+            <nav id="managementStageTabs" class="cmcStageAssignmentTabs" aria-label="Assignments by pathway stage"></nav>
+
+            <section class="cmcStageAssignmentPanel">
+              <div id="managementStagePanels"></div>
+            </section>
+          </section>
+
+          <div class="cmcAssignmentManagerFooter">
+            <p id="participantManagementMessage" class="cmcAdminMessage"></p>
+            <button id="saveParticipantManagement" class="cmcPrimaryButton" type="button">Save assignments</button>
+          </div>
+        </div>
+      </section>
+    </section>
+
+    <section class="cmcParticipantTabPanel" data-participant-panel="records">
+      <section class="cmcParticipantMainPanel">
+        <div class="cmcDetailSectionHeading">
+          <div>
+            <p class="cmcEyebrow">REPORTS</p>
+            <h2>Submitted reports</h2>
+          </div>
+          <p>Open completed assessments and the participant’s application for review or printing.</p>
+        </div>
+        <div id="participantRecordList" class="cmcParticipantRecordList cmcParticipantRecordListWide"></div>
+      </section>
+    </section>
   </div>
 </main>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="auth.js?v=91"></script>
-<script src="participant.js?v=92"></script>
+  <script src="auth.js?v=99"></script>
+<script src="participant.js?v=99"></script>
 </body>
 </html>

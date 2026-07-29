@@ -181,11 +181,13 @@ async function loadCourse(supabase, id) {
 }
 
 function validateCourse(body) {
-  const title = clean(body.title, 160);
-  const slug = clean(body.slug, 100).toLowerCase().replace(/[^a-z0-9-]+/g, '-').replace(/^-|-$/g, '');
+  const status = body.status === 'published' ? 'published' : 'draft';
+  const allowIncomplete = status === 'draft' || body.autosave === true;
+  const title = clean(body.title, 160) || (allowIncomplete ? 'Untitled course' : '');
+  const requestedSlug = clean(body.slug, 100).toLowerCase().replace(/[^a-z0-9-]+/g, '-').replace(/^-|-$/g, '');
+  const slug = requestedSlug || (allowIncomplete ? temporaryDraftSlug(body.id) : '');
   if (!title) throw httpError(400, 'Course title is required.');
   if (!slug) throw httpError(400, 'Course URL name is required.');
-  const status = body.status === 'published' ? 'published' : 'draft';
   const modules = Array.isArray(body.modules) ? body.modules.map(module => ({
     id:uuidOrBlank(module.id),
     title:clean(module.title, 160),
@@ -201,8 +203,10 @@ function validateCourse(body) {
       is_required:lesson.is_required !== false
     })) : []
   })) : [];
-  if (modules.some(module => !module.title)) throw httpError(400, 'Every module needs a title.');
-  if (modules.some(module => module.lessons.some(lesson => !lesson.title))) throw httpError(400, 'Every lesson needs a title.');
+  if (!allowIncomplete && modules.some(module => !module.title)) throw httpError(400, 'Every module needs a title.');
+  if (!allowIncomplete && modules.some(module => module.lessons.some(lesson => !lesson.title))) {
+    throw httpError(400, 'Every lesson needs a title.');
+  }
   if (status === 'published' && !modules.some(module => module.lessons.length)) {
     throw httpError(400, 'Add at least one lesson before publishing.');
   }
@@ -237,6 +241,11 @@ function numberInRange(value, min, max) { return Math.max(min, Math.min(max, Num
 function uuidOrBlank(value) { return /^[0-9a-f]{8}-[0-9a-f-]{27}$/i.test(String(value || '')) ? String(value) : ''; }
 function validChoice(value, choices, fallback) { return choices.includes(String(value || '')) ? String(value) : fallback; }
 function httpError(statusCode, message) { const error = new Error(message); error.statusCode = statusCode; return error; }
+function temporaryDraftSlug(id) {
+  const existingId = uuidOrBlank(id);
+  if (existingId) return `draft-${existingId.slice(0, 12)}`;
+  return `draft-${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 8)}`;
+}
 
 function courseAccessChanged(course, previousCourse) {
   if (!previousCourse) return true;

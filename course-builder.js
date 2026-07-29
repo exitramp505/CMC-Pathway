@@ -37,7 +37,7 @@
   isHydrating = false;
   updateCourseDetailsSummary();
   lastSavedSignature = currentCourse ? JSON.stringify(buildPayload(currentCourse.status)) : '';
-  setAutosaveStatus(currentCourse ? 'All changes saved' : 'Autosave starts after required details');
+  setAutosaveStatus(currentCourse ? 'All changes saved' : 'Autosave starts when you begin typing');
 
   async function loadCourse() {
     setMessage('Loading course…');
@@ -52,6 +52,7 @@
       setValue('courseTitle', currentCourse.title);
       setValue('courseSubtitle', currentCourse.subtitle);
       setValue('courseSlug', currentCourse.slug);
+      document.getElementById('courseSlug').dataset.generatedDraft = String(currentCourse.slug || '').startsWith('draft-') ? 'true' : '';
       setValue('courseDescription', currentCourse.description);
       setValue('courseStage', currentCourse.stage_key || 'discover');
       setValue('courseAccess', currentCourse.access_mode || 'assigned');
@@ -233,8 +234,8 @@
     }
     const status = currentCourse?.status === 'published' ? 'published' : 'draft';
     const payload = buildPayload(status);
-    if (!document.getElementById('courseBuilderForm').checkValidity()) {
-      setAutosaveStatus('Complete required titles to continue autosaving');
+    if (!hasStartedWriting()) {
+      setAutosaveStatus('Autosave ready');
       return;
     }
     const signature = JSON.stringify(payload);
@@ -243,6 +244,12 @@
       return;
     }
     await save(status, { automatic:true });
+  }
+
+  function hasStartedWriting() {
+    if (document.getElementById('courseTitle').value.trim()) return true;
+    return [...document.querySelectorAll('[data-module-title],[data-lesson-title]')]
+      .some(input => input.value.trim());
   }
 
   function buildPayload(status) {
@@ -290,11 +297,8 @@
 
   async function save(status, options = {}) {
     const form = document.getElementById('courseBuilderForm');
-    if (!form.checkValidity()) {
-      if (options.automatic) {
-        setAutosaveStatus('Complete required titles to continue autosaving');
-        return false;
-      }
+    const requiresCompleteCourse = status === 'published' && !options.automatic;
+    if (requiresCompleteCourse && !form.checkValidity()) {
       const invalidField = form.querySelector(':invalid');
       const invalidModule = invalidField?.closest('[data-module]');
       const invalidLesson = invalidField?.closest('[data-lesson]');
@@ -311,6 +315,7 @@
     }
     saveInFlight = true;
     const payload = buildPayload(status);
+    payload.autosave = Boolean(options.automatic);
     setWorking(true);
     if (options.automatic) setAutosaveStatus('Saving changes…');
     else setMessage(status === 'published' ? 'Publishing course…' : 'Saving draft…');
@@ -325,6 +330,8 @@
       currentCourse = data.course;
       courseId = currentCourse.id;
       document.getElementById('courseSlug').value = currentCourse.slug;
+      document.getElementById('courseSlug').dataset.generatedDraft =
+        String(currentCourse.slug || '').startsWith('draft-') ? 'true' : '';
       history.replaceState(null, '', `course-builder.html?id=${encodeURIComponent(currentCourse.id)}`);
       document.getElementById('courseStatus').textContent = status === 'published' ? 'Published' : 'Draft';
       document.getElementById('builderTitle').textContent = 'Edit the course.';
@@ -359,8 +366,9 @@
   }
 
   function suggestSlug() {
-    if (courseId || document.getElementById('courseSlug').dataset.edited) return;
-    document.getElementById('courseSlug').value = document.getElementById('courseTitle').value
+    const slugInput = document.getElementById('courseSlug');
+    if ((courseId && slugInput.dataset.generatedDraft !== 'true') || slugInput.dataset.edited) return;
+    slugInput.value = document.getElementById('courseTitle').value
       .toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'').slice(0,100);
   }
   document.getElementById('courseSlug').addEventListener('input', event => { event.currentTarget.dataset.edited = 'true'; });

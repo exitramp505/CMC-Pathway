@@ -78,14 +78,21 @@ exports.handler = async (event) => {
     }, { onConflict:'user_id,lesson_id' });
     if (upsertError) throw upsertError;
 
-    const [{ data:required, error:requiredError }, { data:done, error:doneError }] = await Promise.all([
-      supabase.from('cmc_course_lessons').select('id').eq('course_id', lesson.course_id).eq('is_required', true),
-      supabase.from('cmc_course_lesson_progress').select('lesson_id').eq('course_id', lesson.course_id).eq('user_id', user.id).eq('completed', true)
+    const [
+      { data:required, error:requiredError },
+      { data:done, error:doneError },
+      { data:visibleModules, error:moduleError }
+    ] = await Promise.all([
+      supabase.from('cmc_course_lessons').select('id,module_id').eq('course_id', lesson.course_id).eq('is_required', true).neq('title', ''),
+      supabase.from('cmc_course_lesson_progress').select('lesson_id').eq('course_id', lesson.course_id).eq('user_id', user.id).eq('completed', true),
+      supabase.from('cmc_course_modules').select('id').eq('course_id', lesson.course_id).neq('title', '')
     ]);
     if (requiredError) throw requiredError;
     if (doneError) throw doneError;
+    if (moduleError) throw moduleError;
 
-    const requiredIds = new Set((required || []).map(item => item.id));
+    const visibleModuleIds = new Set((visibleModules || []).map(item => item.id));
+    const requiredIds = new Set((required || []).filter(item => visibleModuleIds.has(item.module_id)).map(item => item.id));
     const completedRequired = new Set((done || []).map(item => item.lesson_id).filter(id => requiredIds.has(id)));
     const progress = requiredIds.size ? Math.round((completedRequired.size / requiredIds.size) * 100) : 0;
     const courseComplete = requiredIds.size > 0 && completedRequired.size === requiredIds.size;

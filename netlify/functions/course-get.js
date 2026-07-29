@@ -77,18 +77,25 @@ exports.handler = async (event) => {
     if (enrollmentError) throw enrollmentError;
 
     const progressMap = new Map((progress || []).map(item => [item.lesson_id, item]));
+    const canEdit = viewer?.account_role === 'cmc_admin';
+    const visibleModules = canEdit
+      ? (modules || [])
+      : (modules || []).filter(module => String(module.title || '').trim());
+    const visibleLessons = canEdit
+      ? (lessons || [])
+      : (lessons || []).filter(lesson => String(lesson.title || '').trim());
     const responseCourse = {
       ...course,
-      modules:(modules || []).map(module => ({
+      modules:visibleModules.map(module => ({
         ...module,
-        lessons:(lessons || []).filter(lesson => lesson.module_id === module.id).map(lesson => ({
+        lessons:visibleLessons.filter(lesson => lesson.module_id === module.id).map(lesson => ({
           ...lesson,
           completed:Boolean(progressMap.get(lesson.id)?.completed),
           completed_at:progressMap.get(lesson.id)?.completed_at || null
         }))
       }))
     };
-    return json(200, { ok:true, course:responseCourse, canEdit:viewer?.account_role === 'cmc_admin' });
+    return json(200, { ok:true, course:responseCourse, canEdit });
   } catch (error) {
     return json(500, { ok:false, error:error.message || 'Could not load the course.' });
   }

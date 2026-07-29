@@ -92,7 +92,10 @@
         <div class="cmcPersonMetric"><span>${titleCase(stage)}</span><strong>${escapeHtml(stageDetail)}</strong></div>
         <div class="cmcPersonMetric"><span>Latest activity</span><strong>${escapeHtml(latest)}</strong></div>
         <span class="cmcActionPill ${statusClass}">${status}</span>
-        <a class="cmcRowAction" href="admin.html?candidate=${encodeURIComponent(person.id)}">Open →</a>
+        <div class="cmcRowActions">
+          <a class="cmcRowAction" href="assign-courses.html?participant=${encodeURIComponent(person.id)}">Courses</a>
+          <a class="cmcRowAction" href="admin.html?candidate=${encodeURIComponent(person.id)}">Open →</a>
+        </div>
       </article>`;
     }).join('');
   }

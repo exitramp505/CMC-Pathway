@@ -1,4 +1,5 @@
 const { createClient } = require('@supabase/supabase-js');
+const { assignmentKey, isCourseAssignmentKey } = require('./_course-access');
 
 function json(status, body){ return { statusCode: status, headers:{'Content-Type':'application/json'}, body: JSON.stringify(body) }; }
 
@@ -21,7 +22,24 @@ exports.handler = async (event) => {
       .order('created_at',{ascending:true});
 
     if(error) throw error;
-    return json(200,{ok:true,assignments:data||[]});
+
+    const { data:courses, error:courseError } = await supabase
+      .from('cmc_courses')
+      .select('id,slug,title,subtitle,description,stage_key,access_mode,estimated_minutes,status')
+      .eq('status', 'published');
+    if (courseError) throw courseError;
+
+    const courseByKey = new Map((courses || []).map(course => [assignmentKey(course), course]));
+    const assignments = (data || []).map(item => ({
+      ...item,
+      course:isCourseAssignmentKey(item.item_key) ? (courseByKey.get(item.item_key) || null) : null
+    })).filter(item => {
+      if (!isCourseAssignmentKey(item.item_key)) return true;
+      if (item.item_key === 'discover_course') return true;
+      return Boolean(item.course);
+    });
+
+    return json(200,{ok:true,assignments});
   }catch(err){
     return json(500,{ok:false,error:err.message||'Could not load assignments.'});
   }

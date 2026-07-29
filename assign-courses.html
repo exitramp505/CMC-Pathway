@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Assign Courses | CMC Pathway</title>
+  <link rel="stylesheet" href="style.css?v=91">
+</head>
+<body class="cmcPathwayBody">
+<header class="cmcHeader">
+  <a class="cmcBrand" href="leader.html" aria-label="CMC Pathway leader home">
+    <img class="cmcLogoImage" src="cmc-logo-mark.svg" alt="">
+    <span><strong>CMC Pathway</strong><small>Church Multiplication Collective</small></span>
+  </a>
+  <nav id="cmcRoleNav" class="cmcNav"></nav>
+</header>
+
+<main class="cmcCourseAssignmentMain">
+  <section class="cmcCourseAssignmentIntro">
+    <div>
+      <a class="cmcBackLink" href="leader.html">← Back to people</a>
+      <p class="cmcEyebrow">COURSE ASSIGNMENTS</p>
+      <h1 id="assignmentTitle">Choose the next course.</h1>
+      <p id="assignmentIntro">Loading participant details…</p>
+    </div>
+    <button id="saveCourseAssignments" class="cmcPrimaryButton" type="button" disabled>Save assignments</button>
+  </section>
+
+  <section class="cmcCourseAssignmentPanel">
+    <div class="cmcCourseAssignmentHeading">
+      <div><p class="cmcEyebrow">LEADER-ASSIGNED COURSES</p><h2>Available courses</h2></div>
+      <p>Automatic courses already appear for everyone. Select only the additional courses this participant should receive.</p>
+    </div>
+    <p id="courseAssignmentMessage" class="cmcAdminMessage">Loading courses…</p>
+    <div id="courseAssignmentList" class="cmcCourseAssignmentList"></div>
+  </section>
+</main>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="auth.js?v=91"></script>
+<script src="assign-courses.js?v=91"></script>
+</body>
+</html>

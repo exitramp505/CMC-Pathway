@@ -1,4 +1,5 @@
 const { createClient } = require('@supabase/supabase-js');
+const { assignmentKey, assignmentRecord } = require('./_course-access');
 
 function json(status, body) {
   return { statusCode:status, headers:{'Content-Type':'application/json'}, body:JSON.stringify(body) };
@@ -20,7 +21,7 @@ exports.handler = async (event) => {
       }
       const { data, error } = await supabase
         .from('cmc_courses')
-        .select('id,slug,title,subtitle,description,status,estimated_minutes,created_at,updated_at,published_at')
+        .select('id,slug,title,subtitle,description,status,stage_key,access_mode,estimated_minutes,created_at,updated_at,published_at')
         .order('updated_at', { ascending:false });
       if (error) throw error;
       return json(200, { ok:true, courses:data || [] });
@@ -31,6 +32,14 @@ exports.handler = async (event) => {
     if (event.httpMethod === 'DELETE') {
       const id = String(body.id || '');
       if (!id) return json(400, { ok:false, error:'Course id is required.' });
+      const course = await loadCourse(supabase, id);
+      if (course) {
+        const { error:assignmentError } = await supabase
+          .from('candidate_assignments')
+          .delete()
+          .eq('item_key', assignmentKey(course));
+        if (assignmentError) throw assignmentError;
+      }
       const { error } = await supabase.from('cmc_courses').delete().eq('id', id);
       if (error) throw error;
       return json(200, { ok:true });
@@ -44,12 +53,15 @@ exports.handler = async (event) => {
       subtitle:payload.subtitle,
       description:payload.description,
       status:payload.status,
+      stage_key:payload.stage_key,
+      access_mode:payload.access_mode,
       estimated_minutes:payload.estimated_minutes,
       updated_at:now,
       published_at:payload.status === 'published' ? (payload.published_at || now) : null
     };
 
     let courseId = payload.id;
+    const previousCourse = courseId ? await loadCourse(supabase, courseId) : null;
     if (courseId) {
       const { error } = await supabase.from('cmc_courses').update(courseRecord).eq('id', courseId);
       if (error) throw error;
@@ -63,7 +75,7 @@ exports.handler = async (event) => {
       courseId = data.id;
     }
 
-    const existing = await loadCourse(supabase, courseId);
+    const existing = previousCourse || await loadCourse(supabase, courseId);
     const incomingModuleIds = new Set(payload.modules.map(item => item.id).filter(Boolean));
     const incomingLessonIds = new Set(payload.modules.flatMap(module => module.lessons.map(item => item.id)).filter(Boolean));
     const existingModules = existing?.modules || [];
@@ -126,6 +138,7 @@ exports.handler = async (event) => {
     }
 
     const saved = await loadCourse(supabase, courseId);
+    await syncCourseAccess(supabase, saved, previousCourse);
     return json(200, { ok:true, course:saved });
   } catch (error) {
     const status = error.statusCode || 500;
@@ -198,6 +211,8 @@ function validateCourse(body) {
     subtitle:clean(body.subtitle, 240),
     description:clean(body.description, 3000),
     status,
+    stage_key:validChoice(body.stage_key, ['discover','discern','develop','deploy'], 'discover'),
+    access_mode:validChoice(body.access_mode, ['automatic','assigned'], 'assigned'),
     published_at:body.published_at || null,
     estimated_minutes:numberInRange(body.estimated_minutes, 0, 100000),
     modules
@@ -218,4 +233,63 @@ function validVideoUrl(value) {
 function clean(value, length) { return String(value || '').trim().slice(0, length); }
 function numberInRange(value, min, max) { return Math.max(min, Math.min(max, Number(value) || 0)); }
 function uuidOrBlank(value) { return /^[0-9a-f]{8}-[0-9a-f-]{27}$/i.test(String(value || '')) ? String(value) : ''; }
+function validChoice(value, choices, fallback) { return choices.includes(String(value || '')) ? String(value) : fallback; }
 function httpError(statusCode, message) { const error = new Error(message); error.statusCode = statusCode; return error; }
+
+async function syncCourseAccess(supabase, course, previousCourse) {
+  const key = assignmentKey(course);
+  const previousKey = previousCourse ? assignmentKey(previousCourse) : key;
+
+  if (previousKey !== key) {
+    const { error } = await supabase
+      .from('candidate_assignments')
+      .update({ item_key:key, stage_key:course.stage_key, updated_at:new Date().toISOString() })
+      .eq('item_key', previousKey);
+    if (error) throw error;
+  } else {
+    const { error } = await supabase
+      .from('candidate_assignments')
+      .update({ stage_key:course.stage_key, updated_at:new Date().toISOString() })
+      .eq('item_key', key);
+    if (error) throw error;
+  }
+
+  if (course.status !== 'published' || course.access_mode !== 'automatic') {
+    const { error } = await supabase
+      .from('candidate_assignments')
+      .delete()
+      .eq('item_key', key)
+      .eq('assignment_source', 'automatic');
+    if (error) throw error;
+    return;
+  }
+
+  const { data:participants, error:participantsError } = await supabase
+    .from('candidate_profiles')
+    .select('id,full_name,email')
+    .eq('account_role', 'participant');
+  if (participantsError) throw participantsError;
+  if (!participants?.length) return;
+
+  const { data:existingAssignments, error:existingError } = await supabase
+    .from('candidate_assignments')
+    .select('user_id')
+    .eq('item_key', key);
+  if (existingError) throw existingError;
+  if (existingAssignments?.length) {
+    const { error:sourceError } = await supabase
+      .from('candidate_assignments')
+      .update({ assignment_source:'automatic', status:'assigned', hidden_at:null })
+      .eq('item_key', key);
+    if (sourceError) throw sourceError;
+  }
+  const existingUserIds = new Set((existingAssignments || []).map(item => item.user_id));
+  const rows = participants
+    .filter(profile => !existingUserIds.has(profile.id))
+    .map(profile => assignmentRecord(course, profile, 'automatic'));
+  if (!rows.length) return;
+  const { error:assignmentError } = await supabase
+    .from('candidate_assignments')
+    .insert(rows);
+  if (assignmentError) throw assignmentError;
+}

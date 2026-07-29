@@ -18,6 +18,7 @@
   document.getElementById('saveDraftBtn').addEventListener('click', () => save('draft'));
   document.getElementById('publishBtn').addEventListener('click', () => save('published'));
   document.getElementById('courseTitle').addEventListener('input', suggestSlug);
+  document.getElementById('courseAccess').addEventListener('change', updateAccessHelp);
 
   if (courseId) await loadCourse();
   else addModule({ title:'', description:'', lessons:[{}] });
@@ -36,7 +37,10 @@
       setValue('courseSubtitle', currentCourse.subtitle);
       setValue('courseSlug', currentCourse.slug);
       setValue('courseDescription', currentCourse.description);
+      setValue('courseStage', currentCourse.stage_key || 'discover');
+      setValue('courseAccess', currentCourse.access_mode || 'assigned');
       setValue('courseMinutes', currentCourse.estimated_minutes || '');
+      updateAccessHelp();
       document.getElementById('courseStatus').textContent = currentCourse.status === 'published' ? 'Published' : 'Draft';
       const preview = document.getElementById('previewCourseLink');
       preview.href = `course.html?slug=${encodeURIComponent(currentCourse.slug)}`;
@@ -126,6 +130,8 @@
       subtitle:document.getElementById('courseSubtitle').value,
       slug:document.getElementById('courseSlug').value,
       description:document.getElementById('courseDescription').value,
+      stage_key:document.getElementById('courseStage').value,
+      access_mode:document.getElementById('courseAccess').value,
       estimated_minutes:Number(document.getElementById('courseMinutes').value || 0),
       status,
       modules
@@ -163,6 +169,12 @@
       .toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'').slice(0,100);
   }
   document.getElementById('courseSlug').addEventListener('input', event => { event.currentTarget.dataset.edited = 'true'; });
+  function updateAccessHelp() {
+    const automatic = document.getElementById('courseAccess').value === 'automatic';
+    document.getElementById('courseAccessHelp').textContent = automatic
+      ? 'The course will appear automatically for every current and future participant once published.'
+      : 'The course stays hidden until a regional or national leader assigns it to a participant.';
+  }
   function setWorking(value){document.getElementById('saveDraftBtn').disabled=value;document.getElementById('publishBtn').disabled=value}
   function setMessage(value,error){const el=document.getElementById('builderMessage');el.textContent=value||'';el.classList.toggle('error',Boolean(error))}
   function setValue(id,value){document.getElementById(id).value=value||''}

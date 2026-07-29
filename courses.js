@@ -38,6 +38,10 @@
         <p class="cmcEyebrow">${escapeHtml(course.slug)}</p>
         <h3>${escapeHtml(course.title)}</h3>
         <p>${escapeHtml(course.subtitle || course.description || 'Course description has not been added.')}</p>
+        <div class="cmcCourseRules">
+          <span>${escapeHtml(titleCase(course.stage_key || 'discover'))}</span>
+          <span>${course.access_mode === 'automatic' ? 'All participants' : 'Leader assigned'}</span>
+        </div>
       </div>
       <div class="cmcCourseCardActions">
         <a href="course-builder.html?id=${encodeURIComponent(course.id)}">Edit course</a>
@@ -46,5 +50,6 @@
     </article>`;
   }
   function formatDate(value){try{return new Date(value).toLocaleDateString([],{month:'short',day:'numeric',year:'numeric'})}catch(_){return ''}}
+  function titleCase(value){return String(value||'').replace(/\b\w/g,c=>c.toUpperCase())}
   function escapeHtml(value){return String(value??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[m]))}
 })();

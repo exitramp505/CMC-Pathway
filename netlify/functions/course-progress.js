@@ -1,4 +1,5 @@
 const { createClient } = require('@supabase/supabase-js');
+const { assignmentKey, assignmentRecord } = require('./_course-access');
 
 function json(status, body) {
   return { statusCode:status, headers:{'Content-Type':'application/json'}, body:JSON.stringify(body) };
@@ -23,6 +24,49 @@ exports.handler = async (event) => {
     if (lessonError) throw lessonError;
     if (!lesson) return json(404, { ok:false, error:'Lesson not found.' });
 
+    const [{ data:course, error:courseError }, { data:viewer, error:viewerError }] = await Promise.all([
+      supabase.from('cmc_courses').select('id,slug,status,stage_key,access_mode').eq('id', lesson.course_id).single(),
+      supabase.from('candidate_profiles').select('id,full_name,email,account_role').eq('id', user.id).maybeSingle()
+    ]);
+    if (courseError) throw courseError;
+    if (viewerError) throw viewerError;
+    const elevated = ['regional_leader','cmc_admin'].includes(viewer?.account_role);
+    if (course.status !== 'published' && viewer?.account_role !== 'cmc_admin') {
+      return json(403, { ok:false, error:'This course is not published.' });
+    }
+    if (!elevated && course.access_mode === 'assigned') {
+      const { data:assignment, error:assignmentError } = await supabase
+        .from('candidate_assignments')
+        .select('id')
+        .eq('user_id', user.id)
+        .eq('item_key', assignmentKey(course))
+        .eq('status', 'assigned')
+        .maybeSingle();
+      if (assignmentError) throw assignmentError;
+      if (!assignment) return json(403, { ok:false, error:'This course has not been assigned to you.' });
+    }
+    if (!elevated && course.access_mode === 'automatic' && viewer) {
+      const { data:existingAssignment, error:existingError } = await supabase
+        .from('candidate_assignments')
+        .select('id')
+        .eq('user_id', user.id)
+        .eq('item_key', assignmentKey(course))
+        .maybeSingle();
+      if (existingError) throw existingError;
+      if (!existingAssignment) {
+        const { error:assignmentError } = await supabase
+          .from('candidate_assignments')
+          .insert(assignmentRecord(course, viewer, 'automatic'));
+        if (assignmentError) throw assignmentError;
+      } else {
+        const { error:sourceError } = await supabase
+          .from('candidate_assignments')
+          .update({ assignment_source:'automatic', status:'assigned', hidden_at:null })
+          .eq('id', existingAssignment.id);
+        if (sourceError) throw sourceError;
+      }
+    }
+
     const now = new Date().toISOString();
     const { error:upsertError } = await supabase.from('cmc_course_lesson_progress').upsert({
       user_id:user.id,
@@ -34,14 +78,12 @@ exports.handler = async (event) => {
     }, { onConflict:'user_id,lesson_id' });
     if (upsertError) throw upsertError;
 
-    const [{ data:required, error:requiredError }, { data:done, error:doneError }, { data:course, error:courseError }] = await Promise.all([
+    const [{ data:required, error:requiredError }, { data:done, error:doneError }] = await Promise.all([
       supabase.from('cmc_course_lessons').select('id').eq('course_id', lesson.course_id).eq('is_required', true),
-      supabase.from('cmc_course_lesson_progress').select('lesson_id').eq('course_id', lesson.course_id).eq('user_id', user.id).eq('completed', true),
-      supabase.from('cmc_courses').select('slug').eq('id', lesson.course_id).single()
+      supabase.from('cmc_course_lesson_progress').select('lesson_id').eq('course_id', lesson.course_id).eq('user_id', user.id).eq('completed', true)
     ]);
     if (requiredError) throw requiredError;
     if (doneError) throw doneError;
-    if (courseError) throw courseError;
 
     const requiredIds = new Set((required || []).map(item => item.id));
     const completedRequired = new Set((done || []).map(item => item.lesson_id).filter(id => requiredIds.has(id)));
@@ -57,14 +99,14 @@ exports.handler = async (event) => {
     }, { onConflict:'user_id,course_id' });
     if (enrollmentError) throw enrollmentError;
 
-    if (course.slug === 'discover') {
+    if (!elevated) {
       const { error:assignmentError } = await supabase.from('candidate_assignments').update({
         progress,
         external_status:courseComplete ? 'completed' : progress ? 'in_progress' : '',
         invitation_status:progress ? 'enrolled' : '',
         completed_at:courseComplete ? now : null,
         updated_at:now
-      }).eq('user_id', user.id).eq('item_key', 'discover_course');
+      }).eq('user_id', user.id).eq('item_key', assignmentKey(course));
       if (assignmentError) throw assignmentError;
     }
 

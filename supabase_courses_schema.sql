@@ -8,12 +8,16 @@ create table if not exists public.cmc_courses (
   subtitle text not null default '',
   description text not null default '',
   status text not null default 'draft',
+  stage_key text not null default 'discover',
+  access_mode text not null default 'assigned',
   estimated_minutes integer not null default 0,
   created_by uuid,
   created_at timestamptz not null default now(),
   updated_at timestamptz not null default now(),
   published_at timestamptz,
-  constraint cmc_courses_status_check check (status in ('draft', 'published'))
+  constraint cmc_courses_status_check check (status in ('draft', 'published')),
+  constraint cmc_courses_stage_key_check check (stage_key in ('discover', 'discern', 'develop', 'deploy')),
+  constraint cmc_courses_access_mode_check check (access_mode in ('automatic', 'assigned'))
 );
 
 create table if not exists public.cmc_course_modules (
@@ -83,13 +87,24 @@ alter table public.cmc_course_lesson_progress enable row level security;
 -- Course content and progress are served by authenticated Netlify Functions.
 -- This keeps draft material and administrative writes out of the browser client.
 
-insert into public.cmc_courses (slug, title, subtitle, description, status, estimated_minutes)
+insert into public.cmc_courses (
+  slug,
+  title,
+  subtitle,
+  description,
+  status,
+  stage_key,
+  access_mode,
+  estimated_minutes
+)
 values (
   'discover',
   'Discover: Church Multiplication 101',
   'A biblical introduction to church multiplication',
   'Learn the biblical foundation, shared language, and first questions of church multiplication.',
   'draft',
+  'discover',
+  'automatic',
   0
 )
 on conflict (slug) do nothing;

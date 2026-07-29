@@ -1,0 +1,98 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Participant Dashboard | CMC Pathway</title>
+  <link rel="stylesheet" href="style.css?v=92">
+</head>
+<body class="cmcPathwayBody">
+<header class="cmcHeader">
+  <a class="cmcBrand" href="leader.html" aria-label="CMC Pathway leader home">
+    <img class="cmcLogoImage" src="cmc-logo-mark.svg" alt="">
+    <span><strong>CMC Pathway</strong><small>Church Multiplication Collective</small></span>
+  </a>
+  <nav id="cmcRoleNav" class="cmcNav"></nav>
+</header>
+
+<main class="cmcPathwayMain cmcParticipantDetailMain">
+  <a class="cmcBackLink" href="leader.html">← Back to People</a>
+
+  <div id="participantDetailLoading" class="cmcParticipantDetailLoading">
+    <p>Loading participant dashboard…</p>
+  </div>
+
+  <div id="participantDetailContent" class="hidden">
+    <section class="cmcParticipantHero">
+      <div class="cmcParticipantIdentity">
+        <span id="participantAvatar" class="cmcParticipantAvatar">—</span>
+        <div>
+          <p class="cmcEyebrow">PARTICIPANT DASHBOARD</p>
+          <h1 id="participantName">Participant</h1>
+          <p id="participantContext" class="cmcIntro"></p>
+        </div>
+      </div>
+      <div class="cmcParticipantHeroActions">
+        <span id="participantStagePill" class="cmcDetailStagePill">Discover</span>
+        <a id="emailParticipantLink" class="cmcSecondaryAction" href="#">Email participant</a>
+        <a id="manageCoursesLink" class="cmcPrimaryAction" href="#">Manage courses →</a>
+      </div>
+    </section>
+
+    <section class="cmcParticipantStats">
+      <article>
+        <span>Current stage</span>
+        <strong id="currentStageStat">Discover</strong>
+        <small id="currentStageCaption">Beginning the pathway</small>
+      </article>
+      <article>
+        <span>Assigned work</span>
+        <strong id="assignedCountStat">0</strong>
+        <small>Courses, forms, and assessments</small>
+      </article>
+      <article>
+        <span>Completed</span>
+        <strong id="completedCountStat">0</strong>
+        <small id="completedCaption">Items finished</small>
+      </article>
+      <article>
+        <span>Latest activity</span>
+        <strong id="latestActivityStat">—</strong>
+        <small>Most recent recorded progress</small>
+      </article>
+    </section>
+
+    <div class="cmcParticipantDetailGrid">
+      <section class="cmcParticipantMainPanel">
+        <div class="cmcDetailSectionHeading">
+          <div>
+            <p class="cmcEyebrow">PATHWAY PROGRESS</p>
+            <h2>Work and progress</h2>
+          </div>
+          <p>See what is available, underway, and complete for this participant.</p>
+        </div>
+        <div id="participantWorkList" class="cmcParticipantWorkList"></div>
+      </section>
+
+      <aside class="cmcParticipantSideColumn">
+        <section class="cmcParticipantInfoCard">
+          <p class="cmcEyebrow">PROFILE &amp; CONTACT</p>
+          <h2>Participant details</h2>
+          <dl id="participantProfileDetails"></dl>
+        </section>
+
+        <section class="cmcParticipantInfoCard">
+          <p class="cmcEyebrow">RECORDS</p>
+          <h2>Applications and reports</h2>
+          <div id="participantRecordList" class="cmcParticipantRecordList"></div>
+        </section>
+      </aside>
+    </div>
+  </div>
+</main>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="auth.js?v=91"></script>
+<script src="participant.js?v=92"></script>
+</body>
+</html>

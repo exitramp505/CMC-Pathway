@@ -94,7 +94,7 @@
         <span class="cmcActionPill ${statusClass}">${status}</span>
         <div class="cmcRowActions">
           <a class="cmcRowAction" href="assign-courses.html?participant=${encodeURIComponent(person.id)}">Courses</a>
-          <a class="cmcRowAction" href="admin.html?candidate=${encodeURIComponent(person.id)}">Open →</a>
+          <a class="cmcRowAction" href="participant.html?id=${encodeURIComponent(person.id)}">Open dashboard →</a>
         </div>
       </article>`;
     }).join('');

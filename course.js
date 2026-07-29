@@ -6,7 +6,9 @@
   const sb = await dcAuth.getSupabaseClient();
   const session = await sb.auth.getSession();
   const token = session.data?.session?.access_token || '';
-  const slug = new URLSearchParams(window.location.search).get('slug') || 'discover';
+  const search = new URLSearchParams(window.location.search);
+  const slug = search.get('slug') || 'discover';
+  const previewMode = search.get('preview') === '1';
   const app = document.getElementById('courseApp');
   let course;
   let lessons = [];
@@ -22,13 +24,30 @@
     lessons = course.modules.flatMap((module, moduleIndex) =>
       module.lessons.map((lesson, lessonIndex) => ({...lesson,module,moduleIndex,lessonIndex}))
     );
-    if (!lessons.length) throw new Error('This course does not contain any lessons yet.');
+    if (!lessons.length) {
+      if (data.canEdit && previewMode) {
+        renderEmptyPreview();
+        return;
+      }
+      throw new Error('This course does not contain any lessons yet.');
+    }
     const firstIncomplete = lessons.findIndex(lesson => !lesson.completed);
     currentIndex = firstIncomplete >= 0 ? firstIncomplete : 0;
     renderShell(data.canEdit);
     renderLesson();
   } catch (error) {
     app.innerHTML = `<section class="cmcCourseUnavailable"><p class="cmcEyebrow">COURSE</p><h1>Not available yet.</h1><p>${escapeHtml(error.message)}</p><a href="dashboard.html">Return to your pathway →</a></section>`;
+  }
+
+  function renderEmptyPreview() {
+    document.title = `${course.title} Preview | CMC Pathway`;
+    app.innerHTML = `
+      <section class="cmcCourseUnavailable">
+        <p class="cmcEyebrow">COURSE PREVIEW</p>
+        <h1>${escapeHtml(course.title || 'Untitled course')}</h1>
+        <p>This course does not have any lessons to preview yet.</p>
+        <a href="course-builder.html?id=${encodeURIComponent(course.id)}">Return to the course builder →</a>
+      </section>`;
   }
 
   function renderShell(canEdit) {

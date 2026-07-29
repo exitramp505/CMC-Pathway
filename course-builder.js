@@ -59,7 +59,7 @@
       updateAccessHelp();
       document.getElementById('courseStatus').textContent = currentCourse.status === 'published' ? 'Published' : 'Draft';
       const preview = document.getElementById('previewCourseLink');
-      preview.href = `course.html?slug=${encodeURIComponent(currentCourse.slug)}`;
+      preview.href = previewUrl(currentCourse.slug);
       preview.classList.remove('hidden');
       document.getElementById('moduleList').innerHTML = '';
       (currentCourse.modules || []).forEach((module, index) => addModule(module, { collapsed:index > 0 }));
@@ -335,7 +335,7 @@
       document.getElementById('courseStatus').textContent = status === 'published' ? 'Published' : 'Draft';
       document.getElementById('builderTitle').textContent = 'Edit the course.';
       const preview = document.getElementById('previewCourseLink');
-      preview.href = `course.html?slug=${encodeURIComponent(currentCourse.slug)}`;
+      preview.href = previewUrl(currentCourse.slug);
       preview.classList.remove('hidden');
       if (options.automatic) {
         syncSavedIds(currentCourse);
@@ -369,6 +369,9 @@
     if ((courseId && slugInput.dataset.generatedDraft !== 'true') || slugInput.dataset.edited) return;
     slugInput.value = document.getElementById('courseTitle').value
       .toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'').slice(0,100);
+  }
+  function previewUrl(slug) {
+    return `course.html?slug=${encodeURIComponent(slug)}&preview=1`;
   }
   document.getElementById('courseSlug').addEventListener('input', event => { event.currentTarget.dataset.edited = 'true'; });
   function updateAccessHelp() {

@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <title>Course Builder | CMC Pathway</title>
-  <link rel="stylesheet" href="style.css?v=91">
+  <link rel="stylesheet" href="style.css?v=93">
 </head>
 <body class="cmcPathwayBody">
 <header class="cmcHeader">
@@ -67,10 +67,13 @@
     <section class="cmcModuleBuilder">
       <div class="cmcModuleBuilderHeading">
         <div><p class="cmcEyebrow">COURSE CONTENT</p><h2>Modules and lessons</h2></div>
-        <button id="addModuleBtn" class="cmcAddButton" type="button">Add module ＋</button>
+        <button id="collapseAllBtn" class="cmcCollapseAllButton" type="button">Collapse all</button>
       </div>
       <p id="builderMessage" class="cmcAdminMessage"></p>
       <div id="moduleList" class="cmcModuleList"></div>
+      <div class="cmcAddModuleFooter">
+        <button id="addModuleBtn" class="cmcAddButton" type="button">Add another module ＋</button>
+      </div>
     </section>
   </form>
 </main>
@@ -78,46 +81,64 @@
 <template id="moduleTemplate">
   <article class="cmcModuleEditor" data-module>
     <div class="cmcModuleEditorTop">
-      <span class="cmcModuleHandle" aria-hidden="true">MODULE</span>
+      <button class="cmcEditorToggle" type="button" data-toggle-module aria-expanded="true">
+        <span class="cmcCollapseIcon" aria-hidden="true">−</span>
+        <span>
+          <span class="cmcModuleHandle">MODULE</span>
+          <strong data-module-summary>Untitled module</strong>
+          <small data-module-meta>No lessons yet</small>
+        </span>
+      </button>
       <div class="cmcReorderActions">
         <button type="button" data-move-module="up" title="Move module up">↑</button>
         <button type="button" data-move-module="down" title="Move module down">↓</button>
         <button type="button" data-remove-module title="Remove module">Remove</button>
       </div>
     </div>
-    <div class="cmcModuleFields">
-      <label><span>Module title</span><input data-module-title maxlength="160" required placeholder="Module title"></label>
-      <label><span>Module introduction</span><textarea data-module-description rows="2" maxlength="1000" placeholder="Briefly introduce this part of the course."></textarea></label>
+    <div class="cmcModuleEditorBody" data-module-body>
+      <div class="cmcModuleFields">
+        <label><span>Module title</span><input data-module-title maxlength="160" required placeholder="Module title"></label>
+        <label><span>Module introduction</span><textarea data-module-description rows="2" maxlength="1000" placeholder="Briefly introduce this part of the course."></textarea></label>
+      </div>
+      <div class="cmcLessonList" data-lesson-list></div>
+      <button type="button" class="cmcAddLessonButton" data-add-lesson>Add lesson ＋</button>
     </div>
-    <div class="cmcLessonList" data-lesson-list></div>
-    <button type="button" class="cmcAddLessonButton" data-add-lesson>Add lesson ＋</button>
   </article>
 </template>
 
 <template id="lessonTemplate">
   <article class="cmcLessonEditor" data-lesson>
     <div class="cmcLessonEditorTop">
-      <span data-lesson-number>Lesson</span>
+      <button class="cmcEditorToggle cmcLessonToggle" type="button" data-toggle-lesson aria-expanded="true">
+        <span class="cmcCollapseIcon" aria-hidden="true">−</span>
+        <span>
+          <span data-lesson-number>Lesson</span>
+          <strong data-lesson-summary-title>Untitled lesson</strong>
+          <small data-lesson-meta>Required · No time set</small>
+        </span>
+      </button>
       <div class="cmcReorderActions">
         <button type="button" data-move-lesson="up" title="Move lesson up">↑</button>
         <button type="button" data-move-lesson="down" title="Move lesson down">↓</button>
         <button type="button" data-remove-lesson title="Remove lesson">Remove</button>
       </div>
     </div>
-    <div class="cmcLessonFields">
-      <label class="wide"><span>Lesson title</span><input data-lesson-title maxlength="160" required placeholder="Lesson title"></label>
-      <label class="wide"><span>Short summary</span><input data-lesson-summary maxlength="500" placeholder="One sentence describing this lesson"></label>
-      <label class="wide"><span>Written content</span><textarea data-lesson-content rows="10" maxlength="50000" placeholder="Add the lesson text here. Use a blank line between paragraphs. Start a heading with ## and a list item with -"></textarea></label>
-      <label class="wide"><span>Video link (optional)</span><input data-lesson-video type="url" placeholder="https://youtube.com/... or https://vimeo.com/..."></label>
-      <label class="wide"><span>Reflection prompt (optional)</span><textarea data-lesson-reflection rows="3" maxlength="2000" placeholder="What should the participant consider or respond to?"></textarea></label>
-      <label><span>Minutes</span><input data-lesson-minutes type="number" min="0" max="600" inputmode="numeric"></label>
-      <label class="cmcRequiredToggle"><input data-lesson-required type="checkbox" checked><span>Required for completion</span></label>
+    <div class="cmcLessonEditorBody" data-lesson-body>
+      <div class="cmcLessonFields">
+        <label class="wide"><span>Lesson title</span><input data-lesson-title maxlength="160" required placeholder="Lesson title"></label>
+        <label class="wide"><span>Short summary</span><input data-lesson-summary maxlength="500" placeholder="One sentence describing this lesson"></label>
+        <label class="wide"><span>Written content</span><textarea data-lesson-content rows="10" maxlength="50000" placeholder="Add the lesson text here. Use a blank line between paragraphs. Start a heading with ## and a list item with -"></textarea></label>
+        <label class="wide"><span>Video link (optional)</span><input data-lesson-video type="url" placeholder="https://youtube.com/... or https://vimeo.com/..."></label>
+        <label class="wide"><span>Reflection prompt (optional)</span><textarea data-lesson-reflection rows="3" maxlength="2000" placeholder="What should the participant consider or respond to?"></textarea></label>
+        <label><span>Minutes</span><input data-lesson-minutes type="number" min="0" max="600" inputmode="numeric"></label>
+        <label class="cmcRequiredToggle"><input data-lesson-required type="checkbox" checked><span>Required for completion</span></label>
+      </div>
     </div>
   </article>
 </template>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="auth.js?v=91"></script>
-<script src="course-builder.js?v=91"></script>
+<script src="course-builder.js?v=93"></script>
 </body>
 </html>

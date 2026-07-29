@@ -67,7 +67,9 @@ exports.handler = async (event) => {
       reportResult,
       applicationResult,
       courseResult,
-      enrollmentResult
+      enrollmentResult,
+      lessonResult,
+      reflectionResult
     ] = await Promise.all([
       supabase
         .from('candidate_assignments')
@@ -92,7 +94,15 @@ exports.handler = async (event) => {
       supabase
         .from('cmc_course_enrollments')
         .select('course_id,progress,started_at,last_opened_at,completed_at')
+        .eq('user_id', participantId),
+      supabase
+        .from('cmc_course_lessons')
+        .select('id,course_id,title'),
+      supabase
+        .from('cmc_course_lesson_responses')
+        .select('id,course_id,lesson_id,response_text,updated_at')
         .eq('user_id', participantId)
+        .order('updated_at', { ascending:false })
     ]);
 
     if (assignmentResult.error) throw assignmentResult.error;
@@ -100,6 +110,8 @@ exports.handler = async (event) => {
     if (applicationResult.error) throw applicationResult.error;
     if (courseResult.error) throw courseResult.error;
     if (enrollmentResult.error) throw enrollmentResult.error;
+    if (lessonResult.error) throw lessonResult.error;
+    if (reflectionResult.error) throw reflectionResult.error;
 
     const courses = courseResult.data || [];
     const enrollments = enrollmentResult.data || [];
@@ -149,9 +161,16 @@ exports.handler = async (event) => {
       overall:report.overall ?? report.scores?.overall ?? null,
       overall_label:report.overall_label || report.scores?.overallLabel || ''
     }));
+    const courseById = new Map(courses.map(course => [course.id, course]));
+    const lessonById = new Map((lessonResult.data || []).map(lesson => [lesson.id, lesson]));
+    const reflections = (reflectionResult.data || []).map(reflection => ({
+      ...reflection,
+      course_title:courseById.get(reflection.course_id)?.title || 'CMC Course',
+      lesson_title:lessonById.get(reflection.lesson_id)?.title || 'Course reflection'
+    }));
 
     const application = applicationResult.data || null;
-    const activity = buildActivity(participant, assignments, reports, application);
+    const activity = buildActivity(participant, assignments, reports, application, reflections);
 
     return json(200, {
       ok:true,
@@ -159,6 +178,7 @@ exports.handler = async (event) => {
       participant,
       assignments,
       reports,
+      reflections,
       application,
       activity
     });
@@ -173,7 +193,7 @@ function assessmentTitle(type) {
   return 'Character Qualities Assessment';
 }
 
-function buildActivity(participant, assignments, reports, application) {
+function buildActivity(participant, assignments, reports, application, reflections = []) {
   const activity = [];
   if (participant.created_at) {
     activity.push({
@@ -221,6 +241,14 @@ function buildActivity(participant, assignments, reports, application) {
       title:`Completed ${report.title}`,
       detail:report.overall_label || 'Assessment report available.',
       date:report.created_at
+    });
+  }
+  for (const reflection of reflections) {
+    activity.push({
+      type:'reflection',
+      title:`Responded to ${reflection.lesson_title}`,
+      detail:reflection.course_title,
+      date:reflection.updated_at
     });
   }
   if (application?.submitted_at) {

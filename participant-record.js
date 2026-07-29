@@ -30,7 +30,9 @@
     document.title = `${recordTitle(data)} | ${participantName}`;
     shell.innerHTML = data.type === 'application'
       ? renderApplication(data.record, data.participant)
-      : renderAssessment(data.record, data.participant);
+      : data.type === 'course_reflection'
+        ? renderCourseReflection(data.record, data.participant)
+        : renderAssessment(data.record, data.participant);
   } catch (error) {
     shell.innerHTML = `<div class="cmcParticipantDetailError">
       <strong>Unable to open this record.</strong>
@@ -170,6 +172,30 @@
     </article>`;
   }
 
+  function renderCourseReflection(row, participant) {
+    return `<article class="cmcRecordDocument cmcCourseReflectionRecord">
+      <header class="cmcRecordDocumentHeader">
+        <div>
+          <p class="cmcEyebrow">COURSE REFLECTION</p>
+          <h1>${escapeHtml(row.lesson_title || 'Course reflection')}</h1>
+          <p>${escapeHtml(row.course_title || 'CMC Course')} · ${escapeHtml(participant.full_name || participant.email || 'Participant')}</p>
+        </div>
+        <div class="cmcRecordStatus">
+          <strong>Saved</strong>
+          <span>${escapeHtml(formatDate(row.updated_at))}</span>
+        </div>
+      </header>
+      ${row.reflection_prompt ? `<section class="cmcCourseReflectionPrompt">
+        <p class="cmcEyebrow">PROMPT</p>
+        <h2>${escapeHtml(row.reflection_prompt)}</h2>
+      </section>` : ''}
+      <section class="cmcCourseReflectionAnswer">
+        <p class="cmcEyebrow">PARTICIPANT RESPONSE</p>
+        <p>${escapeHtml(row.response_text || 'No response was recorded.').replace(/\n/g, '<br>')}</p>
+      </section>
+    </article>`;
+  }
+
   function applicationBlock(title, rows) {
     return `<article class="applicationReportBlock">
       <h2>${escapeHtml(title)}</h2>
@@ -216,6 +242,7 @@
 
   function recordTitle(data) {
     if (data.type === 'application') return 'Discernment Application';
+    if (data.type === 'course_reflection') return data.record?.lesson_title || 'Course Reflection';
     return data.record?.scores?.assessmentTitle || 'Assessment Report';
   }
 

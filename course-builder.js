@@ -106,15 +106,23 @@
     node.dataset.id = data.id || '';
     setNodeValue(node, '[data-lesson-title]', data.title);
     setNodeValue(node, '[data-lesson-summary]', data.summary);
+    setNodeValue(node, '[data-lesson-type]', data.lesson_type || 'article');
     setNodeValue(node, '[data-lesson-content]', data.content);
     setNodeValue(node, '[data-lesson-video]', data.video_url);
+    setNodeValue(node, '[data-lesson-image]', data.image_url);
+    setNodeValue(node, '[data-lesson-image-alt]', data.image_alt);
+    setNodeValue(node, '[data-lesson-resource]', data.resource_url);
+    setNodeValue(node, '[data-lesson-resource-label]', data.resource_label);
     setNodeValue(node, '[data-lesson-reflection]', data.reflection_prompt);
     setNodeValue(node, '[data-lesson-minutes]', data.estimated_minutes || '');
     node.querySelector('[data-lesson-required]').checked = data.is_required !== false;
+    node.querySelector('[data-lesson-response]').checked = data.response_required === true;
     node.querySelector('[data-toggle-lesson]').addEventListener('click', () => setCollapsed(node, !node.classList.contains('collapsed')));
     node.querySelector('[data-lesson-title]').addEventListener('input', () => updateLessonSummary(node));
+    node.querySelector('[data-lesson-type]').addEventListener('change', () => updateLessonSummary(node));
     node.querySelector('[data-lesson-minutes]').addEventListener('input', () => updateLessonSummary(node));
     node.querySelector('[data-lesson-required]').addEventListener('change', () => updateLessonSummary(node));
+    node.querySelector('[data-lesson-response]').addEventListener('change', () => updateLessonSummary(node));
     node.querySelector('[data-remove-lesson]').addEventListener('click', () => {
       node.remove();
       renumber();
@@ -168,11 +176,13 @@
 
   function updateLessonSummary(lesson) {
     const title = lesson.querySelector('[data-lesson-title]').value.trim() || 'Untitled lesson';
+    const type = selectedNodeLabel(lesson, '[data-lesson-type]') || 'Article';
     const minutes = Number(lesson.querySelector('[data-lesson-minutes]').value || 0);
     const required = lesson.querySelector('[data-lesson-required]').checked;
+    const response = lesson.querySelector('[data-lesson-response]').checked;
     lesson.querySelector('[data-lesson-summary-title]').textContent = title;
     lesson.querySelector('[data-lesson-meta]').textContent =
-      `${required ? 'Required' : 'Optional'} · ${minutes ? `${minutes} min` : 'No time set'}`;
+      `${type} · ${required ? 'Required' : 'Optional'} · ${minutes ? `${minutes} min` : 'No time set'}${response ? ' · Response' : ''}`;
   }
 
   function toggleAllModules() {
@@ -212,6 +222,11 @@
   function selectedLabel(id) {
     const select = document.getElementById(id);
     return select.value ? select.options[select.selectedIndex]?.textContent.trim() : '';
+  }
+
+  function selectedNodeLabel(node, selector) {
+    const select = node.querySelector(selector);
+    return select?.options?.[select.selectedIndex]?.textContent.trim() || '';
   }
 
   function handleBuilderChange() {
@@ -260,9 +275,15 @@
         id:lesson.dataset.id || '',
         title:lesson.querySelector('[data-lesson-title]').value,
         summary:lesson.querySelector('[data-lesson-summary]').value,
+        lesson_type:lesson.querySelector('[data-lesson-type]').value,
         content:lesson.querySelector('[data-lesson-content]').value,
         video_url:lesson.querySelector('[data-lesson-video]').value,
+        image_url:lesson.querySelector('[data-lesson-image]').value,
+        image_alt:lesson.querySelector('[data-lesson-image-alt]').value,
+        resource_url:lesson.querySelector('[data-lesson-resource]').value,
+        resource_label:lesson.querySelector('[data-lesson-resource-label]').value,
         reflection_prompt:lesson.querySelector('[data-lesson-reflection]').value,
+        response_required:lesson.querySelector('[data-lesson-response]').checked,
         estimated_minutes:Number(lesson.querySelector('[data-lesson-minutes]').value || 0),
         is_required:lesson.querySelector('[data-lesson-required]').checked
       }))

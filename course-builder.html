@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <title>Course Builder | CMC Pathway</title>
-  <link rel="stylesheet" href="style.css?v=95">
+  <link rel="stylesheet" href="style.css?v=100">
 </head>
 <body class="cmcPathwayBody">
 <header class="cmcHeader">
@@ -20,7 +20,7 @@
     <div>
       <p class="cmcEyebrow">COURSE BUILDER</p>
       <h1 id="builderTitle">Create a course.</h1>
-      <p>Build the course in modules. Each lesson can include written material, a video, and a reflection prompt.</p>
+      <p>Build the course in modules. Add articles, videos, images, resources, and participant reflection prompts.</p>
     </div>
     <div class="cmcBuilderHeaderActions">
       <span id="autosaveStatus" class="cmcAutosaveStatus" aria-live="polite">Autosave ready</span>
@@ -140,11 +140,25 @@
       <div class="cmcLessonFields">
         <label class="wide"><span>Lesson title</span><input data-lesson-title maxlength="160" required placeholder="Lesson title"></label>
         <label class="wide"><span>Short summary</span><input data-lesson-summary maxlength="500" placeholder="One sentence describing this lesson"></label>
+        <label>
+          <span>Lesson format</span>
+          <select data-lesson-type>
+            <option value="article">Article</option>
+            <option value="video">Video</option>
+            <option value="reflection">Reflection</option>
+            <option value="resource">Resource</option>
+          </select>
+        </label>
+        <label><span>Minutes</span><input data-lesson-minutes type="number" min="0" max="600" inputmode="numeric"></label>
         <label class="wide"><span>Written content</span><textarea data-lesson-content rows="10" maxlength="50000" placeholder="Add the lesson text here. Use a blank line between paragraphs. Start a heading with ## and a list item with -"></textarea></label>
         <label class="wide"><span>Video link (optional)</span><input data-lesson-video type="url" placeholder="https://youtube.com/... or https://vimeo.com/..."></label>
+        <label class="wide"><span>Lesson image (optional)</span><input data-lesson-image placeholder="/assets/image.svg or https://..."></label>
+        <label class="wide"><span>Image description</span><input data-lesson-image-alt maxlength="300" placeholder="Describe the image for participants who cannot see it"></label>
+        <label><span>Resource link (optional)</span><input data-lesson-resource type="url" placeholder="https://..."></label>
+        <label><span>Resource button label</span><input data-lesson-resource-label maxlength="120" placeholder="Open resource"></label>
         <label class="wide"><span>Reflection prompt (optional)</span><textarea data-lesson-reflection rows="3" maxlength="2000" placeholder="What should the participant consider or respond to?"></textarea></label>
-        <label><span>Minutes</span><input data-lesson-minutes type="number" min="0" max="600" inputmode="numeric"></label>
         <label class="cmcRequiredToggle"><input data-lesson-required type="checkbox" checked><span>Required for completion</span></label>
+        <label class="cmcRequiredToggle"><input data-lesson-response type="checkbox"><span>Collect a written response</span></label>
       </div>
     </div>
   </article>
@@ -152,6 +166,6 @@
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="auth.js?v=91"></script>
-<script src="course-builder.js?v=96"></script>
+<script src="course-builder.js?v=100"></script>
 </body>
 </html>

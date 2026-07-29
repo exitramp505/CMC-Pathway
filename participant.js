@@ -66,6 +66,7 @@
     const assignments = data.assignments || [];
     participantAssignments = assignments;
     const reports = data.reports || [];
+    const reflections = data.reflections || [];
     const application = data.application || null;
     const activity = data.activity || [];
     const stage = participant.current_stage || inferredStage(assignments);
@@ -95,7 +96,7 @@
     renderProfile(participant);
     renderActivity(activity);
     renderWork(assignments, reports, application);
-    renderRecords(reports, application);
+    renderRecords(reports, application, reflections);
   }
 
   function renderProfile(person) {
@@ -445,7 +446,7 @@
     }
   }
 
-  function renderRecords(reports, application) {
+  function renderRecords(reports, application, reflections = []) {
     const records = [];
     if (application) {
       records.push({
@@ -469,6 +470,16 @@
         href:recordUrl('assessment', report.id)
       });
     }
+    for (const reflection of reflections) {
+      records.push({
+        title:reflection.lesson_title,
+        type:'Course reflection',
+        status:reflection.course_title,
+        date:reflection.updated_at,
+        complete:true,
+        href:recordUrl('course_reflection', reflection.id)
+      });
+    }
 
     document.getElementById('participantRecordList').innerHTML = records.length
       ? records.map(record => `<article>
@@ -480,7 +491,7 @@
           </div>
           <a class="cmcRecordAction" href="${record.href}">Open →</a>
         </article>`).join('')
-      : '<p class="cmcDetailEmpty">No applications or assessment reports have been recorded.</p>';
+      : '<p class="cmcDetailEmpty">No applications, reports, or course reflections have been recorded.</p>';
   }
 
   async function saveProfile(event) {

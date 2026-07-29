@@ -37,13 +37,21 @@ create table if not exists public.cmc_course_lessons (
   title text not null,
   summary text not null default '',
   content text not null default '',
+  lesson_type text not null default 'article',
   video_url text not null default '',
+  image_url text not null default '',
+  image_alt text not null default '',
+  resource_url text not null default '',
+  resource_label text not null default '',
   reflection_prompt text not null default '',
+  response_required boolean not null default false,
   estimated_minutes integer not null default 0,
   is_required boolean not null default true,
   position integer not null default 0,
   created_at timestamptz not null default now(),
-  updated_at timestamptz not null default now()
+  updated_at timestamptz not null default now(),
+  constraint cmc_course_lessons_type_check
+    check (lesson_type in ('article', 'video', 'reflection', 'resource'))
 );
 
 create table if not exists public.cmc_course_enrollments (
@@ -69,6 +77,17 @@ create table if not exists public.cmc_course_lesson_progress (
   unique(user_id, lesson_id)
 );
 
+create table if not exists public.cmc_course_lesson_responses (
+  id uuid primary key default gen_random_uuid(),
+  user_id uuid not null,
+  course_id uuid not null references public.cmc_courses(id) on delete cascade,
+  lesson_id uuid not null references public.cmc_course_lessons(id) on delete cascade,
+  response_text text not null default '',
+  created_at timestamptz not null default now(),
+  updated_at timestamptz not null default now(),
+  unique(user_id, lesson_id)
+);
+
 create index if not exists cmc_course_modules_course_position_idx
   on public.cmc_course_modules(course_id, position);
 create index if not exists cmc_course_lessons_course_module_position_idx
@@ -77,12 +96,15 @@ create index if not exists cmc_course_enrollments_user_idx
   on public.cmc_course_enrollments(user_id);
 create index if not exists cmc_course_lesson_progress_user_course_idx
   on public.cmc_course_lesson_progress(user_id, course_id);
+create index if not exists cmc_course_lesson_responses_user_course_idx
+  on public.cmc_course_lesson_responses(user_id, course_id);
 
 alter table public.cmc_courses enable row level security;
 alter table public.cmc_course_modules enable row level security;
 alter table public.cmc_course_lessons enable row level security;
 alter table public.cmc_course_enrollments enable row level security;
 alter table public.cmc_course_lesson_progress enable row level security;
+alter table public.cmc_course_lesson_responses enable row level security;
 
 -- Course content and progress are served by authenticated Netlify Functions.
 -- This keeps draft material and administrative writes out of the browser client.

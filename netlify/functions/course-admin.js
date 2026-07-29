@@ -114,8 +114,14 @@ exports.handler = async (event) => {
           title:lesson.title,
           summary:lesson.summary,
           content:lesson.content,
+          lesson_type:lesson.lesson_type,
           video_url:lesson.video_url,
+          image_url:lesson.image_url,
+          image_alt:lesson.image_alt,
+          resource_url:lesson.resource_url,
+          resource_label:lesson.resource_label,
           reflection_prompt:lesson.reflection_prompt,
+          response_required:lesson.response_required,
           estimated_minutes:lesson.estimated_minutes,
           is_required:lesson.is_required,
           position:lessonIndex,
@@ -197,8 +203,14 @@ function validateCourse(body) {
       title:clean(lesson.title, 160),
       summary:clean(lesson.summary, 500),
       content:String(lesson.content || '').trim().slice(0, 50000),
+      lesson_type:validChoice(lesson.lesson_type, ['article','video','reflection','resource'], 'article'),
       video_url:validVideoUrl(lesson.video_url),
+      image_url:validContentUrl(lesson.image_url, true, 'Lesson image'),
+      image_alt:clean(lesson.image_alt, 300),
+      resource_url:validContentUrl(lesson.resource_url, false, 'Resource'),
+      resource_label:clean(lesson.resource_label, 120),
       reflection_prompt:clean(lesson.reflection_prompt, 2000),
+      response_required:lesson.response_required === true,
       estimated_minutes:numberInRange(lesson.estimated_minutes, 0, 600),
       is_required:lesson.is_required !== false
     })) : []
@@ -234,6 +246,18 @@ function validVideoUrl(value) {
     return url.slice(0, 2000);
   } catch (_) {
     throw httpError(400, 'Video links must be valid HTTPS addresses.');
+  }
+}
+function validContentUrl(value, allowRelative, label) {
+  const url = String(value || '').trim();
+  if (!url) return '';
+  if (allowRelative && /^\/[A-Za-z0-9_./-]+$/.test(url)) return url.slice(0, 2000);
+  try {
+    const parsed = new URL(url);
+    if (parsed.protocol !== 'https:') throw new Error();
+    return url.slice(0, 2000);
+  } catch (_) {
+    throw httpError(400, `${label} links must be valid HTTPS addresses${allowRelative ? ' or local site paths' : ''}.`);
   }
 }
 function clean(value, length) { return String(value || '').trim().slice(0, length); }

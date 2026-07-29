@@ -65,9 +65,8 @@ participants when they first open their pathway. Courses marked
 leader-assigned remain hidden until a regional or national leader selects them
 from the participant's Courses screen.
 
-The old Pathwright functions can remain temporarily during migration, but the
-native course flow does not call them and does not require Zapier or Pathwright
-environment variables.
+CMC courses, participant progress, and written reflections are handled directly
+inside CMC Pathway and Supabase.
 
 ## Access
 

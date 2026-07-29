@@ -17,12 +17,16 @@ exports.handler = async (event) => {
     const body = JSON.parse(event.body || '{}');
     const lessonId = String(body.lesson_id || '');
     const completed = body.completed !== false;
+    const responseText = String(body.response_text || '').trim().slice(0, 5000);
     if (!lessonId) return json(400, { ok:false, error:'Lesson id is required.' });
 
     const { data:lesson, error:lessonError } = await supabase
-      .from('cmc_course_lessons').select('id,course_id').eq('id', lessonId).maybeSingle();
+      .from('cmc_course_lessons').select('id,course_id,response_required').eq('id', lessonId).maybeSingle();
     if (lessonError) throw lessonError;
     if (!lesson) return json(404, { ok:false, error:'Lesson not found.' });
+    if (lesson.response_required && !responseText) {
+      return json(400, { ok:false, error:'Please add your reflection before completing this lesson.' });
+    }
 
     const [{ data:course, error:courseError }, { data:viewer, error:viewerError }] = await Promise.all([
       supabase.from('cmc_courses').select('id,slug,status,stage_key,access_mode').eq('id', lesson.course_id).single(),
@@ -68,6 +72,16 @@ exports.handler = async (event) => {
     }
 
     const now = new Date().toISOString();
+    if (responseText) {
+      const { error:responseError } = await supabase.from('cmc_course_lesson_responses').upsert({
+        user_id:user.id,
+        course_id:lesson.course_id,
+        lesson_id:lesson.id,
+        response_text:responseText,
+        updated_at:now
+      }, { onConflict:'user_id,lesson_id' });
+      if (responseError) throw responseError;
+    }
     const { error:upsertError } = await supabase.from('cmc_course_lesson_progress').upsert({
       user_id:user.id,
       course_id:lesson.course_id,

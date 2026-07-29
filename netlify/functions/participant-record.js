@@ -53,7 +53,39 @@ exports.handler = async (event) => {
       return json(200, { ok:true, viewer, participant, type:'assessment', record:data });
     }
 
-    return json(400, { ok:false, error:'Choose an application or assessment report.' });
+    if (recordType === 'course_reflection') {
+      if (!isUuid(recordId)) {
+        return json(400, { ok:false, error:'A course reflection is required.' });
+      }
+      const { data, error } = await supabase
+        .from('cmc_course_lesson_responses')
+        .select('id,course_id,lesson_id,response_text,updated_at')
+        .eq('id', recordId)
+        .eq('user_id', participant.id)
+        .maybeSingle();
+      if (error) throw error;
+      if (!data) return json(404, { ok:false, error:'Course reflection not found.' });
+      const [{ data:course, error:courseError }, { data:lesson, error:lessonError }] = await Promise.all([
+        supabase.from('cmc_courses').select('title').eq('id', data.course_id).maybeSingle(),
+        supabase.from('cmc_course_lessons').select('title,reflection_prompt').eq('id', data.lesson_id).maybeSingle()
+      ]);
+      if (courseError) throw courseError;
+      if (lessonError) throw lessonError;
+      return json(200, {
+        ok:true,
+        viewer,
+        participant,
+        type:'course_reflection',
+        record:{
+          ...data,
+          course_title:course?.title || 'CMC Course',
+          lesson_title:lesson?.title || 'Course reflection',
+          reflection_prompt:lesson?.reflection_prompt || ''
+        }
+      });
+    }
+
+    return json(400, { ok:false, error:'Choose an application, assessment, or course reflection.' });
   } catch (error) {
     return json(error.statusCode || 500, {
       ok:false,

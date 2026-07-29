@@ -75,18 +75,23 @@
 
   function renderLesson() {
     const lesson = lessons[currentIndex];
-    const video = videoHtml(lesson.video_url);
+    const video = videoHtml(lesson.video_url, lesson.lesson_type);
+    const image = imageHtml(lesson.image_url, lesson.image_alt);
+    const resource = resourceHtml(lesson.resource_url, lesson.resource_label);
     const content = contentHtml(lesson.content);
+    const format = lessonTypeLabel(lesson.lesson_type);
     document.getElementById('lessonContent').innerHTML = `
       <div class="cmcLessonMeta">
-        <span>${escapeHtml(lesson.module.title)}</span>
+        <span>${escapeHtml(lesson.module.title)} · ${escapeHtml(format)}</span>
         <span>Lesson ${lesson.moduleIndex + 1}.${lesson.lessonIndex + 1}${lesson.estimated_minutes ? ` · ${lesson.estimated_minutes} min` : ''}</span>
       </div>
       <h2>${escapeHtml(lesson.title)}</h2>
       ${lesson.summary ? `<p class="cmcLessonSummary">${escapeHtml(lesson.summary)}</p>` : ''}
       ${video}
+      ${image}
       <div class="cmcLessonProse">${content || '<p>No written content has been added to this lesson.</p>'}</div>
-      ${lesson.reflection_prompt ? `<aside class="cmcReflection"><p class="cmcEyebrow">REFLECT</p><h3>${escapeHtml(lesson.reflection_prompt)}</h3></aside>` : ''}
+      ${resource}
+      ${reflectionHtml(lesson)}
       <footer class="cmcLessonFooter">
         <button id="previousLessonBtn" class="cmcSecondaryButton" type="button"${currentIndex === 0 ? ' disabled' : ''}>← Previous</button>
         <button id="completeLessonBtn" class="cmcPrimaryButton ${lesson.completed ? 'complete' : ''}" type="button">
@@ -106,14 +111,24 @@
     button.disabled = true;
     button.textContent = 'Saving…';
     try {
+      const responseField = document.getElementById('lessonResponse');
+      const responseText = responseField?.value.trim() || '';
+      if (lesson.response_required && !responseText) {
+        responseField.focus();
+        document.getElementById('lessonResponseMessage').textContent = 'Add your reflection before completing this lesson.';
+        button.disabled = false;
+        button.textContent = 'Complete and continue';
+        return;
+      }
       const response = await fetch('/.netlify/functions/course-progress', {
         method:'POST',
         headers:{'Content-Type':'application/json', Authorization:`Bearer ${token}`},
-        body:JSON.stringify({lesson_id:lesson.id,completed:true})
+        body:JSON.stringify({lesson_id:lesson.id,completed:true,response_text:responseText})
       });
       const data = await response.json().catch(() => ({}));
       if (!response.ok || !data.ok) throw new Error(data.error || 'Could not save progress.');
       lesson.completed = true;
+      if (responseText) lesson.response_text = responseText;
       updateProgress(data.progress);
       refreshOutline();
       if (data.courseComplete) return showCompletion();
@@ -156,8 +171,12 @@
   function goTo(index){if(index<0||index>=lessons.length)return;currentIndex=index;renderLesson()}
   function updateProgress(percent){document.getElementById('courseProgressText').textContent=`${percent}%`;document.getElementById('courseProgressBar').style.width=`${percent}%`}
 
-  function videoHtml(url) {
-    if (!url) return '';
+  function videoHtml(url, lessonType) {
+    if (!url) {
+      return lessonType === 'video'
+        ? `<div class="cmcVideoPlaceholder"><span aria-hidden="true">▶</span><div><strong>Video lesson</strong><p>The video for this lesson will be added here. The written material is available below.</p></div></div>`
+        : '';
+    }
     const youtube = url.match(/(?:youtube\.com\/(?:watch\?v=|embed\/)|youtu\.be\/)([A-Za-z0-9_-]{6,})/);
     if (youtube) return `<div class="cmcVideoFrame"><iframe src="https://www.youtube-nocookie.com/embed/${encodeURIComponent(youtube[1])}" title="Lesson video" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe></div>`;
     const vimeo = url.match(/vimeo\.com\/(?:video\/)?(\d+)/);
@@ -165,24 +184,85 @@
     return `<a class="cmcVideoLink" href="${escapeAttribute(url)}" target="_blank" rel="noopener">Open lesson video ↗</a>`;
   }
 
+  function imageHtml(url, alt) {
+    if (!url) return '';
+    return `<figure class="cmcLessonImage"><img src="${escapeAttribute(url)}" alt="${escapeAttribute(alt || '')}"></figure>`;
+  }
+
+  function resourceHtml(url, label) {
+    if (!url) return '';
+    return `<a class="cmcLessonResource" href="${escapeAttribute(url)}" target="_blank" rel="noopener">
+      <span><small>COURSE RESOURCE</small><strong>${escapeHtml(label || 'Open resource')}</strong></span><b aria-hidden="true">↗</b>
+    </a>`;
+  }
+
+  function reflectionHtml(lesson) {
+    if (!lesson.reflection_prompt && !lesson.response_required) return '';
+    return `<aside class="cmcReflection">
+      <p class="cmcEyebrow">REFLECT</p>
+      ${lesson.reflection_prompt ? `<h3>${escapeHtml(lesson.reflection_prompt)}</h3>` : ''}
+      ${lesson.response_required ? `<label class="cmcReflectionResponse">
+        <span>Your response</span>
+        <textarea id="lessonResponse" rows="5" maxlength="5000" placeholder="Write your reflection here…">${escapeHtml(lesson.response_text || '')}</textarea>
+        <small id="lessonResponseMessage">Your response will be saved with your course progress.</small>
+      </label>` : ''}
+    </aside>`;
+  }
+
   function contentHtml(value) {
     const lines = String(value || '').split(/\n/);
     let html = '';
-    let listOpen = false;
+    let listType = '';
+    const closeList = () => {
+      if (!listType) return;
+      html += `</${listType}>`;
+      listType = '';
+    };
     for (const raw of lines) {
       const line = raw.trim();
       if (line.startsWith('- ')) {
-        if (!listOpen) { html += '<ul>'; listOpen = true; }
-        html += `<li>${escapeHtml(line.slice(2))}</li>`;
+        if (listType !== 'ul') { closeList(); html += '<ul>'; listType = 'ul'; }
+        html += `<li>${inlineHtml(line.slice(2))}</li>`;
         continue;
       }
-      if (listOpen) { html += '</ul>'; listOpen = false; }
+      if (/^\d+\.\s+/.test(line)) {
+        if (listType !== 'ol') { closeList(); html += '<ol>'; listType = 'ol'; }
+        html += `<li>${inlineHtml(line.replace(/^\d+\.\s+/, ''))}</li>`;
+        continue;
+      }
       if (!line) continue;
-      if (line.startsWith('## ')) html += `<h3>${escapeHtml(line.slice(3))}</h3>`;
-      else html += `<p>${escapeHtml(line)}</p>`;
+      closeList();
+      if (line === '---') html += '<hr>';
+      else if (line.startsWith('### ')) html += `<h4>${inlineHtml(line.slice(4))}</h4>`;
+      else if (line.startsWith('## ')) html += `<h3>${inlineHtml(line.slice(3))}</h3>`;
+      else if (line.startsWith('> ')) html += `<blockquote>${inlineHtml(line.slice(2))}</blockquote>`;
+      else html += `<p>${inlineHtml(line)}</p>`;
     }
-    if (listOpen) html += '</ul>';
+    closeList();
     return html;
+  }
+
+  function inlineHtml(value) {
+    const links = [];
+    const linked = String(value || '').replace(/\[([^\]]+)\]\((https:\/\/[^)\s]+)\)/g, (_, text, url) => {
+      const token = `CMC_LINK_${links.length}_TOKEN`;
+      links.push({ token, text, url });
+      return token;
+    });
+    let html = escapeHtml(linked)
+      .replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>')
+      .replace(/\*([^*]+)\*/g, '<em>$1</em>');
+    links.forEach(link => {
+      html = html.replace(
+        link.token,
+        `<a href="${escapeAttribute(link.url)}" target="_blank" rel="noopener">${escapeHtml(link.text)}</a>`
+      );
+    });
+    return html;
+  }
+
+  function lessonTypeLabel(value) {
+    return ({article:'Article',video:'Video',reflection:'Reflection',resource:'Resource'})[value] || 'Article';
   }
   function escapeHtml(value){return String(value??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[m]))}
   function escapeAttribute(value){return escapeHtml(value)}

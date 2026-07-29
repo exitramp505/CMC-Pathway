@@ -61,14 +61,21 @@ exports.handler = async (event) => {
       }
     }
 
-    const [{ data:modules, error:moduleError }, { data:lessons, error:lessonError }, { data:progress, error:progressError }] = await Promise.all([
+    const [
+      { data:modules, error:moduleError },
+      { data:lessons, error:lessonError },
+      { data:progress, error:progressError },
+      { data:responses, error:responseError }
+    ] = await Promise.all([
       supabase.from('cmc_course_modules').select('*').eq('course_id', course.id).order('position'),
       supabase.from('cmc_course_lessons').select('*').eq('course_id', course.id).order('position'),
-      supabase.from('cmc_course_lesson_progress').select('lesson_id,completed,completed_at').eq('course_id', course.id).eq('user_id', user.id)
+      supabase.from('cmc_course_lesson_progress').select('lesson_id,completed,completed_at').eq('course_id', course.id).eq('user_id', user.id),
+      supabase.from('cmc_course_lesson_responses').select('lesson_id,response_text,updated_at').eq('course_id', course.id).eq('user_id', user.id)
     ]);
     if (moduleError) throw moduleError;
     if (lessonError) throw lessonError;
     if (progressError) throw progressError;
+    if (responseError) throw responseError;
 
     const now = new Date().toISOString();
     const { error:enrollmentError } = await supabase.from('cmc_course_enrollments').upsert({
@@ -77,6 +84,7 @@ exports.handler = async (event) => {
     if (enrollmentError) throw enrollmentError;
 
     const progressMap = new Map((progress || []).map(item => [item.lesson_id, item]));
+    const responseMap = new Map((responses || []).map(item => [item.lesson_id, item]));
     const canEdit = viewer?.account_role === 'cmc_admin';
     const visibleModules = canEdit
       ? (modules || [])
@@ -91,7 +99,9 @@ exports.handler = async (event) => {
         lessons:visibleLessons.filter(lesson => lesson.module_id === module.id).map(lesson => ({
           ...lesson,
           completed:Boolean(progressMap.get(lesson.id)?.completed),
-          completed_at:progressMap.get(lesson.id)?.completed_at || null
+          completed_at:progressMap.get(lesson.id)?.completed_at || null,
+          response_text:responseMap.get(lesson.id)?.response_text || '',
+          response_updated_at:responseMap.get(lesson.id)?.updated_at || null
         }))
       }))
     };

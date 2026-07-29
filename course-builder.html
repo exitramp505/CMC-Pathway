@@ -1,0 +1,103 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Course Builder | CMC Pathway</title>
+  <link rel="stylesheet" href="style.css?v=90">
+</head>
+<body class="cmcPathwayBody">
+<header class="cmcHeader">
+  <a class="cmcBrand" href="courses.html" aria-label="Back to courses">
+    <img class="cmcLogoImage" src="cmc-logo-mark.svg" alt="">
+    <span><strong>CMC Pathway</strong><small>Church Multiplication Collective</small></span>
+  </a>
+  <nav id="cmcRoleNav" class="cmcNav"></nav>
+</header>
+
+<main class="cmcBuilderMain">
+  <section class="cmcBuilderHeader">
+    <div>
+      <p class="cmcEyebrow">COURSE BUILDER</p>
+      <h1 id="builderTitle">Create a course.</h1>
+      <p>Build the course in modules. Each lesson can include written material, a video, and a reflection prompt.</p>
+    </div>
+    <div class="cmcBuilderHeaderActions">
+      <a id="previewCourseLink" class="cmcSecondaryButton hidden" href="#">Preview</a>
+      <button id="saveDraftBtn" class="cmcSecondaryButton" type="button">Save draft</button>
+      <button id="publishBtn" class="cmcPrimaryButton" type="button">Publish course</button>
+    </div>
+  </section>
+
+  <form id="courseBuilderForm" class="cmcBuilderLayout">
+    <aside class="cmcBuilderSettings">
+      <p class="cmcEyebrow">COURSE DETAILS</p>
+      <label><span>Course title</span><input id="courseTitle" maxlength="160" required placeholder="Discover: Church Multiplication 101"></label>
+      <label><span>Short subtitle</span><input id="courseSubtitle" maxlength="240" placeholder="A biblical introduction to church multiplication"></label>
+      <label><span>Course URL name</span><input id="courseSlug" maxlength="100" required placeholder="discover"></label>
+      <label><span>Description</span><textarea id="courseDescription" rows="6" maxlength="3000" placeholder="What will participants understand by the end?"></textarea></label>
+      <label><span>Estimated minutes</span><input id="courseMinutes" type="number" min="0" max="100000" inputmode="numeric"></label>
+      <div class="cmcBuilderStatusBox">
+        <span>Current status</span>
+        <strong id="courseStatus">New draft</strong>
+        <p>Only published courses are available to participants.</p>
+      </div>
+    </aside>
+
+    <section class="cmcModuleBuilder">
+      <div class="cmcModuleBuilderHeading">
+        <div><p class="cmcEyebrow">COURSE CONTENT</p><h2>Modules and lessons</h2></div>
+        <button id="addModuleBtn" class="cmcAddButton" type="button">Add module ＋</button>
+      </div>
+      <p id="builderMessage" class="cmcAdminMessage"></p>
+      <div id="moduleList" class="cmcModuleList"></div>
+    </section>
+  </form>
+</main>
+
+<template id="moduleTemplate">
+  <article class="cmcModuleEditor" data-module>
+    <div class="cmcModuleEditorTop">
+      <span class="cmcModuleHandle" aria-hidden="true">MODULE</span>
+      <div class="cmcReorderActions">
+        <button type="button" data-move-module="up" title="Move module up">↑</button>
+        <button type="button" data-move-module="down" title="Move module down">↓</button>
+        <button type="button" data-remove-module title="Remove module">Remove</button>
+      </div>
+    </div>
+    <div class="cmcModuleFields">
+      <label><span>Module title</span><input data-module-title maxlength="160" required placeholder="Module title"></label>
+      <label><span>Module introduction</span><textarea data-module-description rows="2" maxlength="1000" placeholder="Briefly introduce this part of the course."></textarea></label>
+    </div>
+    <div class="cmcLessonList" data-lesson-list></div>
+    <button type="button" class="cmcAddLessonButton" data-add-lesson>Add lesson ＋</button>
+  </article>
+</template>
+
+<template id="lessonTemplate">
+  <article class="cmcLessonEditor" data-lesson>
+    <div class="cmcLessonEditorTop">
+      <span data-lesson-number>Lesson</span>
+      <div class="cmcReorderActions">
+        <button type="button" data-move-lesson="up" title="Move lesson up">↑</button>
+        <button type="button" data-move-lesson="down" title="Move lesson down">↓</button>
+        <button type="button" data-remove-lesson title="Remove lesson">Remove</button>
+      </div>
+    </div>
+    <div class="cmcLessonFields">
+      <label class="wide"><span>Lesson title</span><input data-lesson-title maxlength="160" required placeholder="Lesson title"></label>
+      <label class="wide"><span>Short summary</span><input data-lesson-summary maxlength="500" placeholder="One sentence describing this lesson"></label>
+      <label class="wide"><span>Written content</span><textarea data-lesson-content rows="10" maxlength="50000" placeholder="Add the lesson text here. Use a blank line between paragraphs. Start a heading with ## and a list item with -"></textarea></label>
+      <label class="wide"><span>Video link (optional)</span><input data-lesson-video type="url" placeholder="https://youtube.com/... or https://vimeo.com/..."></label>
+      <label class="wide"><span>Reflection prompt (optional)</span><textarea data-lesson-reflection rows="3" maxlength="2000" placeholder="What should the participant consider or respond to?"></textarea></label>
+      <label><span>Minutes</span><input data-lesson-minutes type="number" min="0" max="600" inputmode="numeric"></label>
+      <label class="cmcRequiredToggle"><input data-lesson-required type="checkbox" checked><span>Required for completion</span></label>
+    </div>
+  </article>
+</template>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="auth.js?v=90"></script>
+<script src="course-builder.js?v=90"></script>
+</body>
+</html>

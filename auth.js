@@ -27,6 +27,7 @@ function renderRoleNavigation(profile,activeKey){
  const items=[
   {key:'pathway',label:'My Pathway',href:role==='participant'?'dashboard.html':'dashboard.html?view=participant',show:true},
   {key:'people',label:'People',href:'leader.html',show:['regional_leader','cmc_admin'].includes(role)},
+  {key:'courses',label:'Courses',href:'courses.html',show:role==='cmc_admin'},
   {key:'leaders',label:'Manage Leaders',href:'manage-leaders.html',show:role==='cmc_admin'},
   {key:'profile',label:'Profile',href:'profile.html',show:true}
  ];

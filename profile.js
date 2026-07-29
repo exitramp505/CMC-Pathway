@@ -78,7 +78,6 @@
       });
 
       await ensureDefaultAssignments();
-      await requestDiscoverEnrollment().catch(() => null);
 
       setMessage('Profile saved.', 'success');
 
@@ -89,17 +88,6 @@
       setMessage(err.message || 'Could not save profile.', 'error');
     }
   });
-
-  async function requestDiscoverEnrollment(){
-    const sb = await dcAuth.getSupabaseClient();
-    const session = await sb.auth.getSession();
-    const accessToken = session.data?.session?.access_token || '';
-    if(!accessToken) return;
-    await fetch('/.netlify/functions/pathwright-enroll', {
-      method:'POST',
-      headers:{ Authorization:`Bearer ${accessToken}` }
-    });
-  }
 
   function setText(id,text){
     const element = document.getElementById(id);

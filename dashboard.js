@@ -32,7 +32,6 @@
 
   await ensureDiscoverAssignment(accessToken);
   const assignments = await getAssignments(accessToken);
-  const assignedKeys = new Set(assignments.map(item => item.item_key));
 
   const { data: reports } = await sb
     .from('assessment_results')
@@ -52,9 +51,8 @@
   const discoverProgress = Number(discoverAssignment?.progress || 0);
   const discoverComplete = discoverProgress >= 100 || discoverAssignment?.external_status === 'completed';
   if (discoverComplete) showDiscoverCompletion();
-  const discernKeys = ['discernment_application','ministry_readiness','ministry_style','character_qualities'];
-  const discernAssignments = discernKeys.filter(key => assignedKeys.has(key));
-  const discernCompleteCount = discernAssignments.filter(key => completedKeys.has(key)).length;
+  const discernAssignments = assignments.filter(item => item.stage_key === 'discern');
+  const discernCompleteCount = discernAssignments.filter(item => assignmentDone(item, completedKeys)).length;
   const hasDiscern = discernAssignments.length > 0;
   const hasDevelop = assignments.some(item => item.stage_key === 'develop');
   const hasDeploy = assignments.some(item => item.stage_key === 'deploy');
@@ -183,27 +181,37 @@
     if (!visible.length) return '';
 
     const info = {
-      discernment_application:['Discernment Application','application.html'],
-      ministry_readiness:['Ministry Readiness Inventory','isa-assessment.html'],
-      ministry_style:['Ministry Style Inventory','ministry-style.html'],
-      character_qualities:['Character Qualities Assessment','assessment.html']
+      discernment_application:['Discernment Application','application.html','Clarify your story and sense of calling.'],
+      ministry_readiness:['Ministry Readiness Inventory','isa-assessment.html','Reflect on your current readiness for ministry.'],
+      ministry_style:['Ministry Style Inventory','ministry-style.html','Understand the ways you tend to lead and serve.'],
+      character_qualities:['Character Qualities Assessment','assessment.html','Review the character qualities that support healthy ministry.']
     };
 
     return `<section id="assigned-work" class="cmcAssignedSection">
-      <div><p class="cmcEyebrow">ASSIGNED TO YOU</p><h2>Your current work.</h2></div>
+      <div><p class="cmcEyebrow">PATHWAY WORK</p><h2>Your courses and assignments.</h2></div>
       <div class="cmcAssignedList">${visible.map(item => {
-        const details = info[item.item_key] || [titleCase(item.item_key), '#'];
-        const done = completed.has(item.item_key) || Number(item.progress) >= 100 || item.external_status === 'completed';
+        const details = item.course
+          ? [
+              item.course.title,
+              `course.html?slug=${encodeURIComponent(item.course.slug)}`,
+              item.course.subtitle || `${titleCase(item.course.stage_key)} course`
+            ]
+          : (info[item.item_key] || [titleCase(item.item_key), '#','Ready when you are.']);
+        const done = assignmentDone(item, completed);
+        const automatic = item.assignment_source === 'automatic';
         return `<article>
           <span class="cmcAssignedCheck">${done ? '✓' : '•'}</span>
-          <div><h3>${escapeHtml(details[0])}</h3><p>${done ? 'Completed' : 'Ready when you are.'}</p></div>
-          <span class="cmcAssignedPill ${done ? 'done' : ''}">${done ? 'Complete' : 'Assigned'}</span>
+          <div><h3>${escapeHtml(details[0])}</h3><p>${done ? 'Completed' : escapeHtml(details[2])}</p></div>
+          <span class="cmcAssignedPill ${done ? 'done' : ''}">${done ? 'Complete' : automatic ? 'Available' : 'Assigned'}</span>
           <a href="${details[1]}">${done ? 'Review' : 'Begin'} →</a>
         </article>`;
       }).join('')}</div>
     </section>`;
   }
 
+  function assignmentDone(item, completed) {
+    return completed.has(item.item_key) || Number(item.progress) >= 100 || item.external_status === 'completed';
+  }
   function setText(id,value){ const el=document.getElementById(id); if(el) el.textContent=value; }
   function firstName(value){ return String(value || '').trim().split(/\s+/)[0] || ''; }
   function titleCase(value){ return String(value || '').replace(/_/g,' ').replace(/\b\w/g,c=>c.toUpperCase()); }

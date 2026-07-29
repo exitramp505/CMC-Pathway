@@ -1,4 +1,5 @@
 const { createClient } = require('@supabase/supabase-js');
+const { assignmentKey, assignmentRecord } = require('./_course-access');
 
 function json(status, body) {
   return { statusCode:status, headers:{'Content-Type':'application/json'}, body:JSON.stringify(body) };
@@ -16,7 +17,7 @@ exports.handler = async (event) => {
     const slug = String(event.queryStringParameters?.slug || 'discover');
 
     const { data:viewer, error:viewerError } = await supabase
-      .from('candidate_profiles').select('id,account_role').eq('id', user.id).maybeSingle();
+      .from('candidate_profiles').select('id,full_name,email,account_role').eq('id', user.id).maybeSingle();
     if (viewerError) throw viewerError;
 
     let query = supabase.from('cmc_courses').select('*').eq('slug', slug);
@@ -24,6 +25,41 @@ exports.handler = async (event) => {
     const { data:course, error:courseError } = await query.maybeSingle();
     if (courseError) throw courseError;
     if (!course) return json(404, { ok:false, error:'This course is not available yet.' });
+
+    const elevated = ['regional_leader','cmc_admin'].includes(viewer?.account_role);
+    if (!elevated && course.access_mode === 'assigned') {
+      const { data:assignment, error:assignmentError } = await supabase
+        .from('candidate_assignments')
+        .select('id')
+        .eq('user_id', user.id)
+        .eq('item_key', assignmentKey(course))
+        .eq('status', 'assigned')
+        .maybeSingle();
+      if (assignmentError) throw assignmentError;
+      if (!assignment) return json(403, { ok:false, error:'A regional leader must assign this course before it is available.' });
+    }
+
+    if (!elevated && course.access_mode === 'automatic' && viewer) {
+      const { data:existingAssignment, error:existingError } = await supabase
+        .from('candidate_assignments')
+        .select('id')
+        .eq('user_id', user.id)
+        .eq('item_key', assignmentKey(course))
+        .maybeSingle();
+      if (existingError) throw existingError;
+      if (!existingAssignment) {
+        const { error:assignmentError } = await supabase
+          .from('candidate_assignments')
+          .insert(assignmentRecord(course, viewer, 'automatic'));
+        if (assignmentError) throw assignmentError;
+      } else {
+        const { error:sourceError } = await supabase
+          .from('candidate_assignments')
+          .update({ assignment_source:'automatic', status:'assigned', hidden_at:null })
+          .eq('id', existingAssignment.id);
+        if (sourceError) throw sourceError;
+      }
+    }
 
     const [{ data:modules, error:moduleError }, { data:lessons, error:lessonError }, { data:progress, error:progressError }] = await Promise.all([
       supabase.from('cmc_course_modules').select('*').eq('course_id', course.id).order('position'),

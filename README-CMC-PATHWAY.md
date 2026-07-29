@@ -6,10 +6,11 @@ This build expands the Discernment Center into CMC Pathway.
 
 1. Run `supabase_cmc_pathway_schema.sql` in the existing Supabase project.
 2. Set account roles in `candidate_profiles`.
-3. Configure the Pathwright enrollment and progress automations.
+3. Run `supabase_courses_schema.sql`.
 4. Add the required Netlify environment variables.
 5. Deploy the repository.
-6. Test one participant and one regional leader account.
+6. Build and publish Discover from the Courses screen.
+7. Test one participant, one regional leader, and one national administrator.
 
 ## Account roles
 
@@ -38,56 +39,31 @@ set account_role = 'regional_leader',
 where lower(email) = lower('leader@example.org');
 ```
 
-## Discover enrollment
+## Native courses
 
-Every completed participant profile creates a `discover_course` assignment.
-The profile then calls `/.netlify/functions/pathwright-enroll`.
+Every completed participant profile receives a `discover_course` assignment.
+The Discover card opens the published course with the slug `discover`.
 
-Required Netlify variable:
+National administrators can:
 
-```text
-PATHWRIGHT_ENROLL_WEBHOOK_URL
-```
+- open `/courses.html`;
+- create draft courses;
+- add ordered modules and lessons;
+- add written content, video links, and reflection prompts;
+- preview drafts;
+- publish or unpublish courses.
 
-Configure the receiving automation to create a Pathwright registration
-invitation for `Discover: Church Multiplication 101`, automatically create the
-user, and send the invitation email.
+Participant lesson completion is stored in Supabase. Completing all required
+lessons updates the existing `discover_course` assignment to 100 percent so
+regional leaders can see that the participant is ready for follow-up.
 
-## Pathwright progress
-
-The progress receiver is:
-
-```text
-https://discernmentcenter.netlify.app/.netlify/functions/pathwright-progress-webhook
-```
-
-Required Netlify variable:
-
-```text
-PATHWRIGHT_WEBHOOK_SECRET
-```
-
-The calling automation must send the same secret in the
-`x-cmc-webhook-secret` header.
-
-Supported payload fields:
-
-```json
-{
-  "event": "registration | completion",
-  "email": "participant@example.org",
-  "progress": 100,
-  "pathwright_user_id": "optional"
-}
-```
-
-Create two Pathwright-triggered automations:
-
-1. New Registration → POST event `registration`.
-2. Student Course Completion → POST event `completion` with progress `100`.
+The old Pathwright functions can remain temporarily during migration, but the
+native course flow does not call them and does not require Zapier or Pathwright
+environment variables.
 
 ## Access
 
 - Participants use `/dashboard.html`.
 - Regional leaders and CMC administrators use `/leader.html`.
+- National administrators build courses at `/courses.html`.
 - Existing assessment administration remains at `/admin.html`.

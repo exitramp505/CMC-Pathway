@@ -1,5 +1,7 @@
 (async function(){
-  const PATHWRIGHT_DISCOVER_URL = 'https://acquire.pathwright.com/library/discover-church-multiplication-101-238879/725954/path/';
+  // Keep participants on the current Pathwright course while the native
+  // Discover course is built and tested privately by CMC administrators.
+  const DISCOVER_COURSE_URL = 'https://acquire.pathwright.com/library/discover-church-multiplication-101-238879/725954/path/';
 
   dcAuth.setupLogout();
   const user = await dcAuth.requireUser();
@@ -71,7 +73,7 @@
       symbol: discoverComplete ? '✓' : '✦',
       state: discoverComplete ? 'complete' : 'current',
       status: discoverComplete ? 'Complete' : discoverProgress ? `${discoverProgress}% complete` : 'Ready to begin',
-      actionUrl: PATHWRIGHT_DISCOVER_URL,
+      actionUrl: DISCOVER_COURSE_URL,
       actionText: discoverComplete ? 'Review Discover' : discoverProgress ? 'Continue Discover' : 'Begin Discover'
     }),
     stageCard({
@@ -172,7 +174,7 @@
       <div class="cmcCourseCompletion">
         <span aria-hidden="true">✓</span>
         <div><strong>Discover complete.</strong><p>Your regional leader can now see that you are ready for a follow-up conversation.</p></div>
-        <a href="${PATHWRIGHT_DISCOVER_URL}" target="_blank" rel="noopener">Review course →</a>
+        <a href="${DISCOVER_COURSE_URL}" target="_blank" rel="noopener">Review course →</a>
       </div>`);
   }
 

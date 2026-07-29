@@ -138,7 +138,9 @@ exports.handler = async (event) => {
     }
 
     const saved = await loadCourse(supabase, courseId);
-    await syncCourseAccess(supabase, saved, previousCourse);
+    if (courseAccessChanged(saved, previousCourse)) {
+      await syncCourseAccess(supabase, saved, previousCourse);
+    }
     return json(200, { ok:true, course:saved });
   } catch (error) {
     const status = error.statusCode || 500;
@@ -235,6 +237,16 @@ function numberInRange(value, min, max) { return Math.max(min, Math.min(max, Num
 function uuidOrBlank(value) { return /^[0-9a-f]{8}-[0-9a-f-]{27}$/i.test(String(value || '')) ? String(value) : ''; }
 function validChoice(value, choices, fallback) { return choices.includes(String(value || '')) ? String(value) : fallback; }
 function httpError(statusCode, message) { const error = new Error(message); error.statusCode = statusCode; return error; }
+
+function courseAccessChanged(course, previousCourse) {
+  if (!previousCourse) return true;
+  return (
+    course.status !== previousCourse.status ||
+    course.slug !== previousCourse.slug ||
+    course.stage_key !== previousCourse.stage_key ||
+    course.access_mode !== previousCourse.access_mode
+  );
+}
 
 async function syncCourseAccess(supabase, course, previousCourse) {
   const key = assignmentKey(course);

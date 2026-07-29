@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <title>Course Builder | CMC Pathway</title>
-  <link rel="stylesheet" href="style.css?v=93">
+  <link rel="stylesheet" href="style.css?v=94">
 </head>
 <body class="cmcPathwayBody">
 <header class="cmcHeader">
@@ -23,6 +23,7 @@
       <p>Build the course in modules. Each lesson can include written material, a video, and a reflection prompt.</p>
     </div>
     <div class="cmcBuilderHeaderActions">
+      <span id="autosaveStatus" class="cmcAutosaveStatus" aria-live="polite">Autosave ready</span>
       <a id="previewCourseLink" class="cmcSecondaryButton hidden" href="#">Preview</a>
       <button id="saveDraftBtn" class="cmcSecondaryButton" type="button">Save draft</button>
       <button id="publishBtn" class="cmcPrimaryButton" type="button">Publish course</button>
@@ -30,39 +31,52 @@
   </section>
 
   <form id="courseBuilderForm" class="cmcBuilderLayout">
-    <aside class="cmcBuilderSettings">
-      <p class="cmcEyebrow">COURSE DETAILS</p>
-      <label><span>Course title</span><input id="courseTitle" maxlength="160" required placeholder="Discover: Church Multiplication 101"></label>
-      <label><span>Short subtitle</span><input id="courseSubtitle" maxlength="240" placeholder="A biblical introduction to church multiplication"></label>
-      <label><span>Course URL name</span><input id="courseSlug" maxlength="100" required placeholder="discover"></label>
-      <label><span>Description</span><textarea id="courseDescription" rows="6" maxlength="3000" placeholder="What will participants understand by the end?"></textarea></label>
-      <label>
-        <span>Pathway stage</span>
-        <select id="courseStage" required>
-          <option value="" selected disabled>Select a stage</option>
-          <option value="discover">Discover</option>
-          <option value="discern">Discern</option>
-          <option value="develop">Develop</option>
-          <option value="deploy">Deploy</option>
-        </select>
-        <small>Controls where the course belongs in a participant’s pathway.</small>
-      </label>
-      <label>
-        <span>Availability</span>
-        <select id="courseAccess" required>
-          <option value="" selected disabled>Select availability</option>
-          <option value="automatic">Available to every participant</option>
-          <option value="assigned">Assigned by a regional leader</option>
-        </select>
-        <small id="courseAccessHelp">Choose how participants receive this course.</small>
-      </label>
-      <label><span>Estimated minutes</span><input id="courseMinutes" type="number" min="0" max="100000" inputmode="numeric"></label>
-      <div class="cmcBuilderStatusBox">
-        <span>Current status</span>
-        <strong id="courseStatus">New draft</strong>
-        <p>Only published courses are available to participants.</p>
+    <section id="courseDetailsPanel" class="cmcBuilderSettings cmcCourseDetailsPanel">
+      <div class="cmcCourseDetailsHeading">
+        <button id="courseDetailsToggle" class="cmcEditorToggle" type="button" aria-expanded="true">
+          <span class="cmcCollapseIcon" aria-hidden="true">−</span>
+          <span>
+            <span class="cmcEyebrow">COURSE DETAILS</span>
+            <strong id="courseDetailsSummary">Untitled course</strong>
+            <small id="courseDetailsMeta">Choose a pathway stage and availability</small>
+          </span>
+        </button>
       </div>
-    </aside>
+      <div class="cmcCourseDetailsBody">
+        <div class="cmcCourseDetailsGrid">
+          <label><span>Course title</span><input id="courseTitle" maxlength="160" required placeholder="Discover: Church Multiplication 101"></label>
+          <label><span>Short subtitle</span><input id="courseSubtitle" maxlength="240" placeholder="A biblical introduction to church multiplication"></label>
+          <label><span>Course URL name</span><input id="courseSlug" maxlength="100" required placeholder="discover"></label>
+          <label><span>Estimated minutes</span><input id="courseMinutes" type="number" min="0" max="100000" inputmode="numeric"></label>
+          <label class="wide"><span>Description</span><textarea id="courseDescription" rows="5" maxlength="3000" placeholder="What will participants understand by the end?"></textarea></label>
+          <label>
+            <span>Pathway stage</span>
+            <select id="courseStage" required>
+              <option value="" selected disabled>Select a stage</option>
+              <option value="discover">Discover</option>
+              <option value="discern">Discern</option>
+              <option value="develop">Develop</option>
+              <option value="deploy">Deploy</option>
+            </select>
+            <small>Controls where the course belongs in a participant’s pathway.</small>
+          </label>
+          <label>
+            <span>Availability</span>
+            <select id="courseAccess" required>
+              <option value="" selected disabled>Select availability</option>
+              <option value="automatic">Available to every participant</option>
+              <option value="assigned">Assigned by a regional leader</option>
+            </select>
+            <small id="courseAccessHelp">Choose how participants receive this course.</small>
+          </label>
+          <div class="cmcBuilderStatusBox wide">
+            <span>Current status</span>
+            <strong id="courseStatus">New draft</strong>
+            <p>Only published courses are available to participants.</p>
+          </div>
+        </div>
+      </div>
+    </section>
 
     <section class="cmcModuleBuilder">
       <div class="cmcModuleBuilderHeading">
@@ -139,6 +153,6 @@
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="auth.js?v=91"></script>
-<script src="course-builder.js?v=93"></script>
+<script src="course-builder.js?v=94"></script>
 </body>
 </html>

@@ -11,18 +11,33 @@
   const session = await sb.auth.getSession();
   const token = session.data?.session?.access_token || '';
   const params = new URLSearchParams(window.location.search);
-  const courseId = params.get('id') || '';
+  let courseId = params.get('id') || '';
   let currentCourse = null;
+  let autosaveTimer = 0;
+  let saveInFlight = false;
+  let autosaveQueued = false;
+  let isHydrating = true;
+  let lastSavedSignature = '';
 
-  document.getElementById('addModuleBtn').addEventListener('click', () => addModule({}, { scroll:true }));
+  document.getElementById('addModuleBtn').addEventListener('click', () => {
+    addModule({}, { scroll:true });
+    queueAutosave();
+  });
   document.getElementById('collapseAllBtn').addEventListener('click', toggleAllModules);
+  document.getElementById('courseDetailsToggle').addEventListener('click', toggleCourseDetails);
   document.getElementById('saveDraftBtn').addEventListener('click', () => save('draft'));
   document.getElementById('publishBtn').addEventListener('click', () => save('published'));
   document.getElementById('courseTitle').addEventListener('input', suggestSlug);
   document.getElementById('courseAccess').addEventListener('change', updateAccessHelp);
+  document.getElementById('courseBuilderForm').addEventListener('input', handleBuilderChange);
+  document.getElementById('courseBuilderForm').addEventListener('change', handleBuilderChange);
 
   if (courseId) await loadCourse();
   else addModule({ title:'', description:'', lessons:[{}] });
+  isHydrating = false;
+  updateCourseDetailsSummary();
+  lastSavedSignature = currentCourse ? JSON.stringify(buildPayload(currentCourse.status)) : '';
+  setAutosaveStatus(currentCourse ? 'All changes saved' : 'Autosave starts after required details');
 
   async function loadCourse() {
     setMessage('Loading course…');
@@ -49,6 +64,7 @@
       document.getElementById('moduleList').innerHTML = '';
       (currentCourse.modules || []).forEach((module, index) => addModule(module, { collapsed:index > 0 }));
       if (!currentCourse.modules?.length) addModule({lessons:[{}]});
+      updateCourseDetailsSummary();
       setMessage('');
     } catch (error) {
       setMessage(error.message, true);
@@ -65,11 +81,13 @@
     node.querySelector('[data-add-lesson]').addEventListener('click', () => {
       setCollapsed(node, false);
       addLesson(node, {}, { collapsed:false });
+      queueAutosave();
     });
     node.querySelector('[data-remove-module]').addEventListener('click', () => {
       if (document.querySelectorAll('[data-module]').length === 1) return setMessage('A course needs at least one module.', true);
       node.remove();
       renumber();
+      queueAutosave();
     });
     node.querySelectorAll('[data-move-module]').forEach(button => button.addEventListener('click', () => moveNode(node, button.dataset.moveModule)));
     document.getElementById('moduleList').append(node);
@@ -97,7 +115,11 @@
     node.querySelector('[data-lesson-title]').addEventListener('input', () => updateLessonSummary(node));
     node.querySelector('[data-lesson-minutes]').addEventListener('input', () => updateLessonSummary(node));
     node.querySelector('[data-lesson-required]').addEventListener('change', () => updateLessonSummary(node));
-    node.querySelector('[data-remove-lesson]').addEventListener('click', () => { node.remove(); renumber(); });
+    node.querySelector('[data-remove-lesson]').addEventListener('click', () => {
+      node.remove();
+      renumber();
+      queueAutosave();
+    });
     node.querySelectorAll('[data-move-lesson]').forEach(button => button.addEventListener('click', () => moveNode(node, button.dataset.moveLesson)));
     moduleNode.querySelector('[data-lesson-list]').append(node);
     setCollapsed(node, Boolean(options.collapsed));
@@ -111,6 +133,7 @@
     if (direction === 'up') node.parentElement.insertBefore(node, sibling);
     else node.parentElement.insertBefore(sibling, node);
     renumber();
+    queueAutosave();
   }
 
   function renumber() {
@@ -165,18 +188,64 @@
     document.getElementById('collapseAllBtn').textContent = allCollapsed ? 'Expand all' : 'Collapse all';
   }
 
-  async function save(status) {
-    const form = document.getElementById('courseBuilderForm');
-    if (!form.checkValidity()) {
-      const invalidField = form.querySelector(':invalid');
-      const invalidModule = invalidField?.closest('[data-module]');
-      const invalidLesson = invalidField?.closest('[data-lesson]');
-      if (invalidModule) setCollapsed(invalidModule, false);
-      if (invalidLesson) setCollapsed(invalidLesson, false);
-      invalidField?.focus();
-      form.reportValidity();
+  function toggleCourseDetails() {
+    setCourseDetailsCollapsed(!document.getElementById('courseDetailsPanel').classList.contains('collapsed'));
+  }
+
+  function setCourseDetailsCollapsed(collapsed) {
+    const panel = document.getElementById('courseDetailsPanel');
+    panel.classList.toggle('collapsed', collapsed);
+    const toggle = document.getElementById('courseDetailsToggle');
+    toggle.setAttribute('aria-expanded', String(!collapsed));
+    toggle.querySelector('.cmcCollapseIcon').textContent = collapsed ? '+' : '−';
+  }
+
+  function updateCourseDetailsSummary() {
+    const title = document.getElementById('courseTitle').value.trim() || 'Untitled course';
+    const stage = selectedLabel('courseStage');
+    const access = selectedLabel('courseAccess');
+    document.getElementById('courseDetailsSummary').textContent = title;
+    document.getElementById('courseDetailsMeta').textContent =
+      stage && access ? `${stage} · ${access}` : 'Choose a pathway stage and availability';
+  }
+
+  function selectedLabel(id) {
+    const select = document.getElementById(id);
+    return select.value ? select.options[select.selectedIndex]?.textContent.trim() : '';
+  }
+
+  function handleBuilderChange() {
+    updateCourseDetailsSummary();
+    queueAutosave();
+  }
+
+  function queueAutosave() {
+    if (isHydrating) return;
+    clearTimeout(autosaveTimer);
+    setAutosaveStatus('Changes waiting to save…');
+    autosaveTimer = window.setTimeout(runAutosave, 1200);
+  }
+
+  async function runAutosave() {
+    if (saveInFlight) {
+      autosaveQueued = true;
       return;
     }
+    const status = currentCourse?.status === 'published' ? 'published' : 'draft';
+    const payload = buildPayload(status);
+    if (!document.getElementById('courseBuilderForm').checkValidity()) {
+      setAutosaveStatus('Complete required titles to continue autosaving');
+      return;
+    }
+    const signature = JSON.stringify(payload);
+    if (signature === lastSavedSignature) {
+      setAutosaveStatus('All changes saved');
+      return;
+    }
+    await save(status, { automatic:true });
+  }
+
+  function buildPayload(status) {
     const modules = [...document.querySelectorAll('[data-module]')].map(module => ({
       id:module.dataset.id || '',
       title:module.querySelector('[data-module-title]').value,
@@ -192,7 +261,7 @@
         is_required:lesson.querySelector('[data-lesson-required]').checked
       }))
     }));
-    const payload = {
+    return {
       id:currentCourse?.id || '',
       published_at:currentCourse?.published_at || null,
       title:document.getElementById('courseTitle').value,
@@ -205,8 +274,46 @@
       status,
       modules
     };
+  }
+
+  function syncSavedIds(savedCourse) {
+    const moduleNodes = [...document.querySelectorAll('[data-module]')];
+    moduleNodes.forEach((moduleNode, moduleIndex) => {
+      const savedModule = savedCourse.modules?.[moduleIndex];
+      if (!savedModule) return;
+      moduleNode.dataset.id = savedModule.id || '';
+      [...moduleNode.querySelectorAll('[data-lesson]')].forEach((lessonNode, lessonIndex) => {
+        lessonNode.dataset.id = savedModule.lessons?.[lessonIndex]?.id || '';
+      });
+    });
+  }
+
+  async function save(status, options = {}) {
+    const form = document.getElementById('courseBuilderForm');
+    if (!form.checkValidity()) {
+      if (options.automatic) {
+        setAutosaveStatus('Complete required titles to continue autosaving');
+        return false;
+      }
+      const invalidField = form.querySelector(':invalid');
+      const invalidModule = invalidField?.closest('[data-module]');
+      const invalidLesson = invalidField?.closest('[data-lesson]');
+      if (invalidField?.closest('#courseDetailsPanel')) setCourseDetailsCollapsed(false);
+      if (invalidModule) setCollapsed(invalidModule, false);
+      if (invalidLesson) setCollapsed(invalidLesson, false);
+      invalidField?.focus();
+      form.reportValidity();
+      return false;
+    }
+    if (saveInFlight) {
+      autosaveQueued = true;
+      return false;
+    }
+    saveInFlight = true;
+    const payload = buildPayload(status);
     setWorking(true);
-    setMessage(status === 'published' ? 'Publishing course…' : 'Saving draft…');
+    if (options.automatic) setAutosaveStatus('Saving changes…');
+    else setMessage(status === 'published' ? 'Publishing course…' : 'Saving draft…');
     try {
       const response = await fetch('/.netlify/functions/course-admin', {
         method:'POST',
@@ -216,19 +323,38 @@
       const data = await response.json().catch(() => ({}));
       if (!response.ok || !data.ok) throw new Error(data.error || 'Could not save course.');
       currentCourse = data.course;
+      courseId = currentCourse.id;
+      document.getElementById('courseSlug').value = currentCourse.slug;
       history.replaceState(null, '', `course-builder.html?id=${encodeURIComponent(currentCourse.id)}`);
       document.getElementById('courseStatus').textContent = status === 'published' ? 'Published' : 'Draft';
       document.getElementById('builderTitle').textContent = 'Edit the course.';
       const preview = document.getElementById('previewCourseLink');
       preview.href = `course.html?slug=${encodeURIComponent(currentCourse.slug)}`;
       preview.classList.remove('hidden');
-      document.getElementById('moduleList').innerHTML = '';
-      currentCourse.modules.forEach((module, index) => addModule(module, { collapsed:index > 0 }));
-      setMessage(status === 'published' ? 'Course published.' : 'Draft saved.');
+      if (options.automatic) {
+        syncSavedIds(currentCourse);
+      } else {
+        isHydrating = true;
+        document.getElementById('moduleList').innerHTML = '';
+        currentCourse.modules.forEach((module, index) => addModule(module, { collapsed:index > 0 }));
+        isHydrating = false;
+        setMessage(status === 'published' ? 'Course published.' : 'Draft saved.');
+      }
+      lastSavedSignature = JSON.stringify(buildPayload(currentCourse.status));
+      updateCourseDetailsSummary();
+      setAutosaveStatus('All changes saved');
+      return true;
     } catch (error) {
-      setMessage(error.message, true);
+      if (options.automatic) setAutosaveStatus('Autosave paused. Use Save draft to retry.', true);
+      else setMessage(error.message, true);
+      return false;
     } finally {
+      saveInFlight = false;
       setWorking(false);
+      if (autosaveQueued) {
+        autosaveQueued = false;
+        queueAutosave();
+      }
     }
   }
 
@@ -246,6 +372,7 @@
   }
   function setWorking(value){document.getElementById('saveDraftBtn').disabled=value;document.getElementById('publishBtn').disabled=value}
   function setMessage(value,error){const el=document.getElementById('builderMessage');el.textContent=value||'';el.classList.toggle('error',Boolean(error))}
+  function setAutosaveStatus(value,error){const el=document.getElementById('autosaveStatus');el.textContent=value;el.classList.toggle('error',Boolean(error))}
   function setValue(id,value){document.getElementById(id).value=value||''}
   function setNodeValue(node,selector,value){node.querySelector(selector).value=value||''}
 })();

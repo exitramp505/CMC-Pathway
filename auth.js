@@ -20,6 +20,49 @@ async function signOut(){const sb=await getSupabaseClient(); await sb.auth.signO
 async function getProfile(userId){const sb=await getSupabaseClient(); const {data,error}=await sb.from('candidate_profiles').select('*').eq('id',userId).maybeSingle(); if(error) throw error; return data}
 async function upsertProfile(profile){const sb=await getSupabaseClient(); const {error}=await sb.from('candidate_profiles').upsert(profile,{onConflict:'id'}); if(error) throw error}
 function setupLogout(){document.querySelectorAll('#logoutBtn').forEach(btn=>btn.addEventListener('click',signOut))}
+let autoHideHeaderInitialized=false;
+function setupAutoHideHeader(){
+ if(autoHideHeaderInitialized)return;
+ const header=document.querySelector('.cmcHeader');
+ if(!header)return;
+ autoHideHeaderInitialized=true;
+ header.classList.add('cmcHeaderAutoHide');
+ let lastY=Math.max(window.scrollY,0);
+ let downwardDistance=0;
+ let upwardDistance=0;
+ let ticking=false;
+ const reveal=()=>{
+  header.classList.remove('cmcHeaderHidden');
+  downwardDistance=0;
+  upwardDistance=0;
+ };
+ const update=()=>{
+  const y=Math.max(window.scrollY,0);
+  const delta=y-lastY;
+  const navigationFocused=header.contains(document.activeElement);
+  header.classList.toggle('cmcHeaderScrolled',y>12);
+  if(y<120||navigationFocused){
+   reveal();
+  }else if(delta<0){
+   downwardDistance=0;
+   upwardDistance+=Math.abs(delta);
+   if(upwardDistance>42)reveal();
+  }else if(delta>0&&y>150){
+   upwardDistance=0;
+   downwardDistance+=delta;
+   if(downwardDistance>44)header.classList.add('cmcHeaderHidden');
+  }
+  lastY=y;
+  ticking=false;
+ };
+ window.addEventListener('scroll',()=>{
+  if(ticking)return;
+  ticking=true;
+  window.requestAnimationFrame(update);
+ },{passive:true});
+ header.addEventListener('focusin',reveal);
+ window.addEventListener('pageshow',reveal);
+}
 function renderRoleNavigation(profile,activeKey){
  const nav=document.getElementById('cmcRoleNav');
  if(!nav)return;
@@ -33,6 +76,7 @@ function renderRoleNavigation(profile,activeKey){
  ];
  nav.innerHTML=items.filter(item=>item.show).map(item=>`<a${item.key===activeKey?' class="active"':''} href="${item.href}">${item.label}</a>`).join('')+'<button id="logoutBtn" type="button">Logout</button>';
  setupLogout();
+ setupAutoHideHeader();
 }
-window.dcAuth={fillStateSelect,regionForState,getSupabaseClient,getCurrentSession,requireUser,signOut,getProfile,upsertProfile,setupLogout,renderRoleNavigation,STATES,REGION_BY_STATE};
+window.dcAuth={fillStateSelect,regionForState,getSupabaseClient,getCurrentSession,requireUser,signOut,getProfile,upsertProfile,setupLogout,setupAutoHideHeader,renderRoleNavigation,STATES,REGION_BY_STATE};
 })();

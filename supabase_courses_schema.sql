@@ -10,6 +10,7 @@ create table if not exists public.cmc_courses (
   status text not null default 'draft',
   stage_key text not null default 'discover',
   access_mode text not null default 'assigned',
+  navigation_mode text not null default 'open',
   estimated_minutes integer not null default 0,
   created_by uuid,
   created_at timestamptz not null default now(),
@@ -17,7 +18,8 @@ create table if not exists public.cmc_courses (
   published_at timestamptz,
   constraint cmc_courses_status_check check (status in ('draft', 'published')),
   constraint cmc_courses_stage_key_check check (stage_key in ('discover', 'discern', 'develop', 'deploy')),
-  constraint cmc_courses_access_mode_check check (access_mode in ('automatic', 'assigned'))
+  constraint cmc_courses_access_mode_check check (access_mode in ('automatic', 'assigned')),
+  constraint cmc_courses_navigation_mode_check check (navigation_mode in ('guided', 'open'))
 );
 
 create table if not exists public.cmc_course_modules (
@@ -117,6 +119,7 @@ insert into public.cmc_courses (
   status,
   stage_key,
   access_mode,
+  navigation_mode,
   estimated_minutes
 )
 values (
@@ -127,6 +130,7 @@ values (
   'draft',
   'discover',
   'automatic',
+  'guided',
   0
 )
 on conflict (slug) do nothing;

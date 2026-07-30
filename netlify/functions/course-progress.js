@@ -29,7 +29,7 @@ exports.handler = async (event) => {
     }
 
     const [{ data:course, error:courseError }, { data:viewer, error:viewerError }] = await Promise.all([
-      supabase.from('cmc_courses').select('id,slug,status,stage_key,access_mode').eq('id', lesson.course_id).single(),
+      supabase.from('cmc_courses').select('id,slug,status,stage_key,access_mode,navigation_mode').eq('id', lesson.course_id).single(),
       supabase.from('candidate_profiles').select('id,full_name,email,account_role').eq('id', user.id).maybeSingle()
     ]);
     if (courseError) throw courseError;
@@ -68,6 +68,35 @@ exports.handler = async (event) => {
           .update({ assignment_source:'automatic', status:'assigned', hidden_at:null })
           .eq('id', existingAssignment.id);
         if (sourceError) throw sourceError;
+      }
+    }
+
+    if (!elevated && completed && course.navigation_mode === 'guided') {
+      const [
+        { data:orderedModules, error:orderedModuleError },
+        { data:orderedLessons, error:orderedLessonError },
+        { data:completedLessons, error:completedLessonError }
+      ] = await Promise.all([
+        supabase.from('cmc_course_modules').select('id,position').eq('course_id', lesson.course_id).order('position'),
+        supabase.from('cmc_course_lessons').select('id,module_id,position').eq('course_id', lesson.course_id).order('position'),
+        supabase.from('cmc_course_lesson_progress').select('lesson_id').eq('course_id', lesson.course_id).eq('user_id', user.id).eq('completed', true)
+      ]);
+      if (orderedModuleError) throw orderedModuleError;
+      if (orderedLessonError) throw orderedLessonError;
+      if (completedLessonError) throw completedLessonError;
+
+      const modulePosition = new Map((orderedModules || []).map(item => [item.id, item.position]));
+      const sequence = (orderedLessons || []).sort((a, b) =>
+        (modulePosition.get(a.module_id) ?? 0) - (modulePosition.get(b.module_id) ?? 0) ||
+        (a.position ?? 0) - (b.position ?? 0)
+      );
+      const targetIndex = sequence.findIndex(item => item.id === lesson.id);
+      const completedIds = new Set((completedLessons || []).map(item => item.lesson_id));
+      const missingEarlierLesson = targetIndex > 0 && sequence
+        .slice(0, targetIndex)
+        .some(item => !completedIds.has(item.id));
+      if (missingEarlierLesson) {
+        return json(409, { ok:false, error:'Complete the earlier lessons before continuing.' });
       }
     }
 

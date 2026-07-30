@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <title>Course Builder | CMC Pathway</title>
-  <link rel="stylesheet" href="style.css?v=100">
+  <link rel="stylesheet" href="style.css?v=103">
 </head>
 <body class="cmcPathwayBody">
 <header class="cmcHeader">
@@ -67,6 +67,14 @@
               <option value="assigned">Assigned by a regional leader</option>
             </select>
             <small id="courseAccessHelp">Choose how participants receive this course.</small>
+          </label>
+          <label class="wide">
+            <span>Lesson navigation</span>
+            <select id="courseNavigation" required>
+              <option value="open" selected>Open navigation · Participants may choose any lesson</option>
+              <option value="guided">Guided order · Lessons unlock one at a time</option>
+            </select>
+            <small>Guided courses keep participants in sequence. Open courses allow more independent movement.</small>
           </label>
           <div class="cmcBuilderStatusBox wide">
             <span>Current status</span>
@@ -165,7 +173,7 @@
 </template>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="auth.js?v=91"></script>
-<script src="course-builder.js?v=100"></script>
+<script src="auth.js?v=103"></script>
+<script src="course-builder.js?v=101"></script>
 </body>
 </html>

@@ -15,6 +15,7 @@ begin
     status,
     stage_key,
     access_mode,
+    navigation_mode,
     estimated_minutes,
     updated_at,
     published_at
@@ -27,6 +28,7 @@ begin
     'published',
     'discover',
     'automatic',
+    'guided',
     57,
     now(),
     now()
@@ -38,6 +40,7 @@ begin
     status = 'published',
     stage_key = 'discover',
     access_mode = 'automatic',
+    navigation_mode = 'guided',
     estimated_minutes = excluded.estimated_minutes,
     updated_at = now(),
     published_at = coalesce(public.cmc_courses.published_at, now())

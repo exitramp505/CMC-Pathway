@@ -21,7 +21,7 @@ exports.handler = async (event) => {
       }
       const { data, error } = await supabase
         .from('cmc_courses')
-        .select('id,slug,title,subtitle,description,status,stage_key,access_mode,estimated_minutes,created_at,updated_at,published_at')
+        .select('id,slug,title,subtitle,description,status,stage_key,access_mode,navigation_mode,estimated_minutes,created_at,updated_at,published_at')
         .order('updated_at', { ascending:false });
       if (error) throw error;
       return json(200, { ok:true, courses:data || [] });
@@ -55,6 +55,7 @@ exports.handler = async (event) => {
       status:payload.status,
       stage_key:payload.stage_key,
       access_mode:payload.access_mode,
+      navigation_mode:payload.navigation_mode,
       estimated_minutes:payload.estimated_minutes,
       updated_at:now,
       published_at:payload.status === 'published' ? (payload.published_at || now) : null
@@ -231,6 +232,7 @@ function validateCourse(body) {
     status,
     stage_key:validChoice(body.stage_key, ['discover','discern','develop','deploy'], 'discover'),
     access_mode:validChoice(body.access_mode, ['automatic','assigned'], 'assigned'),
+    navigation_mode:validChoice(body.navigation_mode, ['guided','open'], 'open'),
     published_at:body.published_at || null,
     estimated_minutes:numberInRange(body.estimated_minutes, 0, 100000),
     modules

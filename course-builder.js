@@ -55,6 +55,7 @@
       setValue('courseDescription', currentCourse.description);
       setValue('courseStage', currentCourse.stage_key || 'discover');
       setValue('courseAccess', currentCourse.access_mode || 'assigned');
+      setValue('courseNavigation', currentCourse.navigation_mode || 'open');
       setValue('courseMinutes', currentCourse.estimated_minutes || '');
       updateAccessHelp();
       document.getElementById('courseStatus').textContent = currentCourse.status === 'published' ? 'Published' : 'Draft';
@@ -214,9 +215,12 @@
     const title = document.getElementById('courseTitle').value.trim() || 'Untitled course';
     const stage = selectedLabel('courseStage');
     const access = selectedLabel('courseAccess');
+    const navigation = selectedLabel('courseNavigation');
     document.getElementById('courseDetailsSummary').textContent = title;
     document.getElementById('courseDetailsMeta').textContent =
-      stage && access ? `${stage} · ${access}` : 'Choose a pathway stage and availability';
+      stage && access && navigation
+        ? `${stage} · ${access} · ${navigation.split('·')[0].trim()}`
+        : 'Choose a pathway stage, availability, and lesson order';
   }
 
   function selectedLabel(id) {
@@ -297,6 +301,7 @@
       description:document.getElementById('courseDescription').value,
       stage_key:document.getElementById('courseStage').value,
       access_mode:document.getElementById('courseAccess').value,
+      navigation_mode:document.getElementById('courseNavigation').value,
       estimated_minutes:Number(document.getElementById('courseMinutes').value || 0),
       status,
       modules

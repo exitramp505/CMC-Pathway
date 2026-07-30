@@ -13,6 +13,7 @@
   let course;
   let lessons = [];
   let currentIndex = 0;
+  let canEditCourse = false;
 
   try {
     const response = await fetch(`/.netlify/functions/course-get?slug=${encodeURIComponent(slug)}`, {
@@ -21,6 +22,7 @@
     const data = await response.json().catch(() => ({}));
     if (!response.ok || !data.ok) throw new Error(data.error || 'Could not load course.');
     course = data.course;
+    canEditCourse = Boolean(data.canEdit);
     lessons = course.modules.flatMap((module, moduleIndex) =>
       module.lessons.map((lesson, lessonIndex) => ({...lesson,module,moduleIndex,lessonIndex}))
     );
@@ -33,7 +35,7 @@
     }
     const firstIncomplete = lessons.findIndex(lesson => !lesson.completed);
     currentIndex = firstIncomplete >= 0 ? firstIncomplete : 0;
-    renderShell(data.canEdit);
+    renderShell();
     renderLesson();
   } catch (error) {
     app.innerHTML = `<section class="cmcCourseUnavailable"><p class="cmcEyebrow">COURSE</p><h1>Not available yet.</h1><p>${escapeHtml(error.message)}</p><a href="dashboard.html">Return to your pathway →</a></section>`;
@@ -50,27 +52,71 @@
       </section>`;
   }
 
-  function renderShell(canEdit) {
+  function renderShell() {
     const complete = lessons.filter(item => item.completed).length;
     const percent = Math.round((complete / lessons.length) * 100);
+    const guided = course.navigation_mode === 'guided';
+    const navigationLabel = guided
+      ? `Guided course · Lessons unlock in order${canEditCourse ? ' · Admin preview unlocked' : ''}`
+      : 'Open course · Choose any lesson';
     document.title = `${course.title} | CMC Pathway`;
     app.innerHTML = `
       <aside class="cmcCourseSidebar">
-        <a class="cmcBackToPathway" href="dashboard.html">← My Pathway</a>
-        <p class="cmcEyebrow">CMC COURSE</p>
-        <h1>${escapeHtml(course.title)}</h1>
-        <p>${escapeHtml(course.subtitle || course.description)}</p>
-        <div class="cmcCourseProgress">
-          <div><strong id="courseProgressText">${percent}%</strong><span>complete</span></div>
-          <div><i id="courseProgressBar" style="width:${percent}%"></i></div>
+        <div class="cmcCourseSidebarRail">
+          <button id="courseSidebarToggle" class="cmcCourseSidebarToggle" type="button" aria-label="Collapse course navigation" aria-expanded="true" aria-controls="courseSidebarContent">
+            ${sidebarToggleIcon(false)}
+          </button>
+          <div class="cmcCourseRailStatus" aria-label="${percent}% complete">
+            <strong id="courseRailProgress">${percent}%</strong>
+            <span>complete</span>
+          </div>
         </div>
-        <nav id="courseOutline" class="cmcCourseOutline">${outlineHtml()}</nav>
-        ${canEdit ? `<a class="cmcEditCourseLink" href="course-builder.html?id=${encodeURIComponent(course.id)}">Edit this course →</a>` : ''}
+        <div id="courseSidebarContent" class="cmcCourseSidebarContent">
+          <a class="cmcBackToPathway" href="dashboard.html">← My Pathway</a>
+          <p class="cmcEyebrow">CMC COURSE</p>
+          <h1>${escapeHtml(course.title)}</h1>
+          <p>${escapeHtml(course.subtitle || course.description)}</p>
+          <div class="cmcCourseProgress">
+            <div><strong id="courseProgressText">${percent}%</strong><span>complete</span></div>
+            <div><i id="courseProgressBar" style="width:${percent}%"></i></div>
+          </div>
+          <p class="cmcCourseMode">${escapeHtml(navigationLabel)}</p>
+          <nav id="courseOutline" class="cmcCourseOutline">${outlineHtml()}</nav>
+          ${canEditCourse ? `<a class="cmcEditCourseLink" href="course-builder.html?id=${encodeURIComponent(course.id)}"><span>ADMIN</span><strong>Edit course settings →</strong></a>` : ''}
+        </div>
       </aside>
       <section class="cmcLessonWorkspace">
         <article id="lessonContent" class="cmcLessonContent"></article>
       </section>`;
+    initializeSidebar();
     bindOutline();
+  }
+
+  function initializeSidebar() {
+    const stored = window.localStorage.getItem('cmcCourseSidebarCollapsed');
+    const smallScreen = window.matchMedia('(max-width:720px)').matches;
+    setSidebarCollapsed(stored === null ? smallScreen : stored === 'true', false);
+    document.getElementById('courseSidebarToggle').addEventListener('click', () => {
+      setSidebarCollapsed(!app.classList.contains('sidebar-collapsed'));
+    });
+  }
+
+  function setSidebarCollapsed(collapsed, remember = true) {
+    app.classList.toggle('sidebar-collapsed', collapsed);
+    const button = document.getElementById('courseSidebarToggle');
+    if (!button) return;
+    button.setAttribute('aria-expanded', String(!collapsed));
+    button.setAttribute('aria-label', collapsed ? 'Expand course navigation' : 'Collapse course navigation');
+    button.innerHTML = sidebarToggleIcon(collapsed);
+    if (remember) window.localStorage.setItem('cmcCourseSidebarCollapsed', String(collapsed));
+  }
+
+  function sidebarToggleIcon(collapsed) {
+    return `<svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+      <rect x="3" y="3" width="18" height="18" rx="2"></rect>
+      <path d="M9 3v18"></path>
+      <path d="${collapsed ? 'm14 9 3 3-3 3' : 'm16 9-3 3 3 3'}"></path>
+    </svg>`;
   }
 
   function renderLesson() {
@@ -159,17 +205,29 @@
         <h2><span>${String(moduleIndex + 1).padStart(2,'0')}</span>${escapeHtml(module.title)}</h2>
         ${module.lessons.map(lesson => {
           const index = lessons.findIndex(item => item.id === lesson.id);
-          return `<button type="button" data-lesson-index="${index}" class="${lesson.completed ? 'complete' : ''}">
-            <i>${lesson.completed ? '✓' : index + 1}</i><span>${escapeHtml(lesson.title)}</span>
+          const item = lessons[index];
+          const locked = !canOpenLesson(index);
+          const classes = [item?.completed ? 'complete' : '', locked ? 'locked' : ''].filter(Boolean).join(' ');
+          return `<button type="button" data-lesson-index="${index}" class="${classes}"${locked ? ' disabled aria-label="Complete the previous lesson to unlock this lesson"' : ''}>
+            <i>${item?.completed ? '✓' : locked ? '—' : index + 1}</i><span>${escapeHtml(lesson.title)}</span>
           </button>`;
         }).join('')}
       </section>`).join('');
   }
-  function bindOutline(){document.querySelectorAll('[data-lesson-index]').forEach(button=>button.addEventListener('click',()=>goTo(Number(button.dataset.lessonIndex))))}
+  function firstIncompleteIndex(){const index=lessons.findIndex(lesson=>!lesson.completed);return index<0?lessons.length-1:index}
+  function canOpenLesson(index){
+    if(canEditCourse||course.navigation_mode!=='guided')return true;
+    return Boolean(lessons[index]?.completed)||index===firstIncompleteIndex();
+  }
+  function bindOutline(){document.querySelectorAll('[data-lesson-index]:not(:disabled)').forEach(button=>button.addEventListener('click',()=>goTo(Number(button.dataset.lessonIndex))))}
   function refreshOutline(){document.getElementById('courseOutline').innerHTML=outlineHtml();bindOutline();updateOutlineSelection()}
   function updateOutlineSelection(){document.querySelectorAll('[data-lesson-index]').forEach(button=>button.classList.toggle('active',Number(button.dataset.lessonIndex)===currentIndex))}
-  function goTo(index){if(index<0||index>=lessons.length)return;currentIndex=index;renderLesson()}
-  function updateProgress(percent){document.getElementById('courseProgressText').textContent=`${percent}%`;document.getElementById('courseProgressBar').style.width=`${percent}%`}
+  function goTo(index){if(index<0||index>=lessons.length||!canOpenLesson(index))return;currentIndex=index;renderLesson()}
+  function updateProgress(percent){
+    document.getElementById('courseProgressText').textContent=`${percent}%`;
+    document.getElementById('courseProgressBar').style.width=`${percent}%`;
+    document.getElementById('courseRailProgress').textContent=`${percent}%`;
+  }
 
   function videoHtml(url, lessonType) {
     if (!url) {

@@ -45,9 +45,8 @@ exports.handler = async (event) => {
 
     let participantQuery = supabase
       .from('candidate_profiles')
-      .select('id,full_name,email,phone,state,region,church_name,ministry_role,pathway_interest,married,current_stage,stage_updated_at,created_at,updated_at')
-      .eq('id', participantId)
-      .eq('account_role', 'participant');
+      .select('id,full_name,email,phone,state,region,church_name,ministry_role,pathway_interest,married,current_stage,stage_updated_at,account_role,created_at,updated_at')
+      .eq('id', participantId);
 
     if (viewer.account_role === 'regional_leader') {
       if (!viewer.region) {
@@ -56,8 +55,9 @@ exports.handler = async (event) => {
       participantQuery = participantQuery.eq('region', viewer.region);
     }
 
-    const { data:participant, error:participantError } = await participantQuery.maybeSingle();
+    const { data:participantData, error:participantError } = await participantQuery.maybeSingle();
     if (participantError) throw participantError;
+    const participant = visiblePathwayAccount(viewer, participantData) ? participantData : null;
     if (!participant) {
       return json(404, { ok:false, error:'Participant not found in your region.' });
     }
@@ -69,7 +69,8 @@ exports.handler = async (event) => {
       courseResult,
       enrollmentResult,
       lessonResult,
-      reflectionResult
+      reflectionResult,
+      eventInvitationResult
     ] = await Promise.all([
       supabase
         .from('candidate_assignments')
@@ -102,7 +103,12 @@ exports.handler = async (event) => {
         .from('cmc_course_lesson_responses')
         .select('id,course_id,lesson_id,response_text,updated_at')
         .eq('user_id', participantId)
-        .order('updated_at', { ascending:false })
+        .order('updated_at', { ascending:false }),
+      supabase
+        .from('cmc_event_invitations')
+        .select('id,event_id,rsvp_status,attendance_status,invited_at,responded_at,notification_sent_at,updated_at,cmc_events(id,title,summary,description,starts_at,ends_at,location_name,address,rsvp_deadline,stage_key,region,status)')
+        .eq('user_id', participantId)
+        .order('invited_at', { ascending:false })
     ]);
 
     if (assignmentResult.error) throw assignmentResult.error;
@@ -112,6 +118,7 @@ exports.handler = async (event) => {
     if (enrollmentResult.error) throw enrollmentResult.error;
     if (lessonResult.error) throw lessonResult.error;
     if (reflectionResult.error) throw reflectionResult.error;
+    if (eventInvitationResult.error) throw eventInvitationResult.error;
 
     const courses = courseResult.data || [];
     const enrollments = enrollmentResult.data || [];
@@ -168,9 +175,16 @@ exports.handler = async (event) => {
       course_title:courseById.get(reflection.course_id)?.title || 'CMC Course',
       lesson_title:lessonById.get(reflection.lesson_id)?.title || 'Course reflection'
     }));
+    const eventInvitations = (eventInvitationResult.data || []).map(invitation => ({
+      ...invitation,
+      event:Array.isArray(invitation.cmc_events)
+        ? invitation.cmc_events[0]
+        : invitation.cmc_events,
+      cmc_events:undefined
+    })).filter(invitation => invitation.event);
 
     const application = applicationResult.data || null;
-    const activity = buildActivity(participant, assignments, reports, application, reflections);
+    const activity = buildActivity(participant, assignments, reports, application, reflections, eventInvitations);
 
     return json(200, {
       ok:true,
@@ -179,6 +193,7 @@ exports.handler = async (event) => {
       assignments,
       reports,
       reflections,
+      events:eventInvitations,
       application,
       activity
     });
@@ -193,7 +208,7 @@ function assessmentTitle(type) {
   return 'Character Qualities Assessment';
 }
 
-function buildActivity(participant, assignments, reports, application, reflections = []) {
+function buildActivity(participant, assignments, reports, application, reflections = [], events = []) {
   const activity = [];
   if (participant.created_at) {
     activity.push({
@@ -251,6 +266,24 @@ function buildActivity(participant, assignments, reports, application, reflectio
       date:reflection.updated_at
     });
   }
+  for (const invitation of events) {
+    const title = invitation.event?.title || 'CMC event';
+    if (invitation.attendance_status === 'attended') {
+      activity.push({
+        type:'event',
+        title:`Attended ${title}`,
+        detail:'Attendance recorded.',
+        date:invitation.updated_at
+      });
+    } else if (invitation.responded_at) {
+      activity.push({
+        type:'event',
+        title:`Responded to ${title}`,
+        detail:invitation.rsvp_status === 'going' ? 'Planning to attend.' : 'Unable to attend.',
+        date:invitation.responded_at
+      });
+    }
+  }
   if (application?.submitted_at) {
     activity.push({
       type:'application',
@@ -291,4 +324,12 @@ function titleCase(value) {
 
 function isUuid(value) {
   return /^[0-9a-f]{8}-[0-9a-f-]{27}$/i.test(String(value || ''));
+}
+
+function visiblePathwayAccount(viewer, profile) {
+  if (!profile) return false;
+  if (viewer.account_role === 'regional_leader') {
+    return ['participant','regional_leader'].includes(profile.account_role);
+  }
+  return profile.account_role !== 'cmc_admin' || profile.id === viewer.id;
 }

@@ -41,19 +41,25 @@ exports.handler = async (event) => {
 
     let profileQuery = supabase
       .from('candidate_profiles')
-      .select('id,full_name,email,phone,state,region,church_name,ministry_role,pathway_interest,created_at')
-      .eq('account_role', 'participant')
+      .select('id,full_name,email,phone,state,region,church_name,ministry_role,pathway_interest,current_stage,account_role,created_at')
       .order('created_at', { ascending:false });
 
     if (viewer.account_role === 'regional_leader') {
       if (!viewer.region) return json(403, { ok:false, error:'Your leader account does not have a region.' });
-      profileQuery = profileQuery.eq('region', viewer.region);
+      profileQuery = profileQuery
+        .in('account_role', ['participant', 'regional_leader'])
+        .eq('region', viewer.region);
+    } else {
+      profileQuery = profileQuery.in('account_role', ['participant', 'regional_leader', 'cmc_admin']);
     }
 
     const { data:profiles, error:profilesError } = await profileQuery;
     if (profilesError) throw profilesError;
 
-    const userIds = (profiles || []).map(profile => profile.id);
+    const visibleProfiles = (profiles || []).filter(profile =>
+      profile.account_role !== 'cmc_admin' || profile.id === viewer.id
+    );
+    const userIds = visibleProfiles.map(profile => profile.id);
     if (!userIds.length) {
       return json(200, { ok:true, viewer, participants:[] });
     }
@@ -75,7 +81,7 @@ exports.handler = async (event) => {
     const assignmentsByUser = groupBy(assignmentResult.data || [], 'user_id');
     const reportsByUser = groupBy(reportResult.data || [], 'user_id');
 
-    const participants = (profiles || []).map(profile => ({
+    const participants = visibleProfiles.map(profile => ({
       ...profile,
       assignments: assignmentsByUser.get(profile.id) || [],
       reports: reportsByUser.get(profile.id) || []

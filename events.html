@@ -1,0 +1,106 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Events | CMC Pathway</title>
+  <link rel="stylesheet" href="style.css?v=113">
+</head>
+<body class="cmcPathwayBody">
+<header class="cmcHeader">
+  <a class="cmcBrand" href="leader.html" aria-label="CMC Pathway leader home">
+    <img class="cmcLogoImage" src="cmc-logo-mark.svg" alt="">
+    <span><strong>CMC Pathway</strong><small>Church Multiplication Collective</small></span>
+  </a>
+  <nav id="cmcRoleNav" class="cmcNav"></nav>
+</header>
+
+<main class="cmcPathwayMain cmcEventsMain">
+  <section class="cmcEventsIntro">
+    <div>
+      <p class="cmcEyebrow">EVENTS</p>
+      <h1>Create and manage CMC events.</h1>
+      <p class="cmcIntro">Schedule events, invite participants, and track responses and attendance in one place.</p>
+    </div>
+    <button id="createEventButton" class="cmcPrimaryButton" type="button">Create an event <span>＋</span></button>
+  </section>
+
+  <section class="cmcEventStats">
+    <article><span>Upcoming</span><strong id="upcomingEventCount">0</strong><small>Published events ahead</small></article>
+    <article><span>Responses needed</span><strong id="eventResponseCount">0</strong><small>Invitations awaiting reply</small></article>
+    <article><span>Past events</span><strong id="pastEventCount">0</strong><small>Attendance history retained</small></article>
+  </section>
+
+  <section class="cmcEventLibrary">
+    <div class="cmcEventLibraryHeading">
+      <div><p class="cmcEyebrow">EVENT LIBRARY</p><h2>Upcoming and past events</h2></div>
+      <div class="cmcEventFilters">
+        <button class="active" type="button" data-event-filter="upcoming">Upcoming <span id="upcomingFilterCount">0</span></button>
+        <button type="button" data-event-filter="past">Past <span id="pastFilterCount">0</span></button>
+        <button type="button" data-event-filter="draft">Drafts <span id="draftFilterCount">0</span></button>
+      </div>
+    </div>
+    <p id="eventPageMessage" class="cmcAdminMessage">Loading events…</p>
+    <div id="eventList" class="cmcEventList"></div>
+  </section>
+</main>
+
+<dialog id="eventEditorDialog" class="cmcEventEditorDialog">
+  <form id="eventEditorForm" class="cmcEventEditorCard cmcEventEditorCardCompact">
+    <header>
+      <div><p class="cmcEyebrow">EVENT DETAILS</p><h2 id="eventEditorTitle">Create an event</h2></div>
+      <button class="cmcReviewDialogClose" type="button" data-close-event-editor aria-label="Close event editor">×</button>
+    </header>
+    <div class="cmcEventEditorBody">
+      <input name="id" type="hidden">
+      <div class="cmcEventFieldGrid">
+        <label class="full">Event title<input name="title" required></label>
+        <label class="full">Short summary<input name="summary" maxlength="180" placeholder="One clear sentence about the event"></label>
+        <label class="full">Description<textarea name="description" rows="3" placeholder="What should an invited person know before responding?"></textarea></label>
+        <label>Starts<input name="starts_at" type="datetime-local" required></label>
+        <label>Ends<input name="ends_at" type="datetime-local"></label>
+        <label>Location name<input name="location_name" placeholder="Open Bible East office"></label>
+        <label>Address or online link<input name="address"></label>
+        <label>Respond by<input name="rsvp_deadline" type="datetime-local"></label>
+        <label>Pathway stage<select name="stage_key"><option value="discover">Discover</option><option value="discern" selected>Discern</option><option value="develop">Develop</option><option value="deploy">Deploy</option></select></label>
+        <label id="eventRegionField">Open Bible region<select name="region"><option value="">All regions</option><option>Central</option><option>East</option><option>Mountain Plains</option><option>Pacific</option><option>Southeast</option></select></label>
+        <label>Status<select name="status"><option value="draft">Draft</option><option value="published">Published</option></select></label>
+      </div>
+      <p id="eventEditorMessage" class="cmcAdminMessage"></p>
+    </div>
+    <footer>
+      <button class="cmcSecondaryButton" type="button" data-close-event-editor>Cancel</button>
+      <button id="saveEventButton" class="cmcPrimaryButton" type="submit">Save event</button>
+    </footer>
+  </form>
+</dialog>
+
+<dialog id="eventInviteDialog" class="cmcEventEditorDialog cmcEventInviteDialog">
+  <form id="eventInviteForm" class="cmcEventEditorCard">
+    <header>
+      <div><p class="cmcEyebrow">INVITE PEOPLE</p><h2 id="eventInviteTitle">Choose participants</h2></div>
+      <button class="cmcReviewDialogClose" type="button" data-close-event-invites aria-label="Close invitations">×</button>
+    </header>
+    <input id="inviteEventId" type="hidden">
+    <div class="cmcInviteTools">
+      <input id="eventInviteSearch" type="search" placeholder="Search by name, church, or email">
+      <button id="selectAllInvitees" class="cmcSecondaryButton" type="button">Select visible</button>
+    </div>
+    <div id="eventInviteeList" class="cmcEventInviteeList"></div>
+    <label class="cmcReviewNotify">
+      <input id="notifyEventInvitees" type="checkbox" checked>
+      <span><strong>Email newly invited people</strong><small>Each person receives one event invitation email.</small></span>
+    </label>
+    <p id="eventInviteMessage" class="cmcAdminMessage"></p>
+    <footer>
+      <button class="cmcSecondaryButton" type="button" data-close-event-invites>Keep editing</button>
+      <button id="saveEventInvites" class="cmcPrimaryButton" type="submit">Save invitations</button>
+    </footer>
+  </form>
+</dialog>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="auth.js?v=112"></script>
+<script src="events.js?v=113"></script>
+</body>
+</html>

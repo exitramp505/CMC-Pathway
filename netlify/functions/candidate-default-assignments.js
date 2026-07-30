@@ -27,7 +27,7 @@ exports.handler = async (event) => {
       .eq('id', user.id)
       .maybeSingle();
     if (profileError) throw profileError;
-    if (!profile || profile.account_role !== 'participant') {
+    if (!profile) {
       return json(200, { ok:true, assignments:[], created:false });
     }
 

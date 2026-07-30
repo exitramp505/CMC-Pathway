@@ -238,7 +238,7 @@
       ? `<div class="cmcEventWorkActions">
           <button class="cmcEventDetails" type="button" data-event-details-toggle aria-expanded="false">View details</button>
           ${work.item.rsvp_status === 'pending'
-            ? '<div class="cmcEventResponseActions"><button type="button" data-preview-rsvp="going">Going</button><button class="cmcDeclineEvent" type="button" data-preview-rsvp="declined"><span aria-hidden="true">×</span> Can’t attend</button></div>'
+            ? '<div class="cmcEventResponseActions"><button type="button" data-event-rsvp="going">Going</button><button class="cmcDeclineEvent" type="button" data-event-rsvp="declined"><span aria-hidden="true">×</span> Can’t attend</button></div>'
             : ''}
         </div>`
       : `<a href="${work.details[1]}">${work.done ? 'Review' : progress ? 'Continue' : 'Begin'} <span aria-hidden="true">→</span></a>`;
@@ -384,20 +384,49 @@
         return;
       }
 
-      const responseButton = event.target.closest('[data-preview-rsvp]');
-      if (!localPreview || !responseButton) return;
+      const responseButton = event.target.closest('[data-event-rsvp]');
+      if (!responseButton) return;
       const card = responseButton.closest('.cmcStageWorkCard');
       const itemKey = card?.dataset.workItem;
       const work = workItems.find(item => item.item.item_type === 'event' && item.item.item_key === itemKey);
       if (!work) return;
-      work.item.rsvp_status = responseButton.dataset.previewRsvp;
-      work.done = true;
-      const nextWork = findNextWork(workItems, 'discern');
-      renderNextStep(nextWork);
-      renderStageWorkspace(workItems, 'discern', activeWorkStage);
-      renderEventSummary(workItems);
+      const rsvpStatus = responseButton.dataset.eventRsvp;
+      responseButton.disabled = true;
+      if (localPreview) {
+        applyRsvp(workItems, work, rsvpStatus);
+        return;
+      }
+      fetch('/.netlify/functions/event-rsvp', {
+        method:'POST',
+        headers:{ 'Content-Type':'application/json', Authorization:`Bearer ${accessToken}` },
+        body:JSON.stringify({
+          event_id:work.item.event.id,
+          rsvp_status:rsvpStatus
+        })
+      }).then(async response => {
+        const data = await response.json().catch(() => ({}));
+        if (!response.ok || !data.ok) throw new Error(data.error || 'Could not save your response.');
+        applyRsvp(workItems, work, data.invitation?.rsvp_status || rsvpStatus);
+      }).catch(error => {
+        responseButton.disabled = false;
+        window.alert(error.message || 'Could not save your response.');
+      });
     };
   }
+
+  function applyRsvp(workItems, work, rsvpStatus) {
+    work.item.rsvp_status = rsvpStatus;
+    work.done = true;
+    const currentStage = document.getElementById('currentStageName')?.textContent?.toLowerCase() || 'discover';
+    const source = rsvpStatus === 'declined'
+      ? workItems.filter(item => item !== work)
+      : workItems;
+    const nextWork = findNextWork(source, currentStage);
+    renderNextStep(nextWork);
+    renderStageWorkspace(source, currentStage, activeWorkStage);
+    renderEventSummary(source);
+  }
+
 
   function stageOrder(value) {
     const index = STAGES.findIndex(stage => stage.key === value);

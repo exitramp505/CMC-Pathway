@@ -31,6 +31,12 @@
   }
 
   document.getElementById('peopleSearch').addEventListener('input', render);
+  document.getElementById('peopleTypeFilter').addEventListener('change', () => {
+    followupsOnly = false;
+    document.getElementById('showFollowupsBtn').textContent = 'View follow-ups →';
+    updateSummary();
+    render();
+  });
   document.getElementById('stageFilter').addEventListener('change', render);
   document.getElementById('showFollowupsBtn').addEventListener('click', () => {
     followupsOnly = !followupsOnly;
@@ -42,27 +48,34 @@
   });
 
   function updateSummary() {
-    const discover = participants.filter(person => assignment(person,'discover_course')).length;
-    const followups = participants.filter(isReadyForFollowup).length;
-    const discern = participants.filter(person => person.assignments.some(item => item.stage_key === 'discern' && item.status === 'assigned')).length;
-    setText('activeCount', participants.length);
+    const type = document.getElementById('peopleTypeFilter').value;
+    const people = participants.filter(person => matchesPeopleType(person, type));
+    const discover = people.filter(person => assignment(person,'discover_course')).length;
+    const followups = people.filter(isReadyForFollowup).length;
+    const discern = people.filter(person => person.assignments.some(item => item.stage_key === 'discern' && item.status === 'assigned')).length;
+    setText('activeLabel', type === 'participant' ? 'Active participants' : type === 'leader' ? 'Active leaders' : 'Active people');
+    setText('activeCount', people.length);
     setText('discoverCount', discover);
     setText('followupCount', followups);
     setText('discernCount', discern);
 
+    const banner = document.getElementById('followupBanner');
     if (followups) {
-      const banner = document.getElementById('followupBanner');
       banner.classList.remove('hidden');
       setText('followupMessage', `${followups} ${followups === 1 ? 'person is' : 'people are'} ready for a conversation.`);
+    } else {
+      banner.classList.add('hidden');
     }
   }
 
   function render() {
     const query = document.getElementById('peopleSearch').value.trim().toLowerCase();
+    const type = document.getElementById('peopleTypeFilter').value;
     const stage = document.getElementById('stageFilter').value;
     let visible = participants.filter(person => {
       const text = [person.full_name,person.email,person.church_name,person.ministry_role,person.state,person.region].join(' ').toLowerCase();
       if (query && !text.includes(query)) return false;
+      if (!matchesPeopleType(person, type)) return false;
       if (stage && currentStage(person) !== stage) return false;
       if (followupsOnly && !isReadyForFollowup(person)) return false;
       return true;
@@ -87,13 +100,13 @@
       return `<article class="cmcParticipantRow">
         <div class="cmcPerson">
           <span class="cmcAvatar">${initials(person.full_name)}</span>
-          <div><strong>${escapeHtml(person.full_name || person.email)}</strong><small>${escapeHtml([person.church_name,person.state].filter(Boolean).join(' · ') || person.email)}</small></div>
+          <div><strong>${escapeHtml(person.full_name || person.email)}</strong><small>${escapeHtml([roleLabel(person),person.church_name,person.state].filter(Boolean).join(' · ') || person.email)}</small></div>
         </div>
         <div class="cmcPersonMetric"><span>${titleCase(stage)}</span><strong>${escapeHtml(stageDetail)}</strong></div>
         <div class="cmcPersonMetric"><span>Latest activity</span><strong>${escapeHtml(latest)}</strong></div>
         <span class="cmcActionPill ${statusClass}">${status}</span>
         <div class="cmcRowActions">
-          <a class="cmcRowAction" href="assign-courses.html?participant=${encodeURIComponent(person.id)}">Courses</a>
+          <a class="cmcRowAction" href="participant.html?id=${encodeURIComponent(person.id)}#work">Assignments</a>
           <a class="cmcRowAction" href="participant.html?id=${encodeURIComponent(person.id)}">Open dashboard →</a>
         </div>
       </article>`;
@@ -101,9 +114,20 @@
   }
 
   function assignment(person,key){ return person.assignments.find(item => item.item_key === key && item.status === 'assigned'); }
+  function matchesPeopleType(person,type){
+    if (type === 'participant') return person.account_role === 'participant';
+    if (type === 'leader') return ['regional_leader','cmc_admin'].includes(person.account_role);
+    return true;
+  }
+  function roleLabel(person){
+    if (person.account_role === 'regional_leader') return 'Regional leader';
+    if (person.account_role === 'cmc_admin') return 'National administrator';
+    return 'Participant';
+  }
   function discoverProgress(item){ return Math.max(0,Math.min(100,Number(item?.progress || (item?.external_status === 'completed' ? 100 : 0)))); }
   function isReadyForFollowup(person){ const item=assignment(person,'discover_course'); return Boolean(item && discoverProgress(item)>=100); }
   function currentStage(person){
+    if (['discover','discern','develop','deploy'].includes(person.current_stage)) return person.current_stage;
     if (person.assignments.some(item => item.stage_key === 'deploy' && item.status === 'assigned')) return 'deploy';
     if (person.assignments.some(item => item.stage_key === 'develop' && item.status === 'assigned')) return 'develop';
     if (person.assignments.some(item => item.stage_key === 'discern' && item.status === 'assigned')) return 'discern';

@@ -72,6 +72,6 @@ inside CMC Pathway and Supabase.
 
 - Participants use `/dashboard.html`.
 - Regional leaders and CMC administrators use `/leader.html`.
-- Regional leaders assign optional courses at `/assign-courses.html`.
+- Regional leaders assign courses, forms, assessments, and events from each participant dashboard. New items can be reviewed and sent in one consolidated notification.
 - National administrators build courses at `/courses.html`.
 - Existing assessment administration remains at `/admin.html`.

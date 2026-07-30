@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <title>Regional Leader | CMC Pathway</title>
-  <link rel="stylesheet" href="style.css?v=111">
+  <link rel="stylesheet" href="style.css?v=112">
 </head>
 <body class="cmcPathwayBody">
 <header class="cmcHeader">
@@ -26,7 +26,7 @@
   </section>
 
   <section class="cmcLeaderStats">
-    <article><span>Active participants</span><strong id="activeCount">0</strong><small id="activeCaption">In your region</small></article>
+    <article><span id="activeLabel">Active participants</span><strong id="activeCount">0</strong><small id="activeCaption">In your region</small></article>
     <article><span>Taking Discover</span><strong id="discoverCount">0</strong><small>Discover available automatically</small></article>
     <article><span>Ready for follow-up</span><strong id="followupCount">0</strong><small>Completed Discover</small></article>
     <article><span>In discernment</span><strong id="discernCount">0</strong><small>Assigned forms or assessments</small></article>
@@ -34,9 +34,14 @@
 
   <section class="cmcPeoplePanel">
     <div class="cmcPeopleHeading">
-      <div><p class="cmcEyebrow">REGIONAL PARTICIPANTS</p><h2>People</h2></div>
+      <div><p class="cmcEyebrow">PEOPLE DIRECTORY</p><h2>People</h2></div>
       <div class="cmcPeopleTools">
         <input id="peopleSearch" type="search" placeholder="Search by name, church, or city">
+        <select id="peopleTypeFilter" aria-label="Filter by people type">
+          <option value="participant">Participants</option>
+          <option value="leader">Leaders</option>
+          <option value="all">Everyone</option>
+        </select>
         <select id="stageFilter" aria-label="Filter by pathway stage">
           <option value="">All stages</option>
           <option value="discover">Discover</option>
@@ -61,7 +66,7 @@
 </main>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="auth.js?v=103"></script>
-<script src="leader.js?v=92"></script>
+<script src="auth.js?v=112"></script>
+<script src="leader.js?v=113"></script>
 </body>
 </html>

@@ -131,15 +131,18 @@ async function loadParticipant(supabase, viewer, id) {
   let query = supabase
     .from('candidate_profiles')
     .select('id,full_name,email,state,region,church_name,current_stage,stage_updated_at,account_role')
-    .eq('id', id)
-    .eq('account_role', 'participant');
+    .eq('id', id);
   if (viewer.account_role === 'regional_leader') {
     if (!viewer.region) throw httpError(403, 'Your leader account does not have a region.');
     query = query.eq('region', viewer.region);
   }
   const { data, error } = await query.maybeSingle();
   if (error) throw error;
-  return data || null;
+  if (!data) return null;
+  if (viewer.account_role === 'regional_leader') {
+    return ['participant','regional_leader'].includes(data.account_role) ? data : null;
+  }
+  return data.account_role !== 'cmc_admin' || data.id === viewer.id ? data : null;
 }
 
 function isUuid(value) {

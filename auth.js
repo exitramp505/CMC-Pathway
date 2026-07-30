@@ -69,12 +69,19 @@ function renderRoleNavigation(profile,activeKey){
  const role=profile?.account_role||'participant';
  const items=[
   {key:'pathway',label:'My Pathway',href:role==='participant'?'dashboard.html':'dashboard.html?view=participant',show:true},
-  {key:'people',label:'People',href:'leader.html',show:['regional_leader','cmc_admin'].includes(role)},
-  {key:'courses',label:'Courses',href:'courses.html',show:role==='cmc_admin'},
-  {key:'leaders',label:'Manage Leaders',href:'manage-leaders.html',show:role==='cmc_admin'},
+ {key:'people',label:'People',href:'leader.html',show:['regional_leader','cmc_admin'].includes(role)},
+ {key:'events',label:'Events',href:'events.html',show:['regional_leader','cmc_admin'].includes(role)},
+ {key:'courses',label:'Courses',href:'courses.html',show:role==='cmc_admin'},
+  {key:'leaders',label:'Leaders',href:'manage-leaders.html',show:role==='cmc_admin'},
   {key:'profile',label:'Profile',href:'profile.html',show:true}
  ];
- nav.innerHTML=items.filter(item=>item.show).map(item=>`<a${item.key===activeKey?' class="active"':''} href="${item.href}">${item.label}</a>`).join('')+'<button id="logoutBtn" type="button">Logout</button>';
+ const visibleItems=items.filter(item=>item.show);
+ const managementKeys=['people','events','courses','leaders'];
+ const hasManagementTools=visibleItems.some(item=>managementKeys.includes(item.key));
+ nav.innerHTML=visibleItems.map(item=>{
+  const dividerBefore=(item.key==='people'&&hasManagementTools)||item.key==='profile';
+  return `${dividerBefore?'<span class="cmcNavDivider" aria-hidden="true"></span>':''}<a${item.key===activeKey?' class="active"':''} href="${item.href}">${item.label}</a>`;
+ }).join('')+'<button id="logoutBtn" type="button">Logout</button>';
  setupLogout();
  setupAutoHideHeader();
 }

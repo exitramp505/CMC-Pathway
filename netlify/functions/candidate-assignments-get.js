@@ -39,7 +39,40 @@ exports.handler = async (event) => {
       return Boolean(item.course);
     });
 
-    return json(200,{ok:true,assignments});
+    const { data:eventInvitations, error:eventError } = await supabase
+      .from('cmc_event_invitations')
+      .select('id,event_id,rsvp_status,attendance_status,invited_at,responded_at,cmc_events(id,title,summary,description,starts_at,ends_at,location_name,address,rsvp_deadline,stage_key,region,status)')
+      .eq('user_id', userData.user.id);
+    if (eventError) throw eventError;
+    const now = Date.now();
+    const activeEventAssignments = (eventInvitations || []).map(invitation => {
+      const linkedEvent = Array.isArray(invitation.cmc_events)
+        ? invitation.cmc_events[0]
+        : invitation.cmc_events;
+      if (!linkedEvent) return null;
+      const endsAt = new Date(linkedEvent.ends_at || linkedEvent.starts_at).getTime();
+      if (linkedEvent.status !== 'published' || invitation.rsvp_status === 'declined' || endsAt < now) {
+        return null;
+      }
+      return {
+        id:invitation.id,
+        user_id:userData.user.id,
+        item_key:`event:${linkedEvent.id}`,
+        item_type:'event',
+        stage_key:linkedEvent.stage_key || 'discern',
+        status:'assigned',
+        progress:invitation.rsvp_status === 'going' ? 100 : 0,
+        external_status:invitation.rsvp_status === 'going' ? 'completed' : '',
+        assignment_source:'leader',
+        assigned_at:invitation.invited_at,
+        completed_at:invitation.responded_at,
+        rsvp_status:invitation.rsvp_status,
+        attendance_status:invitation.attendance_status,
+        event:linkedEvent
+      };
+    }).filter(Boolean);
+
+    return json(200,{ok:true,assignments:[...assignments, ...activeEventAssignments]});
   }catch(err){
     return json(500,{ok:false,error:err.message||'Could not load assignments.'});
   }

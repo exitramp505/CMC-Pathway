@@ -12,7 +12,13 @@
   let participantAssignments = [];
   let managementPathwayItems = [];
   let managementCourses = [];
+  let managementEvents = [];
+  let participantEvents = [];
   let managementOptions = [];
+  let initialPathwayKeys = new Set();
+  let initialCourseIds = new Set();
+  let initialEventIds = new Set();
+  let pendingManagementChange = null;
   let activeManagementStage = 'discover';
   const pathwayStages = [
     { key:'discover', number:'01', title:'Discover', description:'Shared foundation and first steps.' },
@@ -60,6 +66,7 @@
   document.getElementById('cancelParticipantEdit').addEventListener('click', closeProfileForm);
   profileForm.addEventListener('submit', saveProfile);
   document.getElementById('saveParticipantManagement').addEventListener('click', saveManagement);
+  document.getElementById('confirmParticipantChanges').addEventListener('click', confirmManagement);
 
   function render(data) {
     participant = data.participant || {};
@@ -69,6 +76,7 @@
     const reflections = data.reflections || [];
     const application = data.application || null;
     const activity = data.activity || [];
+    participantEvents = data.events || [];
     const stage = participant.current_stage || inferredStage(assignments);
     const completedCount = assignments.filter(item => item.completed).length;
     const latest = activity[0]?.date || latestActivity(participant, assignments, reports, application);
@@ -96,6 +104,7 @@
     renderProfile(participant);
     renderActivity(activity);
     renderWork(assignments, reports, application);
+    renderEventHistory(participantEvents);
     renderRecords(reports, application, reflections);
   }
 
@@ -202,25 +211,36 @@
     const loadingBox = document.getElementById('participantManagementLoading');
     const managementContent = document.getElementById('participantManagementContent');
     try {
-      const [pathwayResponse, courseResponse] = await Promise.all([
+      const [pathwayResponse, courseResponse, eventResponse] = await Promise.all([
         fetch(`/.netlify/functions/participant-manage?participant_id=${encodeURIComponent(participantId)}`, {
           headers:{ Authorization:`Bearer ${token}` }
         }),
         fetch(`/.netlify/functions/leader-course-assignments?participant_id=${encodeURIComponent(participantId)}`, {
           headers:{ Authorization:`Bearer ${token}` }
+        }),
+        fetch(`/.netlify/functions/events-admin?participant_id=${encodeURIComponent(participantId)}`, {
+          headers:{ Authorization:`Bearer ${token}` }
         })
       ]);
       const pathwayData = await pathwayResponse.json().catch(() => ({}));
       const courseData = await courseResponse.json().catch(() => ({}));
+      const eventData = await eventResponse.json().catch(() => ({}));
       if (!pathwayResponse.ok || !pathwayData.ok) {
         throw new Error(pathwayData.error || 'Could not load pathway assignments.');
       }
       if (!courseResponse.ok || !courseData.ok) {
         throw new Error(courseData.error || 'Could not load course assignments.');
       }
+      if (!eventResponse.ok || !eventData.ok) {
+        throw new Error(eventData.error || 'Could not load event invitations.');
+      }
       participant = { ...participant, ...pathwayData.participant };
       managementPathwayItems = pathwayData.pathway_items || [];
       managementCourses = courseData.courses || [];
+      managementEvents = eventData.events || [];
+      initialPathwayKeys = new Set(managementPathwayItems.filter(item => item.assigned && !item.automatic).map(item => item.key));
+      initialCourseIds = new Set(managementCourses.filter(item => item.assigned).map(item => item.id));
+      initialEventIds = new Set(managementEvents.filter(item => item.invitation).map(item => item.id));
       renderManagement();
       loadingBox.classList.add('hidden');
       managementContent.classList.remove('hidden');
@@ -259,6 +279,21 @@
         kind:'course',
         description:course.subtitle || course.description || 'Course',
         automatic:false
+      })),
+      ...managementEvents.map(event => ({
+        ...event,
+        key:event.id,
+        kind:'event',
+        type:'event',
+        title:event.title,
+        description:[
+          formatEventDateTime(event.starts_at),
+          event.location_name
+        ].filter(Boolean).join(' · '),
+        assigned:Boolean(event.invitation),
+        automatic:false,
+        completed:false,
+        progress:0
       }))
     ].sort((a,b) => {
       const stageDifference = stageOrder(a.stage_key) - stageOrder(b.stage_key);
@@ -385,8 +420,12 @@
   }
 
   function assignmentOption(item) {
-    const inputName = item.kind === 'course' ? 'managed_course' : 'managed_pathway_item';
-    const value = item.kind === 'course' ? item.id : item.key;
+    const inputName = item.kind === 'course'
+      ? 'managed_course'
+      : item.kind === 'event'
+        ? 'managed_event'
+        : 'managed_pathway_item';
+    const value = ['course', 'event'].includes(item.kind) ? item.id : item.key;
     const status = item.automatic
       ? 'Always available'
       : item.completed
@@ -400,7 +439,7 @@
       <input type="checkbox" name="${inputName}" value="${escapeHtml(value)}"${item.assigned ? ' checked' : ''}${item.automatic ? ' disabled' : ''}>
       <span class="cmcAssignmentOptionCheck">✓</span>
       <span class="cmcAssignmentOptionCopy">
-        <small>${escapeHtml(titleCase(item.stage_key))} · ${escapeHtml(item.kind === 'course' ? 'Course' : titleCase(item.type))}</small>
+        <small>${escapeHtml(titleCase(item.stage_key))} · ${escapeHtml(item.kind === 'course' ? 'Course' : item.kind === 'event' ? 'Event' : titleCase(item.type))}</small>
         <strong>${escapeHtml(item.title)}</strong>
         <p>${escapeHtml(item.description || '')}</p>
         <em>${escapeHtml(status)}</em>
@@ -408,16 +447,45 @@
     </label>`;
   }
 
-  async function saveManagement() {
-    const button = document.getElementById('saveParticipantManagement');
-    const message = document.getElementById('participantManagementMessage');
+  function saveManagement() {
     const itemKeys = [...document.querySelectorAll('input[name="managed_pathway_item"]:checked')].map(input => input.value);
     const courseIds = [...document.querySelectorAll('input[name="managed_course"]:checked')].map(input => input.value);
+    const eventIds = [...document.querySelectorAll('input[name="managed_event"]:checked')].map(input => input.value);
+    const changes = buildManagementChanges(itemKeys, courseIds, eventIds);
+    if (!changes.added.length && !changes.removed.length) {
+      const message = document.getElementById('participantManagementMessage');
+      message.textContent = 'There are no assignment changes to save.';
+      message.classList.remove('error');
+      return;
+    }
+    pendingManagementChange = { itemKeys, courseIds, eventIds, ...changes };
+    const list = document.getElementById('assignmentReviewList');
+    list.innerHTML = [
+      ...changes.added.map(item => reviewRow(item, 'add')),
+      ...changes.removed.map(item => reviewRow(item, 'remove'))
+    ].join('');
+    const notifyChoice = document.getElementById('assignmentNotifyChoice');
+    const notifyCheckbox = document.getElementById('notifyParticipant');
+    notifyCheckbox.checked = changes.added.length > 0;
+    notifyCheckbox.disabled = !changes.added.length || !participant.email;
+    notifyChoice.classList.toggle('disabled', notifyCheckbox.disabled);
+    document.getElementById('confirmParticipantChanges').textContent = changes.added.length
+      ? 'Assign and notify'
+      : 'Save changes';
+    document.getElementById('assignmentReviewMessage').textContent = '';
+    document.getElementById('assignmentReviewDialog').showModal();
+  }
+
+  async function confirmManagement() {
+    if (!pendingManagementChange) return;
+    const { itemKeys, courseIds, eventIds, added } = pendingManagementChange;
+    const button = document.getElementById('confirmParticipantChanges');
+    const message = document.getElementById('assignmentReviewMessage');
     button.disabled = true;
     message.textContent = 'Saving assignments…';
     message.classList.remove('error');
     try {
-      const [itemResponse, courseResponse] = await Promise.all([
+      const [itemResponse, courseResponse, eventResponse] = await Promise.all([
         fetch('/.netlify/functions/participant-manage', {
           method:'POST',
           headers:{ 'Content-Type':'application/json', Authorization:`Bearer ${token}` },
@@ -431,19 +499,100 @@
           method:'POST',
           headers:{ 'Content-Type':'application/json', Authorization:`Bearer ${token}` },
           body:JSON.stringify({ participant_id:participantId, course_ids:courseIds })
+        }),
+        fetch('/.netlify/functions/events-admin', {
+          method:'POST',
+          headers:{ 'Content-Type':'application/json', Authorization:`Bearer ${token}` },
+          body:JSON.stringify({
+            action:'set_participant_invitations',
+            participant_id:participantId,
+            event_ids:eventIds,
+            notify:false
+          })
         })
       ]);
       const itemData = await itemResponse.json().catch(() => ({}));
       const courseData = await courseResponse.json().catch(() => ({}));
+      const eventData = await eventResponse.json().catch(() => ({}));
       if (!itemResponse.ok || !itemData.ok) throw new Error(itemData.error || 'Could not save forms and assessments.');
       if (!courseResponse.ok || !courseData.ok) throw new Error(courseData.error || 'Could not save courses.');
-      message.textContent = 'Assignments saved. Refreshing participant progress…';
-      window.location.reload();
+      if (!eventResponse.ok || !eventData.ok) throw new Error(eventData.error || 'Could not save event invitations.');
+
+      const shouldNotify = document.getElementById('notifyParticipant').checked && added.length;
+      if (shouldNotify) {
+        message.textContent = 'Assignments saved. Sending one summary email…';
+        const notificationResponse = await fetch('/.netlify/functions/assignment-notification', {
+          method:'POST',
+          headers:{ 'Content-Type':'application/json', Authorization:`Bearer ${token}` },
+          body:JSON.stringify({
+            participant_id:participantId,
+            items:added.map(notificationItem)
+          })
+        });
+        const notificationData = await notificationResponse.json().catch(() => ({}));
+        if (!notificationResponse.ok || !notificationData.ok) {
+          throw new Error(notificationData.error || 'Assignments were saved, but the email could not be sent.');
+        }
+        if (!notificationData.sent) {
+          message.textContent = `Assignments saved. ${notificationData.reason || 'Email was not sent.'}`;
+          message.classList.add('warning');
+          window.setTimeout(() => window.location.reload(), 1400);
+          return;
+        }
+      }
+      message.textContent = shouldNotify
+        ? 'Assignments saved and one summary email was sent.'
+        : 'Assignments saved.';
+      pendingManagementChange = null;
+      window.setTimeout(() => window.location.reload(), 700);
     } catch (error) {
       message.textContent = error.message || 'Could not save the pathway.';
       message.classList.add('error');
       button.disabled = false;
     }
+  }
+
+  function buildManagementChanges(itemKeys, courseIds, eventIds) {
+    const desired = {
+      pathway:new Set(itemKeys),
+      course:new Set(courseIds),
+      event:new Set(eventIds)
+    };
+    const initial = {
+      pathway:initialPathwayKeys,
+      course:initialCourseIds,
+      event:initialEventIds
+    };
+    const added = managementOptions.filter(item => {
+      const type = item.kind === 'course' ? 'course' : item.kind === 'event' ? 'event' : 'pathway';
+      const key = item.kind === 'pathway' ? item.key : item.id;
+      return !item.automatic && desired[type].has(key) && !initial[type].has(key);
+    });
+    const removed = managementOptions.filter(item => {
+      const type = item.kind === 'course' ? 'course' : item.kind === 'event' ? 'event' : 'pathway';
+      const key = item.kind === 'pathway' ? item.key : item.id;
+      return !item.automatic && initial[type].has(key) && !desired[type].has(key);
+    });
+    return { added, removed };
+  }
+
+  function reviewRow(item, action) {
+    const type = item.kind === 'event' ? 'Event' : item.kind === 'course' ? 'Course' : titleCase(item.type || 'Assignment');
+    return `<article class="cmcReviewItem ${action}">
+      <span>${action === 'add' ? '+' : '−'}</span>
+      <div><small>${escapeHtml(action === 'add' ? 'Add' : 'Remove')} · ${escapeHtml(type)}</small><strong>${escapeHtml(item.title)}</strong><p>${escapeHtml(item.description || '')}</p></div>
+    </article>`;
+  }
+
+  function notificationItem(item) {
+    return {
+      key:item.kind === 'event' ? `event:${item.id}` : item.kind === 'course' ? `course:${item.id}` : item.key,
+      source:item.kind === 'event' ? 'event' : item.kind,
+      type:item.kind === 'event' ? 'Event invitation' : item.kind === 'course' ? 'Course' : titleCase(item.type || 'Assignment'),
+      title:item.title,
+      stage:titleCase(item.stage_key),
+      detail:item.description || ''
+    };
   }
 
   function renderRecords(reports, application, reflections = []) {
@@ -492,6 +641,73 @@
           <a class="cmcRecordAction" href="${record.href}">Open →</a>
         </article>`).join('')
       : '<p class="cmcDetailEmpty">No applications, reports, or course reflections have been recorded.</p>';
+  }
+
+  function renderEventHistory(events) {
+    const container = document.getElementById('participantEventHistory');
+    if (!events.length) {
+      container.innerHTML = '<p class="cmcDetailEmpty">This participant has not been invited to an event.</p>';
+      return;
+    }
+    const now = Date.now();
+    const rows = [...events].sort((a, b) => (
+      new Date(b.event?.starts_at || 0) - new Date(a.event?.starts_at || 0)
+    ));
+    container.innerHTML = rows.map(invitation => {
+      const event = invitation.event || {};
+      const ended = new Date(event.ends_at || event.starts_at).getTime() < now;
+      const rsvp = {
+        pending:'No response',
+        going:'Going',
+        declined:'Can’t attend'
+      }[invitation.rsvp_status] || titleCase(invitation.rsvp_status);
+      return `<article class="cmcParticipantEventRow${ended ? ' past' : ''}">
+        <span class="cmcParticipantEventDate"><small>${escapeHtml(formatMonth(event.starts_at))}</small><strong>${escapeHtml(formatDay(event.starts_at))}</strong></span>
+        <div class="cmcParticipantEventCopy">
+          <small>${ended ? 'Past event' : 'Upcoming event'} · ${escapeHtml(titleCase(event.stage_key || 'discern'))}</small>
+          <h3>${escapeHtml(event.title || 'CMC Event')}</h3>
+          <p>${escapeHtml(formatEventDateTime(event.starts_at))}${event.location_name ? ` · ${escapeHtml(event.location_name)}` : ''}</p>
+          <span>RSVP: <strong>${escapeHtml(rsvp)}</strong></span>
+        </div>
+        <label class="cmcAttendanceControl">
+          <span>Attendance</span>
+          <select data-attendance-id="${escapeHtml(invitation.id)}">
+            <option value="pending"${invitation.attendance_status === 'pending' ? ' selected' : ''}>Not recorded</option>
+            <option value="attended"${invitation.attendance_status === 'attended' ? ' selected' : ''}>Attended</option>
+            <option value="did_not_attend"${invitation.attendance_status === 'did_not_attend' ? ' selected' : ''}>Did not attend</option>
+            <option value="excused"${invitation.attendance_status === 'excused' ? ' selected' : ''}>Excused</option>
+          </select>
+        </label>
+      </article>`;
+    }).join('');
+    container.querySelectorAll('[data-attendance-id]').forEach(select => {
+      select.addEventListener('change', () => saveAttendance(select));
+    });
+  }
+
+  async function saveAttendance(select) {
+    const current = select.value;
+    select.disabled = true;
+    try {
+      const response = await fetch('/.netlify/functions/events-admin', {
+        method:'POST',
+        headers:{ 'Content-Type':'application/json', Authorization:`Bearer ${token}` },
+        body:JSON.stringify({
+          action:'update_attendance',
+          invitation_id:select.dataset.attendanceId,
+          attendance_status:current
+        })
+      });
+      const data = await response.json().catch(() => ({}));
+      if (!response.ok || !data.ok) throw new Error(data.error || 'Could not save attendance.');
+      const invitation = participantEvents.find(item => item.id === select.dataset.attendanceId);
+      if (invitation) invitation.attendance_status = current;
+    } catch (error) {
+      window.alert(error.message || 'Could not save attendance.');
+      window.location.reload();
+    } finally {
+      select.disabled = false;
+    }
   }
 
   async function saveProfile(event) {
@@ -551,7 +767,7 @@
     const buttons = [...document.querySelectorAll('[data-participant-tab]')];
     const panels = [...document.querySelectorAll('[data-participant-panel]')];
     const requested = window.location.hash.replace('#', '');
-    activateTab(['overview', 'work', 'records'].includes(requested) ? requested : 'overview', false);
+    activateTab(['overview', 'work', 'events', 'records'].includes(requested) ? requested : 'overview', false);
     buttons.forEach(button => button.addEventListener('click', () => {
       activateTab(button.dataset.participantTab, true);
     }));
@@ -660,6 +876,30 @@
     const date = value instanceof Date ? value : new Date(value);
     if (Number.isNaN(date.getTime())) return '—';
     return date.toLocaleDateString([], { month:'short', day:'numeric' });
+  }
+
+  function formatEventDateTime(value) {
+    if (!value) return 'Date to be announced';
+    const date = new Date(value);
+    if (Number.isNaN(date.getTime())) return 'Date to be announced';
+    return date.toLocaleString([], {
+      weekday:'short',
+      month:'short',
+      day:'numeric',
+      year:'numeric',
+      hour:'numeric',
+      minute:'2-digit'
+    });
+  }
+
+  function formatMonth(value) {
+    const date = new Date(value);
+    return Number.isNaN(date.getTime()) ? 'TBD' : date.toLocaleDateString([], { month:'short' }).toUpperCase();
+  }
+
+  function formatDay(value) {
+    const date = new Date(value);
+    return Number.isNaN(date.getTime()) ? '—' : date.toLocaleDateString([], { day:'numeric' });
   }
 
   function initials(value) {

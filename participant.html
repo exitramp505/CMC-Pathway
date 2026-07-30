@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <title>Participant Dashboard | CMC Pathway</title>
-  <link rel="stylesheet" href="style.css?v=111">
+  <link rel="stylesheet" href="style.css?v=112">
 </head>
 <body class="cmcPathwayBody">
 <header class="cmcHeader">
@@ -42,6 +42,7 @@
     <nav class="cmcParticipantTabs" aria-label="Participant dashboard sections">
       <button class="active" type="button" data-participant-tab="overview">Overview</button>
       <button type="button" data-participant-tab="work">Assignments</button>
+      <button type="button" data-participant-tab="events">Events</button>
       <button type="button" data-participant-tab="records">Reports</button>
     </nav>
 
@@ -143,9 +144,22 @@
 
           <div class="cmcAssignmentManagerFooter">
             <p id="participantManagementMessage" class="cmcAdminMessage"></p>
-            <button id="saveParticipantManagement" class="cmcPrimaryButton" type="button">Save assignments</button>
+            <button id="saveParticipantManagement" class="cmcPrimaryButton" type="button">Review changes</button>
           </div>
         </div>
+      </section>
+    </section>
+
+    <section class="cmcParticipantTabPanel" data-participant-panel="events">
+      <section class="cmcParticipantMainPanel">
+        <div class="cmcDetailSectionHeading">
+          <div>
+            <p class="cmcEyebrow">EVENT HISTORY</p>
+            <h2>Invitations and attendance</h2>
+          </div>
+          <p>Upcoming and past invitations remain here so leaders can review responses and record attendance.</p>
+        </div>
+        <div id="participantEventHistory" class="cmcParticipantEventHistory"></div>
       </section>
     </section>
 
@@ -164,8 +178,27 @@
   </div>
 </main>
 
+<dialog id="assignmentReviewDialog" class="cmcReviewDialog">
+  <form method="dialog" class="cmcReviewDialogCard">
+    <button class="cmcReviewDialogClose" value="cancel" aria-label="Close review">×</button>
+    <p class="cmcEyebrow">REVIEW CHANGES</p>
+    <h2>Update this pathway?</h2>
+    <p id="assignmentReviewIntro">Review what will be added or removed before saving.</p>
+    <div id="assignmentReviewList" class="cmcReviewList"></div>
+    <label id="assignmentNotifyChoice" class="cmcReviewNotify">
+      <input id="notifyParticipant" type="checkbox" checked>
+      <span><strong>Send one summary email</strong><small>All newly added items will be combined into one message.</small></span>
+    </label>
+    <p id="assignmentReviewMessage" class="cmcAdminMessage"></p>
+    <div class="cmcReviewActions">
+      <button class="cmcSecondaryButton" value="cancel">Keep editing</button>
+      <button id="confirmParticipantChanges" class="cmcPrimaryButton" value="confirm" type="button">Assign and notify</button>
+    </div>
+  </form>
+</dialog>
+
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="auth.js?v=103"></script>
-<script src="participant.js?v=100"></script>
+  <script src="auth.js?v=112"></script>
+<script src="participant.js?v=112"></script>
 </body>
 </html>

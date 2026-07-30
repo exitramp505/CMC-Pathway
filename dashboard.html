@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <title>Dashboard | CMC Pathway</title>
-  <link rel="stylesheet" href="style.css?v=103">
+  <link rel="stylesheet" href="style.css?v=111">
 </head>
 <body class="cmcPathwayBody">
 <header class="cmcHeader">
@@ -16,53 +16,47 @@
 </header>
 
 <main class="cmcPathwayMain">
-  <section class="cmcWelcome">
-    <div>
-      <p class="cmcEyebrow">YOUR MULTIPLICATION PATHWAY</p>
+  <section class="cmcDashboardHero">
+    <div class="cmcDashboardHeroCopy">
+      <div class="cmcDashboardHeroMeta">
+        <p class="cmcEyebrow">MY PATHWAY</p>
+        <span class="cmcDashboardStageBadge">Current stage <strong id="currentStageName">Discover</strong></span>
+      </div>
       <h1 id="welcomeTitle">Welcome.</h1>
-      <p class="cmcIntro">Begin with Discover. As you move forward, your next steps, assessments, and resources will appear here.</p>
+      <p class="cmcIntro">Continue your next priority and review what needs your attention.</p>
     </div>
-    <div class="cmcProgressSummary">
-      <strong id="stagesUnderway">1 of 4</strong>
-      <span>stages underway</span>
-      <div><i id="journeyProgress"></i></div>
-    </div>
+    <a class="cmcDashboardContext cmcDashboardEventSummary" href="#assigned-work" aria-label="Review upcoming events">
+      <span>Upcoming events</span>
+      <strong id="eventSummaryCount">0 upcoming</strong>
+      <span id="eventSummaryDates" class="cmcDashboardEventDates" aria-label="Upcoming event dates"></span>
+      <small id="eventSummaryDetail">No response needed</small>
+    </a>
   </section>
 
-  <section class="cmcJourney">
-    <div class="cmcSectionHeading">
-      <div>
-        <p class="cmcEyebrow">THE CMC PATHWAY</p>
-        <h2>Your next faithful step.</h2>
-      </div>
-      <p>Each stage builds on the one before it. You do not need to have the whole journey figured out to begin.</p>
-    </div>
+  <section id="nextStep" class="cmcNextStep" aria-live="polite">
+    <p class="cmcLoading">Loading your next step…</p>
+  </section>
 
-    <div id="pathwayStages" class="cmcStageGrid">
+  <section id="assigned-work" class="cmcDashboardSection cmcStageWorkspace">
+    <div class="cmcDashboardSectionHeading">
+      <div>
+        <p class="cmcEyebrow">YOUR PATHWAY WORK</p>
+        <h2>Work by stage.</h2>
+      </div>
+      <p>Select a stage to see what is assigned, what needs attention, and what you have completed.</p>
+    </div>
+    <div id="pathwayStageTabs" class="cmcPathwayWorkTabs" role="tablist" aria-label="Pathway stages">
       <p class="cmcLoading">Loading your pathway…</p>
     </div>
+    <div id="pathwayStagePanel" class="cmcPathwayWorkPanel" role="tabpanel">
+      <p class="cmcLoading">Loading your work…</p>
+    </div>
   </section>
 
-  <section class="cmcUtilityGrid">
-    <article id="profilePrompt" class="cmcUtilityCard">
-      <p class="cmcEyebrow">YOUR PROFILE</p>
-      <h2>Keep your information current.</h2>
-      <p>Your details help us connect you with the right regional leader and personalize your pathway.</p>
-      <a href="profile.html">Review profile →</a>
-    </article>
-    <article class="cmcRegionCard">
-      <div id="regionInitial">—</div>
-      <span>
-        <p class="cmcEyebrow">YOUR REGION</p>
-        <h2 id="regionName">Open Bible Region</h2>
-        <p>Your CMC pathway stays connected to accountable regional relationships.</p>
-      </span>
-    </article>
-  </section>
 </main>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="auth.js?v=103"></script>
-<script src="dashboard.js?v=100"></script>
+<script src="dashboard.js?v=110"></script>
 </body>
 </html>

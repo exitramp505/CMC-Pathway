@@ -64,7 +64,7 @@ exports.handler = async (event) => {
       return json(200, { ok:true, viewer, participants:[] });
     }
 
-    const [assignmentResult, reportResult] = await Promise.all([
+    const [assignmentResult, reportResult, eventInvitationResult] = await Promise.all([
       supabase
         .from('candidate_assignments')
         .select('user_id,item_key,item_type,stage_key,status,progress,external_status,assigned_at,completed_at,updated_at')
@@ -72,19 +72,35 @@ exports.handler = async (event) => {
       supabase
         .from('assessment_results')
         .select('user_id,created_at,scores')
+        .in('user_id', userIds),
+      supabase
+        .from('cmc_event_invitations')
+        .select('user_id,rsvp_status,attendance_status,invited_at,responded_at,cmc_events(id,title,starts_at,ends_at,status)')
         .in('user_id', userIds)
     ]);
 
     if (assignmentResult.error) throw assignmentResult.error;
     if (reportResult.error) throw reportResult.error;
+    if (eventInvitationResult.error) throw eventInvitationResult.error;
 
     const assignmentsByUser = groupBy(assignmentResult.data || [], 'user_id');
     const reportsByUser = groupBy(reportResult.data || [], 'user_id');
+    const eventsByUser = groupBy(
+      (eventInvitationResult.data || []).map(invitation => ({
+        ...invitation,
+        event:Array.isArray(invitation.cmc_events)
+          ? invitation.cmc_events[0]
+          : invitation.cmc_events,
+        cmc_events:undefined
+      })).filter(invitation => invitation.event),
+      'user_id'
+    );
 
     const participants = visibleProfiles.map(profile => ({
       ...profile,
       assignments: assignmentsByUser.get(profile.id) || [],
-      reports: reportsByUser.get(profile.id) || []
+      reports: reportsByUser.get(profile.id) || [],
+      events: eventsByUser.get(profile.id) || []
     }));
 
     return json(200, { ok:true, viewer, participants });

@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <title>Participant Dashboard | CMC Pathway</title>
-  <link rel="stylesheet" href="style.css?v=114">
+  <link rel="stylesheet" href="style.css?v=115">
 </head>
 <body class="cmcPathwayBody">
 <header class="cmcHeader">
@@ -49,38 +49,48 @@
     </nav>
 
     <section class="cmcParticipantTabPanel active" data-participant-panel="overview">
-      <section class="cmcParticipantStats cmcParticipantStatsInOverview">
-        <article>
-          <span>Current stage</span>
-          <strong id="currentStageStat">Discover</strong>
-          <small id="currentStageCaption">Beginning the pathway</small>
-        </article>
-        <article>
-          <span>Assigned work</span>
-          <strong id="assignedCountStat">0</strong>
-          <small>Courses, forms, and assessments</small>
-        </article>
-        <article>
-          <span>Completed</span>
-          <strong id="completedCountStat">0</strong>
-          <small id="completedCaption">Items finished</small>
-        </article>
-        <article>
-          <span>Latest activity</span>
-          <strong id="latestActivityStat">—</strong>
-          <small>Most recent recorded progress</small>
-        </article>
-      </section>
-
-      <section class="cmcParticipantMainPanel cmcParticipantOverviewProgress">
+      <section class="cmcParticipantMainPanel cmcParticipantOverviewPanel">
         <div class="cmcDetailSectionHeading">
           <div>
-            <p class="cmcEyebrow">CURRENT PROGRESS</p>
-            <h2>Assigned work</h2>
+            <p class="cmcEyebrow">OVERVIEW</p>
+            <h2>Pathway overview</h2>
           </div>
-          <p>Current assignments and recorded completion progress.</p>
+          <p>Current stage, active work, completed steps, and upcoming events in one view.</p>
         </div>
-        <div id="participantWorkList" class="cmcParticipantWorkList"></div>
+
+        <section class="cmcParticipantStats cmcParticipantStatsInOverview" aria-label="Participant pathway summary">
+          <article>
+            <span>Current stage</span>
+            <strong id="currentStageStat">Discover</strong>
+            <small id="currentStageCaption">Beginning the pathway</small>
+          </article>
+          <article>
+            <span>Assigned work</span>
+            <strong id="assignedCountStat">0</strong>
+            <small>Courses, forms, and assessments</small>
+          </article>
+          <article>
+            <span>Completed</span>
+            <strong id="completedCountStat">0</strong>
+            <small id="completedCaption">Items finished</small>
+          </article>
+          <article class="cmcParticipantEventStat">
+            <span>Upcoming events</span>
+            <strong id="upcomingEventCountStat">0</strong>
+            <small id="upcomingEventCaption">No upcoming invitations</small>
+          </article>
+        </section>
+
+        <div class="cmcParticipantOverviewWork">
+          <div class="cmcParticipantOverviewWorkHeading">
+            <div>
+              <p class="cmcEyebrow">CURRENT PROGRESS</p>
+              <h3>Assigned work</h3>
+            </div>
+            <p>Current assignments and recorded completion progress.</p>
+          </div>
+          <div id="participantWorkList" class="cmcParticipantWorkList"></div>
+        </div>
       </section>
 
       <div class="cmcParticipantOverviewGrid">
@@ -200,7 +210,7 @@
 </dialog>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="auth.js?v=114"></script>
-<script src="participant.js?v=114"></script>
+  <script src="auth.js?v=115"></script>
+<script src="participant.js?v=115"></script>
 </body>
 </html>

@@ -82,7 +82,14 @@
     participantEvents = data.events || [];
     const stage = participant.current_stage || inferredStage(assignments);
     const completedCount = assignments.filter(item => item.completed).length;
-    const latest = activity[0]?.date || latestActivity(participant, assignments, reports, application);
+    const upcomingEvents = participantEvents.filter(invitation => {
+      const event = invitation.event || {};
+      const end = new Date(event.ends_at || event.starts_at || 0).getTime();
+      return event.status === 'published' && end >= Date.now();
+    });
+    const pendingEventResponses = upcomingEvents.filter(invitation =>
+      !invitation.rsvp_status || invitation.rsvp_status === 'pending'
+    ).length;
 
     document.title = `${participant.full_name || 'Participant'} | CMC Pathway`;
     setText('participantAvatar', initials(participant.full_name));
@@ -99,7 +106,15 @@
     setText('assignedCountStat', assignments.length);
     setText('completedCountStat', completedCount);
     setText('completedCaption', completedCount === 1 ? 'Item finished' : 'Items finished');
-    setText('latestActivityStat', formatShortDate(latest));
+    setText('upcomingEventCountStat', upcomingEvents.length);
+    setText(
+      'upcomingEventCaption',
+      pendingEventResponses
+        ? `${pendingEventResponses} ${pendingEventResponses === 1 ? 'response' : 'responses'} needed`
+        : upcomingEvents.length
+          ? 'All invitations answered'
+          : 'No upcoming invitations'
+    );
     renderArchiveState();
 
     const emailLink = document.getElementById('emailParticipantLink');

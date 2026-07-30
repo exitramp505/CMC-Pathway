@@ -6800,3 +6800,191 @@
 @media(max-width:720px){
   .cmcEventLibrary .cmcEventCard{grid-template-columns:auto minmax(0,1fr)}
 }
+
+/* v115 must remain last: shared administration and participant layout */
+.cmcLeaderMain,
+.cmcEventsMain,
+.cmcCourseAdminMain,
+.cmcManageLeadersMain,
+.cmcParticipantDetailMain{
+  width:min(1420px,calc(100% - 48px));
+  max-width:none;
+  margin-right:auto;
+  margin-left:auto;
+}
+.cmcLeaderMain,
+.cmcEventsMain,
+.cmcCourseAdminMain,
+.cmcManageLeadersMain{padding-top:52px;padding-bottom:110px}
+.cmcAdminPageHero,
+.cmcLeaderWelcome.cmcAdminPageHero,
+.cmcEventsIntro.cmcAdminPageHero,
+.cmcCourseAdminIntro.cmcAdminPageHero,
+.cmcManageLeadersIntro.cmcAdminPageHero{
+  display:grid;
+  grid-template-columns:minmax(0,850px) auto;
+  align-items:start;
+  justify-content:space-between;
+  gap:clamp(32px,6vw,88px);
+  min-height:248px;
+  margin:0;
+  padding:0 0 36px;
+}
+.cmcAdminPageHero .cmcEyebrow{margin:0 0 14px}
+.cmcAdminPageHero h1,
+.cmcLeaderWelcome.cmcAdminPageHero h1,
+.cmcEventsIntro.cmcAdminPageHero h1,
+.cmcCourseAdminIntro.cmcAdminPageHero h1,
+.cmcManageLeadersIntro.cmcAdminPageHero h1{
+  max-width:850px;
+  margin:0 0 14px;
+  font-size:clamp(46px,4.3vw,64px);
+  line-height:.96;
+  letter-spacing:-.06em;
+}
+.cmcAdminPageHero .cmcIntro,
+.cmcCourseAdminIntro.cmcAdminPageHero>div>p:last-child,
+.cmcManageLeadersIntro.cmcAdminPageHero>div>p:last-child{
+  max-width:760px;
+  margin:0;
+  color:#5d6e76;
+  font-size:17px;
+  font-weight:600;
+  line-height:1.6;
+}
+.cmcAdminPageAction,
+.cmcInviteButton.cmcAdminPageAction,
+.cmcPrimaryButton.cmcAdminPageAction{
+  display:inline-flex;
+  width:204px;
+  min-width:204px;
+  min-height:62px;
+  align-self:end;
+  align-items:center;
+  justify-content:space-between;
+  box-sizing:border-box;
+  margin:0;
+  padding:0 22px;
+  border:0;
+  border-radius:17px;
+  color:#111;
+  background:var(--cmcEmber);
+  box-shadow:0 13px 28px rgba(234,159,67,.2);
+  font:900 12px Montserrat,Arial,sans-serif;
+  text-decoration:none;
+}
+.cmcAdminPageAction span{font-size:19px;line-height:1}
+.cmcManageLeadersIntro.cmcAdminPageHero{
+  grid-template-columns:minmax(0,850px) minmax(280px,330px);
+}
+.cmcManageLeadersIntro.cmcAdminPageHero .cmcLeaderScopeCard{
+  min-height:148px;
+  align-self:end;
+  box-sizing:border-box;
+}
+.cmcParticipantRow{
+  grid-template-columns:minmax(230px,1.4fr) minmax(130px,.64fr) minmax(130px,.62fr) minmax(112px,.55fr) minmax(82px,auto) minmax(150px,auto);
+}
+.cmcPersonEventMetric small{
+  display:block;
+  margin-top:5px;
+  color:#8edbd3;
+  font-size:8px;
+  font-weight:850;
+}
+.cmcParticipantOverviewPanel{overflow:hidden;padding:0}
+.cmcParticipantOverviewPanel>.cmcDetailSectionHeading{
+  margin:0;
+  padding:30px 36px 26px;
+  border-bottom:1px solid rgba(41,61,72,.13);
+}
+.cmcParticipantOverviewPanel>.cmcDetailSectionHeading h2{
+  font-size:clamp(31px,3vw,43px);
+}
+.cmcParticipantStatsInOverview{
+  margin:0;
+  border:0;
+  border-bottom:1px solid rgba(41,61,72,.13);
+  border-radius:0;
+  background:rgba(41,61,72,.025);
+}
+.cmcParticipantStatsInOverview article{min-height:116px;padding:20px 26px}
+.cmcParticipantStatsInOverview strong{margin:11px 0 8px;font-size:29px}
+.cmcParticipantStatsInOverview .cmcParticipantEventStat{
+  box-shadow:inset 0 3px 0 rgba(77,167,156,.7);
+}
+.cmcParticipantStatsInOverview .cmcParticipantEventStat small{color:#398e84}
+.cmcParticipantOverviewWork{padding:30px 36px 36px}
+.cmcParticipantOverviewWorkHeading{
+  display:grid;
+  grid-template-columns:minmax(0,1fr) minmax(280px,520px);
+  align-items:end;
+  gap:34px;
+  margin-bottom:24px;
+}
+.cmcParticipantOverviewWorkHeading h3{
+  margin:6px 0 0;
+  color:var(--cmcInk);
+  font-size:30px;
+  line-height:1;
+  letter-spacing:-.04em;
+}
+.cmcParticipantOverviewWorkHeading>p{
+  margin:0;
+  color:#66767d;
+  font-size:12px;
+  font-weight:700;
+  line-height:1.55;
+}
+.cmcParticipantOverviewGrid{margin-top:22px}
+@media(max-width:1120px){
+  .cmcParticipantRow{
+    grid-template-columns:minmax(230px,1.4fr) repeat(3,minmax(120px,1fr));
+  }
+  .cmcParticipantRow .cmcActionPill{grid-column:2}
+  .cmcParticipantRow .cmcRowActions{grid-column:3/5;width:100%}
+}
+@media(max-width:900px){
+  .cmcAdminPageHero,
+  .cmcLeaderWelcome.cmcAdminPageHero,
+  .cmcEventsIntro.cmcAdminPageHero,
+  .cmcCourseAdminIntro.cmcAdminPageHero,
+  .cmcManageLeadersIntro.cmcAdminPageHero{
+    grid-template-columns:1fr;
+    min-height:0;
+    gap:24px;
+  }
+  .cmcAdminPageAction,
+  .cmcInviteButton.cmcAdminPageAction,
+  .cmcPrimaryButton.cmcAdminPageAction,
+  .cmcManageLeadersIntro.cmcAdminPageHero .cmcLeaderScopeCard{align-self:start}
+  .cmcParticipantOverviewWorkHeading{grid-template-columns:1fr;gap:10px}
+}
+@media(max-width:720px){
+  .cmcLeaderMain,
+  .cmcEventsMain,
+  .cmcCourseAdminMain,
+  .cmcManageLeadersMain,
+  .cmcParticipantDetailMain{width:calc(100% - 28px)}
+  .cmcLeaderMain,
+  .cmcEventsMain,
+  .cmcCourseAdminMain,
+  .cmcManageLeadersMain{padding-top:32px;padding-bottom:72px}
+  .cmcAdminPageHero h1,
+  .cmcLeaderWelcome.cmcAdminPageHero h1,
+  .cmcEventsIntro.cmcAdminPageHero h1,
+  .cmcCourseAdminIntro.cmcAdminPageHero h1,
+  .cmcManageLeadersIntro.cmcAdminPageHero h1{
+    font-size:clamp(40px,12vw,50px);
+  }
+  .cmcAdminPageAction,
+  .cmcInviteButton.cmcAdminPageAction,
+  .cmcPrimaryButton.cmcAdminPageAction{width:100%;min-width:0}
+  .cmcParticipantRow{grid-template-columns:1fr}
+  .cmcParticipantRow .cmcActionPill,
+  .cmcParticipantRow .cmcRowActions{grid-column:auto}
+  .cmcParticipantOverviewPanel>.cmcDetailSectionHeading,
+  .cmcParticipantOverviewWork{padding-right:20px;padding-left:20px}
+  .cmcParticipantStatsInOverview{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .cmcParticipantStatsInOverview article{min-height:108px;padding:17px}
+}

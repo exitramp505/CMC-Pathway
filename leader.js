@@ -97,6 +97,14 @@
       const discover = assignment(person,'discover_course');
       const ready = isReadyForFollowup(person);
       const latest = latestActivity(person);
+      const upcomingEvents = (person.events || []).filter(invitation => {
+        const event = invitation.event || {};
+        const end = new Date(event.ends_at || event.starts_at || 0).getTime();
+        return event.status === 'published' && end >= Date.now();
+      });
+      const pendingEventResponses = upcomingEvents.filter(invitation =>
+        !invitation.rsvp_status || invitation.rsvp_status === 'pending'
+      ).length;
       const status = person.archived_at
         ? 'Archived'
         : ready
@@ -121,6 +129,11 @@
           <div><strong>${escapeHtml(person.full_name || person.email)}</strong><small>${escapeHtml([roleLabel(person),person.church_name,person.state].filter(Boolean).join(' · ') || person.email)}</small></div>
         </div>
         <div class="cmcPersonMetric"><span>${titleCase(stage)}</span><strong>${escapeHtml(stageDetail)}</strong></div>
+        <div class="cmcPersonMetric cmcPersonEventMetric">
+          <span>Events</span>
+          <strong>${upcomingEvents.length ? `${upcomingEvents.length} upcoming` : 'None upcoming'}</strong>
+          ${pendingEventResponses ? `<small>${pendingEventResponses} ${pendingEventResponses === 1 ? 'response' : 'responses'} needed</small>` : ''}
+        </div>
         <div class="cmcPersonMetric"><span>Latest activity</span><strong>${escapeHtml(latest)}</strong></div>
         <span class="cmcActionPill ${statusClass}">${status}</span>
         <div class="cmcRowActions">

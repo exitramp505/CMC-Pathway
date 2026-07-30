@@ -314,7 +314,8 @@ async function syncCourseAccess(supabase, course, previousCourse) {
   const { data:participants, error:participantsError } = await supabase
     .from('candidate_profiles')
     .select('id,full_name,email')
-    .eq('account_role', 'participant');
+    .eq('account_role', 'participant')
+    .is('archived_at', null);
   if (participantsError) throw participantsError;
   if (!participants?.length) return;
 

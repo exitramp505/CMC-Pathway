@@ -45,7 +45,7 @@ exports.handler = async (event) => {
 
     let participantQuery = supabase
       .from('candidate_profiles')
-      .select('id,full_name,email,phone,state,region,church_name,ministry_role,pathway_interest,married,current_stage,stage_updated_at,account_role,created_at,updated_at')
+      .select('id,full_name,email,phone,state,region,church_name,ministry_role,pathway_interest,married,current_stage,stage_updated_at,account_role,created_at,updated_at,archived_at')
       .eq('id', participantId);
 
     if (viewer.account_role === 'regional_leader') {

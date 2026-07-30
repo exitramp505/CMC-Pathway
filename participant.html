@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <title>Participant Dashboard | CMC Pathway</title>
-  <link rel="stylesheet" href="style.css?v=112">
+  <link rel="stylesheet" href="style.css?v=114">
 </head>
 <body class="cmcPathwayBody">
 <header class="cmcHeader">
@@ -30,11 +30,13 @@
           <p class="cmcParticipantStageLine">
             <span>Current stage</span>
             <strong id="participantStagePill">Discover</strong>
+            <em id="participantArchiveStatus" class="hidden">Archived</em>
           </p>
         </div>
       </div>
       <div class="cmcParticipantHeroActions">
         <a id="emailParticipantLink" class="cmcSecondaryAction" href="#">Email participant</a>
+        <button id="archiveParticipantButton" class="cmcArchivePersonAction hidden" type="button">Archive person</button>
         <a class="cmcPrimaryAction" href="leader.html">← Back to People</a>
       </div>
     </section>
@@ -198,7 +200,7 @@
 </dialog>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="auth.js?v=112"></script>
-<script src="participant.js?v=112"></script>
+  <script src="auth.js?v=114"></script>
+<script src="participant.js?v=114"></script>
 </body>
 </html>

@@ -72,7 +72,7 @@ function renderRoleNavigation(profile,activeKey){
  {key:'people',label:'People',href:'leader.html',show:['regional_leader','cmc_admin'].includes(role)},
  {key:'events',label:'Events',href:'events.html',show:['regional_leader','cmc_admin'].includes(role)},
  {key:'courses',label:'Courses',href:'courses.html',show:role==='cmc_admin'},
-  {key:'leaders',label:'Leaders',href:'manage-leaders.html',show:role==='cmc_admin'},
+  {key:'leaders',label:'Leaders',href:'manage-leaders.html',show:['regional_leader','cmc_admin'].includes(role)},
   {key:'profile',label:'Profile',href:'profile.html',show:true}
  ];
  const visibleItems=items.filter(item=>item.show);

@@ -37,6 +37,7 @@
     updateSummary();
     render();
   });
+  document.getElementById('peopleStatusFilter').addEventListener('change', render);
   document.getElementById('stageFilter').addEventListener('change', render);
   document.getElementById('showFollowupsBtn').addEventListener('click', () => {
     followupsOnly = !followupsOnly;
@@ -49,7 +50,9 @@
 
   function updateSummary() {
     const type = document.getElementById('peopleTypeFilter').value;
-    const people = participants.filter(person => matchesPeopleType(person, type));
+    const people = participants.filter(person =>
+      matchesPeopleType(person, type) && !person.archived_at
+    );
     const discover = people.filter(person => assignment(person,'discover_course')).length;
     const followups = people.filter(isReadyForFollowup).length;
     const discern = people.filter(person => person.assignments.some(item => item.stage_key === 'discern' && item.status === 'assigned')).length;
@@ -71,18 +74,21 @@
   function render() {
     const query = document.getElementById('peopleSearch').value.trim().toLowerCase();
     const type = document.getElementById('peopleTypeFilter').value;
+    const accountStatus = document.getElementById('peopleStatusFilter').value;
     const stage = document.getElementById('stageFilter').value;
     let visible = participants.filter(person => {
       const text = [person.full_name,person.email,person.church_name,person.ministry_role,person.state,person.region].join(' ').toLowerCase();
       if (query && !text.includes(query)) return false;
       if (!matchesPeopleType(person, type)) return false;
+      if (accountStatus === 'active' && person.archived_at) return false;
+      if (accountStatus === 'archived' && !person.archived_at) return false;
       if (stage && currentStage(person) !== stage) return false;
-      if (followupsOnly && !isReadyForFollowup(person)) return false;
+      if (followupsOnly && (person.archived_at || !isReadyForFollowup(person))) return false;
       return true;
     });
 
     if (!visible.length) {
-      list.innerHTML = '<div class="cmcLeaderEmpty">No participants match this view.</div>';
+      list.innerHTML = '<div class="cmcLeaderEmpty">No people match this view.</div>';
       return;
     }
 
@@ -91,13 +97,25 @@
       const discover = assignment(person,'discover_course');
       const ready = isReadyForFollowup(person);
       const latest = latestActivity(person);
-      const status = ready ? 'Follow up' : stage === 'discover' && !discoverProgress(discover) ? 'New' : 'In progress';
-      const statusClass = ready ? 'attention' : status === 'New' ? 'waiting' : 'active';
+      const status = person.archived_at
+        ? 'Archived'
+        : ready
+          ? 'Follow up'
+          : stage === 'discover' && !discoverProgress(discover)
+            ? 'New'
+            : 'In progress';
+      const statusClass = person.archived_at
+        ? 'archived'
+        : ready
+          ? 'attention'
+          : status === 'New'
+            ? 'waiting'
+            : 'active';
       const stageDetail = stage === 'discover'
         ? discoverProgress(discover) >= 100 ? 'Completed' : `${discoverProgress(discover)}% complete`
         : `${person.assignments.filter(item => item.stage_key === stage && item.status === 'assigned').length} item(s) assigned`;
 
-      return `<article class="cmcParticipantRow">
+      return `<article class="cmcParticipantRow${person.archived_at ? ' archived' : ''}">
         <div class="cmcPerson">
           <span class="cmcAvatar">${initials(person.full_name)}</span>
           <div><strong>${escapeHtml(person.full_name || person.email)}</strong><small>${escapeHtml([roleLabel(person),person.church_name,person.state].filter(Boolean).join(' · ') || person.email)}</small></div>
@@ -106,7 +124,6 @@
         <div class="cmcPersonMetric"><span>Latest activity</span><strong>${escapeHtml(latest)}</strong></div>
         <span class="cmcActionPill ${statusClass}">${status}</span>
         <div class="cmcRowActions">
-          <a class="cmcRowAction" href="participant.html?id=${encodeURIComponent(person.id)}#work">Assignments</a>
           <a class="cmcRowAction" href="participant.html?id=${encodeURIComponent(person.id)}">Open dashboard →</a>
         </div>
       </article>`;

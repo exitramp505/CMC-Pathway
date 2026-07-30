@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <title>Manage Leaders | CMC Pathway</title>
-  <link rel="stylesheet" href="style.css?v=112">
+  <link rel="stylesheet" href="style.css?v=114">
 </head>
 <body class="cmcPathwayBody">
 <header class="cmcHeader">
@@ -17,12 +17,26 @@
 
 <main class="cmcManageLeadersMain">
   <section class="cmcManageLeadersIntro">
-    <p class="cmcEyebrow">NATIONAL ADMINISTRATION</p>
-    <h1>Manage regional leaders.</h1>
-    <p>Choose an existing CMC Pathway account, assign its Open Bible region, and grant regional dashboard access.</p>
+    <div>
+      <p id="leaderScopeLabel" class="cmcEyebrow">LEADERSHIP ACCESS</p>
+      <h1 id="leaderManagementTitle">Steward regional leader access.</h1>
+      <p id="leaderManagementDescription">Give trusted leaders access to the people, events, and pathway work within their Open Bible region.</p>
+    </div>
+    <aside class="cmcLeaderScopeCard">
+      <span>ACCESS SCOPE</span>
+      <strong id="leaderScopeName">Loading…</strong>
+      <small id="leaderScopeDescription">Confirming your leadership permissions</small>
+    </aside>
   </section>
 
   <section class="cmcLeaderManagement">
+    <div class="cmcLeaderManagementHeading">
+      <div>
+        <p class="cmcEyebrow">ADD A LEADER</p>
+        <h2>Grant regional access</h2>
+      </div>
+      <p>Choose someone who already has a CMC Pathway account. Their existing pathway work and profile will remain intact.</p>
+    </div>
     <form id="leaderAccessForm" class="cmcLeaderAccessForm">
       <label>
         <span>Account</span>
@@ -30,7 +44,7 @@
           <option value="">Choose an existing account</option>
         </select>
       </label>
-      <label>
+      <label id="leaderRegionField">
         <span>Open Bible region</span>
         <select id="leaderRegion" required>
           <option value="">Choose a region</option>
@@ -41,7 +55,7 @@
     <p id="leaderAccessMessage" class="cmcLeaderAccessMessage" aria-live="polite"></p>
 
     <div class="cmcCurrentLeadersHeading">
-      <h2>Current regional leaders</h2>
+      <div><p class="cmcEyebrow">CURRENT ACCESS</p><h2>Regional leaders</h2></div>
       <span id="regionalLeaderCount">0</span>
     </div>
     <div id="regionalLeaderList" class="cmcCurrentLeaderList">
@@ -51,7 +65,7 @@
 </main>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="auth.js?v=112"></script>
-<script src="manage-leaders.js?v=82"></script>
+<script src="auth.js?v=114"></script>
+<script src="manage-leaders.js?v=114"></script>
 </body>
 </html>

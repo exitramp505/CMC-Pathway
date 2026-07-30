@@ -41,7 +41,7 @@ exports.handler = async (event) => {
 
     let profileQuery = supabase
       .from('candidate_profiles')
-      .select('id,full_name,email,phone,state,region,church_name,ministry_role,pathway_interest,current_stage,account_role,created_at')
+      .select('id,full_name,email,phone,state,region,church_name,ministry_role,pathway_interest,current_stage,account_role,created_at,updated_at,archived_at')
       .order('created_at', { ascending:false });
 
     if (viewer.account_role === 'regional_leader') {

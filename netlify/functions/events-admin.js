@@ -85,6 +85,7 @@ async function loadAdminData(supabase, viewer, query) {
     .from('candidate_profiles')
     .select('id,full_name,email,state,region,church_name,current_stage')
     .eq('account_role', 'participant')
+    .is('archived_at', null)
     .order('full_name');
   if (viewer.account_role === 'regional_leader') {
     participantQuery = participantQuery.eq('region', viewer.region);
@@ -314,6 +315,7 @@ async function allowedParticipants(supabase, viewer, ids) {
   let query = supabase.from('candidate_profiles')
     .select('id,full_name,email,state,region,church_name,current_stage')
     .eq('account_role', 'participant')
+    .is('archived_at', null)
     .in('id', ids);
   if (viewer.account_role === 'regional_leader') query = query.eq('region', viewer.region);
   const { data, error } = await query;

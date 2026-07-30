@@ -8,6 +8,7 @@
   const content = document.getElementById('participantDetailContent');
   const profileForm = document.getElementById('participantProfileForm');
   let token = '';
+  let viewer = null;
   let participant = null;
   let participantAssignments = [];
   let managementPathwayItems = [];
@@ -64,11 +65,13 @@
     document.getElementById('editParticipantButton').classList.add('hidden');
   });
   document.getElementById('cancelParticipantEdit').addEventListener('click', closeProfileForm);
+  document.getElementById('archiveParticipantButton').addEventListener('click', toggleParticipantArchive);
   profileForm.addEventListener('submit', saveProfile);
   document.getElementById('saveParticipantManagement').addEventListener('click', saveManagement);
   document.getElementById('confirmParticipantChanges').addEventListener('click', confirmManagement);
 
   function render(data) {
+    viewer = data.viewer || viewer;
     participant = data.participant || {};
     const assignments = data.assignments || [];
     participantAssignments = assignments;
@@ -97,6 +100,7 @@
     setText('completedCountStat', completedCount);
     setText('completedCaption', completedCount === 1 ? 'Item finished' : 'Items finished');
     setText('latestActivityStat', formatShortDate(latest));
+    renderArchiveState();
 
     const emailLink = document.getElementById('emailParticipantLink');
     emailLink.href = participant.email ? `mailto:${participant.email}` : '#';
@@ -106,6 +110,54 @@
     renderWork(assignments, reports, application);
     renderEventHistory(participantEvents);
     renderRecords(reports, application, reflections);
+  }
+
+  function renderArchiveState() {
+    const archived = Boolean(participant.archived_at);
+    const archiveStatus = document.getElementById('participantArchiveStatus');
+    const archiveButton = document.getElementById('archiveParticipantButton');
+    archiveStatus.classList.toggle('hidden', !archived);
+    document.getElementById('participantDetailContent').classList.toggle('cmcParticipantArchived', archived);
+    const canArchive = participant.account_role === 'participant';
+    archiveButton.classList.toggle('hidden', !canArchive);
+    archiveButton.classList.toggle('restore', archived);
+    archiveButton.textContent = archived ? 'Restore person' : 'Archive person';
+  }
+
+  async function toggleParticipantArchive() {
+    const button = document.getElementById('archiveParticipantButton');
+    const archived = Boolean(participant.archived_at);
+    const verb = archived ? 'restore' : 'archive';
+    const name = participant.full_name || participant.email || 'this person';
+    if (!window.confirm(
+      archived
+        ? `Restore ${name} to the active People directory?`
+        : `Archive ${name}? Their records will be preserved and they can be restored later.`
+    )) return;
+    button.disabled = true;
+    button.textContent = archived ? 'Restoring…' : 'Archiving…';
+    try {
+      const response = await fetch('/.netlify/functions/participant-manage', {
+        method:'POST',
+        headers:{ 'Content-Type':'application/json', Authorization:`Bearer ${token}` },
+        body:JSON.stringify({
+          action:'set_archive',
+          participant_id:participantId,
+          archived:!archived
+        })
+      });
+      const data = await response.json().catch(() => ({}));
+      if (!response.ok || !data.ok) {
+        throw new Error(data.error || `Could not ${verb} this person.`);
+      }
+      participant = { ...participant, ...data.participant };
+      renderArchiveState();
+    } catch (error) {
+      window.alert(error.message || `Could not ${verb} this person.`);
+      renderArchiveState();
+    } finally {
+      button.disabled = false;
+    }
   }
 
   function renderProfile(person) {

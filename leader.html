@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <title>Regional Leader | CMC Pathway</title>
-  <link rel="stylesheet" href="style.css?v=112">
+  <link rel="stylesheet" href="style.css?v=114">
 </head>
 <body class="cmcPathwayBody">
 <header class="cmcHeader">
@@ -42,6 +42,11 @@
           <option value="leader">Leaders</option>
           <option value="all">Everyone</option>
         </select>
+        <select id="peopleStatusFilter" aria-label="Filter by account status">
+          <option value="active">Active</option>
+          <option value="archived">Archived</option>
+          <option value="all">All records</option>
+        </select>
         <select id="stageFilter" aria-label="Filter by pathway stage">
           <option value="">All stages</option>
           <option value="discover">Discover</option>
@@ -66,7 +71,7 @@
 </main>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="auth.js?v=112"></script>
-<script src="leader.js?v=113"></script>
+<script src="auth.js?v=114"></script>
+<script src="leader.js?v=114"></script>
 </body>
 </html>

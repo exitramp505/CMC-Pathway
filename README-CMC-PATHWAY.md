@@ -8,10 +8,11 @@ This build expands the Discernment Center into CMC Pathway.
 2. Set account roles in `candidate_profiles`.
 3. Run `supabase_courses_schema.sql`.
 4. Run `supabase_course_access_schema.sql`.
-5. Add the required Netlify environment variables.
-6. Deploy the repository.
-7. Build and publish Discover from the Courses screen.
-8. Test one participant, one regional leader, and one national administrator.
+5. Run `supabase_pathway_archive_schema.sql`.
+6. Add the required Netlify environment variables.
+7. Deploy the repository.
+8. Build and publish Discover from the Courses screen.
+9. Test one participant, one regional leader, and one national administrator.
 
 ## Account roles
 
@@ -19,9 +20,9 @@ This build expands the Discernment Center into CMC Pathway.
 - `regional_leader`
 - `cmc_admin`
 
-Participant is the database default. Role changes must be made with the Supabase
-service role or in the Supabase SQL editor; browser clients cannot promote
-themselves.
+Participant is the database default. National administrators can grant access
+across all regions from `/manage-leaders.html`. Regional leaders can grant
+access only to accounts in their own region. No one can promote themselves.
 
 Example:
 
@@ -72,6 +73,9 @@ inside CMC Pathway and Supabase.
 
 - Participants use `/dashboard.html`.
 - Regional leaders and CMC administrators use `/leader.html`.
+- Leaders can archive participant accounts without deleting their records.
+- Archived people remain available through the Archived filter and can be restored.
 - Regional leaders assign courses, forms, assessments, and events from each participant dashboard. New items can be reviewed and sent in one consolidated notification.
+- Regional leaders manage additional leaders in their own region from `/manage-leaders.html`.
 - National administrators build courses at `/courses.html`.
 - Existing assessment administration remains at `/admin.html`.

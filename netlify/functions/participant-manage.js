@@ -126,6 +126,25 @@ exports.handler = async (event) => {
       return json(200, { ok:true, participant:data });
     }
 
+    if (body.action === 'set_archive') {
+      if (participant.account_role !== 'participant') {
+        return json(400, { ok:false, error:'Leader access is managed from the Leaders page.' });
+      }
+      const archived = Boolean(body.archived);
+      const now = new Date().toISOString();
+      const { data, error } = await supabase
+        .from('candidate_profiles')
+        .update({
+          archived_at:archived ? now : null,
+          updated_at:now
+        })
+        .eq('id', participant.id)
+        .select('id,archived_at,updated_at')
+        .single();
+      if (error) throw error;
+      return json(200, { ok:true, participant:data });
+    }
+
     if (body.action === 'update_profile') {
       const source = body.profile && typeof body.profile === 'object' ? body.profile : {};
       const updates = {};
@@ -245,7 +264,7 @@ async function requireLeader(event) {
 async function loadParticipant(supabase, viewer, id) {
   let query = supabase
     .from('candidate_profiles')
-    .select('id,full_name,email,state,region,current_stage,stage_updated_at,account_role')
+    .select('id,full_name,email,state,region,current_stage,stage_updated_at,account_role,archived_at')
     .eq('id', id);
   if (viewer.account_role === 'regional_leader') {
     if (!viewer.region) throw httpError(403, 'Your leader account does not have a region.');

@@ -23,12 +23,15 @@ exports.handler = async (event) => {
     const user = userData.user;
     const { data:profile, error:profileError } = await supabase
       .from('candidate_profiles')
-      .select('id,full_name,email,account_role')
+      .select('id,full_name,email,account_role,archived_at')
       .eq('id', user.id)
       .maybeSingle();
     if (profileError) throw profileError;
     if (!profile) {
       return json(200, { ok:true, assignments:[], created:false });
+    }
+    if (profile.archived_at) {
+      return json(200, { ok:true, assignments:[], created:false, archived:true });
     }
 
     const participant = {

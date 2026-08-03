@@ -4,7 +4,7 @@ const { Resend } = require('resend');
 function json(status, body){ return { statusCode: status, headers:{'Content-Type':'application/json'}, body: JSON.stringify(body) }; }
 
 const ITEM_LABELS = {
-  discernment_application: 'Discernment Center Application',
+  discernment_application: 'Discernment Application',
   character_qualities: 'Character Qualities Assessment',
   ministry_readiness: 'Ministry Readiness Inventory',
   pastoral_reference: 'Pastoral Reference Form'
@@ -26,14 +26,14 @@ async function sendAssignmentEmail({email,name,itemKey}){
   await resend.emails.send({
     from: process.env.FROM_EMAIL,
     to: email,
-    subject: `New Discernment Center item assigned: ${itemTitle}`,
+    subject: `New CMC Pathway item assigned: ${itemTitle}`,
     html: `<div style="font-family:Arial,sans-serif;line-height:1.5;color:#1f2933">
       <h2 style="margin-bottom:8px;">${itemTitle} has been assigned to you</h2>
       <p>Hello ${name || 'there'},</p>
-      <p>A new item has been added to your Discernment Center dashboard.</p>
+      <p>A new item has been added to your CMC Pathway dashboard.</p>
       <p><strong>${itemTitle}</strong></p>
       <p><a href="${url}" style="display:inline-block;background:#0f172a;color:#fff;text-decoration:none;padding:12px 16px;border-radius:10px;font-weight:bold;">Open Your Dashboard</a></p>
-      <p style="color:#64748b;font-size:13px;">If you have questions, please contact your Discernment Center coordinator.</p>
+      <p style="color:#64748b;font-size:13px;">If you have questions, please contact your CMC regional leader.</p>
     </div>`
   });
   return {sent:true};

@@ -322,8 +322,8 @@ function buildHtmlReport(data, leaderEmail, submissionId) {
   return `
   <div style="font-family:Arial,Helvetica,sans-serif;color:#111827;line-height:1.5;max-width:780px;margin:0 auto;background:#f8fafc;padding:20px;">
     <div style="background:#ffffff;border:1px solid #dbe3ef;border-radius:20px;padding:28px;margin-bottom:18px;">
-      <h1 style="font-size:28px;line-height:1.15;margin:0 0 8px;color:#172033;">Discernment Center Candidate Assessment Report</h1>
-      <p style="color:#5b667a;margin:0 0 22px;">Confidential assessment summary prepared for Discernment Center review.</p>
+      <h1 style="font-size:28px;line-height:1.15;margin:0 0 8px;color:#172033;">CMC Pathway Character Qualities Report</h1>
+      <p style="color:#5b667a;margin:0 0 22px;">Confidential assessment summary prepared for CMC leadership review.</p>
       <table style="width:100%;border-collapse:collapse;"><tr>
         <td style="vertical-align:top;background:#f8fafc;border:1px solid #e2e8f0;border-radius:14px;padding:16px;width:62%;">
           <div style="font-size:12px;font-weight:800;color:#5b667a;text-transform:uppercase;letter-spacing:.04em;">Candidate</div>
@@ -342,7 +342,7 @@ function buildHtmlReport(data, leaderEmail, submissionId) {
 
     <div style="background:#ffffff;border:1px solid #dbe3ef;border-radius:20px;padding:22px;margin-bottom:18px;">
       <h2 style="font-size:20px;margin:0 0 8px;color:#172033;">Understanding the Character Qualities</h2>
-      <p style="color:#334155;margin:0 0 10px;">The fifteen character qualities give the Discernment Center team a shared language for discussing readiness, strengths, and growth areas. This is not designed as a pass-or-fail scorecard. A score of <strong>3.0</strong> represents the baseline, meaning the quality is evident at a normal and expected level for this stage of discernment.</p>
+      <p style="color:#334155;margin:0 0 10px;">The fifteen character qualities give CMC leaders a shared language for discussing readiness, strengths, and growth areas. This is not designed as a pass-or-fail scorecard. A score of <strong>3.0</strong> represents the baseline, meaning the quality is evident at a normal and expected level for this stage of discernment.</p>
       <p style="color:#334155;margin:0;">Categories marked with an asterisk (*) are knock-out factors and should receive special attention in discernment conversations.</p>
     </div>
 
@@ -367,7 +367,7 @@ function buildTextReport(data, leaderEmail, submissionId) {
   const c = data.candidate || {};
   const s = data.scores || {};
   const r = data.reflections || {};
-  return `Discernment Center Candidate Assessment Report
+  return `CMC Pathway Character Qualities Report
 
 Submission ID: ${submissionId || ''}
 Candidate: ${c.name || ''}
@@ -385,5 +385,5 @@ ${(s.results || []).map(item => `${KNOCKOUT_QUALITIES.has(item.name)?item.name+'
 Character Quality Descriptions:
 ${(s.results || []).map(item => `${KNOCKOUT_QUALITIES.has(item.name)?item.name+'*':item.name}: ${item.score ?? 'N/A'} - ${item.label}. ${QUALITY_DEFINITIONS[item.name] || ''}`).join('\n')}
 
-This report is a discernment tool and should be reviewed alongside interviews, coach observations, and the broader Discernment Center process.`;
+This report is a discernment tool and should be reviewed alongside interviews, coach observations, and the broader CMC pathway.`;
 }

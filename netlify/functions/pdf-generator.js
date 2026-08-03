@@ -33,7 +33,7 @@ function normalizeResults(results){const map=Object.fromEntries((results||[]).ma
 
 function buildPdfBuffer(data, opts={}){
   return new Promise((resolve,reject)=>{
-    const doc=new PDFDocument({size:'LETTER',margin:42,bufferPages:true,info:{Title:'Discernment Center Candidate Assessment Report'}});
+    const doc=new PDFDocument({size:'LETTER',margin:42,bufferPages:true,info:{Title:'CMC Pathway Character Qualities Report'}});
     const chunks=[];
     doc.on('data',c=>chunks.push(c));
     doc.on('end',()=>resolve(Buffer.concat(chunks)));
@@ -52,7 +52,7 @@ function drawReport(doc,data,opts={}){
   const submitted=data.submittedAt||data.generatedAt||new Date().toISOString();
   let page=1;
   const navy='#17233b', muted='#5b667a', light='#eef2f7', border='#d8dee9', green='#15945f', blue='#4267b2';
-  function footer(){doc.fontSize(8).fillColor('#7b8495').text(`Discernment Center Candidate Assessment Report | Page ${page}`,42,730,{align:'center',width:528});}
+  function footer(){doc.fontSize(8).fillColor('#7b8495').text(`CMC Pathway Character Qualities Report | Page ${page}`,42,730,{align:'center',width:528});}
   function newPage(){footer(); doc.addPage(); page++;}
   function pill(x,y,w,h,text,fill,stroke,color=navy){doc.roundedRect(x,y,w,h,10).fillAndStroke(fill,stroke); doc.fillColor(color).font('Helvetica-Bold').fontSize(9).text(clean(text),x+9,y+7,{width:w-18,align:'center'});}
   function sectionTitle(text,y){doc.fillColor(navy).font('Helvetica-Bold').fontSize(16).text(text,42,y); doc.moveTo(42,y+24).lineTo(570,y+24).strokeColor(border).lineWidth(1).stroke(); return y+40;}
@@ -60,9 +60,9 @@ function drawReport(doc,data,opts={}){
   // Page 1
   doc.rect(0,0,612,792).fill('#f8fafc');
   doc.roundedRect(36,36,540,700,18).fillAndStroke('#ffffff',border);
-  doc.fillColor(navy).font('Helvetica-Bold').fontSize(23).text('Discernment Center Candidate',62,66);
+  doc.fillColor(navy).font('Helvetica-Bold').fontSize(23).text('CMC Pathway Participant',62,66);
   doc.fontSize(23).text('Assessment Report',62,94);
-  doc.fillColor(muted).font('Helvetica').fontSize(10).text('Confidential assessment summary prepared for Discernment Center review.',62,128);
+  doc.fillColor(muted).font('Helvetica').fontSize(10).text('Confidential assessment summary prepared for CMC leadership review.',62,128);
   doc.roundedRect(62,164,300,118,12).fillAndStroke('#f8fafc',border);
   doc.fillColor(navy).font('Helvetica-Bold').fontSize(10).text('Candidate',82,184);
   doc.fillColor('#0f172a').fontSize(15).text(clean(c.name||'Candidate'),82,202,{width:250});
@@ -75,7 +75,7 @@ function drawReport(doc,data,opts={}){
   doc.fillColor(muted).font('Helvetica-Bold').fontSize(10).text(clean(s.overallLabel||''),404,240,{width:96,align:'center'});
   let y=326;
   y=sectionTitle('Understanding the Character Qualities',y);
-  doc.fillColor('#334155').font('Helvetica').fontSize(11).text('The fifteen character qualities give the Discernment Center team a shared language for discussing readiness, strengths, and growth areas. This report is not designed as a pass-or-fail scorecard. A score of 3.0 represents the baseline, meaning the quality is evident at a normal and expected level for this stage of discernment.',62,y,{width:488,lineGap:4});
+  doc.fillColor('#334155').font('Helvetica').fontSize(11).text('The fifteen character qualities give CMC leaders a shared language for discussing readiness, strengths, and growth areas. This report is not designed as a pass-or-fail scorecard. A score of 3.0 represents the baseline, meaning the quality is evident at a normal and expected level for this stage of discernment.',62,y,{width:488,lineGap:4});
   y+=88;
   doc.fillColor('#334155').fontSize(11).text('Scores below 3.0 point to areas for further development. Scores above 3.0 point to relative strengths. Categories marked with an asterisk (*) are knock-out factors from the assessment model and should receive special attention in discernment conversations.',62,y,{width:488,lineGap:4});
   y+=86;
@@ -143,7 +143,7 @@ function drawReport(doc,data,opts={}){
     }
     if(idx<results.length)newPage();
   }
-  doc.fillColor(muted).fontSize(8.5).text('This report is a discernment tool and should be reviewed alongside interviews, coach observations, and the broader Discernment Center process.',62,708,{width:488,align:'center'});
+  doc.fillColor(muted).fontSize(8.5).text('This report is a discernment tool and should be reviewed alongside interviews, coach observations, and the broader CMC pathway.',62,708,{width:488,align:'center'});
   footer();
 }
 

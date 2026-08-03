@@ -1,1 +1,45 @@
-<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Character Qualities Assessment</title><link rel="stylesheet" href="style.css?v=117"></head><body><main><nav class="portalNav"><strong>Discernment Center</strong><span></span><a href="dashboard.html">Dashboard</a><a href="profile.html">Profile</a><button id="logoutBtn" type="button" class="linkButton">Logout</button></nav><section class="hero"><h1>Character Qualities Assessment</h1><p>This assessment helps summarize character qualities for ministry discernment. Answer honestly based on what is currently evident.</p></section><form id="assessmentForm"><div class="card"><h2>Candidate Information</h2><p class="muted">This information is loaded from your profile. Update it here if needed before beginning.</p><label>Full Name<input name="name" required></label><label>Email<input name="email" type="email" required readonly></label><label>Phone<input name="phone" required></label><label>State<select name="state" id="state" required></select></label><label>Are you married?<select name="married" id="married" required><option value="">Select</option><option>Yes</option><option>No</option></select></label></div><div id="questions"></div><button id="generateReportBtn" class="hidden" type="submit">Finish Assessment</button></form><section id="report" class="report hidden"></section></main><script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script><script src="auth.js"></script><script src="script.js"></script></body></html>
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Character Qualities Assessment | CMC Pathway</title>
+  <link rel="stylesheet" href="style.css?v=118">
+</head>
+<body class="cmcPathwayBody cmcFormBody">
+<header class="cmcHeader">
+  <a class="cmcBrand" href="dashboard.html" aria-label="CMC Pathway home">
+    <img class="cmcLogoImage" src="cmc-logo-mark.svg" alt="">
+    <span><strong>CMC Pathway</strong><small>Church Multiplication Collective</small></span>
+  </a>
+  <nav id="cmcRoleNav" class="cmcNav"></nav>
+</header>
+<main class="cmcFormMain">
+  <section class="hero cmcFormHero">
+    <p class="cmcEyebrow">DISCERN · ASSESSMENT</p>
+    <h1>Character Qualities Assessment</h1>
+    <p>Reflect on the character qualities that support healthy ministry. Answer honestly based on what is currently evident.</p>
+  </section>
+  <form id="assessmentForm" class="cmcAssessmentForm">
+    <div class="card cmcCandidateInfoCard">
+      <p class="cmcEyebrow">YOUR INFORMATION</p>
+      <h2>Before you begin.</h2>
+      <p class="muted">This information comes from your profile. Confirm it is correct before beginning.</p>
+      <div class="cmcFormGrid">
+        <label>Full Name<input name="name" required></label>
+        <label>Email<input name="email" type="email" required readonly></label>
+        <label>Phone<input name="phone" required></label>
+        <label>State<select name="state" id="state" required></select></label>
+        <label class="wide">Are you married?<select name="married" id="married" required><option value="">Select</option><option>Yes</option><option>No</option></select></label>
+      </div>
+    </div>
+    <div id="questions"></div>
+    <button id="generateReportBtn" class="hidden" type="submit">Finish Assessment</button>
+  </form>
+  <section id="report" class="report hidden"></section>
+</main>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="auth.js?v=118"></script>
+<script src="script.js?v=118"></script>
+</body>
+</html>

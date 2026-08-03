@@ -3,18 +3,22 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
-  <title>Submitted Application | Discernment Center</title>
-  <link rel="stylesheet" href="style.css?v=117">
+  <title>Submitted Application | CMC Pathway</title>
+  <link rel="stylesheet" href="style.css?v=118">
 </head>
-<body>
-<main>
-  <nav class="portalNav">
-    <strong>Discernment Center</strong>
-    <span></span>
-    <a href="dashboard.html">Dashboard</a>
+<body class="cmcPathwayBody cmcFormBody">
+<header class="cmcHeader">
+  <a class="cmcBrand" href="dashboard.html" aria-label="CMC Pathway dashboard">
+    <img class="cmcLogoImage" src="cmc-logo-mark.svg" alt="">
+    <span><strong>CMC Pathway</strong><small>Church Multiplication Collective</small></span>
+  </a>
+  <nav class="cmcNav" aria-label="Primary navigation">
+    <a href="dashboard.html">My Pathway</a>
     <a href="profile.html">Profile</a>
     <button id="logoutBtn" type="button" class="linkButton">Logout</button>
   </nav>
+</header>
+<main class="cmcFormMain">
 
   <section id="applicationReport" class="applicationReportShell">
     <p class="muted">Loading submitted application...</p>
@@ -23,6 +27,6 @@
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="auth.js"></script>
-<script src="application-report.js"></script>
+<script src="application-report.js?v=118"></script>
 </body>
 </html>

@@ -3,22 +3,23 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
-  <title>Discernment Center Application | Discernment Center</title>
-  <link rel="stylesheet" href="style.css?v=117">
+  <title>Discernment Application | CMC Pathway</title>
+  <link rel="stylesheet" href="style.css?v=118">
 </head>
-<body>
-<main>
-  <nav class="portalNav">
-    <strong>Discernment Center</strong>
-    <span></span>
-    <a href="dashboard.html">Dashboard</a>
-    <a href="profile.html">Profile</a>
-    <button id="logoutBtn" type="button" class="linkButton">Logout</button>
-  </nav>
+<body class="cmcPathwayBody cmcFormBody cmcApplicationBody">
+<header class="cmcHeader">
+  <a class="cmcBrand" href="dashboard.html" aria-label="CMC Pathway home">
+    <img class="cmcLogoImage" src="cmc-logo-mark.svg" alt="">
+    <span><strong>CMC Pathway</strong><small>Church Multiplication Collective</small></span>
+  </a>
+  <nav id="cmcRoleNav" class="cmcNav"></nav>
+</header>
+<main class="cmcFormMain cmcApplicationMain">
 
-  <section class="hero">
-    <h1>Discernment Center Application</h1>
-    <p>Complete the sections below. You can save a draft and return later before submitting your final application.</p>
+  <section class="hero cmcFormHero">
+    <p class="cmcEyebrow">DISCERN · FORM</p>
+    <h1>Discernment Application</h1>
+    <p>Share your story, calling, ministry experience, and context. Your progress saves as you work.</p>
   </section>
 
   <div class="applicationLayout">
@@ -448,7 +449,7 @@
 
           <div class="statementBox">
             <h3>Statement of Faith &amp; Core Convictions</h3>
-            <p>You are almost finished with the Discernment Center Application.</p>
+            <p>You are almost finished with the CMC Pathway application.</p>
 
             <div class="faithConvictionBlock">
               <h4>Open Bible Statement of Faith</h4>
@@ -495,7 +496,7 @@
   </div>
 </main>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="auth.js"></script>
-<script src="application.js"></script>
+<script src="auth.js?v=118"></script>
+<script src="application.js?v=118"></script>
 </body>
 </html>

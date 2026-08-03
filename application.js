@@ -45,6 +45,7 @@
   });
 
   const profile = await dcAuth.getProfile(user.id).catch(() => null);
+  dcAuth.renderRoleNavigation(profile, 'pathway');
   if (profile) {
     fullName.value = profile.full_name || '';
     email.value = profile.email || user.email || '';

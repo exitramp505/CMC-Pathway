@@ -26,7 +26,7 @@ function isaScoreCard(cat){
 function isaHowToReadHtml(){
   return `<section class="reportSection isaReportBlock isaGuideBlock">
     <h3>How to Read This Report</h3>
-    <p class="isaSectionLead">This report is designed to help reviewers understand a candidate's ministry readiness profile. It does not determine calling, character, or final approval by itself. It gives the Discernment Center team a starting point for better conversation, coaching, and discernment.</p>
+    <p class="isaSectionLead">This report helps reviewers understand a participant's ministry readiness profile. It does not determine calling, character, or final approval by itself. It gives CMC leaders a starting point for better conversation, coaching, and discernment.</p>
 
     <div class="isaGuideGrid">
       <div class="isaGuideCard">

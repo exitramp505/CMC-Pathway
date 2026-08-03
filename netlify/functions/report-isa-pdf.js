@@ -69,7 +69,7 @@ function drawScoreStrip(doc, scores, y){
 function drawHowToRead(doc, y){
   card(doc, M, y, CONTENT_W, 270, '#ffffff', '#d9e2ec', 14);
   sectionTitle(doc, 'How to Read This Report', M+18, y+18);
-  let ty = paragraph(doc, "This report is designed to help reviewers understand a candidate's ministry readiness profile. It does not determine calling, character, or final approval by itself. It gives the Discernment Center team a starting point for better conversation, coaching, and discernment.", M+18, y+42, CONTENT_W-36, 9.4);
+  let ty = paragraph(doc, "This report is designed to help reviewers understand a candidate's ministry readiness profile. It does not determine calling, character, or final approval by itself. It gives CMC leaders a starting point for better conversation, coaching, and discernment.", M+18, y+42, CONTENT_W-36, 9.4);
 
   const colW = (CONTENT_W-48)/2;
   const leftX = M+18, rightX = leftX+colW+12;

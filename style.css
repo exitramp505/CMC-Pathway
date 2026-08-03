@@ -7149,3 +7149,222 @@
   .cmcCourseSidebarRail,
   .cmcCourseMain.sidebar-collapsed .cmcCourseSidebarRail{position:fixed;top:82px;right:12px;left:auto}
 }
+
+/* v118 course controls, navigation visibility, button contrast, and form system */
+.cmcNav .cmcMobileNavToggle{display:none}
+
+/* Keep the course control visually attached to the sidebar while it stays in view. */
+.cmcCourseSidebarRail{
+  position:fixed;
+  top:102px;
+  right:auto;
+  left:calc(var(--cmc-course-sidebar-width) - 57px);
+  z-index:40;
+}
+.cmcCourseMain,
+.cmcCourseMain.sidebar-collapsed{width:100%;max-width:none;margin:0;padding:0}
+
+/* Any control that changes to the dark blue interaction color must carry white text. */
+.cmcPathwayBody button:not(:disabled):hover,
+.cmcPathwayBody button:not(:disabled):focus-visible{color:#fff!important}
+.cmcPathwayBody .secondaryButton:hover,
+.cmcPathwayBody .secondaryButton:focus-visible,
+.cmcPathwayBody .secondaryBtn:hover,
+.cmcPathwayBody .secondaryBtn:focus-visible{background:var(--cmcSlate)!important;color:#fff!important;border-color:var(--cmcSlate)!important}
+.cmcPathwayBody .cmcEditorToggle:hover,
+.cmcPathwayBody .cmcEditorToggle:focus-visible{background:transparent!important;color:var(--cmcSlate)!important}
+.cmcPathwayBody .cmcCourseOutline button:hover,
+.cmcPathwayBody .cmcCourseOutline button:focus-visible{color:var(--cmcSand)!important}
+.cmcPathwayBody .cmcCourseOutline button.locked:hover{color:rgba(251,240,222,.36)!important}
+
+/* Shared layout for participant forms and assessments. */
+.cmcFormBody{min-height:100vh}
+.cmcFormMain,
+.ministryStyleMain.cmcFormMain,
+.cmcApplicationMain{
+  box-sizing:border-box;
+  width:min(1120px,calc(100% - 48px));
+  max-width:none;
+  margin:0 auto;
+  padding:52px 0 100px;
+}
+.cmcFormBody .cmcFormHero,
+.cmcFormBody .ministryStyleHero.cmcFormHero{
+  display:grid;
+  grid-template-columns:minmax(0,1fr) auto;
+  gap:30px;
+  align-items:end;
+  margin:0 0 24px;
+  padding:clamp(30px,5vw,58px);
+  border:0;
+  border-radius:30px;
+  background:radial-gradient(circle at 88% 14%,rgba(77,167,156,.18),transparent 30%),var(--cmcSlate);
+  box-shadow:none;
+  color:var(--cmcSand);
+}
+.cmcFormBody .cmcFormHero>div:first-child{min-width:0}
+.cmcFormBody .cmcFormHero .cmcEyebrow{grid-column:1/-1;margin:0 0 -14px;color:var(--cmcEmber)}
+.cmcFormBody .cmcFormHero h1{
+  max-width:800px;
+  margin:0;
+  color:var(--cmcSand);
+  font-size:clamp(42px,6vw,68px);
+  line-height:.98;
+  letter-spacing:-.055em;
+}
+.cmcFormBody .cmcFormHero>p:not(.cmcEyebrow),
+.cmcFormBody .cmcFormHero>div>p:not(.cmcEyebrow){
+  max-width:690px;
+  margin:15px 0 0;
+  color:rgba(251,240,222,.72);
+  font-size:15px;
+  font-weight:650;
+  line-height:1.65;
+}
+.cmcFormBody .ministryStyleHero.cmcFormHero .cmcEyebrow{grid-column:auto;margin:0 0 9px}
+.cmcFormBody .card,
+.cmcFormBody .report,
+.cmcFormBody .ministryStyleNotice,
+.cmcFormBody .ministryStyleProgress,
+.cmcFormBody .ministryQuestionCard,
+.cmcFormBody .ministryResultPreview,
+.cmcFormBody .applicationSidebar,
+.cmcFormBody .applicationSection,
+.cmcFormBody .applicationReview{
+  border:1px solid rgba(41,61,72,.15);
+  border-radius:24px;
+  background:rgba(255,250,241,.86);
+  box-shadow:none;
+}
+.cmcFormBody .card,
+.cmcFormBody .report{padding:clamp(21px,3vw,32px);margin:18px 0}
+.cmcFormBody h2{color:var(--cmcInk);border-color:rgba(41,61,72,.13);font-family:Montserrat,Arial,sans-serif;letter-spacing:-.035em}
+.cmcFormBody h3,.cmcFormBody h4{font-family:Montserrat,Arial,sans-serif}
+.cmcFormBody p,.cmcFormBody .muted{color:#5d6e76}
+.cmcFormBody label{color:var(--cmcSlate);font:800 12px/1.45 Montserrat,Arial,sans-serif}
+.cmcFormBody input,
+.cmcFormBody select,
+.cmcFormBody textarea{
+  min-height:48px;
+  padding:12px 14px;
+  border:1px solid rgba(41,61,72,.2);
+  border-radius:12px;
+  background:#fff;
+  color:var(--cmcInk);
+  font:600 13px/1.55 Montserrat,Arial,sans-serif;
+}
+.cmcFormBody textarea{min-height:116px}
+.cmcFormBody input:focus,
+.cmcFormBody select:focus,
+.cmcFormBody textarea:focus{outline:0;border-color:var(--cmcSage);box-shadow:0 0 0 3px rgba(77,167,156,.14)}
+.cmcFormBody button,
+.cmcFormBody .buttonLink{
+  border-radius:13px;
+  background:var(--cmcEmber);
+  color:var(--cmcInk);
+  box-shadow:none;
+  font-family:Montserrat,Arial,sans-serif;
+}
+.cmcFormBody button:hover,
+.cmcFormBody button:focus-visible,
+.cmcFormBody .buttonLink:hover,
+.cmcFormBody .buttonLink:focus-visible{background:var(--cmcSlate);color:#fff;outline:0}
+.cmcFormGrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:6px 18px}
+.cmcFormGrid .wide{grid-column:1/-1}
+.cmcCandidateInfoCard>h2{margin:5px 0 4px;font-size:32px}
+.cmcCandidateInfoCard>.cmcEyebrow{margin:0;color:var(--cmcEmber)}
+.cmcFormBody .progressTrack,
+.cmcFormBody .ministryStyleProgressTrack,
+.cmcFormBody .applicationProgressBar{border:0;background:rgba(41,61,72,.1)}
+.cmcFormBody .progressBar,
+.cmcFormBody .ministryStyleProgressTrack span,
+.cmcFormBody .applicationProgressBar span{background:linear-gradient(90deg,var(--cmcEmber),var(--cmcSage))}
+.cmcFormBody .qnum,
+.cmcFormBody .scaleNum{background:rgba(77,167,156,.12);color:#236f68}
+.cmcFormBody .scale label,
+.cmcFormBody .isaChoice{
+  border-color:rgba(41,61,72,.16);
+  background:#fffaf1;
+  color:var(--cmcSlate);
+  box-shadow:none;
+}
+.cmcFormBody .scale label:hover,
+.cmcFormBody .scale label.selected,
+.cmcFormBody .isaChoice:hover,
+.cmcFormBody .isaChoice.selected{
+  border-color:var(--cmcSage);
+  background:rgba(77,167,156,.09);
+  color:var(--cmcSlate)!important;
+  box-shadow:0 0 0 3px rgba(77,167,156,.09);
+}
+.cmcFormBody .questionSlide{min-height:270px}
+.cmcFormBody .questionSlide .questionText{color:var(--cmcSlate);font-family:Montserrat,Arial,sans-serif}
+.cmcFormBody .assessmentCompleteCard{text-align:center}
+
+/* Discernment application uses the same CMC shell while retaining its long-form sections. */
+.cmcApplicationMain .applicationLayout{grid-template-columns:245px minmax(0,1fr);gap:22px}
+.cmcApplicationMain .applicationSidebar{top:110px;padding:16px}
+.cmcApplicationMain .applicationProgressBox{border-color:rgba(41,61,72,.13);background:rgba(77,167,156,.07);box-shadow:none}
+.cmcApplicationMain .applicationSectionNav a{color:var(--cmcSlate);font-family:Montserrat,Arial,sans-serif}
+.cmcApplicationMain .applicationSectionNav a:hover,
+.cmcApplicationMain .applicationSectionNav a:focus-visible{background:rgba(77,167,156,.11);color:#236f68}
+.cmcApplicationMain .applicationSection{overflow:hidden}
+.cmcApplicationMain .applicationSectionHead{padding:22px 24px;border-color:rgba(41,61,72,.12);background:rgba(41,61,72,.035)}
+.cmcApplicationMain .applicationSectionHead h2{font-size:25px}
+.cmcApplicationMain .applicationSectionBody{padding:24px}
+.cmcApplicationMain .applicationUpload,
+.cmcApplicationMain .repeatRow,
+.cmcApplicationMain .checkCard,
+.cmcApplicationMain .applicationReviewBlock{border-color:rgba(41,61,72,.13);background:rgba(255,255,255,.58)}
+.cmcApplicationMain .waiverBox{border-color:rgba(234,159,67,.38);background:rgba(234,159,67,.08)}
+.cmcApplicationMain .smallButton{background:rgba(77,167,156,.12);color:#236f68}
+.cmcApplicationMain .removeRow{background:rgba(207,119,103,.13);color:#8d4137}
+.cmcApplicationMain .applicationActions{position:sticky;bottom:14px;z-index:5;padding:12px;border:1px solid rgba(41,61,72,.13);border-radius:17px;background:rgba(251,240,222,.92);backdrop-filter:blur(14px)}
+
+/* Ministry Style inventory follows the shared form system without losing its unique choice model. */
+.cmcFormBody .ministryStyleHeroCard{border-color:rgba(251,240,222,.16);background:rgba(255,250,241,.08);box-shadow:none}
+.cmcFormBody .ministryStyleHeroCard strong{color:var(--cmcSand)}
+.cmcFormBody .ministryStyleHeroCard span{color:rgba(251,240,222,.66)}
+.cmcFormBody .ministryStyleNotice{padding:25px}
+.cmcFormBody .ministryStyleNotice .cmcEyebrow{margin:0 0 7px;color:var(--cmcEmber)}
+.cmcFormBody .ministryStyleNotice h2{margin:0 0 8px;font-size:29px}
+.cmcFormBody .ministryStyleProgress{grid-template-columns:260px 1fr}
+.cmcFormBody .ministryQuestionHead{border-color:rgba(41,61,72,.12);background:rgba(41,61,72,.045)}
+.cmcFormBody .ministryQuestionHead strong,
+.cmcFormBody .ministryStatementText span{color:var(--cmcSlate)}
+.cmcFormBody .ministryQuestionMeta span,
+.cmcFormBody .ministryStatementCard,
+.cmcFormBody .ministryChoiceBtn{border-color:rgba(41,61,72,.14);background:#fffaf1;color:var(--cmcSlate)}
+.cmcFormBody .ministryChoiceBtn:hover,
+.cmcFormBody .ministryChoiceBtn:focus-visible{background:var(--cmcSlate);color:#fff!important}
+.cmcFormBody .ministryChoiceBtn.isMost.active{border-color:var(--cmcSage);background:rgba(77,167,156,.18);color:#236f68!important}
+.cmcFormBody .ministryChoiceBtn.isLeast.active{border-color:#cf7767;background:rgba(207,119,103,.13);color:#8d4137!important}
+.cmcFormBody .ministryStyleActions{background:rgba(251,240,222,.92)}
+
+@media(max-width:900px){
+  .cmcApplicationMain .applicationLayout{grid-template-columns:1fr}
+  .cmcApplicationMain .applicationSidebar{position:relative;top:auto}
+}
+@media(max-width:720px){
+  .cmcNav .cmcMobileNavToggle{display:inline-flex}
+  .cmcCourseSidebarRail,
+  .cmcCourseMain.sidebar-collapsed .cmcCourseSidebarRail{top:82px;right:12px;left:auto}
+  .cmcFormMain,
+  .ministryStyleMain.cmcFormMain,
+  .cmcApplicationMain{width:calc(100% - 28px);padding:28px 0 72px!important}
+  .cmcFormBody .cmcFormHero,
+  .cmcFormBody .ministryStyleHero.cmcFormHero{grid-template-columns:1fr;padding:27px 22px;border-radius:23px}
+  .cmcFormBody .cmcFormHero .cmcEyebrow{grid-column:auto;margin:0}
+  .cmcFormBody .cmcFormHero h1{font-size:clamp(37px,11vw,48px)}
+  .cmcFormBody .cmcFormHero>p:not(.cmcEyebrow),
+  .cmcFormBody .cmcFormHero>div>p:not(.cmcEyebrow){font-size:14px}
+  .cmcFormGrid{grid-template-columns:1fr}
+  .cmcFormGrid .wide{grid-column:auto}
+  .cmcFormBody .card,
+  .cmcFormBody .report{padding:19px;border-radius:20px}
+  .cmcFormBody .ministryStyleProgress{grid-template-columns:1fr}
+  .cmcApplicationMain .applicationSectionHead,
+  .cmcApplicationMain .applicationSectionBody{padding:19px}
+  .cmcApplicationMain .applicationActions{display:grid}
+  .cmcApplicationMain .applicationActions button{margin:0}
+}

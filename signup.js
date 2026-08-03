@@ -2,6 +2,11 @@
   const form = document.getElementById('signupForm');
   const msg = document.getElementById('authMessage');
   const googleBtn = document.getElementById('googleSignupBtn');
+  const inviteEmail = new URLSearchParams(window.location.search).get('email');
+
+  if(form && inviteEmail){
+    form.elements.email.value = inviteEmail;
+  }
 
   function setMessage(text, type){
     if(!msg) return;

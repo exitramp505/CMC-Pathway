@@ -10,6 +10,12 @@
   let participants = [];
   let followupsOnly = false;
   let viewer = null;
+  const inviteDialog = document.getElementById('participantInviteDialog');
+  const inviteForm = document.getElementById('participantInviteForm');
+  const inviteState = document.getElementById('participantInviteState');
+  const inviteRegion = document.getElementById('participantInviteRegion');
+  const inviteMessage = document.getElementById('participantInviteMessage');
+  const inviteSubmit = document.getElementById('sendParticipantInvite');
 
   try {
     const response = await fetch('/.netlify/functions/regional-participants', {
@@ -44,9 +50,72 @@
     document.getElementById('showFollowupsBtn').textContent = followupsOnly ? 'Show everyone →' : 'View follow-ups →';
     render();
   });
-  document.getElementById('inviteParticipantBtn').addEventListener('click', () => {
-    window.alert('Participant invitations will be connected in the next build step.');
+  document.getElementById('inviteParticipantBtn').addEventListener('click', openParticipantInvite);
+  document.querySelectorAll('[data-close-participant-invite]').forEach(button => {
+    button.addEventListener('click', () => inviteDialog.close());
   });
+  inviteDialog.addEventListener('click', event => {
+    if (event.target === inviteDialog) inviteDialog.close();
+  });
+  inviteState.addEventListener('change', updateInviteRegion);
+  inviteForm.addEventListener('submit', sendParticipantInvitation);
+
+  function openParticipantInvite() {
+    inviteForm.reset();
+    inviteMessage.textContent = '';
+    inviteMessage.classList.remove('error', 'success');
+    renderInviteStates();
+    updateInviteRegion();
+    inviteDialog.showModal();
+    window.setTimeout(() => inviteForm.elements.full_name.focus(), 50);
+  }
+
+  function renderInviteStates() {
+    const regionalLeader = viewer?.account_role === 'regional_leader';
+    const options = Object.entries(dcAuth.STATES)
+      .filter(([state]) => !regionalLeader || dcAuth.regionForState(state) === viewer.region)
+      .map(([state, name]) => `<option value="${state}">${escapeHtml(name)}</option>`)
+      .join('');
+    inviteState.innerHTML = `<option value="">Select state</option>${options}`;
+  }
+
+  function updateInviteRegion() {
+    inviteRegion.value = inviteState.value ? dcAuth.regionForState(inviteState.value) : '';
+  }
+
+  async function sendParticipantInvitation(event) {
+    event.preventDefault();
+    inviteMessage.textContent = 'Sending invitation…';
+    inviteMessage.classList.remove('error', 'success');
+    inviteSubmit.disabled = true;
+    inviteSubmit.textContent = 'Sending…';
+    const formData = new FormData(inviteForm);
+    try {
+      const response = await fetch('/.netlify/functions/participant-invite', {
+        method:'POST',
+        headers:{ 'Content-Type':'application/json', Authorization:`Bearer ${token}` },
+        body:JSON.stringify({
+          full_name:String(formData.get('full_name') || '').trim(),
+          email:String(formData.get('email') || '').trim(),
+          state:String(formData.get('state') || ''),
+          message:String(formData.get('message') || '').trim()
+        })
+      });
+      const data = await response.json().catch(() => ({}));
+      if (!response.ok || !data.ok) throw new Error(data.error || 'Could not send the invitation.');
+      inviteMessage.textContent = `Invitation sent to ${data.email}.`;
+      inviteMessage.classList.add('success');
+      inviteForm.elements.email.value = '';
+      inviteForm.elements.full_name.value = '';
+      inviteForm.elements.message.value = '';
+    } catch (error) {
+      inviteMessage.textContent = error.message || 'Could not send the invitation.';
+      inviteMessage.classList.add('error');
+    } finally {
+      inviteSubmit.disabled = false;
+      inviteSubmit.textContent = 'Send invitation';
+    }
+  }
 
   function updateSummary() {
     const type = document.getElementById('peopleTypeFilter').value;

@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <title>Regional Leader | CMC Pathway</title>
-  <link rel="stylesheet" href="style.css?v=115">
+  <link rel="stylesheet" href="style.css?v=116">
 </head>
 <body class="cmcPathwayBody">
 <header class="cmcHeader">
@@ -70,8 +70,32 @@
 
 </main>
 
+<dialog id="participantInviteDialog" class="cmcEventEditorDialog cmcParticipantInviteDialog">
+  <form id="participantInviteForm" class="cmcEventEditorCard cmcEventEditorCardCompact">
+    <header>
+      <div><p class="cmcEyebrow">INVITE SOMEONE</p><h2>Invite them to CMC Pathway</h2></div>
+      <button class="cmcReviewDialogClose" type="button" data-close-participant-invite aria-label="Close invitation">×</button>
+    </header>
+    <div class="cmcEventEditorBody">
+      <p class="cmcParticipantInviteIntro">They will receive one email with a link to create their account and begin Discover.</p>
+      <div class="cmcEventFieldGrid">
+        <label class="full">Full name<input name="full_name" autocomplete="name" required></label>
+        <label class="full">Email address<input name="email" type="email" autocomplete="email" required></label>
+        <label>State<select id="participantInviteState" name="state" required></select></label>
+        <label>Open Bible region<input id="participantInviteRegion" name="region" readonly></label>
+        <label class="full">Personal note <span class="cmcFieldOptional">Optional</span><textarea name="message" rows="3" maxlength="600" placeholder="Add a brief note to the invitation."></textarea></label>
+      </div>
+      <p id="participantInviteMessage" class="cmcAdminMessage" aria-live="polite"></p>
+    </div>
+    <footer>
+      <button class="cmcSecondaryButton" type="button" data-close-participant-invite>Cancel</button>
+      <button id="sendParticipantInvite" class="cmcPrimaryButton" type="submit">Send invitation</button>
+    </footer>
+  </form>
+</dialog>
+
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="auth.js?v=115"></script>
-<script src="leader.js?v=115"></script>
+<script src="leader.js?v=116"></script>
 </body>
 </html>

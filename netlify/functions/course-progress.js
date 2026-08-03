@@ -149,16 +149,17 @@ exports.handler = async (event) => {
     }, { onConflict:'user_id,course_id' });
     if (enrollmentError) throw enrollmentError;
 
-    if (!elevated) {
-      const { error:assignmentError } = await supabase.from('candidate_assignments').update({
-        progress,
-        external_status:courseComplete ? 'completed' : progress ? 'in_progress' : '',
-        invitation_status:progress ? 'enrolled' : '',
-        completed_at:courseComplete ? now : null,
-        updated_at:now
-      }).eq('user_id', user.id).eq('item_key', assignmentKey(course));
-      if (assignmentError) throw assignmentError;
-    }
+    // Every account can have its own participant pathway, including regional and
+    // national leaders. Keep that assignment in sync when they take a course
+    // themselves so their dashboard does not remain at 0%.
+    const { error:assignmentError } = await supabase.from('candidate_assignments').update({
+      progress,
+      external_status:courseComplete ? 'completed' : progress ? 'in_progress' : '',
+      invitation_status:progress ? 'enrolled' : '',
+      completed_at:courseComplete ? now : null,
+      updated_at:now
+    }).eq('user_id', user.id).eq('item_key', assignmentKey(course));
+    if (assignmentError) throw assignmentError;
 
     return json(200, { ok:true, progress, courseComplete });
   } catch (error) {

@@ -20,6 +20,7 @@
   let initialCourseIds = new Set();
   let initialEventIds = new Set();
   let pendingManagementChange = null;
+  let managementDirty = false;
   let activeManagementStage = 'discover';
   const pathwayStages = [
     { key:'discover', number:'01', title:'Discover', description:'Shared foundation and first steps.' },
@@ -69,6 +70,14 @@
   profileForm.addEventListener('submit', saveProfile);
   document.getElementById('saveParticipantManagement').addEventListener('click', saveManagement);
   document.getElementById('confirmParticipantChanges').addEventListener('click', confirmManagement);
+  document.getElementById('participantManagementContent').addEventListener('change', event => {
+    if (event.target.matches('input[type="checkbox"][name^="managed_"]')) updateManagementDirtyState();
+  });
+  window.addEventListener('beforeunload', event => {
+    if (!managementDirty) return;
+    event.preventDefault();
+    event.returnValue = '';
+  });
 
   function render(data) {
     viewer = data.viewer || viewer;
@@ -309,6 +318,7 @@
       initialCourseIds = new Set(managementCourses.filter(item => item.assigned).map(item => item.id));
       initialEventIds = new Set(managementEvents.filter(item => item.invitation).map(item => item.id));
       renderManagement();
+      updateManagementDirtyState();
       loadingBox.classList.add('hidden');
       managementContent.classList.remove('hidden');
     } catch (error) {
@@ -515,9 +525,7 @@
   }
 
   function saveManagement() {
-    const itemKeys = [...document.querySelectorAll('input[name="managed_pathway_item"]:checked')].map(input => input.value);
-    const courseIds = [...document.querySelectorAll('input[name="managed_course"]:checked')].map(input => input.value);
-    const eventIds = [...document.querySelectorAll('input[name="managed_event"]:checked')].map(input => input.value);
+    const { itemKeys, courseIds, eventIds } = managementSelections();
     const changes = buildManagementChanges(itemKeys, courseIds, eventIds);
     if (!changes.added.length && !changes.removed.length) {
       const message = document.getElementById('participantManagementMessage');
@@ -611,6 +619,7 @@
         ? 'Assignments saved and one summary email was sent.'
         : 'Assignments saved.';
       pendingManagementChange = null;
+      managementDirty = false;
       window.setTimeout(() => window.location.reload(), 700);
     } catch (error) {
       message.textContent = error.message || 'Could not save the pathway.';
@@ -836,15 +845,25 @@
     const requested = window.location.hash.replace('#', '');
     activateTab(['overview', 'work', 'events', 'records'].includes(requested) ? requested : 'overview', false);
     buttons.forEach(button => button.addEventListener('click', () => {
-      activateTab(button.dataset.participantTab, true);
+      requestTab(button.dataset.participantTab);
     }));
     document.addEventListener('click', event => {
       const trigger = event.target.closest('[data-open-participant-tab]');
       if (!trigger) return;
       event.preventDefault();
-      activateTab(trigger.dataset.openParticipantTab, true);
+      requestTab(trigger.dataset.openParticipantTab);
       document.querySelector('.cmcParticipantTabs')?.scrollIntoView({ behavior:'smooth', block:'start' });
     });
+
+    function requestTab(key) {
+      const workActive = document.querySelector('[data-participant-tab="work"]')?.classList.contains('active');
+      if (workActive && key !== 'work' && managementDirty) {
+        saveManagement();
+        document.getElementById('participantManagementMessage').textContent = 'Review and save these assignment changes before leaving Assignments.';
+        return;
+      }
+      activateTab(key, true);
+    }
 
     function activateTab(key, updateHash) {
       buttons.forEach(button => {
@@ -855,6 +874,25 @@
       panels.forEach(panel => panel.classList.toggle('active', panel.dataset.participantPanel === key));
       if (updateHash) history.replaceState(null, '', `#${key}`);
     }
+  }
+
+  function managementSelections() {
+    return {
+      itemKeys:[...document.querySelectorAll('input[name="managed_pathway_item"]:checked')].map(input => input.value),
+      courseIds:[...document.querySelectorAll('input[name="managed_course"]:checked')].map(input => input.value),
+      eventIds:[...document.querySelectorAll('input[name="managed_event"]:checked')].map(input => input.value)
+    };
+  }
+
+  function updateManagementDirtyState() {
+    const { itemKeys, courseIds, eventIds } = managementSelections();
+    const changes = buildManagementChanges(itemKeys, courseIds, eventIds);
+    const count = changes.added.length + changes.removed.length;
+    managementDirty = count > 0;
+    const button = document.getElementById('saveParticipantManagement');
+    if (!button) return;
+    button.classList.toggle('hasChanges', managementDirty);
+    button.textContent = managementDirty ? `Review ${count} change${count === 1 ? '' : 's'}` : 'Review changes';
   }
 
   function recordUrl(type, recordId) {

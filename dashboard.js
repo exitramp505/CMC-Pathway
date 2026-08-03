@@ -543,12 +543,7 @@
         done:false
       }
     ];
-    document.getElementById('cmcRoleNav').innerHTML = `
-      <a class="active" href="#">My Pathway</a>
-      <a href="#">People</a>
-      <a href="#">Courses</a>
-      <a href="#">Manage Leaders</a>
-      <a href="#">Profile</a>`;
+    dcAuth.renderRoleNavigation({ account_role:'cmc_admin' }, 'pathway');
     setText('welcomeTitle','Welcome, George.');
     setText('currentStageName','Discern');
     setText('heroRegionName','Open Bible East Region');

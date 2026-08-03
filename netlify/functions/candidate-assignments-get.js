@@ -29,11 +29,29 @@ exports.handler = async (event) => {
       .eq('status', 'published');
     if (courseError) throw courseError;
 
+    const { data:enrollments, error:enrollmentError } = await supabase
+      .from('cmc_course_enrollments')
+      .select('course_id,progress,completed_at,last_opened_at')
+      .eq('user_id', userData.user.id);
+    if (enrollmentError) throw enrollmentError;
+
     const courseByKey = new Map((courses || []).map(course => [assignmentKey(course), course]));
-    const assignments = (data || []).map(item => ({
-      ...item,
-      course:isCourseAssignmentKey(item.item_key) ? (courseByKey.get(item.item_key) || null) : null
-    })).filter(item => {
+    const enrollmentByCourseId = new Map((enrollments || []).map(item => [item.course_id, item]));
+    const assignments = (data || []).map(item => {
+      const linkedCourse = isCourseAssignmentKey(item.item_key) ? (courseByKey.get(item.item_key) || null) : null;
+      const enrollment = linkedCourse ? enrollmentByCourseId.get(linkedCourse.id) : null;
+      const enrollmentProgress = Math.max(0, Math.min(100, Number(enrollment?.progress || 0)));
+      const progress = Math.max(Number(item.progress || 0), enrollmentProgress);
+      const complete = Boolean(enrollment?.completed_at) || progress >= 100 || item.external_status === 'completed';
+      return {
+        ...item,
+        progress,
+        external_status:complete ? 'completed' : item.external_status,
+        completed_at:complete ? (enrollment?.completed_at || item.completed_at) : item.completed_at,
+        updated_at:enrollment?.last_opened_at || item.updated_at,
+        course:linkedCourse
+      };
+    }).filter(item => {
       if (!isCourseAssignmentKey(item.item_key)) return true;
       if (item.item_key === 'discover_course') return true;
       return Boolean(item.course);

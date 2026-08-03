@@ -61,16 +61,16 @@
       : 'Open course · Choose any lesson';
     document.title = `${course.title} | CMC Pathway`;
     app.innerHTML = `
-      <aside class="cmcCourseSidebar">
-        <div class="cmcCourseSidebarRail">
-          <button id="courseSidebarToggle" class="cmcCourseSidebarToggle" type="button" aria-label="Collapse course navigation" aria-expanded="true" aria-controls="courseSidebarContent">
-            ${sidebarToggleIcon(false)}
-          </button>
-          <div class="cmcCourseRailStatus" aria-label="${percent}% complete">
-            <strong id="courseRailProgress">${percent}%</strong>
-            <span>complete</span>
-          </div>
+      <div class="cmcCourseSidebarRail">
+        <button id="courseSidebarToggle" class="cmcCourseSidebarToggle" type="button" aria-label="Collapse course navigation" aria-expanded="true" aria-controls="courseSidebarContent">
+          ${sidebarToggleIcon(false)}
+        </button>
+        <div class="cmcCourseRailStatus" aria-label="${percent}% complete">
+          <strong id="courseRailProgress">${percent}%</strong>
+          <span>complete</span>
         </div>
+      </div>
+      <aside class="cmcCourseSidebar">
         <div id="courseSidebarContent" class="cmcCourseSidebarContent">
           <a class="cmcBackToPathway" href="dashboard.html">← My Pathway</a>
           <p class="cmcEyebrow">CMC COURSE</p>

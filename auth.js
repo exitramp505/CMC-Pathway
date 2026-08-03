@@ -78,10 +78,34 @@ function renderRoleNavigation(profile,activeKey){
  const visibleItems=items.filter(item=>item.show);
  const managementKeys=['people','events','courses','leaders'];
  const hasManagementTools=visibleItems.some(item=>managementKeys.includes(item.key));
- nav.innerHTML=visibleItems.map(item=>{
+ const menuItems=visibleItems.map(item=>{
   const dividerBefore=(item.key==='people'&&hasManagementTools)||item.key==='profile';
   return `${dividerBefore?'<span class="cmcNavDivider" aria-hidden="true"></span>':''}<a${item.key===activeKey?' class="active"':''} href="${item.href}">${item.label}</a>`;
  }).join('')+'<button id="logoutBtn" type="button">Logout</button>';
+ nav.innerHTML=`<button class="cmcMobileNavToggle" type="button" aria-expanded="false" aria-controls="cmcNavMenu">
+   <span class="cmcMobileNavIcon" aria-hidden="true"><i></i><i></i><i></i></span><span>Menu</span>
+ </button><div id="cmcNavMenu" class="cmcNavMenu">${menuItems}</div>`;
+ const toggle=nav.querySelector('.cmcMobileNavToggle');
+ const menu=nav.querySelector('.cmcNavMenu');
+ const closeMenu=()=>{
+  nav.classList.remove('cmcNavOpen');
+  toggle?.setAttribute('aria-expanded','false');
+ };
+ toggle?.addEventListener('click',event=>{
+  event.stopPropagation();
+  const open=!nav.classList.contains('cmcNavOpen');
+  nav.classList.toggle('cmcNavOpen',open);
+  toggle.setAttribute('aria-expanded',String(open));
+ });
+ menu?.addEventListener('click',event=>{
+  if(event.target.closest('a,#logoutBtn'))closeMenu();
+ });
+ document.addEventListener('click',event=>{
+  if(nav.classList.contains('cmcNavOpen')&&!nav.contains(event.target))closeMenu();
+ });
+ document.addEventListener('keydown',event=>{
+  if(event.key==='Escape')closeMenu();
+ });
  setupLogout();
  setupAutoHideHeader();
 }

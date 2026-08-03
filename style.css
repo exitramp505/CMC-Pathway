@@ -7368,3 +7368,92 @@
   .cmcApplicationMain .applicationActions{display:grid}
   .cmcApplicationMain .applicationActions button{margin:0}
 }
+
+/* v119 unified assessment color and interaction system */
+.cmcFormBody .cmcFormHero{
+  grid-template-columns:minmax(0,1.2fr) minmax(280px,.8fr);
+  align-items:center;
+}
+.cmcFormBody .cmcFormHero h1{font-size:clamp(42px,5vw,60px)}
+.cmcFormBody .card,
+.cmcFormBody .report,
+.cmcFormBody .ministryStyleNotice,
+.cmcFormBody .ministryStyleProgress,
+.cmcFormBody .ministryQuestionCard,
+.cmcFormBody .ministryResultPreview,
+.cmcFormBody .applicationSidebar,
+.cmcFormBody .applicationSection,
+.cmcFormBody .applicationReview{background:#fffaf1}
+
+.cmcFormBody .questionSlide{
+  border:1px solid rgba(41,61,72,.16);
+  background:var(--cmcSand);
+  box-shadow:none;
+}
+.cmcFormBody button.isaChoice,
+.cmcFormBody .scale label{
+  border:1px solid rgba(41,61,72,.24);
+  background:#fffaf1;
+  color:var(--cmcSlate)!important;
+  box-shadow:none;
+}
+.cmcFormBody button.isaChoice:hover,
+.cmcFormBody button.isaChoice:focus-visible,
+.cmcFormBody .scale label:hover,
+.cmcFormBody .scale label:focus-within{
+  border-color:var(--cmcSlate)!important;
+  background:var(--cmcSlate)!important;
+  color:var(--cmcSand)!important;
+  box-shadow:0 0 0 3px rgba(41,61,72,.12)!important;
+  outline:0;
+}
+.cmcFormBody button.isaChoice.selected,
+.cmcFormBody .scale label.selected{
+  border-color:var(--cmcSage)!important;
+  background:var(--cmcSlate)!important;
+  color:var(--cmcSand)!important;
+  box-shadow:0 0 0 3px rgba(77,167,156,.24)!important;
+}
+.cmcFormBody button.isaChoice:hover .scaleNum,
+.cmcFormBody button.isaChoice:focus-visible .scaleNum,
+.cmcFormBody button.isaChoice.selected .scaleNum,
+.cmcFormBody .scale label:hover .scaleNum,
+.cmcFormBody .scale label:focus-within .scaleNum,
+.cmcFormBody .scale label.selected .scaleNum{
+  background:var(--cmcEmber);
+  color:var(--cmcSlate);
+}
+.cmcFormBody .secondaryBtn,
+.cmcFormBody .secondaryButton{
+  border:1px solid rgba(41,61,72,.34);
+  background:#fffaf1;
+  color:var(--cmcSlate);
+}
+.cmcFormBody .secondaryBtn:hover,
+.cmcFormBody .secondaryBtn:focus-visible,
+.cmcFormBody .secondaryButton:hover,
+.cmcFormBody .secondaryButton:focus-visible{
+  border-color:var(--cmcSlate)!important;
+  background:var(--cmcSlate)!important;
+  color:#fff!important;
+}
+.cmcFormBody #isaAutosaveStatus{
+  display:inline-flex;
+  min-height:32px;
+  align-items:center;
+  gap:8px;
+  margin:0 0 10px;
+  color:#4e6465;
+  font:750 11px Montserrat,Arial,sans-serif;
+}
+.cmcFormBody #isaAutosaveStatus:before{
+  width:8px;
+  height:8px;
+  border-radius:50%;
+  background:var(--cmcSage);
+  content:"";
+}
+@media(max-width:720px){
+  .cmcFormBody .cmcFormHero{grid-template-columns:1fr}
+  .cmcFormBody .cmcFormHero h1{font-size:clamp(36px,10vw,46px)}
+}

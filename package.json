@@ -1,7 +1,8 @@
 {
   "scripts": {
     "dev": "netlify dev",
-    "build": "echo static app"
+    "build": "echo static app",
+    "test": "node tests/participant-dashboard.test.js"
   },
   "dependencies": {
     "resend": "latest",

@@ -22,10 +22,18 @@
   }
 
   dcAuth.setupLogout();
-  const user = await dcAuth.requireUser();
-  if (!user) return;
-
-  const profile = await dcAuth.getProfile(user.id).catch(() => null);
+  const session = await dcAuth.getCurrentSession().catch(() => null);
+  if (!session?.user) {
+    window.location.href = 'login.html';
+    return;
+  }
+  const user = session.user;
+  const accessToken = session.access_token || '';
+  const dashboardPayload = await getDashboardPayload(accessToken);
+  const legacyPayload = dashboardPayload ? null : await getLegacyDashboardPayload(user, accessToken);
+  const profile = dashboardPayload?.profile || legacyPayload?.profile || null;
+  const assignments = dashboardPayload?.assignments || legacyPayload?.assignments || [];
+  const reports = dashboardPayload?.reports || legacyPayload?.reports || [];
   const isLeader = ['regional_leader','cmc_admin'].includes(profile?.account_role);
   const participantView = new URLSearchParams(window.location.search).get('view') === 'participant';
   if (isLeader && !participantView) {
@@ -48,19 +56,6 @@
     ? profile.current_stage
     : 'discover';
   setText('currentStageName', titleCase(currentStage));
-
-  const sb = await dcAuth.getSupabaseClient();
-  const session = await sb.auth.getSession();
-  const accessToken = session.data?.session?.access_token || '';
-
-  await ensureDiscoverAssignment(accessToken);
-  const assignments = await getAssignments(accessToken);
-
-  const { data: reports } = await sb
-    .from('assessment_results')
-    .select('id,created_at,scores,overall,overall_label')
-    .eq('user_id', user.id)
-    .order('created_at', { ascending: false });
 
   const completedKeys = new Set();
   for (const report of reports || []) {
@@ -89,6 +84,37 @@
   renderNextStep(nextWork);
   renderStageWorkspace(workItems, currentStage, nextWork?.item.stage_key || currentStage);
   renderEventSummary(workItems);
+
+  async function getDashboardPayload(token) {
+    if (!token) return null;
+    try {
+      const response = await fetch('/.netlify/functions/participant-dashboard', {
+        headers: { Authorization:`Bearer ${token}` }
+      });
+      if (!response.ok) return null;
+      const data = await response.json();
+      return data.ok ? data : null;
+    } catch (_) {
+      return null;
+    }
+  }
+
+  async function getLegacyDashboardPayload(account, token) {
+    const profilePromise = dcAuth.getProfile(account.id).catch(() => null);
+    const sb = await dcAuth.getSupabaseClient();
+    const reportsPromise = sb
+      .from('assessment_results')
+      .select('id,created_at,scores,overall,overall_label')
+      .eq('user_id', account.id)
+      .order('created_at', { ascending:false });
+    await ensureDiscoverAssignment(token);
+    const [profile, assignments, reportResult] = await Promise.all([
+      profilePromise,
+      getAssignments(token),
+      reportsPromise
+    ]);
+    return { profile, assignments, reports:reportResult.data || [] };
+  }
 
   async function ensureDiscoverAssignment(token) {
     if (!token) return;

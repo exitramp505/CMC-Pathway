@@ -107,12 +107,10 @@
     document.getElementById('leaderScopeLabel').textContent = regional
       ? `OPEN BIBLE ${String(viewer.region || '').toUpperCase()} REGION`
       : 'NATIONAL LEADERSHIP';
-    document.getElementById('leaderManagementTitle').textContent = regional
-      ? 'Build your regional leadership team.'
-      : 'Steward regional leader access.';
+    document.getElementById('leaderManagementTitle').textContent = 'Regional leaders';
     document.getElementById('leaderManagementDescription').textContent = regional
-      ? 'Give another trusted leader access to the people, events, and pathway work in your region.'
-      : 'Give trusted leaders access to the people, events, and pathway work within their Open Bible region.';
+      ? 'Grant trusted leaders access within your Open Bible region.'
+      : 'Grant trusted leaders access within each Open Bible region.';
     document.getElementById('leaderScopeName').textContent = regional
       ? `Open Bible ${viewer.region} Region`
       : 'All Open Bible regions';

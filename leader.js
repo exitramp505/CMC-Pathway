@@ -197,16 +197,16 @@
           <span class="cmcAvatar">${initials(person.full_name)}</span>
           <div><strong>${escapeHtml(person.full_name || person.email)}</strong><small>${escapeHtml([roleLabel(person),person.church_name,person.state].filter(Boolean).join(' · ') || person.email)}</small></div>
         </div>
-        <div class="cmcPersonMetric"><span>${titleCase(stage)}</span><strong>${escapeHtml(stageDetail)}</strong></div>
+        <div class="cmcPersonMetric cmcPersonStageMetric"><span>${titleCase(stage)}</span><strong>${escapeHtml(stageDetail)}</strong></div>
         <div class="cmcPersonMetric cmcPersonEventMetric">
           <span>Events</span>
           <strong>${upcomingEvents.length ? `${upcomingEvents.length} upcoming` : 'None upcoming'}</strong>
           ${pendingEventResponses ? `<small>${pendingEventResponses} ${pendingEventResponses === 1 ? 'response' : 'responses'} needed</small>` : ''}
         </div>
-        <div class="cmcPersonMetric"><span>Latest activity</span><strong>${escapeHtml(latest)}</strong></div>
+        <div class="cmcPersonMetric cmcPersonLatestMetric"><span>Latest activity</span><strong>${escapeHtml(latest)}</strong></div>
         <span class="cmcActionPill ${statusClass}">${status}</span>
         <div class="cmcRowActions">
-          <a class="cmcRowAction" href="participant.html?id=${encodeURIComponent(person.id)}">Open dashboard →</a>
+          <a class="cmcRowAction" href="participant.html?id=${encodeURIComponent(person.id)}" aria-label="Open ${escapeHtml(person.full_name || person.email)} dashboard"><span class="cmcRowActionDesktop">Open dashboard</span><span class="cmcRowActionMobile">Open</span> →</a>
         </div>
       </article>`;
     }).join('');

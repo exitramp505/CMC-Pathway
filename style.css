@@ -7566,3 +7566,179 @@
   .cmcVideoFrame,
   .cmcLessonImage{width:100%}
 }
+
+/* v122 compact mobile administration and clearer people directory */
+.cmcParticipantList{
+  display:grid;
+  gap:12px;
+  overflow:visible;
+  border:0;
+  border-radius:0;
+}
+.cmcParticipantRow{
+  border:1px solid rgba(251,240,222,.24);
+  border-radius:18px;
+  background:rgba(255,255,255,.045);
+  box-shadow:0 10px 24px rgba(13,25,31,.11);
+}
+.cmcParticipantRow:last-child{border-bottom:1px solid rgba(251,240,222,.24)}
+.cmcRowAction{
+  display:inline-flex;
+  min-height:44px;
+  align-items:center;
+  justify-content:center;
+  border-color:var(--cmcEmber);
+  color:var(--cmcInk);
+  background:var(--cmcEmber);
+  box-shadow:0 9px 20px rgba(234,159,67,.17);
+}
+.cmcRowAction:hover,
+.cmcRowAction:focus-visible{
+  border-color:var(--cmcSage);
+  color:#fff;
+  background:var(--cmcSage);
+  outline:0;
+}
+.cmcRowActionMobile{display:none}
+
+@media(max-width:900px){
+  .cmcAuthBody .authFormPanel{order:-1}
+}
+
+@media(max-width:720px){
+  .cmcAuthBody .authPageMain{padding-top:14px}
+  .cmcAuthBody .authShell{gap:16px}
+  .cmcAuthBody .authFormPanel{padding:22px}
+  .cmcAuthBody .authFormHeader{margin-bottom:14px}
+  .cmcAuthBody .authFormHeader h2{font-size:29px}
+  .cmcAuthBody .oauthStack{margin:14px 0}
+  .cmcAuthBody .authDivider{margin:16px 0}
+
+  .cmcLeaderMain,
+  .cmcEventsMain,
+  .cmcManageLeadersMain{padding-top:18px}
+  .cmcLeaderWelcome.cmcAdminPageHero,
+  .cmcEventsIntro.cmcAdminPageHero,
+  .cmcManageLeadersIntro.cmcAdminPageHero{
+    gap:12px;
+    padding-bottom:18px;
+  }
+  .cmcLeaderWelcome.cmcAdminPageHero h1,
+  .cmcEventsIntro.cmcAdminPageHero h1,
+  .cmcManageLeadersIntro.cmcAdminPageHero h1{
+    margin-bottom:7px;
+    font-size:clamp(34px,9.5vw,40px);
+    line-height:1;
+  }
+  .cmcLeaderWelcome.cmcAdminPageHero .cmcIntro,
+  .cmcEventsIntro.cmcAdminPageHero .cmcIntro,
+  .cmcManageLeadersIntro.cmcAdminPageHero>div>p:last-child{
+    max-width:33rem;
+    font-size:13px;
+    line-height:1.45;
+  }
+  .cmcAdminPageAction,
+  .cmcInviteButton.cmcAdminPageAction,
+  .cmcPrimaryButton.cmcAdminPageAction{
+    min-height:54px;
+    padding-right:18px;
+    padding-left:18px;
+  }
+
+  .cmcLeaderStats{margin-bottom:16px;border-radius:21px}
+  .cmcLeaderStats article{min-height:104px;padding:14px}
+  .cmcLeaderStats strong{margin:9px 0 7px;font-size:31px}
+  .cmcLeaderStats span{font-size:8px}
+  .cmcLeaderStats small{font-size:8px;line-height:1.35}
+
+  .cmcPeoplePanel{padding:16px}
+  .cmcPeopleHeading{gap:16px;margin-bottom:18px}
+  .cmcPeopleHeading h2{font-size:38px}
+  .cmcPeopleTools{
+    grid-template-columns:repeat(3,minmax(0,1fr));
+    gap:8px;
+    width:100%;
+  }
+  .cmcPeopleTools input{grid-column:1/-1}
+  .cmcPeopleTools input,
+  .cmcPeopleTools select{
+    width:100%;
+    min-width:0;
+    min-height:44px;
+    padding-right:8px;
+    padding-left:8px;
+    font-size:9px;
+  }
+
+  .cmcParticipantList{gap:14px}
+  .cmcParticipantRow{
+    grid-template-columns:minmax(0,1fr) auto;
+    grid-template-areas:
+      "person action"
+      "stage event"
+      "latest status";
+    column-gap:12px;
+    row-gap:0;
+    padding:16px;
+    border-radius:18px;
+  }
+  .cmcParticipantRow .cmcPerson{grid-area:person}
+  .cmcParticipantRow .cmcPersonStageMetric{grid-area:stage}
+  .cmcParticipantRow .cmcPersonEventMetric{grid-area:event}
+  .cmcParticipantRow .cmcPersonLatestMetric{grid-area:latest}
+  .cmcParticipantRow .cmcActionPill{
+    grid-area:status;
+    align-self:center;
+    justify-self:end;
+  }
+  .cmcParticipantRow .cmcRowActions{
+    grid-area:action;
+    width:auto;
+    align-self:center;
+  }
+  .cmcParticipantRow .cmcPersonMetric{
+    min-width:0;
+    padding:13px 0;
+    border-top:1px solid rgba(251,240,222,.13);
+  }
+  .cmcParticipantRow .cmcPersonEventMetric{
+    padding-left:12px;
+    border-left:1px solid rgba(251,240,222,.13);
+  }
+  .cmcParticipantRow .cmcPersonLatestMetric{padding-bottom:7px}
+  .cmcParticipantRow .cmcAvatar{width:48px;height:48px;border-radius:15px;font-size:12px}
+  .cmcParticipantRow .cmcPerson{gap:11px}
+  .cmcParticipantRow .cmcPerson strong{font-size:13px;line-height:1.25}
+  .cmcParticipantRow .cmcPerson small{font-size:8px;line-height:1.35}
+  .cmcParticipantRow .cmcPersonMetric strong{font-size:11px;line-height:1.3}
+  .cmcParticipantRow .cmcRowAction{min-height:42px;padding:0 12px;border-radius:12px;font-size:10px}
+  .cmcRowActionDesktop{display:none}
+  .cmcRowActionMobile{display:inline}
+
+  .cmcEventStats{margin-bottom:16px;border-radius:21px}
+  .cmcEventStats article{min-height:90px;padding:14px}
+  .cmcEventStats strong{font-size:30px}
+  .cmcEventStats span,.cmcEventStats small{font-size:8px;line-height:1.3}
+
+  .cmcManageLeadersIntro.cmcAdminPageHero .cmcLeaderScopeCard{
+    min-height:0;
+    padding:17px 18px;
+    border-radius:18px;
+  }
+  .cmcManageLeadersIntro.cmcAdminPageHero .cmcLeaderScopeCard strong{font-size:20px}
+  .cmcManageLeadersIntro.cmcAdminPageHero .cmcLeaderScopeCard small{font-size:10px;line-height:1.4}
+}
+
+@media(max-width:390px){
+  .cmcPeopleTools{grid-template-columns:1fr 1fr}
+  .cmcPeopleTools #stageFilter{grid-column:1/-1}
+  .cmcParticipantRow{
+    grid-template-columns:minmax(0,1fr) auto;
+    grid-template-areas:
+      "person action"
+      "stage stage"
+      "event event"
+      "latest status";
+  }
+  .cmcParticipantRow .cmcPersonEventMetric{padding-left:0;border-left:0}
+}

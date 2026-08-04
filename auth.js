@@ -41,12 +41,12 @@ function setupAutoHideHeader(){
   const delta=y-lastY;
   const navigationFocused=header.contains(document.activeElement);
   header.classList.toggle('cmcHeaderScrolled',y>12);
-  if(y<120||navigationFocused){
+  if(y<100||navigationFocused){
    reveal();
   }else if(delta<0){
    downwardDistance=0;
    upwardDistance+=Math.abs(delta);
-   if(upwardDistance>42)reveal();
+   if(upwardDistance>70)reveal();
   }else if(delta>0&&y>150){
    upwardDistance=0;
    downwardDistance+=delta;

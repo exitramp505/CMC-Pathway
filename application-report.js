@@ -57,7 +57,7 @@
 
     <div class="applicationReportActions">
       <a class="buttonLink secondary" href="dashboard.html">Back to Dashboard</a>
-      <a class="buttonLink" href="application.html">Edit Application</a>
+      <a class="buttonLink" href="application.html">View Application</a>
     </div>
 
     <section class="applicationReportGrid">

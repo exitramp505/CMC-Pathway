@@ -31,7 +31,10 @@ https://your-site.netlify.app/dashboard.html
 - `/dashboard.html` candidate dashboard
 - `/assessment.html` Character Qualities Assessment
 - `/report.html?id=...` completed report view
-- `/admin.html` admin dashboard
+- `/leader.html` regional or national People dashboard
+- `/manage-leaders.html` role administration
+
+The previous shared-password admin dashboard has been removed. All management uses individual authenticated accounts.
 
 ## 5. Notes
 Reports are still emailed through Resend. They are stored in Supabase and also stored in Netlify Blobs as a fallback.

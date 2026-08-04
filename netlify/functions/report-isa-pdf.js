@@ -1,4 +1,5 @@
 const PDFDocument = require('pdfkit');
+const { requireUser } = require('./_auth');
 
 function safe(v){ return String(v ?? ''); }
 function num(v){ return Number(v) || 0; }
@@ -230,6 +231,7 @@ function drawInDepth(doc, answers, candidate, pageRef){
 exports.handler = async (event) => {
   if (event.httpMethod !== 'POST') return { statusCode:405, body:'Method not allowed' };
   try {
+    await requireUser(event);
     const data=JSON.parse(event.body||'{}');
     const candidate=data.candidate||{};
     const scores=data.scores||{};
@@ -260,6 +262,6 @@ exports.handler = async (event) => {
       isBase64Encoded:true
     };
   } catch(e) {
-    return {statusCode:500, headers:{'Content-Type':'application/json'}, body:JSON.stringify({error:e.message||'Could not generate PDF'})};
+    return {statusCode:e.statusCode||500, headers:{'Content-Type':'application/json'}, body:JSON.stringify({error:e.message||'Could not generate PDF'})};
   }
 };

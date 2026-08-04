@@ -3565,6 +3565,12 @@
   font-size:13px;
 }
 .cmcRecordAction{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  background:transparent;
+  font-family:inherit;
+  cursor:pointer;
   padding:10px 12px;
   border:1px solid rgba(41,61,72,.16);
   border-radius:11px;
@@ -3572,6 +3578,12 @@
   font-size:10px;
   font-weight:900;
   text-decoration:none;
+}
+.cmcRecordActions{
+  display:flex;
+  align-items:center;
+  justify-content:flex-end;
+  gap:8px;
 }
 .cmcRecordAction:hover{
   border-color:var(--cmcEmber);
@@ -4278,7 +4290,7 @@
   .cmcParticipantRecordListWide article{
     grid-template-columns:auto minmax(0,1fr);
   }
-  .cmcParticipantRecordListWide .cmcRecordAction{
+  .cmcParticipantRecordListWide .cmcRecordActions{
     grid-column:2;
     justify-self:start;
   }

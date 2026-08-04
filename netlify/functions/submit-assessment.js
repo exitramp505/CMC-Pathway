@@ -2,6 +2,9 @@ const { Resend } = require('resend');
 const { getStore } = require('@netlify/blobs');
 const { createClient } = require('@supabase/supabase-js');
 const { buildPdfBuffer, safeFileName, chartColor, STATES } = require('./pdf-generator');
+const { scoreCharacterAssessment } = require('./_assessment-scoring');
+const { regionForState } = require('./_regions');
+const { enforceRateLimit } = require('./_rate-limit');
 
 function getAssessmentStore() {
   const name = 'discernment-assessments';
@@ -60,8 +63,6 @@ function qualityHtmlName(name) {
 }
 
 
-const STATE_REGIONS={WA:'Pacific',HI:'Pacific',AK:'Pacific',AZ:'Pacific',UT:'Pacific',CA:'Pacific',NV:'Pacific',ID:'Pacific',OR:'Pacific',TX:'Central',OK:'Central',AR:'Central',WI:'Central',MN:'Central',IA:'Central',IL:'Central',MO:'Central',KS:'Central',CO:'Mountain Plains',WY:'Mountain Plains',NE:'Mountain Plains',SD:'Mountain Plains',ND:'Mountain Plains',MT:'Mountain Plains',NH:'East',VT:'East',MA:'East',ME:'East',RI:'East',CT:'East',NJ:'East',DE:'East',MD:'East',WV:'East',PA:'East',OH:'East',VA:'East',KY:'East',TN:'East',IN:'East',MI:'East',NY:'East',FL:'South East',GA:'South East',AL:'South East',MS:'South East',LA:'South East',SC:'South East',NC:'South East',PR:'South East'};
-
 const DEFAULT_STATE_LEADERS = {
   OH: 'leader-oh@example.com',
   MI: 'leader-mi@example.com',
@@ -79,13 +80,24 @@ exports.handler = async (event) => {
   try {
     const data = JSON.parse(event.body || '{}');
     const user = await getUserFromAuthHeader(event);
+    if (!user) return json(401, { ok:false, error:'You must be logged in to submit this assessment.' });
     const candidate = data.candidate || {};
-    if (user) { data.userId = user.id; candidate.email = candidate.email || user.email; }
-    const scores = data.scores || {};
+    data.userId = user.id;
+    candidate.email = user.email || candidate.email || '';
+    candidate.region = regionForState(candidate.state);
+    const scores = scoreCharacterAssessment(data.answers || {}, candidate.married);
+    data.scores = scores;
 
     if (!candidate.name || !candidate.email || !candidate.state || !scores.results) {
       return json(400, { ok: false, error: 'Missing required report data.' });
     }
+
+    await enforceRateLimit(getSupabaseAdmin(), {
+      actorId:user.id,
+      action:'submit_character_assessment',
+      limit:6,
+      windowMinutes:60
+    });
 
     const stateLeaders = getStateLeaders();
     const adminEmail = process.env.ADMIN_EMAIL;
@@ -160,7 +172,7 @@ exports.handler = async (event) => {
       messageId: result.data && result.data.id ? result.data.id : null
     });
   } catch (error) {
-    return json(500, {
+    return json(error.statusCode || 500, {
       ok: false,
       stored: Boolean(savedRecord),
       submissionId: savedRecord ? savedRecord.id : null,
@@ -196,7 +208,7 @@ async function saveSupabaseSubmission(record, userId) {
   if (!admin || !userId) return;
   const candidate = record.candidate || {};
   const state = candidate.state || '';
-  const region = STATE_REGIONS[state] || candidate.region || '';
+  const region = regionForState(state);
   await admin.from('candidate_profiles').upsert({
     id: userId,
     full_name: candidate.name || '',

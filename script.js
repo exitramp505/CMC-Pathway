@@ -205,7 +205,9 @@ async function downloadReport(){
  const originalText=btn ? btn.textContent : '';
  if(btn){btn.disabled=true;btn.textContent='Preparing PDF...'}
  try{
-  const res=await fetch('/.netlify/functions/report-pdf',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)});
+  const session=await window.dcAuth?.getCurrentSession().catch(()=>null);
+  if(!session?.access_token)throw new Error('Please log in again before downloading your report.');
+  const res=await fetch('/.netlify/functions/report-pdf',{method:'POST',headers:{'Content-Type':'application/json',Authorization:`Bearer ${session.access_token}`},body:JSON.stringify(payload)});
   if(!res.ok){
     const data=await res.json().catch(()=>({}));
     throw new Error(data.error||'Could not generate the PDF.');
@@ -230,13 +232,10 @@ async function sendReport(){
  const status=document.getElementById('sendStatus');
  if(status){status.className='sendStatus pending';status.textContent='Sending and storing report...'}
  try{
-  let token='';
-  if(window.dcAuth){
-    const session=await window.dcAuth.getCurrentSession().catch(()=>null);
-    token=session?.access_token||'';
-  }
-  const headers={'Content-Type':'application/json'};
-  if(token) headers.Authorization=`Bearer ${token}`;
+  const session=await window.dcAuth?.getCurrentSession().catch(()=>null);
+  const token=session?.access_token||'';
+  if(!token)throw new Error('Please log in again before submitting your report.');
+  const headers={'Content-Type':'application/json',Authorization:`Bearer ${token}`};
   const res=await fetch('/.netlify/functions/submit-assessment',{method:'POST',headers,body:JSON.stringify(window.currentReport)});
   const data=await res.json().catch(()=>({}));
   if(res.ok&&data.ok){

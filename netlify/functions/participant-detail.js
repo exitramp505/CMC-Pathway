@@ -84,7 +84,7 @@ exports.handler = async (event) => {
         .order('created_at', { ascending:false }),
       supabase
         .from('candidate_applications')
-        .select('id,status,completion,submitted_at,updated_at,photo_name,resume_name')
+        .select('id,status,completion,submitted_at,updated_at,photo_name,resume_name,reopened_at,reopened_by,reopen_reason')
         .eq('user_id', participantId)
         .maybeSingle(),
       supabase

@@ -2,13 +2,13 @@
   "scripts": {
     "dev": "netlify dev",
     "build": "echo static app",
-    "test": "node tests/participant-dashboard.test.js"
+    "test": "node tests/participant-dashboard.test.js && node tests/security-hardening.test.js"
   },
   "dependencies": {
-    "resend": "latest",
-    "@netlify/blobs": "latest",
-    "pdfkit": "latest",
-    "@supabase/supabase-js": "^2.49.1"
+    "resend": "6.12.3",
+    "@netlify/blobs": "10.7.7",
+    "pdfkit": "0.18.0",
+    "@supabase/supabase-js": "2.105.4"
   },
   "devDependencies": {}
 }

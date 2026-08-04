@@ -5,7 +5,6 @@ const PROFILE_FIELDS = new Set([
   'full_name',
   'phone',
   'state',
-  'region',
   'church_name',
   'ministry_role',
   'pathway_interest',
@@ -155,7 +154,7 @@ exports.handler = async (event) => {
       if (!Object.keys(updates).length) {
         return json(400, { ok:false, error:'No profile changes were provided.' });
       }
-      if (updates.state && !updates.region) {
+      if (updates.state) {
         updates.region = regionForState(updates.state);
       }
       updates.updated_at = new Date().toISOString();
@@ -167,6 +166,46 @@ exports.handler = async (event) => {
         .single();
       if (error) throw error;
       return json(200, { ok:true, participant:data });
+    }
+
+    if (body.action === 'reopen_application') {
+      const reason = String(body.reason || '').trim();
+      if (reason.length < 3) {
+        return json(400, { ok:false, error:'Add a short reason for reopening the application.' });
+      }
+      const now = new Date().toISOString();
+      const { data:application, error:applicationError } = await supabase
+        .from('candidate_applications')
+        .select('id,user_id,status')
+        .eq('user_id', participant.id)
+        .maybeSingle();
+      if (applicationError) throw applicationError;
+      if (!application) return json(404, { ok:false, error:'This participant has not started an application.' });
+      if (application.status !== 'submitted') {
+        return json(400, { ok:false, error:'Only a submitted application needs to be reopened.' });
+      }
+      const { data, error } = await supabase
+        .from('candidate_applications')
+        .update({
+          status:'draft',
+          reopened_at:now,
+          reopened_by:viewer.id,
+          reopen_reason:reason,
+          updated_at:now
+        })
+        .eq('id', application.id)
+        .select('id,status,reopened_at,reopen_reason')
+        .single();
+      if (error) throw error;
+      const { error:auditError } = await supabase.from('candidate_application_events').insert({
+        application_id:application.id,
+        user_id:participant.id,
+        actor_user_id:viewer.id,
+        action:'reopened',
+        reason
+      });
+      if (auditError) throw auditError;
+      return json(200, { ok:true, application:data });
     }
 
     if (body.action === 'update_assignments') {

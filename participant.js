@@ -70,6 +70,10 @@
   profileForm.addEventListener('submit', saveProfile);
   document.getElementById('saveParticipantManagement').addEventListener('click', saveManagement);
   document.getElementById('confirmParticipantChanges').addEventListener('click', confirmManagement);
+  document.getElementById('participantRecordList').addEventListener('click', event => {
+    const button = event.target.closest('[data-reopen-application]');
+    if (button) reopenApplication(button);
+  });
   document.getElementById('participantManagementContent').addEventListener('change', event => {
     if (event.target.matches('input[type="checkbox"][name^="managed_"]')) updateManagementDirtyState();
   });
@@ -682,7 +686,8 @@
           : `${Number(application.completion || 0)}% complete`,
         date:application.submitted_at || application.updated_at,
         complete:application.status === 'submitted',
-        href:recordUrl('application')
+        href:recordUrl('application'),
+        canReopen:application.status === 'submitted'
       });
     }
     for (const report of reports) {
@@ -714,9 +719,42 @@
             <strong>${escapeHtml(record.title)}</strong>
             <p>${escapeHtml(record.status)} · ${escapeHtml(formatDate(record.date))}</p>
           </div>
-          <a class="cmcRecordAction" href="${record.href}">Open →</a>
+          <div class="cmcRecordActions">
+            <a class="cmcRecordAction" href="${record.href}">Open →</a>
+            ${record.canReopen ? '<button type="button" class="cmcRecordAction" data-reopen-application>Reopen</button>' : ''}
+          </div>
         </article>`).join('')
       : '<p class="cmcDetailEmpty">No applications, reports, or course reflections have been recorded.</p>';
+  }
+
+  async function reopenApplication(button) {
+    const reason = window.prompt('Why does this application need to be reopened? This reason is saved in its history.');
+    if (reason == null) return;
+    if (reason.trim().length < 3) {
+      window.alert('Add a short reason for reopening the application.');
+      return;
+    }
+    button.disabled = true;
+    button.textContent = 'Reopening…';
+    try {
+      const response = await fetch('/.netlify/functions/participant-manage', {
+        method:'POST',
+        headers:{ 'Content-Type':'application/json', Authorization:`Bearer ${token}` },
+        body:JSON.stringify({
+          action:'reopen_application',
+          participant_id:participantId,
+          reason:reason.trim()
+        })
+      });
+      const data = await response.json().catch(() => ({}));
+      if (!response.ok || !data.ok) throw new Error(data.error || 'Could not reopen the application.');
+      window.alert('The application is open for edits again.');
+      window.location.reload();
+    } catch (error) {
+      window.alert(error.message || 'Could not reopen the application.');
+      button.disabled = false;
+      button.textContent = 'Reopen';
+    }
   }
 
   function renderEventHistory(events) {

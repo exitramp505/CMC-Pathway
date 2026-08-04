@@ -1,10 +1,12 @@
 const { buildPdfBuffer, safeFileName } = require('./pdf-generator');
+const { requireUser } = require('./_auth');
 
 exports.handler = async (event) => {
   if (event.httpMethod !== 'POST') {
     return { statusCode: 405, headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ ok:false, error:'Method not allowed' }) };
   }
   try {
+    await requireUser(event);
     const data = JSON.parse(event.body || '{}');
     if (!data.candidate || !data.scores) {
       return { statusCode: 400, headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ ok:false, error:'Missing report data.' }) };
@@ -21,6 +23,6 @@ exports.handler = async (event) => {
       body: pdf.toString('base64')
     };
   } catch (error) {
-    return { statusCode: 500, headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ ok:false, error:error.message || 'Could not generate PDF.' }) };
+    return { statusCode: error.statusCode || 500, headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ ok:false, error:error.message || 'Could not generate PDF.' }) };
   }
 };

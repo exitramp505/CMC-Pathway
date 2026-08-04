@@ -81,11 +81,6 @@ update public.candidate_profiles
 set region = 'Southeast'
 where region = 'South East';
 
-update public.candidate_profiles
-set account_role = 'cmc_admin',
-    region = 'East'
-where lower(email) = 'george@openbibleeast.org';
-
 -- Participants can continue reading only their own profile.
 -- Regional and national views are served through authenticated Netlify
 -- functions that verify account_role and apply the correct region filter.

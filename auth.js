@@ -18,7 +18,7 @@ async function getCurrentSession(){const sb=await getSupabaseClient();const {dat
 async function requireUser(){const session=await getCurrentSession(); if(!session){window.location.href='login.html';return null} return session.user}
 async function signOut(){const sb=await getSupabaseClient(); await sb.auth.signOut(); window.location.href='login.html'}
 async function getProfile(userId){const sb=await getSupabaseClient(); const {data,error}=await sb.from('candidate_profiles').select('*').eq('id',userId).maybeSingle(); if(error) throw error; return data}
-async function upsertProfile(profile){const sb=await getSupabaseClient(); const {error}=await sb.from('candidate_profiles').upsert(profile,{onConflict:'id'}); if(error) throw error}
+async function upsertProfile(profile){const session=await getCurrentSession();if(!session?.access_token)throw new Error('Please log in again to save your profile.');const response=await fetch('/.netlify/functions/profile-self',{method:'POST',headers:{'Content-Type':'application/json',Authorization:`Bearer ${session.access_token}`},body:JSON.stringify(profile||{})});const data=await response.json().catch(()=>({}));if(!response.ok||data.ok===false)throw new Error(data.error||'Could not save your profile.');return data.profile}
 function setupLogout(){document.querySelectorAll('#logoutBtn').forEach(btn=>btn.addEventListener('click',signOut))}
 let autoHideHeaderInitialized=false;
 function setupAutoHideHeader(){

@@ -249,7 +249,7 @@
 
 /* CMC Pathway */
 .cmcPathwayBody{--cmcInk:#151616;--cmcSlate:#293d48;--cmcSlate2:#20323b;--cmcSand:#fbf0de;--cmcPaper:#fffaf1;--cmcEmber:#ea9f43;--cmcSage:#4da79c;margin:0;background:radial-gradient(circle at 1px 1px,rgba(41,61,72,.06) 1px,transparent 1.2px) 0 0/19px 19px,var(--cmcSand);color:var(--cmcInk);font-family:Montserrat,Arial,sans-serif}
-.cmcHeader{position:sticky;top:0;z-index:20;display:flex;align-items:center;justify-content:space-between;gap:28px;min-height:92px;padding:16px clamp(24px,5vw,76px);background:rgba(251,240,222,.9);border-bottom:1px solid rgba(41,61,72,.12);backdrop-filter:blur(18px)}.cmcHeaderAutoHide{will-change:transform,opacity;transition:transform .28s ease,opacity .2s ease,background-color .2s ease,box-shadow .2s ease}.cmcHeaderAutoHide.cmcHeaderScrolled{background:rgba(251,240,222,.84);box-shadow:0 12px 34px rgba(32,50,59,.09)}.cmcHeaderAutoHide.cmcHeaderHidden{transform:translateY(calc(-100% - 4px));opacity:0;pointer-events:none}.cmcHeaderAutoHide:focus-within{transform:translateY(0);opacity:1;pointer-events:auto}@media(prefers-reduced-motion:reduce){.cmcHeaderAutoHide{transition:none}}
+.cmcHeader{position:sticky;top:0;z-index:20;display:flex;align-items:center;justify-content:space-between;gap:28px;min-height:92px;padding:16px clamp(24px,5vw,76px);background:rgba(251,240,222,.9);border-bottom:1px solid rgba(41,61,72,.12);backdrop-filter:blur(18px)}.cmcHeaderAutoHide{will-change:transform,opacity;transition:transform .48s cubic-bezier(.22,.61,.36,1),opacity .34s ease,background-color .28s ease,box-shadow .28s ease}.cmcHeaderAutoHide.cmcHeaderScrolled{background:rgba(251,240,222,.84);box-shadow:0 12px 34px rgba(32,50,59,.09)}.cmcHeaderAutoHide.cmcHeaderHidden{transform:translateY(calc(-100% - 4px));opacity:0;pointer-events:none}.cmcHeaderAutoHide:focus-within{transform:translateY(0);opacity:1;pointer-events:auto}@media(prefers-reduced-motion:reduce){.cmcHeaderAutoHide{transition:none}}
 .cmcBrand{display:flex;align-items:center;gap:13px;color:var(--cmcSlate);text-decoration:none}.cmcBrand>span:last-child{display:grid;gap:2px}.cmcBrand strong{font-size:17px;font-weight:900}.cmcBrand small{color:#68747a;font-size:10px;font-weight:800;letter-spacing:.08em;text-transform:uppercase}
 .cmcLogoImage{display:block;width:52px;height:52px;border-radius:11px}
 .cmcNav{display:flex;align-items:center;gap:26px}.cmcNav a,.cmcNav button{display:inline-flex;min-height:40px;align-items:center;position:relative;color:var(--cmcSlate);font-size:13px;font-weight:800;text-decoration:none}.cmcNav a.active:after{content:"";position:absolute;right:0;bottom:0;left:0;height:2px;border-radius:99px;background:var(--cmcEmber)}.cmcNav button{border:0;background:transparent;box-shadow:none;padding:0}
@@ -7616,15 +7616,18 @@
 
   .cmcLeaderMain,
   .cmcEventsMain,
+  .cmcCourseAdminMain,
   .cmcManageLeadersMain{padding-top:18px}
   .cmcLeaderWelcome.cmcAdminPageHero,
   .cmcEventsIntro.cmcAdminPageHero,
+  .cmcCourseAdminIntro.cmcAdminPageHero,
   .cmcManageLeadersIntro.cmcAdminPageHero{
     gap:12px;
     padding-bottom:18px;
   }
   .cmcLeaderWelcome.cmcAdminPageHero h1,
   .cmcEventsIntro.cmcAdminPageHero h1,
+  .cmcCourseAdminIntro.cmcAdminPageHero h1,
   .cmcManageLeadersIntro.cmcAdminPageHero h1{
     margin-bottom:7px;
     font-size:clamp(34px,9.5vw,40px);
@@ -7632,6 +7635,7 @@
   }
   .cmcLeaderWelcome.cmcAdminPageHero .cmcIntro,
   .cmcEventsIntro.cmcAdminPageHero .cmcIntro,
+  .cmcCourseAdminIntro.cmcAdminPageHero>div>p:last-child,
   .cmcManageLeadersIntro.cmcAdminPageHero>div>p:last-child{
     max-width:33rem;
     font-size:13px;
@@ -7741,4 +7745,8 @@
       "latest status";
   }
   .cmcParticipantRow .cmcPersonEventMetric{padding-left:0;border-left:0}
+}
+
+@media(max-width:720px) and (prefers-reduced-motion:no-preference){
+  .cmcHeaderAutoHide{transition-duration:.56s,.42s,.3s,.3s}
 }

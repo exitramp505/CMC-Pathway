@@ -30,27 +30,42 @@ function setupAutoHideHeader(){
  let lastY=Math.max(window.scrollY,0);
  let downwardDistance=0;
  let upwardDistance=0;
+ let direction='idle';
  let ticking=false;
  const reveal=()=>{
   header.classList.remove('cmcHeaderHidden');
   downwardDistance=0;
   upwardDistance=0;
+  direction='idle';
  };
  const update=()=>{
   const y=Math.max(window.scrollY,0);
   const delta=y-lastY;
   const navigationFocused=header.contains(document.activeElement);
+  const mobile=window.matchMedia('(max-width: 720px)').matches;
+  const noiseThreshold=mobile?6:4;
+  const hideThreshold=mobile?92:72;
+  const revealThreshold=mobile?170:120;
+  const topRevealPoint=mobile?118:100;
   header.classList.toggle('cmcHeaderScrolled',y>12);
-  if(y<100||navigationFocused){
+  if(y<topRevealPoint||navigationFocused){
    reveal();
+   lastY=y;
+  }else if(Math.abs(delta)<noiseThreshold){
+   ticking=false;
+   return;
   }else if(delta<0){
+   if(direction!=='up')upwardDistance=0;
+   direction='up';
    downwardDistance=0;
    upwardDistance+=Math.abs(delta);
-   if(upwardDistance>70)reveal();
+   if(upwardDistance>=revealThreshold)reveal();
   }else if(delta>0&&y>150){
+   if(direction!=='down')downwardDistance=0;
+   direction='down';
    upwardDistance=0;
    downwardDistance+=delta;
-   if(downwardDistance>44)header.classList.add('cmcHeaderHidden');
+   if(downwardDistance>=hideThreshold)header.classList.add('cmcHeaderHidden');
   }
   lastY=y;
   ticking=false;

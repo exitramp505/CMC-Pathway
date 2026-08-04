@@ -35,6 +35,16 @@
     }
   }
 
+  try{
+    const session = await dcAuth.getCurrentSession();
+    if(session?.user){
+      await routeSignedInUser(session.user);
+      return;
+    }
+  }catch(err){
+    // Keep the login form available if session lookup is temporarily unavailable.
+  }
+
   if(googleBtn) googleBtn.addEventListener('click', signInWithGoogle);
 
   if(form){

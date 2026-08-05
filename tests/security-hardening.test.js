@@ -5,7 +5,12 @@ const {
   scoreMinistryStyle
 } = require('../netlify/functions/_assessment-scoring');
 const { regionForState, canonicalRegion } = require('../netlify/functions/_regions');
-const { _test:{ validateUploadMetadata } } = require('../netlify/functions/application-submit');
+const {
+  _test:{ validateUploadMetadata, isMissingApplicationSecuritySchema }
+} = require('../netlify/functions/application-submit');
+const {
+  _test:{ isMissingApplicationSecuritySchema:isMissingParticipantSecuritySchema }
+} = require('../netlify/functions/participant-detail');
 
 function expectValidation(fn, pattern) {
   assert.throws(fn, error => error.statusCode === 400 && pattern.test(error.message));
@@ -64,6 +69,14 @@ function run() {
     () => validateUploadMetadata({ kind:'photo', path:'other/photo.jpg' }, 'user-1', { size:100, mimeType:'image/jpeg' }),
     /Invalid upload path/i
   );
+
+  const missingColumn = {
+    code:'42703',
+    message:'column candidate_applications.reopened_at does not exist'
+  };
+  assert.equal(isMissingApplicationSecuritySchema(missingColumn), true);
+  assert.equal(isMissingParticipantSecuritySchema(missingColumn), true);
+  assert.equal(isMissingApplicationSecuritySchema({ code:'23505', message:'duplicate key' }), false);
 
   console.log('Security hardening tests passed.');
 }

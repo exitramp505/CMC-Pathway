@@ -82,11 +82,7 @@ exports.handler = async (event) => {
         .select('id,created_at,scores,overall,overall_label')
         .eq('user_id', participantId)
         .order('created_at', { ascending:false }),
-      supabase
-        .from('candidate_applications')
-        .select('id,status,completion,submitted_at,updated_at,photo_name,resume_name,reopened_at,reopened_by,reopen_reason')
-        .eq('user_id', participantId)
-        .maybeSingle(),
+      loadApplication(supabase, participantId),
       supabase
         .from('cmc_courses')
         .select('id,slug,title,subtitle,stage_key,status')
@@ -326,6 +322,33 @@ function isUuid(value) {
   return /^[0-9a-f]{8}-[0-9a-f-]{27}$/i.test(String(value || ''));
 }
 
+async function loadApplication(supabase, participantId) {
+  const currentFields = 'id,status,completion,submitted_at,updated_at,photo_name,resume_name,reopened_at,reopened_by,reopen_reason';
+  const legacyFields = 'id,status,completion,submitted_at,updated_at,photo_name,resume_name';
+  const current = await supabase
+    .from('candidate_applications')
+    .select(currentFields)
+    .eq('user_id', participantId)
+    .maybeSingle();
+
+  if (!current.error || !isMissingApplicationSecuritySchema(current.error)) {
+    return current;
+  }
+
+  return supabase
+    .from('candidate_applications')
+    .select(legacyFields)
+    .eq('user_id', participantId)
+    .maybeSingle();
+}
+
+function isMissingApplicationSecuritySchema(error) {
+  const message = `${error?.message || ''} ${error?.details || ''} ${error?.hint || ''}`;
+  return ['42703', '42P01', 'PGRST204', 'PGRST205'].includes(error?.code)
+    || /candidate_applications\.(reopened_at|reopened_by|reopen_reason).*does not exist/i.test(message)
+    || /candidate_application_events.*(does not exist|schema cache)/i.test(message);
+}
+
 function visiblePathwayAccount(viewer, profile) {
   if (!profile) return false;
   if (viewer.account_role === 'regional_leader') {
@@ -333,3 +356,5 @@ function visiblePathwayAccount(viewer, profile) {
   }
   return profile.account_role !== 'cmc_admin' || profile.id === viewer.id;
 }
+
+exports._test = { isMissingApplicationSecuritySchema };

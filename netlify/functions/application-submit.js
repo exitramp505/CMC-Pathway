@@ -31,11 +31,7 @@ exports.handler = async event => {
     const region = regionForState(state);
     const now = new Date().toISOString();
 
-    const { data:existing, error:existingError } = await admin
-      .from('candidate_applications')
-      .select('id,status,photo_path,photo_name,resume_path,resume_name,submitted_at,reopened_at,reopened_by,reopen_reason')
-      .eq('user_id', user.id)
-      .maybeSingle();
+    const { data:existing, error:existingError, supportsReopenFields } = await loadExistingApplication(admin, user.id);
     if (existingError) throw existingError;
     if (existing?.status === 'submitted') {
       return json(409, {
@@ -62,11 +58,13 @@ exports.handler = async event => {
       resume_path:resumeUpload?.path || existing?.resume_path || null,
       resume_name:resumeUpload?.fileName || existing?.resume_name || null,
       submitted_at:status === 'submitted' ? now : existing?.submitted_at || null,
-      reopened_at:existing?.reopened_at || null,
-      reopened_by:existing?.reopened_by || null,
-      reopen_reason:existing?.reopen_reason || '',
       updated_at:now
     };
+    if (supportsReopenFields) {
+      row.reopened_at = existing?.reopened_at || null;
+      row.reopened_by = existing?.reopened_by || null;
+      row.reopen_reason = existing?.reopen_reason || '';
+    }
 
     const { data, error } = await admin
       .from('candidate_applications')
@@ -93,7 +91,7 @@ exports.handler = async event => {
         actor_user_id:user.id,
         action:'submitted'
       });
-      if (auditError) throw auditError;
+      if (auditError && !isMissingApplicationSecuritySchema(auditError)) throw auditError;
     }
 
     return json(200, {
@@ -107,6 +105,34 @@ exports.handler = async event => {
     return json(error.statusCode || 500, { ok:false, error:error.message || 'Could not save application.' });
   }
 };
+
+async function loadExistingApplication(admin, userId) {
+  const currentFields = 'id,status,photo_path,photo_name,resume_path,resume_name,submitted_at,reopened_at,reopened_by,reopen_reason';
+  const legacyFields = 'id,status,photo_path,photo_name,resume_path,resume_name,submitted_at';
+  const current = await admin
+    .from('candidate_applications')
+    .select(currentFields)
+    .eq('user_id', userId)
+    .maybeSingle();
+
+  if (!current.error || !isMissingApplicationSecuritySchema(current.error)) {
+    return { ...current, supportsReopenFields:true };
+  }
+
+  const legacy = await admin
+    .from('candidate_applications')
+    .select(legacyFields)
+    .eq('user_id', userId)
+    .maybeSingle();
+  return { ...legacy, supportsReopenFields:false };
+}
+
+function isMissingApplicationSecuritySchema(error) {
+  const message = `${error?.message || ''} ${error?.details || ''} ${error?.hint || ''}`;
+  return ['42703', '42P01', 'PGRST204', 'PGRST205'].includes(error?.code)
+    || /candidate_applications\.(reopened_at|reopened_by|reopen_reason).*does not exist/i.test(message)
+    || /candidate_application_events.*(does not exist|schema cache)/i.test(message);
+}
 
 async function validateStoredUpload(admin, upload, userId) {
   const path = String(upload?.path || '');
@@ -171,4 +197,4 @@ function validationError(message) {
   return error;
 }
 
-exports._test = { validateUploadMetadata };
+exports._test = { validateUploadMetadata, isMissingApplicationSecuritySchema };

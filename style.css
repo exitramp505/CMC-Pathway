@@ -5634,15 +5634,27 @@
 }
 
 .cmcNextStepState>span{
-  display:grid;
+  position:relative;
+  display:block;
+  flex:0 0 42px;
   width:42px;
   height:42px;
-  place-items:center;
   border-radius:50%;
   background:var(--cmcSage);
   color:#fff;
-  font-size:22px;
-  font-weight:900;
+  font-size:0;
+}
+
+.cmcNextStepState>span::after{
+  position:absolute;
+  top:9px;
+  left:15px;
+  width:9px;
+  height:17px;
+  border-right:4px solid currentColor;
+  border-bottom:4px solid currentColor;
+  content:"";
+  transform:rotate(45deg);
 }
 
 .cmcNextStepState>strong{
@@ -6849,7 +6861,7 @@
 .cmcLeaderMain,
 .cmcEventsMain,
 .cmcCourseAdminMain,
-.cmcManageLeadersMain{padding-top:52px;padding-bottom:110px}
+.cmcManageLeadersMain{padding-top:36px;padding-bottom:110px}
 .cmcAdminPageHero,
 .cmcLeaderWelcome.cmcAdminPageHero,
 .cmcEventsIntro.cmcAdminPageHero,
@@ -6860,9 +6872,9 @@
   align-items:start;
   justify-content:space-between;
   gap:clamp(32px,6vw,88px);
-  min-height:248px;
+  min-height:196px;
   margin:0;
-  padding:0 0 36px;
+  padding:0 0 24px;
 }
 .cmcAdminPageHero .cmcEyebrow{margin:0 0 14px}
 .cmcAdminPageHero h1,
@@ -6893,7 +6905,7 @@
   width:204px;
   min-width:204px;
   min-height:62px;
-  align-self:end;
+  align-self:center;
   align-items:center;
   justify-content:space-between;
   box-sizing:border-box;
@@ -6913,7 +6925,7 @@
 }
 .cmcManageLeadersIntro.cmcAdminPageHero .cmcLeaderScopeCard{
   min-height:148px;
-  align-self:end;
+  align-self:center;
   box-sizing:border-box;
 }
 .cmcParticipantRow{

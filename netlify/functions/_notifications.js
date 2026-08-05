@@ -56,7 +56,7 @@ async function sendPathwaySummary({ supabase, participant, viewer, items }) {
     };
   }
 
-  const pathwayUrl = `${String(process.env.URL || process.env.SITE_URL || 'https://discernmentcenter.netlify.app').replace(/\/$/, '')}/dashboard.html`;
+  const pathwayUrl = `${String(process.env.URL || process.env.SITE_URL || 'https://cmc-pathway.netlify.app').replace(/\/$/, '')}/dashboard.html`;
   const itemRows = cleanItems.map(item => `
     <tr>
       <td style="padding:14px 0;border-bottom:1px solid #eadfce">

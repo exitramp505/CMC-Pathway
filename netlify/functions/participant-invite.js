@@ -52,7 +52,7 @@ exports.handler = async event => {
     const from = process.env.FROM_EMAIL;
     if (!apiKey || !from) throw httpError(500, 'Invitation email is not configured.');
 
-    const baseUrl = String(process.env.URL || process.env.SITE_URL || 'https://discernmentcenter.netlify.app').replace(/\/$/, '');
+    const baseUrl = String(process.env.URL || process.env.SITE_URL || 'https://cmc-pathway.netlify.app').replace(/\/$/, '');
     const signupUrl = `${baseUrl}/signup.html?invited=1&email=${encodeURIComponent(email)}`;
     const firstName = fullName.split(/\s+/)[0];
     const sender = viewer.full_name || 'Your CMC leader';

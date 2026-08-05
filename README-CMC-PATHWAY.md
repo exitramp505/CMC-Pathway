@@ -1,6 +1,6 @@
 # CMC Pathway setup
 
-This build expands the Discernment Center into CMC Pathway.
+CMC Pathway is the authenticated platform for Church Multiplication Collective participants, regional leaders, and national administrators.
 
 ## Deployment order
 

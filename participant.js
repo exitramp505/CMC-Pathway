@@ -429,8 +429,7 @@
         <div class="cmcAssignmentManagerColumns">
           <section>
             <div class="cmcAssignmentManagerHeading">
-              <p class="cmcEyebrow">ASSIGNED WORK</p>
-              <h3>Assigned</h3>
+              <h3>Assigned work</h3>
             </div>
             <div class="cmcInlineAssignmentList">
               ${assigned.length
@@ -440,8 +439,7 @@
           </section>
           <section>
             <div class="cmcAssignmentManagerHeading">
-              <p class="cmcEyebrow">AVAILABLE WORK</p>
-              <h3>Available</h3>
+              <h3>Available work</h3>
             </div>
             <div class="cmcInlineAssignmentList">
               ${available.length

@@ -249,6 +249,32 @@
 
 /* CMC Pathway */
 .cmcPathwayBody{--cmcInk:#151616;--cmcSlate:#293d48;--cmcSlate2:#20323b;--cmcSand:#fbf0de;--cmcPaper:#fffaf1;--cmcEmber:#ea9f43;--cmcSage:#4da79c;margin:0;background:radial-gradient(circle at 1px 1px,rgba(41,61,72,.06) 1px,transparent 1.2px) 0 0/19px 19px,var(--cmcSand);color:var(--cmcInk);font-family:Montserrat,Arial,sans-serif}
+.cmcPathwayBody{
+  /* CMC type scale. New interface styles should use these roles instead of one-off sizes. */
+  --cmc-type-micro:10px;
+  --cmc-type-label:12px;
+  --cmc-type-caption:13px;
+  --cmc-type-body-sm:14px;
+  --cmc-type-body:16px;
+  --cmc-type-body-lg:18px;
+  --cmc-type-title-sm:21px;
+  --cmc-type-title:25px;
+  --cmc-type-section:34px;
+  --cmc-type-page:clamp(42px,4.2vw,60px);
+  --cmc-type-display:clamp(50px,6vw,80px);
+  /* Shared spacing and reading measures pair layout rhythm with the type scale. */
+  --cmc-space-1:4px;
+  --cmc-space-2:8px;
+  --cmc-space-3:12px;
+  --cmc-space-4:16px;
+  --cmc-space-5:24px;
+  --cmc-space-6:32px;
+  --cmc-space-7:48px;
+  --cmc-space-8:64px;
+  --cmc-measure-compact:48ch;
+  --cmc-measure-reading:68ch;
+  --cmc-measure-wide:80ch;
+}
 .cmcHeader{position:sticky;top:0;z-index:20;display:flex;align-items:center;justify-content:space-between;gap:28px;min-height:92px;padding:16px clamp(24px,5vw,76px);background:rgba(251,240,222,.9);border-bottom:1px solid rgba(41,61,72,.12);backdrop-filter:blur(18px)}.cmcHeaderAutoHide{will-change:transform,opacity;transition:transform .48s cubic-bezier(.22,.61,.36,1),opacity .34s ease,background-color .28s ease,box-shadow .28s ease}.cmcHeaderAutoHide.cmcHeaderScrolled{background:rgba(251,240,222,.84);box-shadow:0 12px 34px rgba(32,50,59,.09)}.cmcHeaderAutoHide.cmcHeaderHidden{transform:translateY(calc(-100% - 4px));opacity:0;pointer-events:none}.cmcHeaderAutoHide:focus-within{transform:translateY(0);opacity:1;pointer-events:auto}@media(prefers-reduced-motion:reduce){.cmcHeaderAutoHide{transition:none}}
 .cmcBrand{display:flex;align-items:center;gap:13px;color:var(--cmcSlate);text-decoration:none}.cmcBrand>span:last-child{display:grid;gap:2px}.cmcBrand strong{font-size:17px;font-weight:900}.cmcBrand small{color:#68747a;font-size:10px;font-weight:800;letter-spacing:.08em;text-transform:uppercase}
 .cmcLogoImage{display:block;width:52px;height:52px;border-radius:11px}
@@ -3369,7 +3395,7 @@
 }
 .cmcParticipantStageLine span{
   color:rgba(251,240,222,.58);
-  font-size:9px;
+  font-size:var(--cmc-type-label);
   font-weight:900;
   letter-spacing:.08em;
   text-transform:uppercase;
@@ -3378,7 +3404,7 @@
   padding-left:9px;
   border-left:2px solid var(--cmcSage);
   color:#9ae0d8;
-  font-size:11px;
+  font-size:var(--cmc-type-caption);
   font-weight:950;
   letter-spacing:.06em;
   text-transform:uppercase;
@@ -3410,7 +3436,7 @@
   background:transparent;
   color:#68777d;
   box-shadow:none;
-  font-size:13px;
+  font-size:var(--cmc-type-body-sm);
   font-weight:900;
 }
 .cmcParticipantTabs button:hover{
@@ -3647,13 +3673,13 @@
 .cmcAssignmentManagerHeading h3{
   margin:4px 0 0;
   color:var(--cmcInk);
-  font-size:24px;
+  font-size:var(--cmc-type-title);
   letter-spacing:-.035em;
 }
 .cmcInlineStageManager>div:first-child>p:last-child{
   margin:8px 0 0;
   color:#65747b;
-  font-size:11px;
+  font-size:var(--cmc-type-body-sm);
   font-weight:650;
 }
 .cmcParticipantStageChoicesInline span{
@@ -3673,13 +3699,13 @@
 .cmcStageAssignmentIntro h3{
   margin:4px 0 0;
   color:var(--cmcInk);
-  font-size:25px;
+  font-size:var(--cmc-type-title);
   letter-spacing:-.04em;
 }
 .cmcStageAssignmentIntro>div:first-child>p:last-child{
   margin:7px 0 0;
   color:#65747b;
-  font-size:11px;
+  font-size:var(--cmc-type-body-sm);
   font-weight:650;
 }
 .cmcCurrentStageCompact{
@@ -3694,14 +3720,14 @@
 }
 .cmcCurrentStageCompact span{
   color:#718087;
-  font-size:8px;
+  font-size:var(--cmc-type-label);
   font-weight:900;
   letter-spacing:.06em;
   text-transform:uppercase;
 }
 .cmcCurrentStageCompact strong{
   color:var(--cmcSlate);
-  font-size:13px;
+  font-size:var(--cmc-type-body-sm);
 }
 .cmcStageAssignmentTabs{
   display:grid;
@@ -3757,16 +3783,16 @@
 }
 .cmcStageTabSelect span{
   color:var(--cmcEmber);
-  font-size:10px;
+  font-size:var(--cmc-type-label);
   font-weight:950;
 }
 .cmcStageTabSelect strong{
-  font-size:19px;
+  font-size:var(--cmc-type-title-sm);
 }
 .cmcStageTabSelect p{
   margin:2px 0 0;
   color:#718087;
-  font-size:10.5px;
+  font-size:var(--cmc-type-caption);
   font-weight:700;
   line-height:1.4;
 }
@@ -3786,7 +3812,7 @@
 }
 .cmcStageTabMeta small{
   color:#718087;
-  font-size:9.5px;
+  font-size:var(--cmc-type-label);
   font-weight:800;
 }
 .cmcStageAssignmentTab.active .cmcStageTabMeta small{
@@ -3794,7 +3820,7 @@
 }
 .cmcStageTabMeta em{
   color:#337f75;
-  font-size:8.5px;
+  font-size:var(--cmc-type-label);
   font-style:normal;
   font-weight:950;
   letter-spacing:.05em;
@@ -3812,7 +3838,7 @@
   background:transparent;
   color:var(--cmcEmber);
   box-shadow:none;
-  font-size:8.5px;
+  font-size:var(--cmc-type-micro);
   font-weight:950;
 }
 .cmcStageTabMeta button:hover{
@@ -3834,13 +3860,14 @@
 .cmcStageAssignmentPanelHeader h3{
   margin:4px 0 0;
   color:var(--cmcInk);
-  font-size:27px;
+  font-size:var(--cmc-type-title);
   letter-spacing:-.04em;
 }
 .cmcStageAssignmentPanelHeader>div:first-child>p:last-child{
+  max-width:var(--cmc-measure-reading);
   margin:7px 0 0;
   color:#65747b;
-  font-size:11px;
+  font-size:var(--cmc-type-body-sm);
   font-weight:650;
 }
 .cmcStageAssignmentAction{
@@ -3853,7 +3880,7 @@
   margin:0;
   padding:10px 14px;
   border-radius:12px;
-  font-size:10px;
+  font-size:var(--cmc-type-caption);
 }
 .cmcCurrentStageBadge{
   display:inline-flex;
@@ -3863,7 +3890,7 @@
   border-radius:99px;
   background:rgba(77,167,156,.13);
   color:#337f75;
-  font-size:8px;
+  font-size:var(--cmc-type-label);
   font-weight:950;
   letter-spacing:.05em;
   text-transform:uppercase;
@@ -3877,22 +3904,22 @@
 .cmcAssignmentManagerColumns{
   display:grid;
   grid-template-columns:repeat(2,minmax(0,1fr));
-  gap:24px;
+  gap:var(--cmc-space-5);
 }
 .cmcAssignmentManagerColumns>section{
   min-width:0;
   padding:0;
 }
 .cmcAssignmentManagerColumns>section+section{
-  padding-left:24px;
+  padding-left:var(--cmc-space-5);
   border-left:1px solid rgba(41,61,72,.14);
 }
 .cmcAssignmentManagerHeading{
-  margin-bottom:17px;
+  margin-bottom:var(--cmc-space-4);
 }
 .cmcInlineAssignmentList{
   display:grid;
-  gap:9px;
+  gap:var(--cmc-space-3);
 }
 .cmcAssignmentOption{
   position:relative;
@@ -3941,25 +3968,26 @@
 .cmcAssignmentOptionCopy small{
   margin-bottom:4px;
   color:#718087;
-  font-size:8px;
+  font-size:var(--cmc-type-micro);
   font-weight:900;
   letter-spacing:.05em;
   text-transform:uppercase;
 }
 .cmcAssignmentOptionCopy strong{
   color:var(--cmcSlate);
-  font-size:12px;
+  font-size:var(--cmc-type-body);
 }
 .cmcAssignmentOptionCopy p{
+  max-width:var(--cmc-measure-reading);
   margin:5px 0 8px;
   color:#68777d;
-  font-size:10px;
+  font-size:var(--cmc-type-caption);
   font-weight:600;
-  line-height:1.45;
+  line-height:1.55;
 }
 .cmcAssignmentOptionCopy em{
   color:#337f75;
-  font-size:8px;
+  font-size:var(--cmc-type-label);
   font-style:normal;
   font-weight:900;
   text-transform:uppercase;
@@ -4336,7 +4364,7 @@
     padding:9px 4px;
     white-space:normal;
     line-height:1.15;
-    font-size:11.5px;
+    font-size:var(--cmc-type-body-sm);
   }
   .cmcStageAssignmentTabs{
     grid-template-columns:repeat(2,minmax(0,1fr));
@@ -4355,7 +4383,16 @@
     padding:14px 14px 6px;
   }
   .cmcStageTabMeta{
+    min-height:52px;
+    align-items:flex-start;
+    flex-direction:column;
+    justify-content:flex-end;
+    gap:3px;
     padding:4px 13px 11px;
+  }
+  .cmcStageTabMeta small,
+  .cmcStageTabMeta em{
+    line-height:1.2;
   }
   .cmcStageTabMeta button{
     padding:5px 6px;
@@ -7773,4 +7810,51 @@
 
 @media(max-width:720px) and (prefers-reduced-motion:no-preference){
   .cmcHeaderAutoHide{transition-duration:.56s,.42s,.3s,.3s}
+}
+
+/* Participant dashboard typography aligned to the CMC type scale. */
+.cmcParticipantDetailMain .cmcDetailSectionHeading h2,
+.cmcParticipantDetailMain .cmcParticipantInfoCard h2{
+  font-size:var(--cmc-type-section);
+}
+.cmcParticipantDetailMain .cmcDetailSectionHeading>p{
+  max-width:var(--cmc-measure-reading);
+  font-size:var(--cmc-type-body-sm);
+  line-height:1.55;
+}
+.cmcParticipantDetailMain .cmcParticipantStats span{
+  font-size:var(--cmc-type-label);
+}
+.cmcParticipantDetailMain .cmcParticipantStats strong{
+  font-size:var(--cmc-type-section);
+}
+.cmcParticipantDetailMain .cmcParticipantStats small{
+  font-size:var(--cmc-type-caption);
+}
+.cmcParticipantDetailMain .cmcWorkStage{
+  font-size:var(--cmc-type-label);
+}
+.cmcParticipantDetailMain .cmcWorkItemCopy h3{
+  font-size:var(--cmc-type-body-lg);
+}
+.cmcParticipantDetailMain .cmcWorkItemCopy p{
+  font-size:var(--cmc-type-body-sm);
+}
+.cmcParticipantDetailMain .cmcWorkItemStatus span{
+  font-size:var(--cmc-type-label);
+}
+.cmcParticipantDetailMain .cmcWorkItemStatus small,
+.cmcParticipantDetailMain .cmcParticipantInfoCard dt{
+  font-size:var(--cmc-type-label);
+}
+.cmcParticipantDetailMain .cmcParticipantInfoCard dd,
+.cmcParticipantDetailMain .cmcParticipantRecordList strong{
+  font-size:var(--cmc-type-body-sm);
+}
+.cmcParticipantDetailMain .cmcParticipantRecordList p,
+.cmcParticipantDetailMain .cmcDetailEmpty{
+  font-size:var(--cmc-type-caption);
+}
+.cmcParticipantDetailMain .cmcParticipantRecordList small{
+  font-size:var(--cmc-type-label);
 }

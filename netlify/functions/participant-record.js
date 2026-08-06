@@ -85,7 +85,20 @@ exports.handler = async (event) => {
       });
     }
 
-    return json(400, { ok:false, error:'Choose an application, assessment, or course reflection.' });
+    if (recordType === 'pastoral_reference') {
+      const { data, error } = await supabase
+        .from('cmc_pastoral_references')
+        .select('id,pastor_name,pastor_email,submitted_at,response')
+        .eq('participant_id', participant.id)
+        .maybeSingle();
+      if (error) throw error;
+      if (!data?.submitted_at || !data.response) {
+        return json(404, { ok:false, error:'The pastoral reference has not been returned.' });
+      }
+      return json(200, { ok:true, viewer, participant, type:'pastoral_reference', record:data });
+    }
+
+    return json(400, { ok:false, error:'Choose an application, assessment, pastoral reference, or course reflection.' });
   } catch (error) {
     return json(error.statusCode || 500, {
       ok:false,

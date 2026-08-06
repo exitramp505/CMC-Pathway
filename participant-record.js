@@ -30,6 +30,8 @@
     document.title = `${recordTitle(data)} | ${participantName}`;
     shell.innerHTML = data.type === 'application'
       ? renderApplication(data.record, data.participant)
+      : data.type === 'pastoral_reference'
+        ? renderPastoralReference(data.record, data.participant)
       : data.type === 'course_reflection'
         ? renderCourseReflection(data.record, data.participant)
         : renderAssessment(data.record, data.participant);
@@ -196,6 +198,34 @@
     </article>`;
   }
 
+  function renderPastoralReference(row, participant) {
+    const response = row.response || {};
+    const ratings = response.ratings || {};
+    const ratingRows = [
+      ['Spiritual maturity', ratings.spiritual_maturity],
+      ['Character and integrity', ratings.character_integrity],
+      ['Teachability', ratings.teachability],
+      ['Relational health', ratings.relational_health],
+      ['Leadership', ratings.leadership],
+      ['Overall ministry readiness', ratings.ministry_readiness]
+    ];
+    return `<article class="cmcRecordDocument cmcPastoralReferenceRecord">
+      <header class="cmcRecordDocumentHeader">
+        <div><p class="cmcEyebrow">CONFIDENTIAL PASTORAL REFERENCE</p><h1>${escapeHtml(participant.full_name || participant.email || 'Participant')}</h1><p>Provided by ${escapeHtml(row.pastor_name)} · ${escapeHtml(row.pastor_email)}</p></div>
+        <div class="cmcRecordStatus"><strong>Received</strong><span>${escapeHtml(formatDate(row.submitted_at))}</span></div>
+      </header>
+      <section class="applicationReportGrid">
+        ${applicationBlock('Reference relationship', [
+          ['Pastor or ministry leader', row.pastor_name], ['Role or title', response.pastor_title], ['Church or ministry', response.church_ministry], ['Phone', response.phone], ['Relationship', response.relationship], ['Known for', response.known_for], ['May contact', response.may_contact ? 'Yes' : 'No']
+        ])}
+        ${applicationBlock('Readiness ratings', ratingRows.map(([label, value]) => [label, ratingLabel(value)]))}
+        ${applicationBlock('Written reference', [
+          ['Ministry strengths', response.strengths], ['Areas for continued growth', response.growth_areas], ['Concerns to explore', response.concerns], ['Recommendation', recommendationLabel(response.recommendation)]
+        ])}
+      </section>
+    </article>`;
+  }
+
   function applicationBlock(title, rows) {
     return `<article class="applicationReportBlock">
       <h2>${escapeHtml(title)}</h2>
@@ -235,6 +265,15 @@
     ].filter(Boolean).join(' · ');
   }
 
+  function ratingLabel(value) {
+    if (value === 'unable') return 'Unable to assess';
+    return value ? `${value} of 5` : '—';
+  }
+
+  function recommendationLabel(value) {
+    return { recommend:'Recommend', recommend_with_reservations:'Recommend with reservations', do_not_recommend:'Do not recommend at this time' }[value] || '—';
+  }
+
   function scoreWidth(score) {
     if (score === null || score === undefined) return 0;
     return Math.max(0, Math.min(100, ((Number(score) - 1) / 4) * 100));
@@ -242,6 +281,7 @@
 
   function recordTitle(data) {
     if (data.type === 'application') return 'Discernment Application';
+    if (data.type === 'pastoral_reference') return 'Pastoral Reference';
     if (data.type === 'course_reflection') return data.record?.lesson_title || 'Course Reflection';
     return data.record?.scores?.assessmentTitle || 'Assessment Report';
   }

@@ -2,7 +2,7 @@
   "scripts": {
     "dev": "netlify dev",
     "build": "echo static app",
-    "test": "node tests/participant-dashboard.test.js && node tests/security-hardening.test.js"
+    "test": "node tests/participant-dashboard.test.js && node tests/security-hardening.test.js && node tests/pastoral-reference.test.js"
   },
   "dependencies": {
     "resend": "6.12.3",

@@ -137,7 +137,7 @@
     renderActivity(activity);
     renderWork(assignments, reports, application);
     renderEventHistory(participantEvents);
-    renderRecords(reports, application, reflections);
+    renderRecords(reports, application, reflections, data.pastoral_reference || null);
   }
 
   function renderArchiveState() {
@@ -673,7 +673,7 @@
     };
   }
 
-  function renderRecords(reports, application, reflections = []) {
+  function renderRecords(reports, application, reflections = [], pastoralReference = null) {
     const records = [];
     if (application) {
       records.push({
@@ -708,6 +708,16 @@
         href:recordUrl('course_reflection', reflection.id)
       });
     }
+    if (pastoralReference?.submitted_at) {
+      records.push({
+        title:'Pastoral Reference Form',
+        type:'Confidential reference',
+        status:`Received from ${pastoralReference.pastor_name || 'pastoral reference'}`,
+        date:pastoralReference.submitted_at,
+        complete:true,
+        href:recordUrl('pastoral_reference')
+      });
+    }
 
     document.getElementById('participantRecordList').innerHTML = records.length
       ? records.map(record => `<article>
@@ -722,7 +732,7 @@
             ${record.canReopen ? '<button type="button" class="cmcRecordAction" data-reopen-application>Reopen</button>' : ''}
           </div>
         </article>`).join('')
-      : '<p class="cmcDetailEmpty">No applications, reports, or course reflections have been recorded.</p>';
+      : '<p class="cmcDetailEmpty">No applications, reports, references, or course reflections have been recorded.</p>';
   }
 
   async function reopenApplication(button) {

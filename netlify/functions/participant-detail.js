@@ -70,7 +70,8 @@ exports.handler = async (event) => {
       enrollmentResult,
       lessonResult,
       reflectionResult,
-      eventInvitationResult
+      eventInvitationResult,
+      pastoralReferenceResult
     ] = await Promise.all([
       supabase
         .from('candidate_assignments')
@@ -104,7 +105,8 @@ exports.handler = async (event) => {
         .from('cmc_event_invitations')
         .select('id,event_id,rsvp_status,attendance_status,invited_at,responded_at,notification_sent_at,updated_at,cmc_events(id,title,summary,description,starts_at,ends_at,location_name,address,rsvp_deadline,stage_key,region,status)')
         .eq('user_id', participantId)
-        .order('invited_at', { ascending:false })
+        .order('invited_at', { ascending:false }),
+      loadPastoralReference(supabase, participantId)
     ]);
 
     if (assignmentResult.error) throw assignmentResult.error;
@@ -115,6 +117,7 @@ exports.handler = async (event) => {
     if (lessonResult.error) throw lessonResult.error;
     if (reflectionResult.error) throw reflectionResult.error;
     if (eventInvitationResult.error) throw eventInvitationResult.error;
+    if (pastoralReferenceResult.error) throw pastoralReferenceResult.error;
 
     const courses = courseResult.data || [];
     const enrollments = enrollmentResult.data || [];
@@ -180,6 +183,7 @@ exports.handler = async (event) => {
     })).filter(invitation => invitation.event);
 
     const application = applicationResult.data || null;
+    const pastoralReference = pastoralReferenceResult.data || null;
     const activity = buildActivity(participant, assignments, reports, application, reflections, eventInvitations);
 
     return json(200, {
@@ -191,6 +195,7 @@ exports.handler = async (event) => {
       reflections,
       events:eventInvitations,
       application,
+      pastoral_reference:pastoralReference,
       activity
     });
   } catch (error) {
@@ -349,6 +354,22 @@ function isMissingApplicationSecuritySchema(error) {
     || /candidate_application_events.*(does not exist|schema cache)/i.test(message);
 }
 
+async function loadPastoralReference(supabase, participantId) {
+  const result = await supabase
+    .from('cmc_pastoral_references')
+    .select('id,pastor_name,pastor_email,requested_at,email_sent_at,submitted_at')
+    .eq('participant_id', participantId)
+    .maybeSingle();
+  if (!result.error || !isMissingPastoralReferenceSchema(result.error)) return result;
+  return { data:null, error:null };
+}
+
+function isMissingPastoralReferenceSchema(error) {
+  const message = `${error?.message || ''} ${error?.details || ''} ${error?.hint || ''}`;
+  return ['42P01', 'PGRST204', 'PGRST205'].includes(error?.code)
+    || /cmc_pastoral_references.*(does not exist|schema cache)/i.test(message);
+}
+
 function visiblePathwayAccount(viewer, profile) {
   if (!profile) return false;
   if (viewer.account_role === 'regional_leader') {
@@ -357,4 +378,4 @@ function visiblePathwayAccount(viewer, profile) {
   return profile.account_role !== 'cmc_admin' || profile.id === viewer.id;
 }
 
-exports._test = { isMissingApplicationSecuritySchema };
+exports._test = { isMissingApplicationSecuritySchema, isMissingPastoralReferenceSchema };

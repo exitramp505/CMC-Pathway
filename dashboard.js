@@ -10,7 +10,8 @@
     discernment_application:['Discernment Application','application.html','Clarify your story and sense of calling.'],
     ministry_readiness:['Ministry Readiness Inventory','isa-assessment.html','Reflect on your current readiness for ministry.'],
     ministry_style:['Ministry Style Inventory','ministry-style.html','Understand the ways you tend to lead and serve.'],
-    character_qualities:['Character Qualities Assessment','assessment.html','Review the character qualities that support healthy ministry.']
+    character_qualities:['Character Qualities Assessment','assessment.html','Review the character qualities that support healthy ministry.'],
+    pastoral_reference:['Pastoral Reference Form','pastoral-reference-request.html','Invite a pastor or ministry leader to provide a confidential reference.']
   };
   let activeWorkStage = 'discover';
   const localPreview = ['127.0.0.1','localhost'].includes(window.location.hostname)

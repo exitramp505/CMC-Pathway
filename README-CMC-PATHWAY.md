@@ -2,6 +2,9 @@
 
 CMC Pathway is the authenticated platform for Church Multiplication Collective participants, regional leaders, and national administrators.
 
+Public CMC website administration is documented in
+[`PUBLIC-WEBSITE-MIGRATION.md`](PUBLIC-WEBSITE-MIGRATION.md).
+
 ## Deployment order
 
 1. Run `supabase_cmc_pathway_schema.sql` in the existing Supabase project.
@@ -10,10 +13,11 @@ CMC Pathway is the authenticated platform for Church Multiplication Collective p
 4. Run `supabase_course_access_schema.sql`.
 5. Run `supabase_pathway_archive_schema.sql`.
 6. Run `supabase_security_hardening.sql`.
-7. Add the required Netlify environment variables.
-8. Deploy the repository.
-9. Build and publish Discover from the Courses screen.
-10. Test one participant, one regional leader, and one national administrator.
+7. Run `supabase_public_website_content_schema.sql`.
+8. Add the required Netlify environment variables.
+9. Deploy the repository.
+10. Build and publish Discover from the Courses screen.
+11. Test one participant, one regional leader, and one national administrator.
 
 ## Account roles
 

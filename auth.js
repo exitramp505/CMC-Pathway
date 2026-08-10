@@ -87,11 +87,12 @@ function renderRoleNavigation(profile,activeKey){
  {key:'people',label:'People',href:'leader.html',show:['regional_leader','cmc_admin'].includes(role)},
  {key:'events',label:'Events',href:'events.html',show:['regional_leader','cmc_admin'].includes(role)},
  {key:'courses',label:'Courses',href:'courses.html',show:role==='cmc_admin'},
+  {key:'website',label:'Website',href:'website.html',show:role==='cmc_admin'},
   {key:'leaders',label:'Leaders',href:'manage-leaders.html',show:['regional_leader','cmc_admin'].includes(role)},
   {key:'profile',label:'Profile',href:'profile.html',show:true}
  ];
  const visibleItems=items.filter(item=>item.show);
- const managementKeys=['people','events','courses','leaders'];
+ const managementKeys=['people','events','courses','website','leaders'];
  const hasManagementTools=visibleItems.some(item=>managementKeys.includes(item.key));
  const menuItems=visibleItems.map(item=>{
   const dividerBefore=(item.key==='people'&&hasManagementTools)||item.key==='profile';

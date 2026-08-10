@@ -5,7 +5,7 @@ exports.handler = async (event) => {
     'Access-Control-Allow-Origin': '*',
     'Access-Control-Allow-Methods': 'GET, OPTIONS',
     'Access-Control-Allow-Headers': 'Content-Type',
-    'Cache-Control': 'public, max-age=60, s-maxage=300',
+    'Cache-Control': 'public, max-age=60, s-maxage=300, stale-while-revalidate=86400',
     'Content-Type': 'application/json; charset=utf-8',
     Vary: 'Origin'
   };

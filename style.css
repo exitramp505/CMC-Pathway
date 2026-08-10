@@ -7332,6 +7332,42 @@
 .cmcFormBody button:focus-visible,
 .cmcFormBody .buttonLink:hover,
 .cmcFormBody .buttonLink:focus-visible{background:var(--cmcSlate);color:#fff;outline:0}
+
+/* Public website management */
+.cmcWebsiteMain{max-width:1440px;margin:0 auto;padding:52px clamp(24px,5vw,76px) 80px}
+.cmcWebsiteHero{padding-top:0}
+.cmcWebsiteWorkspace{background:var(--cmcSlate);color:var(--cmcSand);border-radius:30px;overflow:hidden;box-shadow:0 24px 55px rgba(26,47,57,.13)}
+.cmcWebsiteTabs{display:flex;align-items:stretch;border-bottom:1px solid rgba(251,240,222,.2);overflow-x:auto}
+.cmcWebsiteTabs button,.cmcWebsiteTabs a{appearance:none;border:0;border-right:1px solid rgba(251,240,222,.16);background:transparent;color:rgba(251,240,222,.72);padding:20px 26px;font:800 14px/1 var(--cmcBodyFont);text-decoration:none;white-space:nowrap;cursor:pointer}
+.cmcWebsiteTabs button.active,.cmcWebsiteTabs button:hover,.cmcWebsiteTabs a:hover{background:rgba(76,174,164,.15);color:#fff;box-shadow:inset 0 -3px 0 var(--cmcTeal)}
+.cmcWebsiteTabs a{margin-left:auto;border-left:1px solid rgba(251,240,222,.16);border-right:0}
+.cmcWebsiteSectionHeader{display:flex;justify-content:space-between;gap:32px;align-items:flex-end;padding:42px 46px 28px}
+.cmcWebsiteSectionHeader h2{margin:6px 0 8px;font-size:clamp(32px,4vw,54px);line-height:.98;color:var(--cmcSand)}
+.cmcWebsiteSectionHeader p:last-child{margin:0;max-width:720px;color:rgba(251,240,222,.72);font-size:15px}
+.cmcWebsiteStatus{text-align:right;display:flex;flex-direction:column;gap:4px;white-space:nowrap}
+.cmcWebsiteStatus span{color:var(--cmcTeal);font-weight:900}.cmcWebsiteStatus small{color:rgba(251,240,222,.58)}
+.cmcWebsiteWorkspace>.cmcAdminMessage{margin:0 46px 12px}
+.cmcWebsiteEditor{padding:0 46px 8px}
+.cmcWebsiteRepeater{display:grid;gap:18px}
+.cmcWebsiteItem,.cmcWebsiteSettings{border:1px solid rgba(251,240,222,.22);background:rgba(255,255,255,.035);border-radius:20px;padding:24px}
+.cmcWebsiteItem>header{display:flex;justify-content:space-between;align-items:center;padding-bottom:17px;margin-bottom:20px;border-bottom:1px solid rgba(251,240,222,.16)}
+.cmcWebsiteItem>header strong{color:var(--cmcOrange);font-size:12px;letter-spacing:.13em;text-transform:uppercase}
+.cmcWebsiteItem>header button{border:0;background:transparent;color:rgba(251,240,222,.7);font-weight:800;cursor:pointer}.cmcWebsiteItem>header button:hover{color:#fff}
+.cmcWebsiteFieldGrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px}
+.cmcWebsiteFieldGrid label,.cmcWebsiteSettings label{display:flex;flex-direction:column;gap:8px;color:rgba(251,240,222,.7);font-size:11px;font-weight:900;letter-spacing:.08em;text-transform:uppercase}
+.cmcWebsiteFieldGrid label.full{grid-column:1/-1}
+.cmcWebsiteFieldGrid input,.cmcWebsiteFieldGrid textarea,.cmcWebsiteSettings input,.cmcWebsiteSettings textarea{width:100%;box-sizing:border-box;border:1px solid rgba(251,240,222,.28);border-radius:12px;background:rgba(251,240,222,.07);color:#fff;padding:13px 14px;font:700 15px/1.5 var(--cmcBodyFont);text-transform:none;letter-spacing:0}
+.cmcWebsiteFieldGrid input:focus,.cmcWebsiteFieldGrid textarea:focus,.cmcWebsiteSettings input:focus,.cmcWebsiteSettings textarea:focus{outline:2px solid var(--cmcTeal);outline-offset:2px}
+.cmcWebsiteSettings{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-bottom:18px}.cmcWebsiteSettings h3{grid-column:1/-1;margin:0 0 4px;color:var(--cmcSand)}.cmcWebsiteSettings label:has(textarea){grid-column:1/-1}
+.cmcWebsiteImageField,.cmcWebsitePositionFields{grid-column:1/-1;display:grid;grid-template-columns:2fr 1fr;gap:18px;align-items:end}
+.cmcWebsitePortraitPreview{grid-column:1/-1;width:160px;aspect-ratio:1;border:1px solid rgba(251,240,222,.24);border-radius:24px;overflow:hidden;display:grid;place-items:center;background:rgba(251,240,222,.08);color:var(--cmcOrange);font-weight:950;font-size:22px}
+.cmcWebsitePortraitPreview img{width:100%;height:100%;object-fit:cover;display:block}
+.cmcWebsiteUpload input{padding:8px;font-size:12px}.cmcWebsitePositionFields{grid-template-columns:1fr 1fr}
+.cmcWebsiteCheck{grid-column:1/-1!important;display:flex!important;flex-direction:row!important;align-items:center;gap:11px!important;text-transform:none!important;letter-spacing:0!important;color:var(--cmcSand)!important;cursor:pointer}
+.cmcWebsiteCheck input{width:22px!important;height:22px!important;flex:0 0 auto;padding:0!important;accent-color:var(--cmcTeal)}
+.cmcWebsiteAdd{width:100%;margin:18px 0 0;border:1px dashed rgba(251,240,222,.38);border-radius:15px;background:transparent;color:var(--cmcSand);padding:17px;font-weight:900;cursor:pointer}.cmcWebsiteAdd:hover{background:rgba(76,174,164,.14);border-color:var(--cmcTeal)}
+.cmcWebsiteActions{display:flex;justify-content:flex-end;gap:12px;padding:26px 46px 42px}.cmcWebsiteActions button{min-width:150px}
+@media(max-width:760px){.cmcWebsiteMain{padding:28px 16px 50px}.cmcWebsiteWorkspace{border-radius:22px}.cmcWebsiteTabs a{margin-left:0}.cmcWebsiteSectionHeader{display:block;padding:28px 20px 20px}.cmcWebsiteStatus{text-align:left;margin-top:18px}.cmcWebsiteWorkspace>.cmcAdminMessage{margin:0 20px 10px}.cmcWebsiteEditor{padding:0 20px}.cmcWebsiteFieldGrid,.cmcWebsiteSettings,.cmcWebsiteImageField,.cmcWebsitePositionFields{grid-template-columns:1fr}.cmcWebsiteFieldGrid label.full,.cmcWebsiteSettings h3,.cmcWebsiteSettings label:has(textarea),.cmcWebsiteImageField,.cmcWebsitePositionFields{grid-column:1}.cmcWebsiteItem,.cmcWebsiteSettings{padding:18px}.cmcWebsiteActions{padding:22px 20px 30px;display:grid;grid-template-columns:1fr}.cmcWebsiteActions button{width:100%}}
 .cmcFormGrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:6px 18px}
 .cmcFormGrid .wide{grid-column:1/-1}
 .cmcCandidateInfoCard>h2{margin:5px 0 4px;font-size:32px}

@@ -64,6 +64,11 @@
         <label>Pathway stage<select name="stage_key"><option value="discover">Discover</option><option value="discern" selected>Discern</option><option value="develop">Develop</option><option value="deploy">Deploy</option></select></label>
         <label id="eventRegionField">Open Bible region<select name="region"><option value="">All regions</option><option>Central</option><option>East</option><option>Mountain Plains</option><option>Pacific</option><option>Southeast</option></select></label>
         <label>Status<select name="status"><option value="draft">Draft</option><option value="published">Published</option></select></label>
+        <label class="full cmcEventPublicOption">
+          <input name="public_listing" type="checkbox" value="true">
+          <span><strong>Show on the public CMC website</strong><small>When this event is published, its public details will also appear on the CMC Events page.</small></span>
+        </label>
+        <label class="full">Public details or registration link<input name="public_url" type="url" placeholder="https://example.com/event"><small>Optional. Leave blank to send visitors to the CMC contact page.</small></label>
       </div>
       <p id="eventEditorMessage" class="cmcAdminMessage"></p>
     </div>
@@ -100,6 +105,6 @@
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="auth.js?v=124"></script>
-<script src="events.js?v=115"></script>
+<script src="events.js?v=127"></script>
 </body>
 </html>

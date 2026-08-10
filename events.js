@@ -105,7 +105,7 @@
       return `<article class="cmcEventCard${past ? ' past' : ''}">
         <span class="cmcEventCardDate"><small>${escapeHtml(month(event.starts_at))}</small><strong>${escapeHtml(day(event.starts_at))}</strong></span>
         <div class="cmcEventCardCopy">
-          <div class="cmcEventCardMeta"><span>${escapeHtml(titleCase(event.stage_key))}</span>${event.region ? `<span>Open Bible ${escapeHtml(event.region)} Region</span>` : '<span>All regions</span>'}<em>${escapeHtml(event.status)}</em></div>
+          <div class="cmcEventCardMeta"><span>${escapeHtml(titleCase(event.stage_key))}</span>${event.region ? `<span>Open Bible ${escapeHtml(event.region)} Region</span>` : '<span>All regions</span>'}<em>${escapeHtml(event.status)}</em>${event.public_listing ? '<em>Public website</em>' : ''}</div>
           <h3>${escapeHtml(event.title)}</h3>
           <p>${escapeHtml(event.summary || event.description || 'No event summary added.')}</p>
           <small>${escapeHtml(formatDateTime(event.starts_at))}${event.location_name ? ` · ${escapeHtml(event.location_name)}` : ''}</small>
@@ -146,6 +146,10 @@
     if (event) {
       for (const [key, value] of Object.entries(event)) {
         if (!editorForm.elements[key]) continue;
+        if (editorForm.elements[key].type === 'checkbox') {
+          editorForm.elements[key].checked = Boolean(value);
+          continue;
+        }
         editorForm.elements[key].value = ['starts_at', 'ends_at', 'rsvp_deadline'].includes(key)
           ? localInputDate(value)
           : value ?? '';
@@ -153,6 +157,7 @@
     } else {
       editorForm.elements.stage_key.value = 'discern';
       editorForm.elements.status.value = 'draft';
+      editorForm.elements.public_listing.checked = false;
     }
     setEditorMessage('');
     editor.showModal();
@@ -162,6 +167,7 @@
     event.preventDefault();
     const button = document.getElementById('saveEventButton');
     const values = Object.fromEntries(new FormData(editorForm).entries());
+    values.public_listing = editorForm.elements.public_listing.checked;
     button.disabled = true;
     setEditorMessage('Saving event…');
     try {

@@ -14,6 +14,8 @@ create table if not exists public.cmc_events (
   stage_key text not null default 'discern',
   region text,
   status text not null default 'draft',
+  public_listing boolean not null default false,
+  public_url text not null default '',
   created_by uuid not null,
   created_at timestamptz not null default now(),
   updated_at timestamptz not null default now(),

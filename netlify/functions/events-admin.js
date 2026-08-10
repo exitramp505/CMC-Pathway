@@ -133,6 +133,8 @@ async function saveEvent(supabase, viewer, source) {
     stage_key:stageKey,
     region,
     status,
+    public_listing:source.public_listing === true || source.public_listing === 'true',
+    public_url:cleanPublicUrl(source.public_url),
     updated_at:new Date().toISOString()
   };
 
@@ -151,6 +153,21 @@ async function saveEvent(supabase, viewer, source) {
     .select('*').single();
   if (error) throw error;
   return data;
+}
+
+function cleanPublicUrl(value) {
+  const raw = String(value || '').trim();
+  if (!raw) return '';
+  let parsed;
+  try {
+    parsed = new URL(raw);
+  } catch {
+    throw httpError(400, 'Enter a complete public link beginning with https://.');
+  }
+  if (parsed.protocol !== 'https:') {
+    throw httpError(400, 'The public event link must use https://.');
+  }
+  return parsed.toString();
 }
 
 async function setInvitees(supabase, viewer, body) {

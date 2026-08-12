@@ -7908,3 +7908,235 @@
 .cmcEventPublicOption span { display:grid; gap:3px; }
 .cmcEventPublicOption strong { color:#293d48; font-size:15px; }
 .cmcEventPublicOption small { color:#65727a; font-size:12px; line-height:1.45; }
+
+/* v130 — Website administration follows the shared admin-page system. */
+.cmcWebsiteMain{
+  width:min(1420px,calc(100% - 48px));
+  max-width:none;
+  margin:0 auto;
+  padding:36px 0 110px;
+}
+.cmcWebsiteHero{
+  display:grid;
+  grid-template-columns:minmax(0,850px) auto;
+  align-items:end;
+  gap:28px;
+  min-height:196px;
+  padding:0 0 24px;
+}
+.cmcWebsiteHero h1{
+  max-width:850px;
+  margin:10px 0 10px;
+  font-size:clamp(46px,5vw,64px);
+  line-height:.93;
+  letter-spacing:-.045em;
+}
+.cmcWebsiteHero .cmcIntro{
+  max-width:720px;
+  margin:0;
+  color:var(--cmcMuted);
+  font-size:17px;
+  line-height:1.55;
+}
+.cmcWebsiteHero .cmcAdminPageAction{
+  width:204px;
+  min-height:62px;
+  justify-self:end;
+}
+.cmcWebsiteTabs{
+  display:grid;
+  grid-template-columns:repeat(5,minmax(0,1fr));
+  align-items:stretch;
+  margin:0 0 22px;
+  overflow:hidden;
+  border:1px solid rgba(41,61,72,.16);
+  border-radius:18px;
+  background:rgba(255,255,255,.48);
+  box-shadow:0 12px 30px rgba(26,47,57,.05);
+}
+.cmcWebsiteTabs button,
+.cmcWebsiteTabs a{
+  display:flex;
+  min-width:0;
+  min-height:68px;
+  margin:0;
+  padding:13px 19px;
+  align-items:flex-start;
+  justify-content:center;
+  flex-direction:column;
+  gap:5px;
+  appearance:none;
+  border:0;
+  border-right:1px solid rgba(41,61,72,.13);
+  background:transparent;
+  color:var(--cmcSlate);
+  font:900 14px/1.1 var(--cmcBodyFont);
+  text-align:left;
+  text-decoration:none;
+  white-space:normal;
+  cursor:pointer;
+  box-shadow:none;
+}
+.cmcWebsiteTabs button:last-of-type{border-right:1px solid rgba(41,61,72,.13)}
+.cmcWebsiteTabs a{border-right:0}
+.cmcWebsiteTabs button>span,
+.cmcWebsiteTabs a>span{
+  color:var(--cmcEmber);
+  font-size:9px;
+  line-height:1;
+  letter-spacing:.12em;
+}
+.cmcWebsiteTabs a b{position:absolute;margin-left:52px;font-size:12px;font-weight:900}
+.cmcWebsiteTabs button:hover,
+.cmcWebsiteTabs button:focus-visible,
+.cmcWebsiteTabs a:hover,
+.cmcWebsiteTabs a:focus-visible{
+  outline:0;
+  background:rgba(77,167,156,.09);
+  color:var(--cmcSlate);
+  box-shadow:inset 0 3px 0 var(--cmcSage);
+}
+.cmcWebsiteTabs button.active{
+  background:var(--cmcSlate);
+  color:var(--cmcSand);
+  box-shadow:inset 0 3px 0 var(--cmcSage);
+}
+.cmcWebsiteTabs button.active>span{color:var(--cmcEmber)}
+.cmcWebsiteWorkspace{
+  padding:clamp(28px,4vw,48px);
+  overflow:visible;
+  border:1px solid rgba(41,61,72,.14);
+  border-radius:32px;
+  background:var(--cmcSlate);
+  color:var(--cmcSand);
+  box-shadow:0 24px 55px rgba(26,47,57,.13);
+}
+.cmcWebsiteSectionHeader{
+  display:grid;
+  grid-template-columns:minmax(0,1fr) auto;
+  gap:32px;
+  align-items:end;
+  margin:0 0 28px;
+  padding:0 0 28px;
+  border-bottom:1px solid rgba(251,240,222,.25);
+}
+.cmcWebsiteSectionHeader h2{
+  margin:7px 0 9px;
+  color:var(--cmcSand);
+  font-size:clamp(38px,4vw,50px);
+  line-height:.96;
+  letter-spacing:-.035em;
+}
+.cmcWebsiteSectionHeader p:last-child{
+  max-width:680px;
+  margin:0;
+  color:rgba(251,240,222,.72);
+  font-size:14px;
+  line-height:1.55;
+}
+.cmcWebsiteStatus{
+  min-width:190px;
+  padding:16px 18px;
+  gap:5px;
+  align-self:end;
+  text-align:left;
+  white-space:normal;
+  border:1px solid rgba(251,240,222,.2);
+  border-radius:16px;
+  background:rgba(255,255,255,.04);
+}
+.cmcWebsiteStatus small{
+  color:var(--cmcEmber);
+  font-size:9px;
+  font-style:normal;
+  font-weight:950;
+  letter-spacing:.13em;
+}
+.cmcWebsiteStatus span{color:var(--cmcSand);font-size:14px;font-weight:950}
+.cmcWebsiteStatus em{color:rgba(251,240,222,.62);font-size:10px;font-style:normal;line-height:1.4}
+.cmcWebsiteWorkspace>.cmcAdminMessage{margin:0 0 14px}
+.cmcWebsiteEditor{padding:0}
+.cmcWebsiteItem,
+.cmcWebsiteSettings{
+  border-radius:18px;
+  background:rgba(255,255,255,.04);
+}
+.cmcWebsiteActions{
+  margin-top:28px;
+  padding:26px 0 0;
+  border-top:1px solid rgba(251,240,222,.2);
+}
+.cmcWebsiteActions .cmcSecondaryButton{
+  border-color:rgba(251,240,222,.35);
+  background:transparent;
+  color:var(--cmcSand);
+}
+.cmcWebsiteActions .cmcSecondaryButton:hover,
+.cmcWebsiteActions .cmcSecondaryButton:focus-visible{
+  border-color:var(--cmcSage);
+  background:rgba(77,167,156,.14);
+  color:#fff;
+}
+
+@media(max-width:760px){
+  .cmcWebsiteMain{
+    width:calc(100% - 28px);
+    padding:18px 0 72px;
+  }
+  .cmcWebsiteHero{
+    display:grid;
+    grid-template-columns:1fr;
+    gap:15px;
+    min-height:0;
+    padding:0 0 18px;
+  }
+  .cmcWebsiteHero h1{margin:7px 0 8px;font-size:clamp(40px,13vw,52px)}
+  .cmcWebsiteHero .cmcIntro{font-size:14px;line-height:1.5}
+  .cmcWebsiteHero .cmcAdminPageAction{
+    width:100%;
+    min-height:52px;
+    justify-self:stretch;
+  }
+  .cmcWebsiteTabs{
+    display:flex;
+    margin-bottom:14px;
+    overflow-x:auto;
+    overscroll-behavior-inline:contain;
+    border-radius:15px;
+    scrollbar-width:none;
+  }
+  .cmcWebsiteTabs::-webkit-scrollbar{display:none}
+  .cmcWebsiteTabs button,
+  .cmcWebsiteTabs a{
+    flex:0 0 128px;
+    min-height:58px;
+    padding:11px 14px;
+    font-size:12px;
+  }
+  .cmcWebsiteWorkspace{
+    padding:22px 18px 24px;
+    border-radius:23px;
+  }
+  .cmcWebsiteSectionHeader{
+    grid-template-columns:1fr;
+    gap:16px;
+    margin-bottom:22px;
+    padding-bottom:22px;
+  }
+  .cmcWebsiteSectionHeader h2{font-size:36px}
+  .cmcWebsiteSectionHeader p:last-child{font-size:13px}
+  .cmcWebsiteStatus{width:100%;min-width:0;box-sizing:border-box}
+  .cmcWebsiteFieldGrid,
+  .cmcWebsiteSettings,
+  .cmcWebsiteImageField,
+  .cmcWebsitePositionFields{grid-template-columns:1fr}
+  .cmcWebsiteFieldGrid label.full,
+  .cmcWebsiteSettings h3,
+  .cmcWebsiteSettings label:has(textarea),
+  .cmcWebsiteImageField,
+  .cmcWebsitePositionFields{grid-column:1}
+  .cmcWebsiteItem,
+  .cmcWebsiteSettings{padding:17px}
+  .cmcWebsiteActions{display:grid;grid-template-columns:1fr;padding-top:20px}
+  .cmcWebsiteActions button{width:100%;min-height:50px}
+}

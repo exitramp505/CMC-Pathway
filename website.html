@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <title>Website | CMC Pathway</title>
-  <link rel="stylesheet" href="style.css?v=128">
+  <link rel="stylesheet" href="style.css?v=130">
 </head>
 <body class="cmcPathwayBody">
 <header class="cmcHeader">
@@ -16,21 +16,22 @@
 </header>
 <main class="cmcPathwayMain cmcWebsiteMain">
   <section class="cmcAdminPageHero cmcWebsiteHero">
-    <div><p class="cmcEyebrow">PUBLIC WEBSITE</p><h1>Website</h1><p>Update the people, resources, models, and Discover content shown on the public CMC website.</p></div>
+    <div><p class="cmcEyebrow">PUBLIC WEBSITE</p><h1>Website</h1><p class="cmcIntro">Update the people, resources, models, and discernment content shown on the public CMC website.</p></div>
     <a class="cmcSecondaryButton cmcAdminPageAction" href="https://cmcopenbible.netlify.app" target="_blank" rel="noreferrer">View website <span>↗</span></a>
   </section>
 
+  <nav class="cmcWebsiteTabs" aria-label="Website sections">
+    <button class="active" type="button" data-site-tab="team"><span>01</span>Team</button>
+    <button type="button" data-site-tab="resources"><span>02</span>Resources</button>
+    <button type="button" data-site-tab="models"><span>03</span>Models</button>
+    <button type="button" data-site-tab="discern"><span>04</span>Discernment</button>
+    <a href="events.html"><span>05</span>Events <b>↗</b></a>
+  </nav>
+
   <section class="cmcWebsiteWorkspace">
-    <nav class="cmcWebsiteTabs" aria-label="Website sections">
-      <button class="active" type="button" data-site-tab="team">Team</button>
-      <button type="button" data-site-tab="resources">Resources</button>
-      <button type="button" data-site-tab="models">Models</button>
-      <button type="button" data-site-tab="discern">Discernment</button>
-      <a href="events.html">Events ↗</a>
-    </nav>
     <header class="cmcWebsiteSectionHeader">
       <div><p id="websiteSectionEyebrow" class="cmcEyebrow">ABOUT PAGE</p><h2 id="websiteSectionTitle">CMC team</h2><p id="websiteSectionHelp">Manage the people shown on the public About page.</p></div>
-      <div class="cmcWebsiteStatus"><span id="websiteDraftStatus">Loading…</span><small id="websitePublishedAt"></small></div>
+      <div class="cmcWebsiteStatus"><small>CONTENT STATUS</small><span id="websiteDraftStatus">Loading…</span><em id="websitePublishedAt"></em></div>
     </header>
     <p id="websiteMessage" class="cmcAdminMessage" role="status"></p>
     <form id="websiteEditor" class="cmcWebsiteEditor"></form>

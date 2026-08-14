@@ -11,6 +11,9 @@ const {
 const {
   _test:{ isMissingApplicationSecuritySchema:isMissingParticipantSecuritySchema }
 } = require('../netlify/functions/participant-detail');
+const {
+  _test:{ isMissingRateLimitSchema }
+} = require('../netlify/functions/_rate-limit');
 
 function expectValidation(fn, pattern) {
   assert.throws(fn, error => error.statusCode === 400 && pattern.test(error.message));
@@ -77,6 +80,11 @@ function run() {
   assert.equal(isMissingApplicationSecuritySchema(missingColumn), true);
   assert.equal(isMissingParticipantSecuritySchema(missingColumn), true);
   assert.equal(isMissingApplicationSecuritySchema({ code:'23505', message:'duplicate key' }), false);
+  assert.equal(isMissingRateLimitSchema({
+    code:'PGRST205',
+    message:"Could not find the table 'public.cmc_rate_limit_events' in the schema cache"
+  }), true);
+  assert.equal(isMissingRateLimitSchema({ code:'23505', message:'duplicate key' }), false);
 
   console.log('Security hardening tests passed.');
 }

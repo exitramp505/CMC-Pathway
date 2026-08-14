@@ -31,7 +31,8 @@ exports.handler = async (event) => {
       courseResult,
       enrollmentResult,
       eventResult,
-      reportResult
+      reportResult,
+      taskPlanResult
     ] = await Promise.all([
       supabase
         .from('candidate_profiles')
@@ -59,10 +60,20 @@ exports.handler = async (event) => {
         .from('assessment_results')
         .select('id,created_at,scores,overall,overall_label')
         .eq('user_id', user.id)
-        .order('created_at', { ascending:false })
+        .order('created_at', { ascending:false }),
+      supabase
+        .from('cmc_participant_task_plans')
+        .select('id,title,description,stage_key,status,anchor_date,assigned_at,updated_at,cmc_participant_plan_tasks(id,title,status,task_type,priority,due_date)')
+        .eq('user_id', user.id)
+        .eq('status', 'active')
+        .order('assigned_at', { ascending:false })
     ]);
 
-    const failures = [profileResult, assignmentResult, courseResult, enrollmentResult, eventResult, reportResult]
+    if (taskPlanResult.error && isMissingTaskPlanSchema(taskPlanResult.error)) {
+      taskPlanResult.data = [];
+      taskPlanResult.error = null;
+    }
+    const failures = [profileResult, assignmentResult, courseResult, enrollmentResult, eventResult, reportResult, taskPlanResult]
       .map(result => result.error)
       .filter(Boolean);
     if (failures.length) throw failures[0];
@@ -164,10 +175,37 @@ exports.handler = async (event) => {
       };
     }).filter(Boolean);
 
+    const taskPlanAssignments = (taskPlanResult.data || []).map(plan => {
+      const tasks = plan.cmc_participant_plan_tasks || [];
+      const actionable = tasks.filter(task => task.task_type !== 'group' && task.status !== 'not_applicable');
+      const completed = actionable.filter(task => task.status === 'completed').length;
+      const unfinished = actionable
+        .filter(task => !['completed', 'not_applicable', 'pending_review'].includes(task.status))
+        .sort((a,b) => (Number(a.priority || 3) - Number(b.priority || 3))
+          || String(a.due_date || '9999').localeCompare(String(b.due_date || '9999')));
+      const nextTask = unfinished[0] || null;
+      const progress = actionable.length ? Math.round((completed / actionable.length) * 100) : 0;
+      return {
+        id:plan.id,
+        user_id:user.id,
+        item_key:`task_plan:${plan.id}`,
+        item_type:'task_plan',
+        stage_key:plan.stage_key || 'deploy',
+        status:'assigned',
+        progress,
+        external_status:progress >= 100 ? 'completed' : '',
+        assignment_source:'leader',
+        assigned_at:plan.assigned_at,
+        updated_at:plan.updated_at,
+        priority_rank:nextTask?.priority || null,
+        task_plan:{ id:plan.id, title:plan.title, description:plan.description, total_tasks:actionable.length, completed_tasks:completed, next_task:nextTask }
+      };
+    });
+
     return json(200, {
       ok:true,
       profile,
-      assignments:[...normalizedAssignments, ...eventAssignments],
+      assignments:[...normalizedAssignments, ...eventAssignments, ...taskPlanAssignments],
       reports:reportResult.data || []
     }, serverTiming(startedAt, authenticatedAt));
   } catch (error) {
@@ -178,4 +216,10 @@ exports.handler = async (event) => {
 function serverTiming(startedAt, authenticatedAt) {
   const completedAt = Date.now();
   return `auth;dur=${authenticatedAt - startedAt}, dashboard;dur=${completedAt - authenticatedAt}, total;dur=${completedAt - startedAt}`;
+}
+
+function isMissingTaskPlanSchema(error) {
+  const message = String(error?.message || '');
+  return ['PGRST205', '42P01'].includes(error?.code)
+    || /cmc_(participant_)?task_plan/i.test(message) && /does not exist|schema cache/i.test(message);
 }

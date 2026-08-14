@@ -13,7 +13,13 @@ async function enforceRateLimit(supabase, { actorId, action, limit, windowMinute
     .eq('actor_user_id', actorId)
     .eq('action', action)
     .gte('created_at', since);
-  if (error) throw error;
+  if (error) {
+    if (isMissingRateLimitSchema(error)) {
+      console.warn('Rate limiting skipped because cmc_rate_limit_events has not been installed.');
+      return { skipped:true, reason:'missing_schema' };
+    }
+    throw error;
+  }
   if (Number(count || 0) >= limit) {
     throw rateLimitError('That action has been used several times recently. Please wait a little while and try again.');
   }
@@ -21,7 +27,24 @@ async function enforceRateLimit(supabase, { actorId, action, limit, windowMinute
     actor_user_id:actorId,
     action
   });
-  if (insertError) throw insertError;
+  if (insertError) {
+    if (isMissingRateLimitSchema(insertError)) {
+      console.warn('Rate limiting skipped because cmc_rate_limit_events has not been installed.');
+      return { skipped:true, reason:'missing_schema' };
+    }
+    throw insertError;
+  }
+  return { skipped:false };
 }
 
-module.exports = { enforceRateLimit };
+function isMissingRateLimitSchema(error) {
+  const message = String(error?.message || '');
+  return error?.code === 'PGRST205'
+    || /cmc_rate_limit_events.*(schema cache|does not exist|could not find)/i.test(message)
+    || /(schema cache|does not exist|could not find).*cmc_rate_limit_events/i.test(message);
+}
+
+module.exports = {
+  enforceRateLimit,
+  _test:{ isMissingRateLimitSchema }
+};

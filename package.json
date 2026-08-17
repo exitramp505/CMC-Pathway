@@ -2,6 +2,8 @@
   "scripts": {
     "dev": "netlify dev",
     "build": "echo static app",
+    "seed:task-plan": "node scripts/generate-curated-task-plan-seed.js",
+    "publish:task-plan": "node scripts/publish-task-plan-template.js",
     "test": "node tests/participant-dashboard.test.js && node tests/security-hardening.test.js && node tests/pastoral-reference.test.js && node tests/public-website-admin.test.js && node tests/task-plans.test.js"
   },
   "dependencies": {

@@ -22,6 +22,8 @@
   let pendingManagementChange = null;
   let managementDirty = false;
   let activeManagementStage = 'discover';
+  let taskPlanCatalog = [];
+  let participantTaskPlans = [];
   const pathwayStages = [
     { key:'discover', number:'01', title:'Discover', description:'Shared foundation and first steps.' },
     { key:'discern', number:'02', title:'Discern', description:'Calling, character, context, and readiness.' },
@@ -55,6 +57,7 @@
     loading.classList.add('hidden');
     content.classList.remove('hidden');
     await loadManagement();
+    await loadTaskPlans();
   } catch (error) {
     showError(error.message || 'Could not load this participant.');
   }
@@ -70,6 +73,8 @@
   profileForm.addEventListener('submit', saveProfile);
   document.getElementById('saveParticipantManagement').addEventListener('click', saveManagement);
   document.getElementById('confirmParticipantChanges').addEventListener('click', confirmManagement);
+  document.getElementById('openTaskPlanAssignment').addEventListener('click', openTaskPlanAssignment);
+  document.getElementById('confirmTaskPlanAssignment').addEventListener('click', assignTaskPlan);
   document.getElementById('participantRecordList').addEventListener('click', event => {
     const button = event.target.closest('[data-reopen-application]');
     if (button) reopenApplication(button);
@@ -82,6 +87,50 @@
     event.preventDefault();
     event.returnValue = '';
   });
+
+  async function loadTaskPlans() {
+    const container = document.getElementById('participantTaskPlans');
+    try {
+      const response = await fetch(`/.netlify/functions/task-plan-assignments?participant_id=${encodeURIComponent(participantId)}`, { headers:{ Authorization:`Bearer ${token}` } });
+      const data = await response.json().catch(() => ({}));
+      if (!response.ok || !data.ok) throw new Error(data.error || 'Could not load task plans.');
+      taskPlanCatalog = data.templates || [];
+      participantTaskPlans = data.plans || [];
+      container.innerHTML = participantTaskPlans.length ? participantTaskPlans.map(plan => `<article>
+        <div><span>${escapeHtml(titleCase(plan.stage_key))} · ${plan.progress}% complete</span><strong>${escapeHtml(plan.title)}</strong><small>${plan.completed_tasks} of ${plan.total_tasks} tasks complete${plan.next_task ? ` · Next: ${escapeHtml(plan.next_task.title)}` : ''}</small></div>
+        <a href="task-plan.html?id=${encodeURIComponent(plan.id)}&participant_id=${encodeURIComponent(participantId)}">Open plan →</a>
+      </article>`).join('') : '<p class="cmcDetailEmpty">No task plan has been assigned.</p>';
+      document.getElementById('openTaskPlanAssignment').disabled = !taskPlanCatalog.length;
+    } catch (error) {
+      container.innerHTML = `<p class="cmcDetailEmpty">${escapeHtml(error.message)}</p>`;
+      document.getElementById('openTaskPlanAssignment').disabled = true;
+    }
+  }
+
+  function openTaskPlanAssignment() {
+    const select = document.getElementById('taskPlanTemplateSelect');
+    select.innerHTML = taskPlanCatalog.map(plan => `<option value="${plan.id}">${escapeHtml(plan.title)} · v${plan.version}</option>`).join('');
+    document.getElementById('taskPlanAnchorDate').value = new Date().toISOString().slice(0, 10);
+    document.getElementById('taskPlanAssignmentMessage').textContent = '';
+    document.getElementById('taskPlanAssignmentDialog').showModal();
+  }
+
+  async function assignTaskPlan() {
+    const button = document.getElementById('confirmTaskPlanAssignment');
+    const message = document.getElementById('taskPlanAssignmentMessage');
+    button.disabled = true; message.textContent = 'Creating this participant’s task plan…'; message.classList.remove('error');
+    try {
+      const response = await fetch('/.netlify/functions/task-plan-assignments', {
+        method:'POST', headers:{ Authorization:`Bearer ${token}`, 'Content-Type':'application/json' },
+        body:JSON.stringify({ action:'assign', participant_id:participantId, template_id:document.getElementById('taskPlanTemplateSelect').value, anchor_date:document.getElementById('taskPlanAnchorDate').value })
+      });
+      const data = await response.json().catch(() => ({}));
+      if (!response.ok || !data.ok) throw new Error(data.error || 'Could not assign this task plan.');
+      document.getElementById('taskPlanAssignmentDialog').close();
+      await loadTaskPlans();
+    } catch (error) { message.textContent = error.message; message.classList.add('error'); }
+    finally { button.disabled = false; }
+  }
 
   function render(data) {
     viewer = data.viewer || viewer;
@@ -608,7 +657,12 @@
         });
         const notificationData = await notificationResponse.json().catch(() => ({}));
         if (!notificationResponse.ok || !notificationData.ok) {
-          throw new Error(notificationData.error || 'Assignments were saved, but the email could not be sent.');
+          message.textContent = `Assignments saved, but the summary email was not sent. ${notificationData.error || 'Please try the email again later.'}`;
+          message.classList.add('warning');
+          pendingManagementChange = null;
+          managementDirty = false;
+          window.setTimeout(() => window.location.reload(), 2400);
+          return;
         }
         if (!notificationData.sent) {
           message.textContent = `Assignments saved. ${notificationData.reason || 'Email was not sent.'}`;

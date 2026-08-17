@@ -146,6 +146,13 @@
         </div>
         <div id="participantManagementLoading" class="cmcDetailEmpty">Loading available assignments…</div>
         <div id="participantManagementContent" class="hidden">
+          <section class="cmcParticipantTaskPlanManager">
+            <div class="cmcParticipantTaskPlanHeading">
+              <div><p class="cmcEyebrow">DEPLOY TASK PLANS</p><h3>Launch task plans</h3></div>
+              <button id="openTaskPlanAssignment" class="cmcSecondaryButton" type="button">Assign task plan ＋</button>
+            </div>
+            <div id="participantTaskPlans" class="cmcParticipantTaskPlanList"><p>Loading task plans…</p></div>
+          </section>
           <section class="cmcStageAssignmentWorkspace">
             <nav id="managementStageTabs" class="cmcStageAssignmentTabs" aria-label="Assignments by pathway stage"></nav>
 
@@ -209,8 +216,19 @@
   </form>
 </dialog>
 
+<dialog id="taskPlanAssignmentDialog" class="cmcReviewDialog">
+  <form method="dialog" class="cmcReviewDialogCard">
+    <button class="cmcReviewDialogClose" value="cancel">×</button><p class="cmcEyebrow">ASSIGN TASK PLAN</p><h2>Give this pioneer a working plan.</h2>
+    <p>The master template is copied into this account. Later edits here will not change the master.</p>
+    <label class="cmcTaskPlanDialogField">Template<select id="taskPlanTemplateSelect"></select></label>
+    <label class="cmcTaskPlanDialogField">Plan start date<input id="taskPlanAnchorDate" type="date"></label>
+    <p id="taskPlanAssignmentMessage" class="cmcAdminMessage"></p>
+    <div class="cmcReviewActions"><button class="cmcSecondaryButton" value="cancel">Cancel</button><button id="confirmTaskPlanAssignment" class="cmcPrimaryButton" type="button">Assign task plan</button></div>
+  </form>
+</dialog>
+
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="auth.js?v=124"></script>
-<script src="participant.js?v=126"></script>
+<script src="participant.js?v=128"></script>
 </body>
 </html>

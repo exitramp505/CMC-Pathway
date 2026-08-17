@@ -246,6 +246,8 @@
       : '';
     const type = work.item.item_type === 'event'
       ? 'Event'
+      : work.item.item_type === 'task_plan'
+        ? 'Task plan'
       : work.item.course || work.item.item_type === 'course'
         ? 'Course'
         : titleCase(work.item.item_type || 'assignment');
@@ -333,6 +335,14 @@
   }
 
   function assignmentDetails(item) {
+    if (item.item_type === 'task_plan' && item.task_plan) {
+      const next = item.task_plan.next_task;
+      return [
+        item.task_plan.title || 'Task plan',
+        `task-plan.html?id=${encodeURIComponent(item.task_plan.id)}`,
+        next ? `Next: ${next.title}` : 'Review the completed plan and its timeline.'
+      ];
+    }
     if (item.item_type === 'event' && item.event) {
       return [
         item.event.title || 'CMC event',

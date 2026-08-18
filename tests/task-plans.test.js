@@ -65,11 +65,15 @@ assert.match(builderHtml, /id="previewTaskPlan"/);
 assert.match(builderHtml, /cmcInfoTip/);
 assert.match(builderJs, /task-plan-preview\.html\?id=/);
 assert.match(builderJs, /dataset\.taskTypeStyle/);
+assert.match(builderJs, /isExistingTask.*classList\.add\('collapsed'\)/s);
+assert.match(builderJs, /classList\.toggle\('has-parent'/);
 assert.match(libraryJs, />Preview</);
 assert.match(previewHtml, /id="taskPlanPreviewContent"/);
 assert.match(previewJs, /Available after/);
 assert.match(styles, /\.cmcTaskPlanSection\{overflow:visible;border-left:6px solid/);
 assert.match(styles, /data-task-type-style="group"/);
 assert.match(styles, /data-task-type-style="milestone"/);
+assert.match(styles, /\.cmcTaskPlanBuilderMain \.cmcTaskPlanTask\.has-parent/);
+assert.match(styles, /\.cmcTaskPlanBuilderMain.*--cmc-type-body/s);
 
 console.log('Task plan tests passed.');

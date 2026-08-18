@@ -276,6 +276,130 @@
   --cmc-measure-wide:80ch;
 }
 
+/* Task plan editor typography and hierarchy — aligned to TYPOGRAPHY-GUIDE.md. */
+.cmcTaskPlanBuilderMain .cmcBuilderSettings label,
+.cmcTaskPlanBuilderMain .cmcModuleFields label,
+.cmcTaskPlanBuilderMain .cmcLessonFields label{
+  color:#5f7178;
+  font-size:var(--cmc-type-body-sm);
+  font-weight:850;
+  letter-spacing:.025em;
+  line-height:1.4;
+  text-transform:none;
+}
+.cmcTaskPlanBuilderMain .cmcBuilderSettings input,
+.cmcTaskPlanBuilderMain .cmcBuilderSettings textarea,
+.cmcTaskPlanBuilderMain .cmcBuilderSettings select,
+.cmcTaskPlanBuilderMain .cmcModuleFields input,
+.cmcTaskPlanBuilderMain .cmcModuleFields textarea,
+.cmcTaskPlanBuilderMain .cmcLessonFields input,
+.cmcTaskPlanBuilderMain .cmcLessonFields textarea,
+.cmcTaskPlanBuilderMain .cmcLessonFields select{
+  font:600 var(--cmc-type-body)/1.55 Montserrat,Arial,sans-serif;
+}
+.cmcTaskPlanBuilderMain .cmcLessonFields label small,
+.cmcTaskPlanBuilderMain .cmcBuilderSettings label>small{
+  font-size:var(--cmc-type-caption);
+}
+.cmcTaskPlanBuilderMain .cmcReorderActions button,
+.cmcTaskPlanBuilderMain .cmcCollapseAllButton{
+  font-size:var(--cmc-type-caption);
+}
+.cmcTaskPlanBuilderMain .cmcTaskPlanSection{
+  border:1px solid rgba(41,61,72,.18);
+  border-top:5px solid var(--cmcEmber);
+  background:rgba(255,250,241,.88);
+  box-shadow:0 8px 24px rgba(41,61,72,.045);
+}
+.cmcTaskPlanBuilderMain .cmcTaskPlanSection>.cmcModuleEditorHeading{
+  margin:-21px -21px 18px;
+  padding:18px 21px;
+  border-bottom:1px solid rgba(234,159,67,.22);
+  border-radius:15px 15px 0 0;
+  background:rgba(234,159,67,.075);
+}
+.cmcTaskPlanBuilderMain .cmcTaskPlanSection.collapsed>.cmcModuleEditorHeading{
+  margin:-21px;
+  border-bottom:0;
+  border-radius:15px;
+}
+.cmcTaskPlanBuilderMain .cmcTaskPlanSection>.cmcModuleEditorHeading .cmcEditorToggle strong{
+  margin-top:4px;
+  font-size:var(--cmc-type-title-sm);
+  line-height:1.25;
+}
+.cmcTaskPlanBuilderMain .cmcTaskPlanSection>.cmcModuleEditorHeading .cmcEditorToggle small{
+  color:#9f591e;
+  font-size:var(--cmc-type-label);
+  font-weight:950;
+  letter-spacing:.11em;
+}
+.cmcTaskPlanBuilderMain .cmcTaskPlanTask{
+  position:relative;
+  border:1px solid rgba(41,61,72,.17);
+  border-left:6px solid #87969b;
+  background:rgba(255,255,255,.72);
+  box-shadow:0 5px 15px rgba(41,61,72,.035);
+}
+.cmcTaskPlanBuilderMain .cmcTaskPlanTask>.cmcLessonEditorHeading .cmcEditorToggle strong{
+  margin-top:4px;
+  font-size:var(--cmc-type-body-lg);
+  line-height:1.3;
+}
+.cmcTaskPlanBuilderMain .cmcTaskPlanTask [data-task-kind]{
+  width:max-content;
+  margin:0 0 3px;
+  padding:4px 8px;
+  border-radius:999px;
+  background:rgba(41,61,72,.08);
+  font-size:var(--cmc-type-label);
+  line-height:1.2;
+}
+.cmcTaskPlanBuilderMain .cmcTaskPlanTask[data-task-type-style="group"]{
+  border:2px solid rgba(77,167,156,.34);
+  border-left:7px solid var(--cmcSage);
+  background:rgba(77,167,156,.09);
+}
+.cmcTaskPlanBuilderMain .cmcTaskPlanTask[data-task-type-style="group"] [data-task-kind]{
+  background:rgba(77,167,156,.17);
+}
+.cmcTaskPlanBuilderMain .cmcTaskPlanTask[data-task-type-style="milestone"]{
+  border:2px solid rgba(239,159,58,.38);
+  border-left:7px solid var(--cmcEmber);
+  background:rgba(239,159,58,.085);
+}
+.cmcTaskPlanBuilderMain .cmcTaskPlanTask[data-task-type-style="milestone"] [data-task-kind]{
+  background:rgba(239,159,58,.18);
+}
+.cmcTaskPlanBuilderMain .cmcTaskPlanTask.has-parent{
+  width:calc(100% - 34px);
+  margin-left:34px;
+}
+.cmcTaskPlanBuilderMain .cmcTaskPlanTask.has-parent:before{
+  position:absolute;
+  top:28px;
+  left:-25px;
+  width:18px;
+  height:18px;
+  border-bottom:2px solid rgba(77,167,156,.45);
+  border-left:2px solid rgba(77,167,156,.45);
+  border-radius:0 0 0 8px;
+  content:"";
+}
+.cmcTaskPlanBuilderMain .cmcTaskPlanTask .cmcBuilderCheck{
+  font-size:var(--cmc-type-body-sm);
+  letter-spacing:0;
+  text-transform:none;
+}
+.cmcTaskPlanBuilderMain .cmcInfoTip:after{
+  font-size:var(--cmc-type-caption);
+}
+@media(max-width:700px){
+  .cmcTaskPlanBuilderMain .cmcTaskPlanTask.has-parent{width:calc(100% - 16px);margin-left:16px}
+  .cmcTaskPlanBuilderMain .cmcTaskPlanTask.has-parent:before{display:none}
+  .cmcTaskPlanBuilderMain .cmcTaskPlanSection>.cmcModuleEditorHeading .cmcEditorToggle strong{font-size:var(--cmc-type-body-lg)}
+}
+
 /* v127 · reusable task plans and pioneer launch timelines */
 .cmcTaskPlanAdminMain,.cmcTaskPlanBuilderMain{width:min(1420px,calc(100% - 48px))}
 .cmcTaskPlanLibraryCard{min-height:310px}

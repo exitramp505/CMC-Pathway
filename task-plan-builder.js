@@ -110,6 +110,7 @@
 
   function addTask(section, task = {}) {
     const node = taskTemplate.content.firstElementChild.cloneNode(true);
+    const isExistingTask = Boolean(task.id || task.client_id);
     node.dataset.clientId = task.client_id || task.id || uid();
     node.dataset.parentId = task.parent_client_id || task.parent_task_id || '';
     node.dataset.dependencyIds = JSON.stringify(task.dependency_client_ids || []);
@@ -126,6 +127,7 @@
     node.querySelector('[data-task-summary]').textContent = task.title || 'Untitled task';
     node.querySelector('[data-task-kind]').textContent = titleCase(task.task_type || 'task');
     applyTaskType(node);
+    if (isExistingTask) node.classList.add('collapsed');
     wireTask(node, section);
     section.querySelector('[data-task-list]').append(node);
   }
@@ -182,6 +184,7 @@
           .join('');
         parentSelect.value = groups.some(group => group.dataset.clientId === parentValue) ? parentValue : '';
         node.dataset.parentId = parentSelect.value;
+        node.classList.toggle('has-parent', Boolean(parentSelect.value));
 
         const dependencySelect = node.querySelector('[data-task-dependencies]');
         const dependencyValues = new Set(JSON.parse(node.dataset.dependencyIds || '[]'));

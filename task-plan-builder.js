@@ -58,6 +58,14 @@
       status(error.message, true);
     }
   });
+  document.getElementById('previewTaskPlan').addEventListener('click', async () => {
+    await saveNow();
+    if (!current?.id) {
+      status('Add a task plan title before previewing.', true);
+      return;
+    }
+    window.open(`task-plan-preview.html?id=${encodeURIComponent(current.id)}`, '_blank', 'noopener');
+  });
 
   function fillDetails(template) {
     document.getElementById('taskPlanTitle').value = template.title || '';
@@ -117,6 +125,7 @@
     node.querySelector('[data-task-editable]').checked = task.participant_editable !== false;
     node.querySelector('[data-task-summary]').textContent = task.title || 'Untitled task';
     node.querySelector('[data-task-kind]').textContent = titleCase(task.task_type || 'task');
+    applyTaskType(node);
     wireTask(node, section);
     section.querySelector('[data-task-list]').append(node);
   }
@@ -128,6 +137,7 @@
       node.dataset.dependencyIds = JSON.stringify(selectedValues(node.querySelector('[data-task-dependencies]')));
       node.querySelector('[data-task-summary]').textContent = node.querySelector('[data-task-title]').value || 'Untitled task';
       node.querySelector('[data-task-kind]').textContent = titleCase(node.querySelector('[data-task-type]').value);
+      applyTaskType(node);
       refreshAllOptions();
       scheduleSave();
     }));
@@ -139,6 +149,10 @@
       }
     });
     wireMove(node, section.querySelector('[data-task-list]'));
+  }
+
+  function applyTaskType(node) {
+    node.dataset.taskTypeStyle = node.querySelector('[data-task-type]').value || 'task';
   }
 
   function wireMove(node, container) {
@@ -234,9 +248,9 @@
 
   async function saveNow() {
     clearTimeout(saveTimer);
-    if (saving) { queued = true; return; }
+    if (saving) { queued = true; return current; }
     const payload = serialize();
-    if (!payload.template.title.trim()) { status('Add a title to start autosave'); return; }
+    if (!payload.template.title.trim()) { status('Add a title to start autosave'); return current; }
     saving = true;
     try {
       status('Saving…');
@@ -252,6 +266,7 @@
       saving = false;
       if (queued) { queued = false; saveNow(); }
     }
+    return current;
   }
 
   function syncSavedIds(savedSections) {

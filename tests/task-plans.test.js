@@ -1,4 +1,6 @@
 const assert = require('assert');
+const fs = require('fs');
+const path = require('path');
 const { addDays, cleanSections, cleanTemplate, nestTasks, slugify } = require('../netlify/functions/_task-plans');
 const { nextTask, taskUpdates, validDate } = require('../netlify/functions/task-plan-assignments')._test;
 
@@ -48,5 +50,26 @@ assert.equal(completionUpdate.status, 'completed');
 assert.match(completionUpdate.completed_at, /^\d{4}-\d{2}-\d{2}T/);
 assert.equal(completionUpdate.due_date, '2026-09-01');
 assert.equal(completionUpdate.priority, 3);
+
+const projectFile = file => fs.readFileSync(path.join(__dirname, '..', file), 'utf8');
+const builderHtml = projectFile('task-plan-builder.html');
+const builderJs = projectFile('task-plan-builder.js');
+const libraryJs = projectFile('task-plans.js');
+const previewHtml = projectFile('task-plan-preview.html');
+const previewJs = projectFile('task-plan-preview.js');
+const styles = projectFile('style.css');
+
+assert.match(builderHtml, /Prerequisites/);
+assert.match(builderHtml, /Choose the work that must be completed first/);
+assert.match(builderHtml, /id="previewTaskPlan"/);
+assert.match(builderHtml, /cmcInfoTip/);
+assert.match(builderJs, /task-plan-preview\.html\?id=/);
+assert.match(builderJs, /dataset\.taskTypeStyle/);
+assert.match(libraryJs, />Preview</);
+assert.match(previewHtml, /id="taskPlanPreviewContent"/);
+assert.match(previewJs, /Available after/);
+assert.match(styles, /\.cmcTaskPlanSection\{overflow:visible;border-left:6px solid/);
+assert.match(styles, /data-task-type-style="group"/);
+assert.match(styles, /data-task-type-style="milestone"/);
 
 console.log('Task plan tests passed.');

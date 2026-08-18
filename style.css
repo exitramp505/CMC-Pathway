@@ -279,6 +279,8 @@
 /* v127 · reusable task plans and pioneer launch timelines */
 .cmcTaskPlanAdminMain,.cmcTaskPlanBuilderMain{width:min(1420px,calc(100% - 48px))}
 .cmcTaskPlanLibraryCard{min-height:310px}
+.cmcTaskPlanLibraryCard .cmcCourseCardActions{justify-content:flex-start;flex-wrap:wrap}
+.cmcTaskPlanLibraryCard .cmcCourseCardActions a:first-child{padding:9px 13px;border:1px solid rgba(251,240,222,.22);border-radius:10px;text-decoration:none}
 .cmcTaskPlanLibraryCard .cmcCourseCardActions button{
   padding:0;border:0;background:transparent;color:var(--cmcSand);box-shadow:none;
   font:900 var(--cmc-type-caption) Montserrat,Arial,sans-serif;text-decoration:underline;text-underline-offset:4px
@@ -303,6 +305,45 @@
 .cmcTaskPlanTask .cmcLessonFields input,.cmcTaskPlanTask .cmcLessonFields textarea,.cmcTaskPlanTask .cmcLessonFields select{margin-top:7px}
 .cmcTaskPlanTask .cmcBuilderCheck{display:flex;min-height:44px;align-items:center;gap:9px;margin:0;padding:10px 12px;border:1px solid rgba(41,61,72,.13);border-radius:11px;background:rgba(255,255,255,.5)}
 .cmcTaskPlanTask .cmcBuilderCheck input{width:17px;margin:0;accent-color:var(--cmcSage)}
+.cmcFieldLabel{display:flex;align-items:center;gap:7px}
+.cmcInfoTip,.cmcInfoBadge{display:inline-grid;width:21px;height:21px;flex:0 0 21px;place-items:center;border:1px solid rgba(41,61,72,.28);border-radius:50%;background:rgba(255,255,255,.72);color:var(--cmcSlate);font:900 12px/1 Montserrat,Arial,sans-serif;text-transform:none}
+.cmcInfoTip{position:relative;margin:0;padding:0;box-shadow:none;cursor:help}
+.cmcInfoTip:hover,.cmcInfoTip:focus-visible{background:var(--cmcSlate);color:#fff;transform:none}
+.cmcInfoTip:after{position:absolute;z-index:20;left:50%;bottom:calc(100% + 10px);width:260px;padding:11px 13px;border-radius:11px;background:var(--cmcSlate);color:#fff;box-shadow:0 10px 30px rgba(16,31,37,.2);content:attr(data-tooltip);font:650 12px/1.5 Montserrat,Arial,sans-serif;letter-spacing:0;opacity:0;pointer-events:none;text-align:left;text-transform:none;transform:translate(-50%,5px);transition:opacity .16s ease,transform .16s ease}
+.cmcInfoTip:hover:after,.cmcInfoTip:focus-visible:after{opacity:1;transform:translate(-50%,0)}
+.cmcTaskPlanSection{overflow:visible;border-left:6px solid var(--cmcEmber);background:rgba(255,250,241,.8)}
+.cmcTaskPlanSection>.cmcModuleEditorHeading small{color:#a85e22}
+.cmcTaskPlanTask{overflow:visible;border-left:5px solid #8a989c;transition:border-color .18s ease,background-color .18s ease}
+.cmcTaskPlanTask[data-task-type-style="group"]{border-left-color:var(--cmcSage);background:rgba(77,167,156,.055)}
+.cmcTaskPlanTask[data-task-type-style="group"] [data-task-kind]{color:#247f75}
+.cmcTaskPlanTask[data-task-type-style="milestone"]{border:1px solid rgba(239,159,58,.45);border-left:5px solid var(--cmcEmber);background:rgba(239,159,58,.06)}
+.cmcTaskPlanTask[data-task-type-style="milestone"] [data-task-kind]{color:#a85e22}
+.cmcTaskPlanTask[data-task-type-style="task"] [data-task-kind]{color:#65757b}
+.cmcTaskPlanTask [data-task-kind]{display:inline-flex;margin-bottom:3px;font-weight:950;letter-spacing:.1em;text-transform:uppercase}
+.cmcBuilderHeaderActions .cmcSecondaryButton{min-height:46px;padding:0 18px}
+.cmcTaskPlanPreviewMain{width:min(1180px,calc(100% - 48px));margin:0 auto;padding:30px 0 100px}
+.cmcTaskPlanPreviewToolbar{display:flex;align-items:center;justify-content:space-between;gap:18px;margin-bottom:18px}
+.cmcTaskPlanPreviewToolbar .cmcPrimaryButton{min-height:46px;padding:0 19px}
+.cmcTaskPlanPreviewHero{grid-template-columns:minmax(0,1fr) 260px}
+.cmcTaskPlanPreviewHero h1{font-size:clamp(40px,5vw,68px)}
+.cmcTemplatePreviewStats small{display:block;margin-top:9px;color:rgba(251,240,222,.56);font-size:var(--cmc-type-caption);font-weight:750}
+.cmcTaskPlanPreviewNotice{display:flex;align-items:flex-start;gap:13px;margin:18px 0;padding:17px 19px;border:1px solid rgba(77,167,156,.38);border-radius:17px;background:rgba(77,167,156,.07)}
+.cmcTaskPlanPreviewNotice .cmcInfoBadge{margin-top:1px;background:var(--cmcSage);color:#fff;border-color:var(--cmcSage)}
+.cmcTaskPlanPreviewNotice strong{font-size:var(--cmc-type-body-sm)}.cmcTaskPlanPreviewNotice p{margin:4px 0 0;color:#5d7077;font-size:var(--cmc-type-caption);font-weight:650;line-height:1.5}
+.cmcTaskPlanPreviewContent{display:grid;gap:18px}
+.cmcTaskPlanPreviewPhase{padding:clamp(22px,3vw,34px);border:1px solid rgba(41,61,72,.14);border-radius:26px;background:rgba(255,250,241,.8)}
+.cmcTaskPlanPreviewPhase>header{display:flex;align-items:end;justify-content:space-between;gap:22px;margin-bottom:20px;padding-bottom:18px;border-bottom:1px solid rgba(41,61,72,.14)}
+.cmcTaskPlanPreviewPhase>header h2{margin:5px 0 0;font-size:var(--cmc-type-section);letter-spacing:-.045em}.cmcTaskPlanPreviewPhase>header p:last-child{max-width:720px;margin:8px 0 0;color:#5e7076;font-size:var(--cmc-type-body-sm);line-height:1.5}.cmcTaskPlanPreviewPhase>header>span{font-size:var(--cmc-type-label);font-weight:900;color:#64757b}
+.cmcTaskPlanPreviewItems,.cmcTaskPreviewGroupItems{display:grid;gap:12px}
+.cmcTaskPreviewGroup{padding:20px;border:1px solid rgba(77,167,156,.28);border-left:5px solid var(--cmcSage);border-radius:18px;background:rgba(77,167,156,.045)}
+.cmcTaskPreviewGroup>header{display:flex;align-items:flex-start;gap:15px;margin-bottom:15px}.cmcTaskPreviewGroup h3,.cmcTaskPreviewItem h3{margin:0;font-size:var(--cmc-type-title);letter-spacing:-.025em}.cmcTaskPreviewGroup p,.cmcTaskPreviewItem>p{margin:6px 0 0;color:#5d7077;font-size:var(--cmc-type-body-sm);font-weight:620;line-height:1.55}
+.cmcTaskTypeMark{display:inline-flex;min-width:74px;justify-content:center;padding:6px 8px;border-radius:8px;background:rgba(77,167,156,.13);color:#247f75;font-size:9px;font-weight:950;letter-spacing:.1em}
+.cmcTaskPreviewItem{padding:18px 19px;border:1px solid rgba(41,61,72,.14);border-left:5px solid #89979b;border-radius:16px;background:rgba(255,255,255,.46)}
+.cmcTaskPreviewItem.milestone{border-left-color:var(--cmcEmber);background:rgba(239,159,58,.055)}.cmcTaskPreviewItem.milestone .cmcTaskTypeMark{background:rgba(239,159,58,.14);color:#9c5a23}
+.cmcTaskPreviewItemHeading{display:flex;align-items:center;gap:13px}.cmcTaskPreviewItemHeading h3{font-size:var(--cmc-type-body)}
+.cmcTaskPreviewMeta{display:flex;flex-wrap:wrap;gap:7px;margin-top:13px}.cmcTaskPreviewMeta span{padding:6px 9px;border-radius:8px;background:rgba(41,61,72,.07);color:#52666e;font-size:10px;font-weight:850}
+.cmcTaskPreviewDependencies{display:flex;align-items:flex-start;gap:9px;margin-top:12px;color:#52666e;font-size:var(--cmc-type-caption);font-weight:650;line-height:1.45}.cmcTaskPreviewDependencies .cmcInfoBadge{width:18px;height:18px;flex-basis:18px;background:var(--cmcSlate);color:#fff;font-size:10px}
+.cmcTaskPreviewResource{display:inline-flex;margin-top:13px;color:var(--cmcSlate);font-size:var(--cmc-type-caption);font-weight:900}.cmcTaskPreviewEmptyGroup{margin:0;color:#66777d;font-size:var(--cmc-type-caption)}
 .cmcAddModuleButton{width:100%;min-height:56px;margin-top:18px;border:1px dashed rgba(41,61,72,.25);border-radius:14px;background:transparent;color:var(--cmcSlate);box-shadow:none;font:900 var(--cmc-type-body-sm) Montserrat,Arial,sans-serif}
 .cmcAddModuleButton:hover,.cmcAddModuleButton:focus-visible{border-color:var(--cmcEmber);background:rgba(234,159,67,.1);color:var(--cmcInk);transform:none}
 
@@ -349,6 +390,7 @@
   .cmcTaskPlanSection .cmcReorderActions,.cmcTaskPlanTask .cmcReorderActions{justify-content:flex-end}
   .cmcTaskPlanTask .cmcLessonFields,.cmcTaskLeaderFields{grid-template-columns:1fr}.cmcTaskPlanTask .cmcLessonFields .wide,.cmcTaskLeaderFields .wide{grid-column:1}
   .cmcTaskPlanStructure{padding:18px}.cmcTaskPlanEmpty{padding:35px 20px}
+  .cmcTaskPlanPreviewMain{width:calc(100% - 28px);padding:24px 0 70px}.cmcTaskPlanPreviewHero{grid-template-columns:1fr}.cmcTaskPlanPreviewPhase{padding:20px}.cmcTaskPlanPreviewPhase>header{display:grid;gap:8px}.cmcTaskPreviewItemHeading,.cmcTaskPreviewGroup>header{display:grid}.cmcInfoTip:after{left:0;transform:translate(0,5px);width:min(250px,72vw)}.cmcInfoTip:hover:after,.cmcInfoTip:focus-visible:after{transform:translate(0,0)}
 }
 .cmcHeader{position:sticky;top:0;z-index:20;display:flex;align-items:center;justify-content:space-between;gap:28px;min-height:92px;padding:16px clamp(24px,5vw,76px);background:rgba(251,240,222,.9);border-bottom:1px solid rgba(41,61,72,.12);backdrop-filter:blur(18px)}.cmcHeaderAutoHide{will-change:transform,opacity;transition:transform .48s cubic-bezier(.22,.61,.36,1),opacity .34s ease,background-color .28s ease,box-shadow .28s ease}.cmcHeaderAutoHide.cmcHeaderScrolled{background:rgba(251,240,222,.84);box-shadow:0 12px 34px rgba(32,50,59,.09)}.cmcHeaderAutoHide.cmcHeaderHidden{transform:translateY(calc(-100% - 4px));opacity:0;pointer-events:none}.cmcHeaderAutoHide:focus-within{transform:translateY(0);opacity:1;pointer-events:auto}@media(prefers-reduced-motion:reduce){.cmcHeaderAutoHide{transition:none}}
 .cmcBrand{display:flex;align-items:center;gap:13px;color:var(--cmcSlate);text-decoration:none}.cmcBrand>span:last-child{display:grid;gap:2px}.cmcBrand strong{font-size:17px;font-weight:900}.cmcBrand small{color:#68747a;font-size:10px;font-weight:800;letter-spacing:.08em;text-transform:uppercase}

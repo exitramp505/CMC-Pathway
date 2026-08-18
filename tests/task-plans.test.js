@@ -1,6 +1,7 @@
 const assert = require('assert');
 const fs = require('fs');
 const path = require('path');
+const vm = require('vm');
 const { addDays, cleanSections, cleanTemplate, nestTasks, slugify } = require('../netlify/functions/_task-plans');
 const { nextTask, taskUpdates, validDate } = require('../netlify/functions/task-plan-assignments')._test;
 
@@ -58,6 +59,20 @@ const libraryJs = projectFile('task-plans.js');
 const previewHtml = projectFile('task-plan-preview.html');
 const previewJs = projectFile('task-plan-preview.js');
 const styles = projectFile('style.css');
+const taskUiContext = { window:{} };
+vm.runInNewContext(projectFile('task-plan-ui.js'), taskUiContext);
+const taskUi = taskUiContext.window.cmcTaskPlanUI;
+
+const assignedSections = taskUi.sectionsFromAssigned([
+  { id:'child', parent_task_id:'group', section_title:'Launch', section_position:2, position:1, task_type:'task', status:'not_started', priority:1 },
+  { id:'milestone', parent_task_id:null, section_title:'Launch', section_position:2, position:2, task_type:'milestone', status:'not_started', priority:2 },
+  { id:'group', parent_task_id:null, section_title:'Launch', section_position:2, position:0, task_type:'group', status:'not_started' }
+]);
+assert.equal(assignedSections.length, 1);
+assert.deepEqual(Array.from(assignedSections[0].tasks, task => task.id), ['group','milestone']);
+assert.equal(assignedSections[0].tasks[0].tasks[0].id, 'child');
+assert.equal(taskUi.stats(assignedSections[0].tasks).total, 2);
+assert.equal(taskUi.nextTask(assignedSections[0].tasks).id, 'child');
 
 assert.match(builderHtml, /Prerequisites/);
 assert.match(builderHtml, /Choose the work that must be completed first/);

@@ -276,6 +276,65 @@
   --cmc-measure-wide:80ch;
 }
 
+/* Task plan workspace: shared participant and template-preview experience */
+.cmcTaskPlanMain,.cmcTaskPlanPreviewMain{
+  --cmc-plan-sidebar-width:310px;
+  display:grid;
+  grid-template-columns:var(--cmc-plan-sidebar-width) minmax(0,1fr);
+  width:100%;
+  max-width:none;
+  min-height:calc(100vh - 92px);
+  margin:0;
+  padding:0;
+  transition:grid-template-columns .25s ease;
+}
+.cmcTaskPlanMain.sidebar-collapsed,.cmcTaskPlanPreviewMain.sidebar-collapsed{--cmc-plan-sidebar-width:76px}
+.cmcTaskPlanLoading{grid-column:1/-1;margin:80px auto;color:#607179;font-size:var(--cmc-type-body);font-weight:750}
+.cmcPlanSidebar{position:relative;box-sizing:border-box;background:var(--cmcSlate);color:var(--cmcSand)}
+.cmcPlanSidebarContent{position:sticky;top:92px;box-sizing:border-box;max-height:calc(100vh - 92px);padding:38px 24px 34px;overflow:auto;scrollbar-width:thin;scrollbar-color:rgba(251,240,222,.24) transparent}
+.sidebar-collapsed .cmcPlanSidebarContent{display:none}
+.cmcPlanSidebarContent .cmcBackToPathway{margin-bottom:30px;padding-right:0}
+.cmcPlanSidebarContent>h1{margin:0 0 13px;color:var(--cmcSand);font-size:29px;line-height:1.04;letter-spacing:-.045em}
+.cmcPlanSidebarContent>p:not(.cmcEyebrow){margin:0;color:rgba(251,240,222,.7);font-size:var(--cmc-type-caption);font-weight:620;line-height:1.62}
+.cmcPlanSidebarRail{position:fixed;z-index:35;top:108px;left:calc(var(--cmc-plan-sidebar-width) - 55px);display:flex;align-items:center;transition:left .25s ease}
+.sidebar-collapsed .cmcPlanSidebarRail{left:18px;flex-direction:column;gap:12px}
+.cmcPlanSidebarToggle{display:grid;width:42px;height:42px;place-items:center;border:1px solid rgba(251,240,222,.23);border-radius:12px;background:rgba(41,61,72,.97);color:var(--cmcSand);cursor:pointer;box-shadow:0 9px 25px rgba(20,35,41,.21)}
+.cmcPlanSidebarToggle:hover,.cmcPlanSidebarToggle:focus-visible{border-color:var(--cmcEmber);background:#324b58;color:#fff;outline:0;transform:none}
+.cmcPlanSidebarToggle svg{width:21px;height:21px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.cmcPlanRailStatus{display:none}.sidebar-collapsed .cmcPlanRailStatus{display:grid;justify-items:center;gap:2px}.cmcPlanRailStatus strong{color:var(--cmcEmber);font-size:var(--cmc-type-label)}.cmcPlanRailStatus span{color:rgba(251,240,222,.54);font-size:8px;font-weight:900;letter-spacing:.08em;text-transform:uppercase}
+.cmcPlanSidebarProgress{margin:25px 0 23px;padding:15px;border:1px solid rgba(251,240,222,.15);border-radius:15px;background:rgba(255,255,255,.035)}
+.cmcPlanSidebarProgress>div{height:6px;margin-bottom:10px;overflow:hidden;border-radius:99px;background:rgba(251,240,222,.12)}.cmcPlanSidebarProgress i{display:block;height:100%;border-radius:inherit;background:linear-gradient(90deg,var(--cmcEmber),var(--cmcSage))}
+.cmcPlanSidebarProgress strong,.cmcPlanSidebarProgress span,.cmcPlanSidebarProgress small{display:block}.cmcPlanSidebarProgress strong{color:var(--cmcSand);font-size:var(--cmc-type-caption)}.cmcPlanSidebarProgress span,.cmcPlanSidebarProgress small{margin-top:3px;color:rgba(251,240,222,.58);font-size:10px;font-weight:750}.cmcPlanSidebarProgress.preview strong{font-size:var(--cmc-type-body-sm)}
+.cmcPlanOutline{display:grid;gap:7px}.cmcPlanOutlinePhase{position:relative;display:grid;grid-template-columns:29px minmax(0,1fr) auto;gap:2px 9px;width:100%;min-height:62px;padding:11px 12px;border:1px solid transparent;border-radius:13px;background:transparent;color:rgba(251,240,222,.68);box-shadow:none;text-align:left}
+.cmcPlanOutlinePhase:hover,.cmcPlanOutlinePhase:focus-visible{border-color:rgba(251,240,222,.18);background:rgba(255,255,255,.05);color:#fff;transform:none;outline:0}.cmcPlanOutlinePhase.active{border-color:rgba(77,167,156,.42);background:rgba(77,167,156,.14);color:#fff}
+.cmcPlanOutlinePhase>span{grid-row:1/3;color:var(--cmcEmber);font-size:10px;font-weight:950;letter-spacing:.08em}.cmcPlanOutlinePhase strong{overflow:hidden;font-size:12px;line-height:1.28;text-overflow:ellipsis}.cmcPlanOutlinePhase small{align-self:start;color:rgba(251,240,222,.5);font-size:9px;font-weight:800}.cmcPlanOutlinePhase i{grid-column:2/-1;height:3px;margin-top:6px;overflow:hidden;border-radius:99px;background:rgba(251,240,222,.09)}.cmcPlanOutlinePhase i b{display:block;height:100%;border-radius:inherit;background:var(--cmcSage)}
+.cmcTaskPlanWorkspace{min-width:0;background-color:#fbf0de;background-image:radial-gradient(rgba(41,61,72,.085) .7px,transparent .7px);background-size:18px 18px}
+.cmcTaskPlanWorkspaceInner{width:min(1120px,calc(100% - 72px));margin:0 auto;padding:38px 0 90px}
+.cmcTaskPlanLeaderTools{margin:0 0 18px;background:rgba(255,250,241,.9)}
+.cmcTaskPlanFocus{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:38px;align-items:end;padding:30px 34px;border-radius:27px;background:linear-gradient(135deg,var(--cmcSlate),#304d57);color:var(--cmcSand);box-shadow:0 20px 54px rgba(32,50,59,.14)}
+.cmcTaskPlanFocus h2{max-width:800px;margin:5px 0 10px;padding:0;border:0;color:var(--cmcSand);font-size:clamp(30px,3.4vw,46px);line-height:1;letter-spacing:-.045em}.cmcTaskPlanFocus p:last-child{max-width:var(--cmc-measure-reading);margin:0;color:rgba(251,240,222,.7);font-size:var(--cmc-type-body-sm);font-weight:620;line-height:1.55}.cmcTaskPlanFocus>.cmcPrimaryButton{min-width:150px}.cmcTaskPlanFocusStatus{display:flex;align-items:center;gap:10px;padding:14px 16px;border:1px solid rgba(77,167,156,.48);border-radius:16px;background:rgba(77,167,156,.13)}.cmcTaskPlanFocusStatus span{display:grid;width:34px;height:34px;place-items:center;border-radius:50%;background:var(--cmcSage);color:#fff;font-size:20px}.cmcTaskPlanFocusStatus strong{font-size:var(--cmc-type-caption)}
+.cmcTaskPlanViewTabs{margin:16px 0;background:rgba(255,250,241,.9)}
+.cmcTaskPlanContent{display:block}.cmcTaskPlanPhase{background:rgba(255,250,241,.9)}.cmcTaskPlanPhaseFocused>header p:last-child,.cmcTaskPlanTimelinePanel>header p:last-child,.cmcTaskPlanCompletedPanel>header p:last-child{max-width:var(--cmc-measure-reading);margin:7px 0 0;color:#5e7076;font-size:var(--cmc-type-body-sm);font-weight:620;line-height:1.5}
+.cmcTaskPlanHierarchy{display:grid;gap:10px}.cmcPlanTaskGroup{border:1px solid rgba(41,61,72,.15);border-radius:18px;background:rgba(255,255,255,.42);overflow:hidden}.cmcPlanTaskGroup>summary{display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:14px;align-items:center;padding:18px 19px;cursor:pointer;list-style:none}.cmcPlanTaskGroup>summary::-webkit-details-marker{display:none}.cmcPlanTaskGroup[open]>summary{border-bottom:1px solid rgba(41,61,72,.11);background:rgba(77,167,156,.06)}
+.cmcPlanGroupChevron{width:11px;height:11px;border-right:2px solid var(--cmcSage);border-bottom:2px solid var(--cmcSage);transform:rotate(-45deg);transition:transform .16s ease}.cmcPlanTaskGroup[open] .cmcPlanGroupChevron{transform:rotate(45deg) translate(-2px,-2px)}
+.cmcPlanTaskGroup>summary p{margin:0 0 4px;color:#2f857b;font-size:var(--cmc-type-micro);font-weight:950;letter-spacing:.12em}.cmcPlanTaskGroup>summary h3{margin:0;color:var(--cmcSlate);font-size:var(--cmc-type-title-sm);letter-spacing:-.025em}.cmcPlanTaskGroup>summary div>span{display:block;max-width:var(--cmc-measure-reading);margin-top:4px;color:#67777d;font-size:var(--cmc-type-caption);font-weight:620;line-height:1.45}.cmcPlanTaskGroup>summary>strong{padding:7px 10px;border-radius:99px;background:rgba(77,167,156,.11);color:#337f75;font-size:var(--cmc-type-label)}
+.cmcPlanTaskGroupBody{display:grid;gap:8px;margin:0 18px 18px 28px;padding:14px 0 0 16px;border-left:3px solid rgba(77,167,156,.34)}
+.cmcPlanTaskRow{display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:14px;align-items:center;width:100%;min-height:88px;padding:15px 16px;border:1px solid rgba(41,61,72,.13);border-radius:15px;background:rgba(255,250,241,.8);color:var(--cmcSlate);box-shadow:none;text-align:left;transition:border-color .15s ease,box-shadow .15s ease,background-color .15s ease}.cmcPlanTaskRow:hover,.cmcPlanTaskRow:focus-visible{border-color:rgba(77,167,156,.58);background:#fffaf1;color:var(--cmcSlate);box-shadow:0 9px 23px rgba(41,61,72,.07);transform:none;outline:0}.cmcPlanTaskRow.complete{background:rgba(77,167,156,.06)}.cmcPlanTaskRow.blocked{opacity:.68}.cmcPlanTaskRow.milestone{border-color:rgba(234,159,67,.46);background:rgba(234,159,67,.07)}
+.cmcPlanTaskCheck{display:grid;width:36px;height:36px;place-items:center;border-radius:11px;background:var(--cmcSlate);color:#fff;font-size:15px;font-weight:950}.cmcPlanTaskRow.complete .cmcPlanTaskCheck{background:var(--cmcSage)}.cmcPlanTaskRow.milestone .cmcPlanTaskCheck{background:var(--cmcEmber);color:var(--cmcInk)}
+.cmcPlanTaskRowCopy{display:block;min-width:0}.cmcPlanTaskRowCopy small{display:block;margin-bottom:4px;color:#34847b;font-size:var(--cmc-type-micro);font-weight:950;letter-spacing:.09em}.cmcPlanTaskRowCopy strong{display:block;font-size:var(--cmc-type-body);line-height:1.3}.cmcPlanTaskRowCopy>span{display:block;max-width:var(--cmc-measure-reading);margin-top:4px;color:#62747b;font-size:var(--cmc-type-caption);font-weight:620;line-height:1.4}
+.cmcPlanTaskRowAside{display:grid;justify-items:end;gap:4px;min-width:112px}.cmcPlanTaskRowAside b{color:#52666e;font-size:var(--cmc-type-label)}.cmcPlanTaskRowAside time{color:#718087;font-size:10px;font-weight:800}.cmcPlanTaskRowAside i{margin-top:5px;color:#2f8379;font-size:var(--cmc-type-label);font-style:normal;font-weight:900}
+.cmcPlanTaskPreviewDetail{display:block}.cmcPlanTaskPreviewDetail>summary{list-style:none;cursor:pointer}.cmcPlanTaskPreviewDetail>summary::-webkit-details-marker{display:none}.cmcPlanTaskPreviewDetail[open]>summary{border-radius:15px 15px 0 0;border-bottom-color:transparent;background:#fffaf1}.cmcPlanTaskPreviewBody{padding:18px 21px 20px 66px;border:1px solid rgba(41,61,72,.13);border-top:0;border-radius:0 0 15px 15px;background:rgba(255,250,241,.86)}.cmcPlanTaskPreviewBody>p{max-width:var(--cmc-measure-reading);margin:0;color:#506168;font-size:var(--cmc-type-body-sm);line-height:1.7}
+.cmcTaskTimeline{position:relative;display:grid;gap:0;padding:4px 0}.cmcTaskTimeline:before{content:"";position:absolute;top:24px;bottom:24px;left:126px;width:2px;background:rgba(77,167,156,.28)}.cmcTaskTimeline button{position:relative;display:grid;grid-template-columns:104px 18px minmax(0,1fr);gap:14px;align-items:center;width:100%;padding:15px 0;border:0;background:transparent;color:var(--cmcSlate);box-shadow:none;text-align:left}.cmcTaskTimeline button:hover,.cmcTaskTimeline button:focus-visible{background:rgba(77,167,156,.05);color:var(--cmcSlate);transform:none;outline:0}.cmcTaskTimeline time{text-align:right;color:#61737a;font-size:var(--cmc-type-caption);font-weight:800}.cmcTaskTimeline button>span{z-index:1;width:12px;height:12px;border:3px solid #fbf0de;border-radius:50%;background:var(--cmcSage);box-shadow:0 0 0 1px var(--cmcSage)}.cmcTaskTimeline button.milestone>span{border-radius:2px;background:var(--cmcEmber);box-shadow:0 0 0 1px var(--cmcEmber);transform:rotate(45deg)}.cmcTaskTimeline button.complete>span{background:#2f8278}.cmcTaskTimeline small{display:block;color:#38847b;font-size:var(--cmc-type-micro);font-weight:950;letter-spacing:.08em;text-transform:uppercase}.cmcTaskTimeline strong{display:block;margin-top:3px;font-size:var(--cmc-type-body)}.cmcTaskTimeline p{margin:3px 0 0;color:#6a797f;font-size:var(--cmc-type-caption)}
+.cmcCompletedPhaseList{display:grid;gap:9px}.cmcCompletedPhaseList>details{border:1px solid rgba(41,61,72,.13);border-radius:16px;background:rgba(255,255,255,.4);overflow:hidden}.cmcCompletedPhaseList>details>summary{display:flex;align-items:center;justify-content:space-between;gap:16px;padding:17px 19px;cursor:pointer;list-style:none}.cmcCompletedPhaseList>details>summary::-webkit-details-marker{display:none}.cmcCompletedPhaseList>details[open]>summary{border-bottom:1px solid rgba(41,61,72,.1)}.cmcCompletedPhaseList>details>summary strong{font-size:var(--cmc-type-body)}.cmcCompletedPhaseList>details>summary span{color:#528078;font-size:var(--cmc-type-label);font-weight:850}.cmcCompletedPhaseList .cmcTaskPlanHierarchy{padding:12px}
+.cmcTaskPlanPreviewToolbar{margin-bottom:14px}.cmcTaskPlanPreviewNotice{margin:0 0 16px;background:rgba(77,167,156,.08)}
+
+@media(max-width:900px){
+  .cmcTaskPlanMain,.cmcTaskPlanPreviewMain{--cmc-plan-sidebar-width:285px}.cmcTaskPlanMain.sidebar-collapsed,.cmcTaskPlanPreviewMain.sidebar-collapsed{--cmc-plan-sidebar-width:70px}.cmcPlanSidebarContent{padding:34px 20px}.cmcTaskPlanWorkspaceInner{width:calc(100% - 44px)}
+}
+@media(max-width:720px){
+  .cmcTaskPlanMain,.cmcTaskPlanPreviewMain,.cmcTaskPlanMain.sidebar-collapsed,.cmcTaskPlanPreviewMain.sidebar-collapsed{display:block;width:100%;min-height:0;padding:0}.cmcPlanSidebarContent{position:static;max-height:510px;padding:27px 20px;overflow:auto}.sidebar-collapsed .cmcPlanSidebar{height:64px}.cmcPlanSidebarRail,.sidebar-collapsed .cmcPlanSidebarRail{top:92px;right:13px;left:auto;flex-direction:row;gap:9px}.sidebar-collapsed .cmcPlanSidebarRail{right:14px;left:14px;justify-content:space-between}.sidebar-collapsed .cmcPlanRailStatus{display:flex;order:-1;align-items:baseline;gap:5px;padding:7px 9px;border-radius:10px;background:rgba(41,61,72,.96);box-shadow:0 8px 22px rgba(20,35,41,.16)}.cmcPlanOutline{max-height:250px;overflow:auto}.cmcPlanOutlinePhase{min-height:58px}.cmcTaskPlanWorkspaceInner{width:calc(100% - 28px);padding:28px 0 65px}.cmcTaskPlanFocus{grid-template-columns:1fr;gap:20px;padding:25px 21px;border-radius:23px}.cmcTaskPlanFocus h2{font-size:34px}.cmcTaskPlanFocus>.cmcPrimaryButton{width:100%}.cmcTaskPlanFocusStatus{justify-self:start}.cmcTaskPlanViewTabs button{flex:1 0 118px}.cmcTaskPlanPhase{padding:19px 15px}.cmcTaskPlanPhase>header{display:grid;gap:8px}.cmcPlanTaskGroup>summary{grid-template-columns:auto minmax(0,1fr);padding:16px 14px}.cmcPlanTaskGroup>summary>strong{grid-column:2;justify-self:start}.cmcPlanTaskGroupBody{margin:0 10px 13px 18px;padding-left:10px}.cmcPlanTaskRow{grid-template-columns:auto minmax(0,1fr);padding:14px 12px}.cmcPlanTaskRowAside{grid-column:2;grid-template-columns:auto auto;justify-content:space-between;justify-items:start;width:100%;min-width:0}.cmcPlanTaskRowAside i{margin:0}.cmcPlanTaskPreviewBody{padding:16px}.cmcTaskTimeline:before{left:12px}.cmcTaskTimeline button{grid-template-columns:18px minmax(0,1fr);gap:12px;padding:14px 5px}.cmcTaskTimeline time{grid-column:2;text-align:left}.cmcTaskTimeline button>span{grid-row:1/3;grid-column:1}.cmcTaskTimeline button>div{grid-column:2}.cmcTaskPlanPreviewToolbar .cmcBackLink{font-size:var(--cmc-type-caption)}
+}
+
 /* Task plan editor typography and hierarchy — aligned to TYPOGRAPHY-GUIDE.md. */
 .cmcTaskPlanBuilderMain .cmcBuilderSettings label,
 .cmcTaskPlanBuilderMain .cmcModuleFields label,
@@ -8380,4 +8439,21 @@
   .cmcWebsiteSettings{padding:17px}
   .cmcWebsiteActions{display:grid;grid-template-columns:1fr;padding-top:20px}
   .cmcWebsiteActions button{width:100%;min-height:50px}
+}
+
+/* Keep the shared task-plan shell authoritative over the legacy task-plan cards above. */
+.cmcTaskPlanMain,.cmcTaskPlanPreviewMain{
+  width:100%;
+  max-width:none;
+  min-height:calc(100vh - 92px);
+  margin:0;
+  padding:0;
+}
+.cmcTaskPlanMain .cmcTaskPlanLeaderTools,.cmcTaskPlanPreviewMain .cmcTaskPlanLeaderTools{margin:0 0 18px}
+.cmcTaskPlanPreviewMain .cmcTaskPlanPreviewNotice{margin:0 0 16px}
+.cmcTaskPlanMain .cmcTaskPlanViewTabs,.cmcTaskPlanPreviewMain .cmcTaskPlanViewTabs{margin:16px 0}
+.cmcTaskPlanMain .cmcTaskPlanContent,.cmcTaskPlanPreviewMain .cmcTaskPlanContent{display:block}
+.cmcTaskPlanMain .cmcTaskPlanPhase,.cmcTaskPlanPreviewMain .cmcTaskPlanPhase{background:rgba(255,250,241,.9)}
+@media(max-width:720px){
+  .cmcTaskPlanMain,.cmcTaskPlanPreviewMain,.cmcTaskPlanMain.sidebar-collapsed,.cmcTaskPlanPreviewMain.sidebar-collapsed{width:100%;padding:0}
 }

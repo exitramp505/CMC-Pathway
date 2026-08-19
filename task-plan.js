@@ -59,19 +59,22 @@
     document.title = `${plan.title} | CMC Pathway`;
     const overall = ui.stats(tasks);
     const next = ui.nextTask(tasks);
+    const selectedSection = sections.find((item, index) => ui.sectionKey(item, index) === selectedPhaseKey) || sections[0];
+    const selectedSectionIndex = Math.max(0, sections.indexOf(selectedSection));
+    const phaseProgress = ui.stats(selectedSection?.tasks || []);
     app.classList.toggle('sidebar-collapsed', sidebarCollapsed);
     app.innerHTML = `
       <aside class="cmcPlanSidebar" aria-label="Task plan navigation">
         <div class="cmcPlanSidebarRail">
           <button class="cmcPlanSidebarToggle" type="button" aria-label="${sidebarCollapsed ? 'Open task plan navigation' : 'Collapse task plan navigation'}" aria-expanded="${!sidebarCollapsed}">${sidebarIcon()}</button>
-          <div class="cmcPlanRailStatus"><strong>${overall.percent}%</strong><span>complete</span></div>
+          <div class="cmcPlanRailStatus"><strong>${phaseProgress.percent}%</strong><span>phase</span></div>
         </div>
         <div class="cmcPlanSidebarContent">
           <a class="cmcBackToPathway" href="${leaderMode ? `participant.html?id=${encodeURIComponent(participantId)}` : 'dashboard.html'}">← ${leaderMode ? 'Participant dashboard' : 'My Pathway'}</a>
           <p class="cmcEyebrow">DEPLOY · TASK PLAN</p>
           <h1>${escapeHtml(plan.title)}</h1>
           <p>${escapeHtml(plan.description || 'Your launch work, dates, and progress in one place.')}</p>
-          <div class="cmcPlanSidebarProgress"><div><i style="width:${overall.percent}%"></i></div><strong>${overall.percent}% complete</strong><span>${overall.completed} of ${overall.total} tasks</span></div>
+          <div class="cmcPlanSidebarProgress"><small>PHASE ${String(selectedSectionIndex + 1).padStart(2, '0')} PROGRESS</small><strong>${phaseProgress.percent}% complete</strong><div><i style="width:${phaseProgress.percent}%"></i></div><span>${phaseProgress.completed} of ${phaseProgress.total} tasks complete</span></div>
           <nav class="cmcPlanOutline" aria-label="Plan phases">${ui.outlineHtml(sections, selectedPhaseKey)}</nav>
         </div>
       </aside>
@@ -120,8 +123,7 @@
     if (!section) return empty('Nothing here yet.', 'Your leader can add work to this plan.');
     const summary = ui.stats(section.tasks);
     const index = sections.indexOf(section);
-    const overall = ui.stats(tasks);
-    return `<section class="cmcTaskPlanPhase cmcTaskPlanPhaseFocused"><div class="cmcPlanWorkspaceProgress"><div><span>Overall plan progress</span><strong>${overall.percent}% complete</strong></div><div><i style="width:${overall.percent}%"></i></div><small>${overall.completed} of ${overall.total} tasks complete</small></div><header><div><p class="cmcEyebrow">PHASE ${String(index + 1).padStart(2, '0')}</p><h2>${escapeHtml(section.title)}</h2>${section.description ? `<p>${escapeHtml(section.description)}</p>` : ''}</div><span>${summary.completed} of ${summary.total} complete</span></header><div class="cmcTaskPlanHierarchy">${renderHierarchy(section.tasks, ui.nextTask(section.tasks)) || empty('No tasks in this phase.', 'A leader can add work when it is needed.')}</div>${phasePagerHtml(index)}</section>`;
+    return `<section class="cmcTaskPlanPhase cmcTaskPlanPhaseFocused"><header><div><p class="cmcEyebrow">PHASE ${String(index + 1).padStart(2, '0')}</p><h2>${escapeHtml(section.title)}</h2>${section.description ? `<p>${escapeHtml(section.description)}</p>` : ''}</div><span>${summary.completed} of ${summary.total} complete</span></header><div class="cmcTaskPlanHierarchy">${renderHierarchy(section.tasks, ui.nextTask(section.tasks)) || empty('No tasks in this phase.', 'A leader can add work when it is needed.')}</div>${phasePagerHtml(index)}</section>`;
   }
 
   function renderHierarchy(items, next) {

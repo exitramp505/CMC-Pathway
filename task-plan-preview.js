@@ -29,21 +29,22 @@
   } catch (error) { showError(error.message); }
 
   function render() {
-    const allTasks = ui.flatten(sections.flatMap(section => section.tasks || []));
-    const summary = ui.stats(allTasks);
+    const selectedSection = sections.find((item, index) => ui.sectionKey(item, index) === selectedPhaseKey) || sections[0];
+    const selectedSectionIndex = Math.max(0, sections.indexOf(selectedSection));
+    const phaseProgress = ui.stats(selectedSection?.tasks || []);
     app.classList.toggle('sidebar-collapsed', sidebarCollapsed);
     app.innerHTML = `
       <aside class="cmcPlanSidebar" aria-label="Task plan preview navigation">
         <div class="cmcPlanSidebarRail">
           <button class="cmcPlanSidebarToggle" type="button" aria-label="${sidebarCollapsed ? 'Open task plan navigation' : 'Collapse task plan navigation'}" aria-expanded="${!sidebarCollapsed}">${sidebarIcon()}</button>
-          <div class="cmcPlanRailStatus"><strong>${summary.total}</strong><span>items</span></div>
+          <div class="cmcPlanRailStatus"><strong>${phaseProgress.percent}%</strong><span>phase</span></div>
         </div>
         <div class="cmcPlanSidebarContent">
           <a class="cmcBackToPathway" href="task-plans.html">← Task plan library</a>
           <p class="cmcEyebrow">${escapeHtml(template.stage_key)} · TEMPLATE</p>
           <h1>${escapeHtml(template.title)}</h1>
           <p>${escapeHtml(template.description || 'No description has been added yet.')}</p>
-          <div class="cmcPlanSidebarProgress preview"><strong>${summary.total} items</strong><span>Across ${sections.length} ${sections.length === 1 ? 'phase' : 'phases'}</span><small>${escapeHtml(statusLabel(template.status))} · version ${Number(template.version || 1)}</small></div>
+          <div class="cmcPlanSidebarProgress preview"><small>PHASE ${String(selectedSectionIndex + 1).padStart(2, '0')} PROGRESS</small><strong>${phaseProgress.percent}% complete</strong><div><i style="width:${phaseProgress.percent}%"></i></div><span>${phaseProgress.completed} of ${phaseProgress.total} tasks complete</span><small>Preview · ${escapeHtml(statusLabel(template.status))} version ${Number(template.version || 1)}</small></div>
           <nav class="cmcPlanOutline" aria-label="Template phases">${ui.outlineHtml(sections, selectedPhaseKey, { preview: true })}</nav>
         </div>
       </aside>
@@ -63,7 +64,7 @@
     const index = sections.indexOf(section);
     const summary = ui.stats(section.tasks);
     const titles = new Map(ui.flatten(sections.flatMap(item => item.tasks || [])).map(task => [String(task.id), task.title]));
-    return `<section class="cmcTaskPlanPhase cmcTaskPlanPhaseFocused"><div class="cmcPlanWorkspaceProgress preview"><div><span>Participant progress</span><strong>0% complete</strong></div><div><i style="width:0%"></i></div><small>The assigned plan uses this same progress display.</small></div><header><div><p class="cmcEyebrow">PHASE ${String(index + 1).padStart(2, '0')}</p><h2>${escapeHtml(section.title)}</h2>${section.description ? `<p>${escapeHtml(section.description)}</p>` : ''}</div><span>${summary.total} ${summary.total === 1 ? 'item' : 'items'}</span></header><div class="cmcTaskPlanHierarchy">${renderHierarchy(section.tasks || [], titles, true) || empty('No tasks in this phase.', 'Add groups, tasks, or milestones in the editor.')}</div>${phasePagerHtml(index)}</section>`;
+    return `<section class="cmcTaskPlanPhase cmcTaskPlanPhaseFocused"><header><div><p class="cmcEyebrow">PHASE ${String(index + 1).padStart(2, '0')}</p><h2>${escapeHtml(section.title)}</h2>${section.description ? `<p>${escapeHtml(section.description)}</p>` : ''}</div><span>${summary.total} ${summary.total === 1 ? 'item' : 'items'}</span></header><div class="cmcTaskPlanHierarchy">${renderHierarchy(section.tasks || [], titles, true) || empty('No tasks in this phase.', 'Add groups, tasks, or milestones in the editor.')}</div>${phasePagerHtml(index)}</section>`;
   }
 
   function renderHierarchy(items, titleById, firstGroup) {

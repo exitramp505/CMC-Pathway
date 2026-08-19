@@ -303,8 +303,8 @@
 .cmcPlanSidebarToggle svg{width:21px;height:21px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
 .cmcPlanRailStatus{display:none}.sidebar-collapsed .cmcPlanRailStatus{display:grid;justify-items:center;gap:2px}.cmcPlanRailStatus strong{color:var(--cmcEmber);font-size:var(--cmc-type-label)}.cmcPlanRailStatus span{color:rgba(251,240,222,.54);font-size:8px;font-weight:900;letter-spacing:.08em;text-transform:uppercase}
 .cmcPlanSidebarProgress{margin:25px 0 23px;padding:15px;border:1px solid rgba(251,240,222,.15);border-radius:15px;background:rgba(255,255,255,.035)}
-.cmcPlanSidebarProgress>div{height:6px;margin-bottom:10px;overflow:hidden;border-radius:99px;background:rgba(251,240,222,.12)}.cmcPlanSidebarProgress i{display:block;height:100%;border-radius:inherit;background:linear-gradient(90deg,var(--cmcEmber),var(--cmcSage))}
-.cmcPlanSidebarProgress strong,.cmcPlanSidebarProgress span,.cmcPlanSidebarProgress small{display:block}.cmcPlanSidebarProgress strong{color:var(--cmcSand);font-size:var(--cmc-type-caption)}.cmcPlanSidebarProgress span,.cmcPlanSidebarProgress small{margin-top:3px;color:rgba(251,240,222,.58);font-size:10px;font-weight:750}.cmcPlanSidebarProgress.preview strong{font-size:var(--cmc-type-body-sm)}
+.cmcPlanSidebarProgress>div{height:6px;margin:9px 0 8px;overflow:hidden;border-radius:99px;background:rgba(251,240,222,.12)}.cmcPlanSidebarProgress i{display:block;height:100%;border-radius:inherit;background:linear-gradient(90deg,var(--cmcEmber),var(--cmcSage))}
+.cmcPlanSidebarProgress strong,.cmcPlanSidebarProgress span,.cmcPlanSidebarProgress small{display:block}.cmcPlanSidebarProgress strong{margin-top:3px;color:var(--cmcSand);font-size:var(--cmc-type-body-lg)}.cmcPlanSidebarProgress span,.cmcPlanSidebarProgress small{color:rgba(251,240,222,.62);font-size:10px;font-weight:750}.cmcPlanSidebarProgress>small:first-child{color:var(--cmcEmber);font-size:9px;font-weight:900;letter-spacing:.09em}.cmcPlanSidebarProgress.preview strong{font-size:var(--cmc-type-body-lg)}.cmcPlanSidebarProgress.preview small:last-child{margin-top:6px}
 .cmcPlanOutline{display:grid;gap:7px}.cmcPlanOutlinePhase{position:relative;display:grid;grid-template-columns:29px minmax(0,1fr) auto;gap:2px 9px;width:100%;min-height:62px;padding:11px 12px;border:1px solid transparent;border-radius:13px;background:transparent;color:rgba(251,240,222,.68);box-shadow:none;text-align:left}
 .cmcPlanOutlinePhase:hover,.cmcPlanOutlinePhase:focus-visible{border-color:rgba(251,240,222,.18);background:rgba(255,255,255,.05);color:#fff;transform:none;outline:0}.cmcPlanOutlinePhase.active{border-color:rgba(77,167,156,.42);background:rgba(77,167,156,.14);color:#fff}
 .cmcPlanOutlinePhase>span{grid-row:1/3;color:var(--cmcEmber);font-size:10px;font-weight:950;letter-spacing:.08em}.cmcPlanOutlinePhase strong{overflow:hidden;font-size:12px;line-height:1.28;text-overflow:ellipsis}.cmcPlanOutlinePhase small{align-self:start;color:rgba(251,240,222,.5);font-size:9px;font-weight:800}.cmcPlanOutlinePhase i{grid-column:2/-1;height:3px;margin-top:6px;overflow:hidden;border-radius:99px;background:rgba(251,240,222,.09)}.cmcPlanOutlinePhase i b{display:block;height:100%;border-radius:inherit;background:var(--cmcSage)}
@@ -5520,7 +5520,10 @@
 .cmcAuthBody .authFormHeader h2,.profileFormPanel .authFormHeader h2{color:var(--cmcInk);font-size:38px;font-weight:900}
 .cmcAuthBody .authFormHeader p,.profileFormPanel .authFormHeader p{color:#607078}
 .cmcAuthBody .oauthBtn{border-color:rgba(41,61,72,.2);background:#fffaf1;color:var(--cmcSlate)}
-.cmcAuthBody .oauthBtn:hover{background:#fff}
+body.cmcAuthBody button.oauthBtn:hover,
+body.cmcAuthBody button.oauthBtn:focus-visible{background:#fff;color:var(--cmcSlate)!important;outline:2px solid rgba(77,167,156,.34);outline-offset:2px}
+body.cmcAuthBody button.oauthBtn:hover .oauthIcon,
+body.cmcAuthBody button.oauthBtn:focus-visible .oauthIcon{background:var(--cmcSlate);color:var(--cmcSand)!important}
 .cmcAuthBody .oauthIcon{background:var(--cmcSlate);color:var(--cmcSand)}
 .cmcAuthBody .authDivider{color:#718087}.cmcAuthBody .authDivider:before,.cmcAuthBody .authDivider:after{background:rgba(41,61,72,.16)}
 .cmcAuthBody .authSubmitBtn,.profileFormPanel .authSubmitBtn{border:0;background:var(--cmcEmber);color:var(--cmcInk);font-weight:900;box-shadow:0 12px 28px rgba(234,159,67,.22)}
@@ -8556,6 +8559,8 @@
 .cmcPlanPhasePager button{display:grid;gap:3px;max-width:270px;padding:10px 0;border:0;background:transparent;color:var(--cmcSlate);box-shadow:none;text-align:left}
 .cmcPlanPhasePager button:last-child{justify-self:end;text-align:right}
 .cmcPlanPhasePager button:hover,.cmcPlanPhasePager button:focus-visible{background:transparent;color:#207d73;outline:0;transform:none}
+.cmcPlanPhasePager button:hover span,.cmcPlanPhasePager button:hover strong,
+.cmcPlanPhasePager button:focus-visible span,.cmcPlanPhasePager button:focus-visible strong{color:#207d73!important}
 .cmcPlanPhasePager button:disabled{visibility:hidden}
 .cmcPlanPhasePager button span{color:#697a81;font-size:9px;font-weight:900;letter-spacing:.1em;text-transform:uppercase}
 .cmcPlanPhasePager button strong{font-size:var(--cmc-type-caption);line-height:1.35}

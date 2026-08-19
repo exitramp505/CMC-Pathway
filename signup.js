@@ -16,7 +16,20 @@
   }
 
   function redirectTo(){
-    return `${window.location.origin}/profile.html?next=dashboard`;
+    return `${window.location.origin}/dashboard.html`;
+  }
+
+  async function routeSignedInUser(user){
+    const profile = await dcAuth.getProfile(user.id).catch(() => null);
+    if(['regional_leader','cmc_admin'].includes(profile?.account_role)){
+      window.location.href = 'leader.html';
+      return;
+    }
+
+    const profileComplete = Boolean(profile?.full_name && profile?.phone && profile?.state);
+    window.location.href = profileComplete
+      ? 'dashboard.html'
+      : 'profile.html?next=dashboard';
   }
 
   async function signUpWithGoogle(){
@@ -34,6 +47,16 @@
   }
 
   if(googleBtn) googleBtn.addEventListener('click', signUpWithGoogle);
+
+  try{
+    const session = await dcAuth.getCurrentSession();
+    if(session?.user){
+      await routeSignedInUser(session.user);
+      return;
+    }
+  }catch(err){
+    // Keep signup available when session lookup is temporarily unavailable.
+  }
 
   if(form){
     form.addEventListener('submit', async e => {
@@ -55,7 +78,7 @@
         if(error) throw error;
 
         if(data.session){
-          window.location.href = 'profile.html?next=dashboard';
+          await routeSignedInUser(data.user);
           return;
         }
 

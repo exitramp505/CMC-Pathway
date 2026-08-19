@@ -1,4 +1,6 @@
 (async function taskPlanBuilder() {
+  window.CMCBuilderUI?.initShell({ shellId:'taskPlanBuilderShell', toggleId:'taskPlanBuilderSidebarToggle', storageKey:'cmcTaskPlanBuilderSidebarCollapsed' });
+  window.CMCBuilderUI?.initInfoTips();
   const user = await dcAuth.requireUser();
   if (!user) return;
   const profile = await dcAuth.getProfile(user.id).catch(() => null);
@@ -19,7 +21,6 @@
   let saveTimer = null;
   let saving = false;
   let queued = false;
-
   if (templateId) {
     try {
       const data = await api(`?id=${encodeURIComponent(templateId)}`);
@@ -35,10 +36,11 @@
     addSection({ title:'Phase 1 · Getting Started', tasks:[] });
   }
 
-  document.querySelectorAll('#taskPlanTitle,#taskPlanSlug,#taskPlanDescription,#taskPlanStage')
-    .forEach(input => input.addEventListener('input', scheduleSave));
+  document.querySelectorAll('#taskPlanTitle,#taskPlanDescription,#taskPlanStage')
+    .forEach(input => input.addEventListener('input', () => { refreshBuilderSidebar(); scheduleSave(); }));
   document.getElementById('addTaskPlanSection').addEventListener('click', () => {
     addSection();
+    refreshBuilderSidebar();
     scheduleSave();
   });
   document.getElementById('collapseTaskPlan').addEventListener('click', () => {
@@ -54,6 +56,7 @@
       const data = await api('', { ...serialize(), action:'publish' });
       current = data.template;
       status(`Published · version ${current.version}`);
+      refreshBuilderSidebar();
     } catch (error) {
       status(error.message, true);
     }
@@ -72,6 +75,7 @@
     document.getElementById('taskPlanSlug').value = template.slug || '';
     document.getElementById('taskPlanDescription').value = template.description || '';
     document.getElementById('taskPlanStage').value = template.stage_key || 'deploy';
+    refreshBuilderSidebar();
   }
 
   function addSection(section = {}) {
@@ -84,12 +88,14 @@
     sectionsEl.append(node);
     flatten(section.tasks || []).forEach(task => addTask(node, task));
     refreshAllOptions();
+    refreshBuilderSidebar();
   }
 
   function wireSection(node) {
     node.querySelector('.cmcEditorToggle').addEventListener('click', () => node.classList.toggle('collapsed'));
     node.querySelector('[data-section-title]').addEventListener('input', event => {
       node.querySelector('[data-section-summary]').textContent = event.target.value || 'Untitled phase';
+      refreshBuilderSidebar();
       scheduleSave();
     });
     node.querySelector('[data-section-description]').addEventListener('input', scheduleSave);
@@ -102,6 +108,7 @@
       if (confirm('Remove this phase and its tasks?')) {
         node.remove();
         refreshAllOptions();
+        refreshBuilderSidebar();
         scheduleSave();
       }
     });
@@ -130,6 +137,8 @@
     if (isExistingTask) node.classList.add('collapsed');
     wireTask(node, section);
     section.querySelector('[data-task-list]').append(node);
+    window.CMCBuilderUI?.initInfoTips(node);
+    refreshBuilderSidebar();
   }
 
   function wireTask(node, section) {
@@ -141,12 +150,14 @@
       node.querySelector('[data-task-kind]').textContent = titleCase(node.querySelector('[data-task-type]').value);
       applyTaskType(node);
       refreshAllOptions();
+      refreshBuilderSidebar();
       scheduleSave();
     }));
     node.querySelector('[data-remove-task]').addEventListener('click', () => {
       if (confirm('Remove this task?')) {
         node.remove();
         refreshAllOptions();
+        refreshBuilderSidebar();
         scheduleSave();
       }
     });
@@ -161,11 +172,13 @@
     node.querySelector('[data-move="up"]').addEventListener('click', () => {
       if (node.previousElementSibling) container.insertBefore(node, node.previousElementSibling);
       refreshAllOptions();
+      refreshBuilderSidebar();
       scheduleSave();
     });
     node.querySelector('[data-move="down"]').addEventListener('click', () => {
       if (node.nextElementSibling) container.insertBefore(node.nextElementSibling, node);
       refreshAllOptions();
+      refreshBuilderSidebar();
       scheduleSave();
     });
   }
@@ -198,11 +211,13 @@
   }
 
   function serialize() {
+    const title = document.getElementById('taskPlanTitle').value;
+    const existingSlug = document.getElementById('taskPlanSlug').value || current?.slug || '';
     return {
       template:{
         id:current?.id || null,
-        title:document.getElementById('taskPlanTitle').value,
-        slug:document.getElementById('taskPlanSlug').value,
+        title,
+        slug:existingSlug || slugify(title),
         description:document.getElementById('taskPlanDescription').value,
         stage_key:document.getElementById('taskPlanStage').value,
         status:current?.status || 'draft'
@@ -262,7 +277,9 @@
       syncSavedIds(data.sections || []);
       history.replaceState({}, '', `task-plan-builder.html?id=${current.id}`);
       document.getElementById('builderPageTitle').textContent = current.title;
+      document.getElementById('taskPlanSlug').value = current.slug || document.getElementById('taskPlanSlug').value;
       status('All changes saved');
+      refreshBuilderSidebar();
     } catch (error) {
       status(error.message, true);
     } finally {
@@ -314,6 +331,35 @@
     statusEl.textContent = text;
     statusEl.classList.toggle('error', error);
   }
+  function refreshBuilderSidebar() {
+    const title = document.getElementById('taskPlanTitle')?.value.trim() || current?.title || 'Untitled task plan';
+    const description = document.getElementById('taskPlanDescription')?.value.trim() || 'Add a title and description to begin shaping the plan.';
+    const stage = document.getElementById('taskPlanStage')?.value || 'deploy';
+    const sections = [...sectionsEl.children];
+    const tasks = [...sectionsEl.querySelectorAll('.cmcTaskPlanTask')];
+    const work = tasks.filter(node => node.querySelector('[data-task-type]')?.value !== 'group');
+    setText('taskPlanSidebarTitle', title);
+    setText('taskPlanSidebarDescription', description);
+    setText('taskPlanSidebarCount', `${work.length} ${work.length === 1 ? 'item' : 'items'}`);
+    setText('taskPlanSidebarMeta', `${sections.length} ${sections.length === 1 ? 'phase' : 'phases'} · ${titleCase(stage)} · ${current?.status === 'published' ? 'Published' : 'Draft'}`);
+    setText('taskPlanBuilderRailStatus', `${sections.length} ${sections.length === 1 ? 'phase' : 'phases'}`);
+    const outline = document.getElementById('taskPlanBuilderOutline');
+    if (!outline) return;
+    outline.innerHTML = sections.map((section, index) => {
+      const sectionTasks = [...section.querySelectorAll('.cmcTaskPlanTask')].filter(node => node.querySelector('[data-task-type]')?.value !== 'group');
+      const sectionTitle = section.querySelector('[data-section-title]')?.value.trim() || `Untitled phase ${index + 1}`;
+      return `<button type="button" data-builder-phase="${index}"><span>${String(index + 1).padStart(2, '0')}</span><strong>${escapeHtml(sectionTitle)}</strong><small>${sectionTasks.length} ${sectionTasks.length === 1 ? 'item' : 'items'}</small></button>`;
+    }).join('') || '<p class="cmcBuilderOutlineEmpty">Add a phase to begin.</p>';
+    outline.querySelectorAll('[data-builder-phase]').forEach(button => button.addEventListener('click', () => {
+      const section = sections[Number(button.dataset.builderPhase)];
+      if (!section) return;
+      section.classList.remove('collapsed');
+      section.querySelector('.cmcEditorToggleIcon').textContent = '−';
+      section.scrollIntoView({ behavior:'smooth', block:'start' });
+    }));
+  }
+  function setText(id, value) { const node = document.getElementById(id); if (node) node.textContent = value; }
+  function slugify(value) { return String(value || '').toLowerCase().trim().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '') || `task-plan-${Date.now().toString().slice(-6)}`; }
   function uid() { return `local-${crypto.randomUUID?.() || Math.random().toString(36).slice(2)}`; }
   function titleCase(value) { return value.charAt(0).toUpperCase() + value.slice(1); }
   function numberValue(node, selector) { const text = node.querySelector(selector).value; return text === '' ? null : Number(text); }

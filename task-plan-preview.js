@@ -63,7 +63,7 @@
     const index = sections.indexOf(section);
     const summary = ui.stats(section.tasks);
     const titles = new Map(ui.flatten(sections.flatMap(item => item.tasks || [])).map(task => [String(task.id), task.title]));
-    return `<section class="cmcTaskPlanPhase cmcTaskPlanPhaseFocused"><header><div><p class="cmcEyebrow">PHASE ${String(index + 1).padStart(2, '0')}</p><h2>${escapeHtml(section.title)}</h2>${section.description ? `<p>${escapeHtml(section.description)}</p>` : ''}</div><span>${summary.total} ${summary.total === 1 ? 'item' : 'items'}</span></header><div class="cmcTaskPlanHierarchy">${renderHierarchy(section.tasks || [], titles, true) || empty('No tasks in this phase.', 'Add groups, tasks, or milestones in the editor.')}</div></section>`;
+    return `<section class="cmcTaskPlanPhase cmcTaskPlanPhaseFocused"><div class="cmcPlanWorkspaceProgress preview"><div><span>Participant progress</span><strong>0% complete</strong></div><div><i style="width:0%"></i></div><small>The assigned plan uses this same progress display.</small></div><header><div><p class="cmcEyebrow">PHASE ${String(index + 1).padStart(2, '0')}</p><h2>${escapeHtml(section.title)}</h2>${section.description ? `<p>${escapeHtml(section.description)}</p>` : ''}</div><span>${summary.total} ${summary.total === 1 ? 'item' : 'items'}</span></header><div class="cmcTaskPlanHierarchy">${renderHierarchy(section.tasks || [], titles, true) || empty('No tasks in this phase.', 'Add groups, tasks, or milestones in the editor.')}</div>${phasePagerHtml(index)}</section>`;
   }
 
   function renderHierarchy(items, titleById, firstGroup) {
@@ -74,7 +74,7 @@
       }
       const dependencies = (task.dependency_client_ids || []).map(value => titleById.get(String(value))).filter(Boolean);
       const milestone = task.task_type === 'milestone';
-      return `<details class="cmcPlanTaskPreviewDetail ${milestone ? 'milestone' : ''}"><summary class="cmcPlanTaskRow ${milestone ? 'milestone' : ''}"><span class="cmcPlanTaskCheck">${milestone ? '◆' : ''}</span><span class="cmcPlanTaskRowCopy"><small>${milestone ? 'MILESTONE' : 'TASK'}${Number(task.default_priority || 3) < 3 ? ` · PRIORITY ${task.default_priority}` : ''}</small><strong>${escapeHtml(task.title)}</strong>${task.description ? `<span>${escapeHtml(short(task.description, 145))}</span>` : ''}</span><span class="cmcPlanTaskRowAside"><b>${task.is_required === false ? 'Optional' : 'Required'}</b>${offsetText(task.relative_due_days, 'Due')}<i>Details</i></span></summary><div class="cmcPlanTaskPreviewBody">${task.description ? `<p>${escapeHtml(task.description).replace(/\n/g, '<br>')}</p>` : '<p>No additional instructions have been added.</p>'}<div class="cmcTaskPreviewMeta">${offsetLabel(task.relative_start_days, 'Starts')}${offsetLabel(task.relative_due_days, 'Due')}<span>Priority ${Number(task.default_priority || 3)}</span>${task.requires_approval ? '<span>Leader approval</span>' : ''}</div>${dependencies.length ? `<div class="cmcTaskPreviewDependencies"><span class="cmcInfoBadge" aria-hidden="true">i</span><span><strong>Available after:</strong> ${dependencies.map(escapeHtml).join(', ')}</span></div>` : ''}${task.resource_url ? `<a class="cmcTaskPreviewResource" href="${escapeHtml(task.resource_url)}" target="_blank" rel="noopener">Open resource ↗</a>` : ''}</div></details>`;
+      return `<details class="cmcPlanTaskPreviewDetail ${milestone ? 'milestone' : ''}"><summary class="cmcPlanTaskRow ${milestone ? 'milestone' : ''}"><span class="cmcPlanTaskCheck">${milestone ? '◆' : ''}</span><span class="cmcPlanTaskRowCopy"><small>${milestone ? 'MILESTONE' : 'TASK'}${Number(task.default_priority || 3) < 3 ? ` · PRIORITY ${task.default_priority}` : ''}</small><strong>${escapeHtml(task.title)}</strong>${task.description ? `<span>${escapeHtml(short(task.description, 145))}</span>` : ''}</span><span class="cmcPlanTaskRowAside"><b>${task.is_required === false ? 'Optional' : 'Required'}</b>${offsetText(task.relative_due_days, 'Due')}<span class="cmcPlanExpandCue" aria-hidden="true"><svg viewBox="0 0 20 20"><path d="m6 8 4 4 4-4"></path></svg></span></span></summary><div class="cmcPlanTaskPreviewBody">${task.description ? `<p>${escapeHtml(task.description).replace(/\n/g, '<br>')}</p>` : '<p>No additional instructions have been added.</p>'}<div class="cmcTaskPreviewMeta">${offsetLabel(task.relative_start_days, 'Starts')}${offsetLabel(task.relative_due_days, 'Due')}<span>Priority ${Number(task.default_priority || 3)}</span>${task.requires_approval ? '<span>Leader approval</span>' : ''}</div>${dependencies.length ? `<div class="cmcTaskPreviewDependencies"><span class="cmcInfoBadge" aria-hidden="true">i</span><span><strong>Available after:</strong> ${dependencies.map(escapeHtml).join(', ')}</span></div>` : ''}${task.resource_url ? `<a class="cmcTaskPreviewResource" href="${escapeHtml(task.resource_url)}" target="_blank" rel="noopener">Open resource ↗</a>` : ''}</div></details>`;
     }).join('');
   }
 
@@ -89,6 +89,18 @@
       render();
       if (window.matchMedia('(max-width: 720px)').matches) document.getElementById('taskPlanPreviewContent')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
     }));
+    document.querySelectorAll('[data-phase-target]').forEach(button => button.addEventListener('click', () => {
+      selectedPhaseKey = button.dataset.phaseTarget;
+      render();
+      document.getElementById('taskPlanPreviewContent')?.scrollIntoView({ behavior:'smooth', block:'start' });
+    }));
+  }
+
+  function phasePagerHtml(index) {
+    const previous = sections[index - 1];
+    const next = sections[index + 1];
+    if (!previous && !next) return '';
+    return `<nav class="cmcPlanPhasePager" aria-label="Other phases"><button type="button" ${previous ? `data-phase-target="${escapeHtml(ui.sectionKey(previous, index - 1))}"` : 'disabled'}><span>← Previous phase</span><strong>${previous ? escapeHtml(previous.title) : 'Beginning of plan'}</strong></button><div class="cmcPlanPhaseDots" aria-label="Plan phases">${sections.map((phase, phaseIndex) => `<button type="button" class="${phaseIndex === index ? 'active' : ''}" data-phase-target="${escapeHtml(ui.sectionKey(phase, phaseIndex))}" aria-label="Open phase ${phaseIndex + 1}: ${escapeHtml(phase.title)}" ${phaseIndex === index ? 'aria-current="step"' : ''}></button>`).join('')}</div><button type="button" ${next ? `data-phase-target="${escapeHtml(ui.sectionKey(next, index + 1))}"` : 'disabled'}><span>Next phase →</span><strong>${next ? escapeHtml(next.title) : 'End of plan'}</strong></button></nav>`;
   }
 
   function offsetLabel(value, label) {

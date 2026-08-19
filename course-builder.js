@@ -1,4 +1,5 @@
 (async function(){
+  window.CMCBuilderUI?.initShell({ shellId:'courseBuilderShell', toggleId:'courseBuilderSidebarToggle', storageKey:'cmcCourseBuilderSidebarCollapsed' });
   const user = await dcAuth.requireUser();
   if (!user) return;
   const profile = await dcAuth.getProfile(user.id).catch(() => null);
@@ -18,7 +19,6 @@
   let autosaveQueued = false;
   let isHydrating = true;
   let lastSavedSignature = '';
-
   document.getElementById('addModuleBtn').addEventListener('click', () => {
     addModule({}, { scroll:true });
     queueAutosave();
@@ -35,6 +35,7 @@
   else addModule({ title:'', description:'', lessons:[{}] });
   isHydrating = false;
   updateCourseDetailsSummary();
+  refreshBuilderSidebar();
   lastSavedSignature = currentCourse ? JSON.stringify(buildPayload(currentCourse.status)) : '';
   setAutosaveStatus(currentCourse ? 'All changes saved' : 'Autosave starts when you begin typing');
 
@@ -66,6 +67,7 @@
       (currentCourse.modules || []).forEach((module, index) => addModule(module, { collapsed:index > 0 }));
       if (!currentCourse.modules?.length) addModule({lessons:[{}]});
       updateCourseDetailsSummary();
+      refreshBuilderSidebar();
       setMessage('');
     } catch (error) {
       setMessage(error.message, true);
@@ -155,6 +157,7 @@
       updateModuleSummary(module);
     });
     updateCollapseAllButton();
+    refreshBuilderSidebar();
   }
 
   function setCollapsed(node, collapsed) {
@@ -221,6 +224,7 @@
       stage && access && navigation
         ? `${stage} · ${access} · ${navigation.split('·')[0].trim()}`
         : 'Choose a pathway stage, availability, and lesson order';
+    refreshBuilderSidebar();
   }
 
   function selectedLabel(id) {
@@ -235,8 +239,39 @@
 
   function handleBuilderChange() {
     updateCourseDetailsSummary();
+    refreshBuilderSidebar();
     queueAutosave();
   }
+
+  function refreshBuilderSidebar() {
+    const title = document.getElementById('courseTitle')?.value.trim() || currentCourse?.title || 'Untitled course';
+    const description = document.getElementById('courseSubtitle')?.value.trim() || document.getElementById('courseDescription')?.value.trim() || 'Add course details and begin building the lesson outline.';
+    const modules = [...document.querySelectorAll('[data-module]')];
+    const lessons = [...document.querySelectorAll('[data-lesson]')];
+    const minutes = lessons.reduce((total, lesson) => total + Number(lesson.querySelector('[data-lesson-minutes]')?.value || 0), 0);
+    const stage = selectedLabel('courseStage') || 'No stage';
+    setText('courseSidebarTitle', title);
+    setText('courseSidebarDescription', description);
+    setText('courseSidebarCount', `${lessons.length} ${lessons.length === 1 ? 'lesson' : 'lessons'}`);
+    setText('courseSidebarMeta', `${modules.length} ${modules.length === 1 ? 'module' : 'modules'} · ${minutes ? `${minutes} min · ` : ''}${stage} · ${currentCourse?.status === 'published' ? 'Published' : 'Draft'}`);
+    setText('courseBuilderRailStatus', `${lessons.length} ${lessons.length === 1 ? 'lesson' : 'lessons'}`);
+    const outline = document.getElementById('courseBuilderOutline');
+    if (!outline) return;
+    outline.innerHTML = modules.map((module, index) => {
+      const moduleTitle = module.querySelector('[data-module-title]')?.value.trim() || `Untitled module ${index + 1}`;
+      const count = module.querySelectorAll('[data-lesson]').length;
+      return `<button type="button" data-builder-module="${index}"><span>${String(index + 1).padStart(2, '0')}</span><strong>${escapeHtml(moduleTitle)}</strong><small>${count} ${count === 1 ? 'lesson' : 'lessons'}</small></button>`;
+    }).join('') || '<p class="cmcBuilderOutlineEmpty">Add a module to begin.</p>';
+    outline.querySelectorAll('[data-builder-module]').forEach(button => button.addEventListener('click', () => {
+      const module = modules[Number(button.dataset.builderModule)];
+      if (!module) return;
+      setCollapsed(module, false);
+      module.scrollIntoView({ behavior:'smooth', block:'start' });
+    }));
+  }
+
+  function setText(id, value) { const node = document.getElementById(id); if (node) node.textContent = value; }
+  function escapeHtml(value) { return String(value ?? '').replace(/[&<>"']/g, character => ({ '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#039;' }[character])); }
 
   function queueAutosave() {
     if (isHydrating) return;

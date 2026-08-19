@@ -8457,3 +8457,139 @@
 @media(max-width:720px){
   .cmcTaskPlanMain,.cmcTaskPlanPreviewMain,.cmcTaskPlanMain.sidebar-collapsed,.cmcTaskPlanPreviewMain.sidebar-collapsed{width:100%;padding:0}
 }
+
+/* v129 · shared builder shell and clearer task-plan navigation */
+.cmcBuilderShell{
+  --cmc-builder-sidebar-width:310px;
+  display:grid;
+  grid-template-columns:var(--cmc-builder-sidebar-width) minmax(0,1fr);
+  min-height:calc(100vh - 92px);
+  transition:grid-template-columns .22s ease;
+}
+.cmcBuilderShell.sidebar-collapsed{--cmc-builder-sidebar-width:76px}
+.cmcBuilderSidebar{position:relative;min-width:0;background:var(--cmcSlate);color:var(--cmcSand)}
+.cmcBuilderSidebarContent{
+  position:sticky;
+  top:92px;
+  box-sizing:border-box;
+  max-height:calc(100vh - 92px);
+  padding:38px 25px 52px;
+  overflow:auto;
+}
+.sidebar-collapsed .cmcBuilderSidebarContent{display:none}
+.cmcBuilderSidebarRail{
+  position:fixed;
+  z-index:35;
+  top:112px;
+  left:calc(var(--cmc-builder-sidebar-width) - 55px);
+  display:flex;
+  align-items:center;
+  gap:9px;
+  transition:left .22s ease;
+}
+.sidebar-collapsed .cmcBuilderSidebarRail{left:17px;flex-direction:column}
+.cmcBuilderRailStatus{display:none;color:var(--cmcEmber);font-size:10px;font-weight:900;letter-spacing:.04em;white-space:nowrap}
+.sidebar-collapsed .cmcBuilderRailStatus{display:block;writing-mode:vertical-rl}
+.cmcBuilderSidebarContent .cmcBackToPathway{display:inline-flex;margin-bottom:36px;color:rgba(251,240,222,.72);font-size:var(--cmc-type-caption);font-weight:850;text-decoration:none}
+.cmcBuilderSidebarContent .cmcBackToPathway:hover,.cmcBuilderSidebarContent .cmcBackToPathway:focus-visible{color:#fff}
+.cmcBuilderSidebarContent>.cmcEyebrow{margin-bottom:12px}
+.cmcBuilderSidebarContent h1{margin:0;color:var(--cmcSand);font-size:clamp(29px,2.4vw,39px);line-height:1.02;letter-spacing:-.045em;overflow-wrap:anywhere}
+.cmcBuilderSidebarContent>p:not(.cmcEyebrow){margin:15px 0 0;color:rgba(251,240,222,.65);font-size:var(--cmc-type-body-sm);font-weight:620;line-height:1.55}
+.cmcBuilderSidebarStats{display:grid;gap:3px;margin:24px 0 18px;padding:15px;border:1px solid rgba(251,240,222,.14);border-radius:14px;background:rgba(255,255,255,.035)}
+.cmcBuilderSidebarStats strong{font-size:var(--cmc-type-body-sm)}
+.cmcBuilderSidebarStats span{color:rgba(251,240,222,.54);font-size:10px;font-weight:780}
+.cmcBuilderOutline{display:grid;gap:7px}
+.cmcBuilderOutline button{
+  display:grid;
+  grid-template-columns:27px minmax(0,1fr) auto;
+  gap:3px 9px;
+  align-items:center;
+  width:100%;
+  min-height:57px;
+  padding:10px 11px;
+  border:1px solid transparent;
+  border-radius:12px;
+  background:transparent;
+  color:rgba(251,240,222,.72);
+  box-shadow:none;
+  text-align:left;
+}
+.cmcBuilderOutline button:hover,.cmcBuilderOutline button:focus-visible{border-color:rgba(251,240,222,.18);background:rgba(255,255,255,.05);color:#fff;outline:0;transform:none}
+.cmcBuilderOutline button>span:first-child{grid-row:1/3;color:var(--cmcEmber);font-size:10px;font-weight:950;letter-spacing:.07em}
+.cmcBuilderOutline button strong{overflow:hidden;font-size:12px;line-height:1.3;text-overflow:ellipsis;white-space:nowrap}
+.cmcBuilderOutline button small{grid-column:2/-1;color:rgba(251,240,222,.5);font-size:9px;font-weight:780}
+.cmcBuilderWorkspace{min-width:0;background-color:#fbf0de;background-image:radial-gradient(rgba(41,61,72,.085) .7px,transparent .7px);background-size:18px 18px}
+.cmcBuilderWorkspace>.cmcBuilderMain{width:min(1180px,calc(100% - 64px));margin:0 auto;padding:38px 0 94px}
+.cmcBuilderWorkspace .cmcBuilderHeader{align-items:end;margin-bottom:25px}
+.cmcBuilderWorkspace .cmcBuilderHeader h1{font-size:clamp(42px,5vw,66px)}
+.cmcBuilderWorkspace .cmcBuilderSettings,
+.cmcBuilderWorkspace .cmcModuleBuilder{background:rgba(255,250,241,.9);box-shadow:0 12px 34px rgba(41,61,72,.045)}
+.cmcTaskPlanBuilderMain .cmcTaskPlanStructure{border-radius:27px}
+
+/* Information appears on deliberate click, not accidental hover. */
+.cmcInfoTip{
+  width:17px;
+  height:17px;
+  flex-basis:17px;
+  border-color:rgba(41,61,72,.22);
+  background:rgba(255,255,255,.5);
+  font-size:9px;
+  cursor:pointer;
+}
+.cmcInfoTip:hover,.cmcInfoTip:focus-visible{border-color:rgba(41,61,72,.34);background:rgba(255,255,255,.88);color:var(--cmcSlate)}
+.cmcInfoTip:hover:after,.cmcInfoTip:focus-visible:after{opacity:0;transform:translate(-50%,5px)}
+.cmcInfoTip[aria-expanded="true"]{background:var(--cmcSlate);color:#fff}
+.cmcInfoTip[aria-expanded="true"]:after{opacity:1;transform:translate(-50%,0)}
+
+/* A course-like progress treatment inside the selected task-plan phase. */
+.cmcPlanWorkspaceProgress{margin:0 0 25px;padding:15px 17px;border:1px solid rgba(41,61,72,.13);border-radius:15px;background:rgba(255,255,255,.43)}
+.cmcPlanWorkspaceProgress>div:first-child{display:flex;align-items:baseline;justify-content:space-between;gap:18px;margin-bottom:10px}
+.cmcPlanWorkspaceProgress strong{color:var(--cmcSlate);font-size:var(--cmc-type-body-lg)}
+.cmcPlanWorkspaceProgress span{color:#61727a;font-size:var(--cmc-type-caption);font-weight:780}
+.cmcPlanWorkspaceProgress>div:nth-child(2){height:7px;overflow:hidden;border-radius:99px;background:rgba(41,61,72,.11)}
+.cmcPlanWorkspaceProgress i{display:block;height:100%;border-radius:inherit;background:linear-gradient(90deg,var(--cmcEmber),var(--cmcSage));transition:width .24s ease}
+.cmcPlanWorkspaceProgress>small{display:block;margin-top:8px;color:#6b7a80;font-size:10px;font-weight:720}
+.cmcPlanWorkspaceProgress.preview{border-style:dashed;background:rgba(255,255,255,.31)}
+
+/* Bottom navigation makes the adjacent phases discoverable without competing with the outline. */
+.cmcPlanPhasePager{display:grid;grid-template-columns:minmax(0,1fr) auto minmax(0,1fr);gap:14px;align-items:center;margin-top:30px;padding-top:22px;border-top:1px solid rgba(41,61,72,.13)}
+.cmcPlanPhasePager button{display:grid;gap:3px;max-width:270px;padding:10px 0;border:0;background:transparent;color:var(--cmcSlate);box-shadow:none;text-align:left}
+.cmcPlanPhasePager button:last-child{justify-self:end;text-align:right}
+.cmcPlanPhasePager button:hover,.cmcPlanPhasePager button:focus-visible{background:transparent;color:#207d73;outline:0;transform:none}
+.cmcPlanPhasePager button:disabled{visibility:hidden}
+.cmcPlanPhasePager button span{color:#697a81;font-size:9px;font-weight:900;letter-spacing:.1em;text-transform:uppercase}
+.cmcPlanPhasePager button strong{font-size:var(--cmc-type-caption);line-height:1.35}
+.cmcPlanPhaseDots{display:flex;align-items:center;gap:6px;justify-content:center}
+.cmcPlanPhaseDots button{display:block;width:7px;height:7px;min-width:0;padding:0;border-radius:50%;background:rgba(41,61,72,.2);font-size:0}
+.cmcPlanPhaseDots button.active{width:20px;border-radius:99px;background:var(--cmcSage)}
+.cmcPlanPhaseDots button:hover,.cmcPlanPhaseDots button:focus-visible{background:var(--cmcEmber)}
+.cmcPlanExpandCue{display:grid;width:27px;height:27px;place-items:center;border:1px solid rgba(77,167,156,.34);border-radius:9px;color:#2e847a;transition:background-color .15s ease,color .15s ease}
+.cmcPlanExpandCue svg{width:15px;height:15px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;transition:transform .16s ease}
+.cmcPlanTaskPreviewDetail:hover .cmcPlanExpandCue,.cmcPlanTaskPreviewDetail:focus-within .cmcPlanExpandCue{background:rgba(77,167,156,.11)}
+.cmcPlanTaskPreviewDetail[open] .cmcPlanExpandCue svg{transform:rotate(180deg)}
+.cmcPlanExpandCue.open svg{transform:rotate(-90deg)}
+
+@media(max-width:980px){
+  .cmcBuilderShell{--cmc-builder-sidebar-width:275px}
+  .cmcBuilderShell.sidebar-collapsed{--cmc-builder-sidebar-width:70px}
+  .cmcBuilderSidebarContent{padding-right:20px;padding-left:20px}
+  .cmcBuilderWorkspace>.cmcBuilderMain{width:calc(100% - 42px)}
+}
+@media(max-width:720px){
+  .cmcBuilderShell,.cmcBuilderShell.sidebar-collapsed{display:block;min-height:0}
+  .cmcBuilderSidebarContent{position:static;max-height:480px;padding:27px 20px;overflow:auto}
+  .cmcBuilderShell.sidebar-collapsed .cmcBuilderSidebar{height:64px}
+  .cmcBuilderSidebarRail,.cmcBuilderShell.sidebar-collapsed .cmcBuilderSidebarRail{top:100px;right:14px;left:auto;flex-direction:row}
+  .cmcBuilderShell.sidebar-collapsed .cmcBuilderSidebarRail{right:14px;left:14px;justify-content:space-between}
+  .cmcBuilderShell.sidebar-collapsed .cmcBuilderRailStatus{writing-mode:horizontal-tb}
+  .cmcBuilderWorkspace>.cmcBuilderMain{width:calc(100% - 28px);padding:28px 0 68px}
+  .cmcBuilderWorkspace .cmcBuilderHeader{gap:21px}
+  .cmcBuilderWorkspace .cmcBuilderHeader h1{font-size:42px}
+  .cmcPlanPhasePager{grid-template-columns:1fr 1fr}
+  .cmcPlanPhaseDots{grid-column:1/-1;grid-row:1}
+  .cmcPlanPhasePager>button:first-child{grid-column:1;grid-row:2}
+  .cmcPlanPhasePager>button:last-child{grid-column:2;grid-row:2}
+  .cmcInfoTip:after{left:auto;right:-18px;width:min(245px,72vw);transform:translate(0,5px)}
+  .cmcInfoTip:hover:after,.cmcInfoTip:focus-visible:after{transform:translate(0,5px)}
+  .cmcInfoTip[aria-expanded="true"]:after{transform:translate(0,0)}
+}

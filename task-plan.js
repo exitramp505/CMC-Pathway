@@ -120,7 +120,8 @@
     if (!section) return empty('Nothing here yet.', 'Your leader can add work to this plan.');
     const summary = ui.stats(section.tasks);
     const index = sections.indexOf(section);
-    return `<section class="cmcTaskPlanPhase cmcTaskPlanPhaseFocused"><header><div><p class="cmcEyebrow">PHASE ${String(index + 1).padStart(2, '0')}</p><h2>${escapeHtml(section.title)}</h2>${section.description ? `<p>${escapeHtml(section.description)}</p>` : ''}</div><span>${summary.completed} of ${summary.total} complete</span></header><div class="cmcTaskPlanHierarchy">${renderHierarchy(section.tasks, ui.nextTask(section.tasks)) || empty('No tasks in this phase.', 'A leader can add work when it is needed.')}</div></section>`;
+    const overall = ui.stats(tasks);
+    return `<section class="cmcTaskPlanPhase cmcTaskPlanPhaseFocused"><div class="cmcPlanWorkspaceProgress"><div><span>Overall plan progress</span><strong>${overall.percent}% complete</strong></div><div><i style="width:${overall.percent}%"></i></div><small>${overall.completed} of ${overall.total} tasks complete</small></div><header><div><p class="cmcEyebrow">PHASE ${String(index + 1).padStart(2, '0')}</p><h2>${escapeHtml(section.title)}</h2>${section.description ? `<p>${escapeHtml(section.description)}</p>` : ''}</div><span>${summary.completed} of ${summary.total} complete</span></header><div class="cmcTaskPlanHierarchy">${renderHierarchy(section.tasks, ui.nextTask(section.tasks)) || empty('No tasks in this phase.', 'A leader can add work when it is needed.')}</div>${phasePagerHtml(index)}</section>`;
   }
 
   function renderHierarchy(items, next) {
@@ -138,7 +139,7 @@
     const blocked = task.blocked_by_dependency && !complete;
     const milestone = task.task_type === 'milestone';
     const status = complete ? 'Complete' : pending ? 'Awaiting approval' : blocked ? 'Waiting' : task.status === 'in_progress' ? 'In progress' : 'Not started';
-    return `<button class="cmcPlanTaskRow ${milestone ? 'milestone' : ''} ${complete ? 'complete' : ''} ${blocked ? 'blocked' : ''}" type="button" data-open-task="${escapeHtml(task.id)}"><span class="cmcPlanTaskCheck">${milestone ? '◆' : complete ? '✓' : pending ? '…' : blocked ? '⌛' : ''}</span><span class="cmcPlanTaskRowCopy"><small>${milestone ? 'MILESTONE' : 'TASK'}${Number(task.priority || 3) < 3 ? ` · PRIORITY ${task.priority}` : ''}</small><strong>${escapeHtml(task.title)}</strong>${task.description ? `<span>${escapeHtml(short(task.description, 145))}</span>` : ''}</span><span class="cmcPlanTaskRowAside"><b>${escapeHtml(status)}</b>${task.due_date ? `<time>Due ${formatDate(task.due_date)}</time>` : ''}<i>Open →</i></span></button>`;
+    return `<button class="cmcPlanTaskRow ${milestone ? 'milestone' : ''} ${complete ? 'complete' : ''} ${blocked ? 'blocked' : ''}" type="button" data-open-task="${escapeHtml(task.id)}"><span class="cmcPlanTaskCheck">${milestone ? '◆' : complete ? '✓' : pending ? '…' : blocked ? '⌛' : ''}</span><span class="cmcPlanTaskRowCopy"><small>${milestone ? 'MILESTONE' : 'TASK'}${Number(task.priority || 3) < 3 ? ` · PRIORITY ${task.priority}` : ''}</small><strong>${escapeHtml(task.title)}</strong>${task.description ? `<span>${escapeHtml(short(task.description, 145))}</span>` : ''}</span><span class="cmcPlanTaskRowAside"><b>${escapeHtml(status)}</b>${task.due_date ? `<time>Due ${formatDate(task.due_date)}</time>` : ''}<span class="cmcPlanExpandCue open" aria-hidden="true"><svg viewBox="0 0 20 20"><path d="m8 5 5 5-5 5"></path></svg></span></span></button>`;
   }
 
   function timelineHtml() {
@@ -177,6 +178,12 @@
       render();
       if (window.matchMedia('(max-width: 720px)').matches) document.getElementById('taskPlanContent')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
     }));
+    document.querySelectorAll('[data-phase-target]').forEach(button => button.addEventListener('click', () => {
+      selectedPhaseKey = button.dataset.phaseTarget;
+      view = 'list';
+      render();
+      document.getElementById('taskPlanContent')?.scrollIntoView({ behavior:'smooth', block:'start' });
+    }));
     document.querySelectorAll('[data-plan-view]').forEach(button => button.addEventListener('click', () => { view = button.dataset.planView; render(); }));
     document.querySelectorAll('[data-open-task]').forEach(button => button.addEventListener('click', () => openTask(button.dataset.openTask)));
     document.getElementById('addCustomPlanTask')?.addEventListener('click', () => {
@@ -184,6 +191,13 @@
       document.getElementById('customTaskDialog').showModal();
     });
     document.getElementById('applyTaskPlanUpdate')?.addEventListener('click', applyTemplateUpdate);
+  }
+
+  function phasePagerHtml(index) {
+    const previous = sections[index - 1];
+    const next = sections[index + 1];
+    if (!previous && !next) return '';
+    return `<nav class="cmcPlanPhasePager" aria-label="Other phases"><button type="button" ${previous ? `data-phase-target="${escapeHtml(ui.sectionKey(previous, index - 1))}"` : 'disabled'}><span>← Previous phase</span><strong>${previous ? escapeHtml(previous.title) : 'Beginning of plan'}</strong></button><div class="cmcPlanPhaseDots" aria-label="Plan phases">${sections.map((phase, phaseIndex) => `<button type="button" class="${phaseIndex === index ? 'active' : ''}" data-phase-target="${escapeHtml(ui.sectionKey(phase, phaseIndex))}" aria-label="Open phase ${phaseIndex + 1}: ${escapeHtml(phase.title)}" ${phaseIndex === index ? 'aria-current="step"' : ''}></button>`).join('')}</div><button type="button" ${next ? `data-phase-target="${escapeHtml(ui.sectionKey(next, index + 1))}"` : 'disabled'}><span>Next phase →</span><strong>${next ? escapeHtml(next.title) : 'End of plan'}</strong></button></nav>`;
   }
 
   function openTask(id) {

@@ -204,7 +204,7 @@ exports.handler = async (event) => {
 };
 
 function assessmentTitle(type) {
-  if (type === 'isa_readiness') return 'Ministry Readiness Inventory';
+  if (type === 'ministry_readiness' || type === 'isa_readiness') return 'Ministry Readiness Inventory';
   if (type === 'ministry_style') return 'Ministry Style Inventory';
   return 'Character Qualities Assessment';
 }

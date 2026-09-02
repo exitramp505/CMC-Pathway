@@ -51,14 +51,14 @@ function scoreCharacterAssessment(answers, married) {
   };
 }
 
-const ISA_CATEGORY_META = {
+const MRI_CATEGORY_META = {
   P:{ name:'Church Planting', benchmark:75, median:52, description:'Church Planting reflects exposure to pioneering new ministry, starting groups, raising resources, recruiting leaders, and building work that can continue beyond the original leader.' },
   E:{ name:'Entrepreneurial Leadership', benchmark:75, median:74, description:'Entrepreneurial Leadership reflects initiative, drive, risk tolerance, resilience, vision, ownership, and the ability to gather people around something that does not yet exist.' },
   M:{ name:'Ministry Experience', benchmark:75, median:59, description:'Ministry Experience reflects hands-on leadership in groups, events, teaching, training, supervising, evangelistic ministry, and growing ministry environments.' },
   R:{ name:'Relational Evangelism', benchmark:70, median:48, description:'Relational Evangelism reflects personal evangelism, discipling new believers, follow-up, time with unchurched people, and equipping others to engage people outside the church.' }
 };
 
-function isaQuestionMeta(id) {
+function mriQuestionMeta(id) {
   if (id >= 1 && id <= 4) return { group:'P', type:'yesno' };
   if (id >= 5 && id <= 8) return { group:'M', type:'yesno' };
   if (id >= 9 && id <= 19) return { group:'P', type:'yesno' };
@@ -71,7 +71,7 @@ function isaQuestionMeta(id) {
   return null;
 }
 
-function isaValue(type, answer) {
+function mriValue(type, answer) {
   const maps = {
     yesno:{ Yes:1, No:0 },
     count:{ None:0, '1-2':0.25, '3-6':0.5, '7-15':0.75, '16+':1 },
@@ -87,26 +87,26 @@ function readinessLabel(value) {
   return 'Needs Development';
 }
 
-function scoreIsaAssessment(answers) {
+function scoreMinistryReadinessAssessment(answers) {
   const sums = { P:0, E:0, M:0, R:0 };
   const counts = { P:0, E:0, M:0, R:0 };
   let total = 0;
   for (let id = 1; id <= 85; id += 1) {
-    const meta = isaQuestionMeta(id);
+    const meta = mriQuestionMeta(id);
     const row = answers?.[id] || answers?.[String(id)];
-    const value = isaValue(meta.type, row?.answer);
+    const value = mriValue(meta.type, row?.answer);
     if (value === undefined) throw validationError('Please complete every inventory question before submitting.');
     sums[meta.group] += value;
     counts[meta.group] += 1;
     total += value;
   }
-  const categories = Object.entries(ISA_CATEGORY_META).map(([key, meta]) => {
+  const categories = Object.entries(MRI_CATEGORY_META).map(([key, meta]) => {
     const score = Math.round((sums[key] / counts[key]) * 100);
     return { key, ...meta, score, label:readinessLabel(score) };
   });
   const overall = Math.round((total / 85) * 100);
   return {
-    assessmentType:'isa_readiness',
+    assessmentType:'ministry_readiness',
     assessmentTitle:'Ministry Readiness Inventory',
     overall,
     overallLabel:readinessLabel(overall),
@@ -202,6 +202,6 @@ function validationError(message) {
 
 module.exports = {
   scoreCharacterAssessment,
-  scoreIsaAssessment,
+  scoreMinistryReadinessAssessment,
   scoreMinistryStyle
 };

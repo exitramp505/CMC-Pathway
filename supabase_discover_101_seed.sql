@@ -5,7 +5,7 @@
 -- the same structure in course-builder.html as cmc_admin. This file does not deploy itself.
 --
 -- 13 video placeholders totaling 45 minutes 30 seconds. Videos and graphics are not produced.
--- Section 4 is the native Pathway Ministry Readiness Inventory (isa-assessment.html, assignment key ministry_readiness).
+-- Section 4 is the native Pathway Ministry Readiness Inventory (ministry-readiness.html, assignment key ministry_readiness).
 -- Do not send learners off-site. Do not charge a fee. Do not ask for an outside account.
 -- Policy gaps (whether this course step can assign ministry_readiness, whether senders take it, whether completion is required;
 -- credentialing fees not on the live page; Discernment Center URL/dates/cost) are left as host notes. Do not invent that policy.
@@ -16,7 +16,7 @@ declare
   discover_module_uuid uuid;
   calling_module_uuid uuid;
   vision_module_uuid uuid;
-  isa_module_uuid uuid;
+  mri_module_uuid uuid;
 begin
   insert into public.cmc_courses (
     slug,
@@ -72,8 +72,8 @@ begin
   returning id into vision_module_uuid;
 
   insert into public.cmc_course_modules (course_id, title, description, position, updated_at)
-  values (course_uuid, $isa_module_title$Ministry Readiness Inventory$isa_module_title$, $isa_module_desc$Take the native CMC Pathway Ministry Readiness Inventory (isa-assessment.html, assignment key ministry_readiness). No outside account. No fee.$isa_module_desc$, 3, now())
-  returning id into isa_module_uuid;
+  values (course_uuid, $mri_module_title$Ministry Readiness Inventory$mri_module_title$, $mri_module_desc$Take the native CMC Pathway Ministry Readiness Inventory (ministry-readiness.html, assignment key ministry_readiness). No outside account. No fee.$mri_module_desc$, 3, now())
+  returning id into mri_module_uuid;
 
   insert into public.cmc_course_lessons (
     course_id,
@@ -916,9 +916,9 @@ $s3a2_body$,
   values
   (
     course_uuid,
-    isa_module_uuid,
+    mri_module_uuid,
     $s4v1_title$Take the Ministry Readiness Inventory$s4v1_title$,
-    $s4v1_sum$Native CMC Pathway Ministry Readiness Inventory at isa-assessment.html. Assignment key ministry_readiness. No outside account. No fee.$s4v1_sum$,
+    $s4v1_sum$Native CMC Pathway Ministry Readiness Inventory at ministry-readiness.html. Assignment key ministry_readiness. No outside account. No fee.$s4v1_sum$,
     $s4v1_body$> Video placeholder: S4-V1 Take the Ministry Readiness Inventory (3:00). Not yet produced.
 
 You have walked the biblical pattern. You have started to name a people and a place. You have heard Open Bible's mission to globally make disciples, develop leaders, and multiply churches. Now take a tool that can give you a preliminary look at readiness.
@@ -959,17 +959,17 @@ If you lead a church, walk with the person you are sending. Read the results tog
 
 ### Host note
 
-Whether this Discover course step can open or assign the inventory itself, whether senders take it, and whether completion is required to finish Discover are not decided in this course. Do not invent that policy. Assignment key: ministry_readiness. Page: isa-assessment.html. A regional leader can assign it in Pathway.
+Whether this Discover course step can open or assign the inventory itself, whether senders take it, and whether completion is required to finish Discover are not decided in this course. Do not invent that policy. Assignment key: ministry_readiness. Page: ministry-readiness.html. A regional leader can assign it in Pathway.
 
 ### Link
 
-- Ministry Readiness Inventory: [Open the inventory](/isa-assessment.html)
+- Ministry Readiness Inventory: [Open the inventory](/ministry-readiness.html)
 $s4v1_body$,
     'video',
     '',
     '',
     '',
-    $s4v1_rurl$https://pathway.openbiblecmc.org/isa-assessment.html$s4v1_rurl$,
+    $s4v1_rurl$https://pathway.openbiblecmc.org/ministry-readiness.html$s4v1_rurl$,
     $s4v1_rlab$Ministry Readiness Inventory$s4v1_rlab$,
     $s4v1_ref$1. What did the Ministry Readiness Inventory affirm that matches burden, confirmation, or fruit you have already seen?
 2. Which of the four areas felt thinnest, and what is one humble next step (training, a teammate, more disciple making, more time in your sending church)?

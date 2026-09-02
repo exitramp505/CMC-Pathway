@@ -41,4 +41,4 @@ Reports are still emailed through Resend. They are stored in Supabase and also s
 
 ## Ministry Readiness Inventory
 
-This version adds a second assessment at `/isa-assessment.html` and links it from the candidate dashboard. Results are stored in the existing `assessment_results` table with `scores.assessmentType = "isa_readiness"`.
+This version adds a second assessment at `/ministry-readiness.html` and links it from the candidate dashboard. Results are stored in the existing `assessment_results` table with `scores.assessmentType = "ministry_readiness"`. Older saved reports keep working; the dashboard and participant record still read the previous assessment type if it is present.

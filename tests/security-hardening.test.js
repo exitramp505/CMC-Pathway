@@ -1,7 +1,7 @@
 const assert = require('node:assert/strict');
 const {
   scoreCharacterAssessment,
-  scoreIsaAssessment,
+  scoreMinistryReadinessAssessment,
   scoreMinistryStyle
 } = require('../netlify/functions/_assessment-scoring');
 const { regionForState, canonicalRegion } = require('../netlify/functions/_regions');
@@ -33,13 +33,15 @@ function run() {
     /complete every assessment question/i
   );
 
-  const isaAnswers = {};
+  const mriAnswers = {};
   for (let id = 1; id <= 85; id += 1) {
-    isaAnswers[id] = { answer:id <= 42 ? 'Yes' : id <= 60 ? '16+' : 'Strongly Agree' };
+    mriAnswers[id] = { answer:id <= 42 ? 'Yes' : id <= 60 ? '16+' : 'Strongly Agree' };
   }
-  const isa = scoreIsaAssessment(isaAnswers);
-  assert.equal(isa.overall, 100);
-  assert.equal(isa.categories.length, 4);
+  const mri = scoreMinistryReadinessAssessment(mriAnswers);
+  assert.equal(mri.overall, 100);
+  assert.equal(mri.categories.length, 4);
+  assert.deepEqual(mri.categories.map(c => c.key), ['P', 'E', 'M', 'R']);
+  assert.equal(mri.assessmentType, 'ministry_readiness');
 
   const styleAnswers = {};
   for (let id = 1; id <= 48; id += 1) {

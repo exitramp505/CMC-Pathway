@@ -115,7 +115,7 @@
 .assessmentCompleteCard{border-color:#dbeee1;background:#f7fbf8}
 @media(max-width:760px){.isaQuestionText{font-size:20px}.isaChoiceList.yesno{grid-template-columns:1fr}.isaChoice{min-height:68px;font-size:16px}.isaAssessmentShell .progressMeta{font-size:15px}}
 
-/* ISA report redesign */
+/* Ministry Readiness Inventory report redesign */
 .isaReportTitle{display:flex;justify-content:space-between;gap:24px;align-items:center;margin-bottom:18px;padding:22px;border-radius:20px;background:#ffffff;border:1px solid #d8e1ef;box-shadow:0 10px 28px rgba(15,23,42,.06)}
 .isaReportTitle h2{margin:0 0 6px;color:#1e88c9;font-size:2rem}
 .isaOverall{min-width:132px;border:3px solid #79b943;border-radius:20px;padding:16px;text-align:center;background:#fffaf1}
@@ -2237,7 +2237,7 @@
   }
 }
 
-/* v40 ISA report explanation and static reference styling */
+/* v40 Ministry Readiness Inventory report explanation and static reference styling */
 .isaHowToRead p{
   margin:0 0 12px;
   color:#52617a;
@@ -2284,7 +2284,7 @@
 }
 
 
-/* v42/v44 ISA report HTML-mirrored redesign */
+/* v42/v44 Ministry Readiness Inventory report HTML-mirrored redesign */
 .isaReportV44{
   display:grid;
   gap:18px;

@@ -60,7 +60,7 @@
       audience:'coach'
     };
     const assessmentType = scores.assessmentType || 'character_qualities';
-    if (assessmentType === 'isa_readiness' && typeof isaReportHtml === 'function') {
+    if ((assessmentType === 'ministry_readiness' || assessmentType === 'isa_readiness') && typeof isaReportHtml === 'function') {
       return isaReportHtml(record);
     }
     if (assessmentType === 'ministry_style' && window.MinistryStyleReport) {

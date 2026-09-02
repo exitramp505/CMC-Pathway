@@ -43,7 +43,7 @@ function paragraph(doc, text, x, y, w, size=9.5, color='#52617a', lineGap=2){
 function drawHeader(doc, candidate, scores){
   card(doc, M, 42, CONTENT_W, 104, '#ffffff', '#d9e2ec', 16);
   doc.font('Helvetica-Bold').fontSize(8).fillColor('#64748b').text('MINISTRY READINESS INVENTORY', M+18, 60, {characterSpacing:1.2});
-  doc.font('Helvetica-Bold').fontSize(22).fillColor('#1e88c9').text(`${safe(candidate.name || 'Candidate')} ISA-Style Score`, M+18, 76, {width:350});
+  doc.font('Helvetica-Bold').fontSize(22).fillColor('#1e88c9').text(`${safe(candidate.name || 'Candidate')} Ministry Readiness Inventory Score`, M+18, 76, {width:350});
   doc.font('Helvetica').fontSize(10).fillColor('#64748b').text(`${safe(candidate.email||'')} · ${safe(candidate.state||'')} / ${safe(candidate.region||'')} Region`, M+18, 108, {width:370});
 
   const overall = num(scores.overall);
@@ -194,7 +194,7 @@ function drawInDepth(doc, answers, candidate, pageRef){
   addPage(doc,pageRef);
   const first=firstName(candidate);
   let y=54;
-  sectionTitle(doc,'ISA in Depth',M,y);
+  sectionTitle(doc,'Ministry Readiness Inventory in Depth',M,y);
   y=paragraph(doc,`These are ${first}'s item-by-item answers. They should be used for context when discussing category scores, strengths, and possible development areas.`,M,y+24,CONTENT_W,9.2)+12;
 
   const rows=normalizeAnswers(answers);

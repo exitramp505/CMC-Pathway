@@ -120,7 +120,7 @@ function isaInDepth(answers, candidate){
   const first = firstNameOf(candidate);
   const rows=Object.keys(answers||{}).map(k=>({id:Number(k),...(answers[k]||{})})).filter(x=>x.id).sort((a,b)=>a.id-b.id);
   return `<section class="reportSection isaReportBlock">
-    <h3>ISA in Depth</h3>
+    <h3>Ministry Readiness Inventory in Depth</h3>
     <p class="isaSectionLead">These are ${esc(first)}'s item-by-item answers. They should be used for context when discussing category scores, strengths, and possible development areas.</p>
     <table class="isaDepthTable isaDepthTableV44">
       <thead><tr><th>No.</th><th>Question</th><th>Answer</th><th>Group</th></tr></thead>
@@ -140,7 +140,7 @@ function isaReportHtml(record){
     <div class="isaReportTitle isaReportHeroV44">
       <div>
         <div class="eyebrow">Ministry Readiness Inventory</div>
-        <h2>${esc(c.name||'Candidate')} ISA-Style Score</h2>
+        <h2>${esc(c.name||'Candidate')} Ministry Readiness Inventory Score</h2>
         <p class="muted">${esc(c.email||'')} · ${esc(c.phone||'')} · ${esc(c.state||'')} / ${esc(c.region||record.region||'')} Region</p>
       </div>
       <div class="isaOverall" style="border-color:${scoreColor(pct)}"><strong>${esc(pct)}%</strong><span>${esc(s.overallLabel||record.overallLabel||'')}</span></div>

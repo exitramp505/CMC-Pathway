@@ -8,7 +8,7 @@
   ];
   const ASSIGNMENT_INFO = {
     discernment_application:['Discernment Application','application.html','Clarify your story and sense of calling.'],
-    ministry_readiness:['Ministry Readiness Inventory','isa-assessment.html','Reflect on your current readiness for ministry.'],
+    ministry_readiness:['Ministry Readiness Inventory','ministry-readiness.html','Reflect on your current readiness for ministry.'],
     ministry_style:['Ministry Style Inventory','ministry-style.html','Understand the ways you tend to lead and serve.'],
     character_qualities:['Character Qualities Assessment','assessment.html','Review the character qualities that support healthy ministry.'],
     pastoral_reference:['Pastoral Reference Form','pastoral-reference-request.html','Invite a pastor or ministry leader to provide a confidential reference.']
@@ -61,7 +61,7 @@
   const completedKeys = new Set();
   for (const report of reports || []) {
     const type = report.scores?.assessmentType || '';
-    if (type === 'isa_readiness') completedKeys.add('ministry_readiness');
+    if (type === 'ministry_readiness' || type === 'isa_readiness') completedKeys.add('ministry_readiness');
     else if (type === 'ministry_style') completedKeys.add('ministry_style');
     else completedKeys.add('character_qualities');
   }

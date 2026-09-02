@@ -1034,7 +1034,7 @@
   }
 
   function assessmentKey(type) {
-    if (type === 'isa_readiness') return 'ministry_readiness';
+    if (type === 'ministry_readiness' || type === 'isa_readiness') return 'ministry_readiness';
     if (type === 'ministry_style') return 'ministry_style';
     return 'character_qualities';
   }

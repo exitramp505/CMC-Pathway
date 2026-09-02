@@ -5,10 +5,10 @@
 -- the same structure in course-builder.html as cmc_admin. This file does not deploy itself.
 --
 -- 13 video placeholders totaling 45 minutes 30 seconds. Videos and graphics are not produced.
--- ISA for this course is external: https://churchplanterprofiles.com/
--- Do not use the in-platform ISA quiz for this course.
--- Policy gaps (ISA network/payment/who takes it/results; credentialing fees not on the live page;
--- Discernment Center URL/dates/cost) are left as host notes. Do not invent that policy.
+-- Section 4 is the native Pathway Ministry Readiness Inventory (isa-assessment.html, assignment key ministry_readiness).
+-- Do not send learners off-site. Do not charge a fee. Do not ask for an outside account.
+-- Policy gaps (whether this course step can assign ministry_readiness, whether senders take it, whether completion is required;
+-- credentialing fees not on the live page; Discernment Center URL/dates/cost) are left as host notes. Do not invent that policy.
 
 do $cmc_seed$
 declare
@@ -72,7 +72,7 @@ begin
   returning id into vision_module_uuid;
 
   insert into public.cmc_course_modules (course_id, title, description, position, updated_at)
-  values (course_uuid, $isa_module_title$Take the ISA Profiler$isa_module_title$, $isa_module_desc$Take the external Initial Screening Assessment from Church Planter Profiles. This course does not use an in-platform quiz.$isa_module_desc$, 3, now())
+  values (course_uuid, $isa_module_title$Ministry Readiness Inventory$isa_module_title$, $isa_module_desc$Take the native CMC Pathway Ministry Readiness Inventory (isa-assessment.html, assignment key ministry_readiness). No outside account. No fee.$isa_module_desc$, 3, now())
   returning id into isa_module_uuid;
 
   insert into public.cmc_course_lessons (
@@ -465,7 +465,7 @@ $s1v6_body$,
     course_uuid,
     discover_module_uuid,
     $s1v7_title$Your Next Step$s1v7_title$,
-    $s1v7_sum$Credentialing, the Discernment Center, and a preview of the ISA in Section 4.$s1v7_sum$,
+    $s1v7_sum$Credentialing, the Discernment Center, and a preview of the Ministry Readiness Inventory in Section 4.$s1v7_sum$,
     $s1v7_body$> Video placeholder: S1-V7 Your Next Step (3:00). Not yet produced.
 
 A call grows clearer as you walk. Open Bible has pathways for that walking. Use what is public and current. Talk to people who can walk with you. Leave the rest with the Lord and with your leaders.
@@ -500,9 +500,9 @@ Lead pastors: if you are raising up pioneers, send them to the Discernment Cente
 
 For more information, talk with your Regional Director of Multiplication. Dates, cost, and a public URL were not on a live page when this course was written. Your regional leader can point you to the next gathering.
 
-### The ISA Profiler is ahead
+### The Ministry Readiness Inventory is ahead
 
-Section 4 of Discover: Church Multiplication 101 will send you to the ISA Profiler, an external church planter assessment from Gateway Leadership at Church Planter Profiles. You do not need to take it yet. Finish Sections 2 and 3 first so calling and Open Bible's vision are in view before you sit with an assessment.
+Section 4 of Discover: Church Multiplication 101 will send you to the Ministry Readiness Inventory, the native CMC Pathway assessment. You do not need to take it yet. Finish Sections 2 and 3 first so calling and Open Bible's vision are in view before you sit with an assessment.
 
 If you lead a church, you may be walking a pioneer toward that assessment. Stay in the conversation. Assessments are tools. They do not replace the Spirit, the church, or a long obedience.
 
@@ -869,14 +869,14 @@ If you lead a church, try this as a quiet audit. Seating capacity tells you how 
 
 Open Bible is a Spirit-empowered family with a multiplying priority. Discover: Church Multiplication 101 exists to help you find your place in that priority, among a real people, with a sending church beside you.
 
-Next you will take an external assessment that can give you language for readiness. The mission and the vision stay first. Tools serve the call. The call belongs to God.
+Next you will take the Ministry Readiness Inventory in Pathway, a tool that can give you language for readiness. The mission and the vision stay first. Tools serve the call. The call belongs to God.
 
 ### Reflection
 
 1. Where is your life currently strong: making disciples, developing leaders, or multiplying churches? Where is it thin?
 2. What would "sending capacity" look like in your church in the next twelve months? Name a number of people, a people group, or a team.
 3. How does Progress Over Preservation challenge a preference for comfort in your leadership or in your pioneering plans?
-4. Before you take the ISA, write one sentence: How I believe God is inviting me to serve Open Bible's mission to make disciples, develop leaders, and multiply churches.
+4. Before you take the Ministry Readiness Inventory, write one sentence: How I believe God is inviting me to serve Open Bible's mission to make disciples, develop leaders, and multiply churches.
 $s3a2_body$,
     'article',
     '',
@@ -887,7 +887,7 @@ $s3a2_body$,
     $s3a2_ref$1. Where is your life currently strong: making disciples, developing leaders, or multiplying churches? Where is it thin?
 2. What would "sending capacity" look like in your church in the next twelve months? Name a number of people, a people group, or a team.
 3. How does Progress Over Preservation challenge a preference for comfort in your leadership or in your pioneering plans?
-4. Before you take the ISA, write one sentence: How I believe God is inviting me to serve Open Bible's mission to make disciples, develop leaders, and multiply churches.$s3a2_ref$,
+4. Before you take the Ministry Readiness Inventory, write one sentence: How I believe God is inviting me to serve Open Bible's mission to make disciples, develop leaders, and multiply churches.$s3a2_ref$,
     true,
     12,
     true,
@@ -917,67 +917,61 @@ $s3a2_body$,
   (
     course_uuid,
     isa_module_uuid,
-    $s4v1_title$Take the ISA Profiler$s4v1_title$,
-    $s4v1_sum$External Initial Screening Assessment at churchplanterprofiles.com. Do not take a fake in-platform quiz.$s4v1_sum$,
-    $s4v1_body$> Video placeholder: S4-V1 Take the ISA Profiler (3:00). Not yet produced.
+    $s4v1_title$Take the Ministry Readiness Inventory$s4v1_title$,
+    $s4v1_sum$Native CMC Pathway Ministry Readiness Inventory at isa-assessment.html. Assignment key ministry_readiness. No outside account. No fee.$s4v1_sum$,
+    $s4v1_body$> Video placeholder: S4-V1 Take the Ministry Readiness Inventory (3:00). Not yet produced.
 
 You have walked the biblical pattern. You have started to name a people and a place. You have heard Open Bible's mission to globally make disciples, develop leaders, and multiply churches. Now take a tool that can give you a preliminary look at readiness.
 
-The ISA is the Initial Screening Assessment from Church Planter Profiles, provided by the Gateway Leadership Initiative. It is an 85-question survey. Most people finish in about 20 minutes. Some take closer to 30. The cost of the ISA itself is $19.95. You receive results immediately, compared with benchmark standards and with others who are interested in church planting.
+This one lives inside CMC Pathway. It is called the Ministry Readiness Inventory. You will not create an outside account. You will not pay a fee. You take it here, logged in, as part of this pathway.
 
-The ISA looks at four areas that matter in pioneering work:
+The inventory walks through eighty-five questions. Most people finish in about twenty minutes. It reviews practical ministry experience, leadership initiative, church multiplication exposure, and relational evangelism. The report names four areas:
 
-- Church Planting Experience
+- Church Planting
 - Entrepreneurial Leadership
 - Ministry Experience
 - Relational Evangelism
 
-Create an account at [https://churchplanterprofiles.com/](https://churchplanterprofiles.com/). You will be asked to choose a church planting network to share your results with. The site's default is Gateway Leaders / Gateway Leadership Initiative if you are not working with another organization.
+If this course step opens the inventory for you, start it from here. If you do not see it yet, a regional leader can assign the Ministry Readiness Inventory to you in Pathway. Ask your Regional Director of Multiplication if you are stuck.
 
-**Stop and read the note from your course host before you create the account.** Your host will tell you which network to select, who covers the $19.95, whether sending pastors take the ISA or only pioneers and planters, and where your results should go after you finish. Discover: Church Multiplication 101 will not invent that policy for you. If the note is missing, ask your Regional Director of Multiplication or your course host before you pay.
+Answer honestly. Resist the urge to perform. You want a true reading. This inventory does not decide whether God has called you. It does not replace the Spirit, the Word, your church, or a long obedience. Pathway's own report language is right: it does not determine calling, character, or final approval by itself. It gives you and CMC leaders a starting point for better conversation, coaching, and discernment.
 
-### Host note
+When you finish, Pathway saves the report. You can open it. Your leaders can see it. Then come back here and write from what you learned.
 
-Network selection, who pays the $19.95, whether sending pastors take the ISA or only pioneers and planters, and where results go are not decided in this course. Do not guess. Ask your Regional Director of Multiplication or your course host before you create an account or pay. Discover: Church Multiplication 101 will not invent that policy.
+If you are a pioneer, take it with a quiet heart.
 
-
-The ISA is a screening tool. Church Planter Profiles is clear that it does not exist to give a simple yes or no on whether anyone should start a new church. Use it as part of a wider discernment process: the Spirit, the Word, your church, your pastor, fruit already present, and, when the time is right, the Discernment Center.
-
-After the ISA, the site will offer a full Church Planter Profile for $99. That fuller profile is optional in this course unless your course host later requires it. Do not purchase it in order to complete Discover: Church Multiplication 101 unless you have been told to.
-
-If you are a pioneer, take the ISA with a quiet heart. Answer honestly. Resist the urge to perform. You want a true reading, not a flattering one.
-
-If you lead a church and your host has asked senders to take it as well, take it as a pastor who raises up pioneers. The four areas can help you see what you already carry and what you need on a team. If your host has asked only pioneers to take it, walk with the person you are sending. Read their results with them. Ask what the Spirit and the church are saying alongside the numbers.
-
-When you finish, follow your host's instructions for sharing results. Then come back here and write from what you learned.
+If you lead a church, walk with the person you are sending. Read the results together. Ask what the Spirit and the church are saying alongside the numbers. If a leader has also assigned this inventory to you as a sender, take it as a pastor who raises up pioneers. The four areas can help you see what you already carry and what you need on a team.
 
 ### How to complete this lesson
 
-1. Read the course host note on network, payment, who takes the ISA, and results.
-2. Watch S4-V1 if you have not already.
-3. Go to [https://churchplanterprofiles.com/](https://churchplanterprofiles.com/) and create an account using the network your host named.
-4. Complete the 85-question ISA ($19.95 unless your host is covering it).
-5. Review your immediate results.
-6. Return and answer the reflection prompts.
+1. Watch S4-V1 if you have not already.
+2. Open the Ministry Readiness Inventory in CMC Pathway. Use this course step if it is wired to the assessment. If it is not on your dashboard yet, ask your regional leader to assign it.
+3. Complete all eighty-five questions. Progress saves as you go.
+4. Review your report.
+5. Return and answer the reflection prompts.
 
 ### Reflection
 
-1. What did the ISA affirm that matches burden, confirmation, or fruit you have already seen?
+1. What did the Ministry Readiness Inventory affirm that matches burden, confirmation, or fruit you have already seen?
 2. Which of the four areas felt thinnest, and what is one humble next step (training, a teammate, more disciple making, more time in your sending church)?
 3. Who will you talk with about these results: pastor, sending church, Regional Director of Multiplication, or a trusted leader?
 4. Where is the Kingdom not yet established in your world, and how do these results shape the way you will move toward that people?
 
+### Host note
+
+Whether this Discover course step can open or assign the inventory itself, whether senders take it, and whether completion is required to finish Discover are not decided in this course. Do not invent that policy. Assignment key: ministry_readiness. Page: isa-assessment.html. A regional leader can assign it in Pathway.
+
 ### Link
 
-- Church Planter Profiles (ISA): [https://churchplanterprofiles.com/](https://churchplanterprofiles.com/)
+- Ministry Readiness Inventory: [Open the inventory](/isa-assessment.html)
 $s4v1_body$,
     'video',
     '',
     '',
     '',
-    $s4v1_rurl$https://churchplanterprofiles.com/$s4v1_rurl$,
-    $s4v1_rlab$Take the ISA at churchplanterprofiles.com$s4v1_rlab$,
-    $s4v1_ref$1. What did the ISA affirm that matches burden, confirmation, or fruit you have already seen?
+    $s4v1_rurl$https://pathway.openbiblecmc.org/isa-assessment.html$s4v1_rurl$,
+    $s4v1_rlab$Ministry Readiness Inventory$s4v1_rlab$,
+    $s4v1_ref$1. What did the Ministry Readiness Inventory affirm that matches burden, confirmation, or fruit you have already seen?
 2. Which of the four areas felt thinnest, and what is one humble next step (training, a teammate, more disciple making, more time in your sending church)?
 3. Who will you talk with about these results: pastor, sending church, Regional Director of Multiplication, or a trusted leader?
 4. Where is the Kingdom not yet established in your world, and how do these results shape the way you will move toward that people?$s4v1_ref$,

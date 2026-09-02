@@ -24,7 +24,7 @@
 
 /* Working-surface controls; header navigation is deliberately excluded. */
 .cmcFormMain button,.cmcFormMain .buttonLink{min-height:48px;border-radius:13px;box-shadow:none;font:900 14px/1.2 Montserrat,Arial,sans-serif}
-.cmcFormMain button:not(.secondaryBtn):not(.secondaryButton):not(.isaChoice):not(.ministryChoiceBtn),.cmcFormMain .buttonLink:not(.secondary){background:var(--cmcEmber);color:var(--cmcInk)}
+.cmcFormMain button:not(.secondaryBtn):not(.secondaryButton):not(.mriChoice):not(.ministryChoiceBtn),.cmcFormMain .buttonLink:not(.secondary){background:var(--cmcEmber);color:var(--cmcInk)}
 .cmcFormMain button:not(:disabled):hover,.cmcFormMain button:not(:disabled):focus-visible,.cmcFormMain .buttonLink:hover,.cmcFormMain .buttonLink:focus-visible{border-color:var(--cmcSlate)!important;background:var(--cmcSlate)!important;color:#fff!important;outline:0}
 .cmcFormMain .secondaryBtn,.cmcFormMain .secondaryButton,.cmcFormMain .buttonLink.secondary{border:1px solid var(--formLineStrong);background:transparent;color:var(--formText)}
 
@@ -34,12 +34,12 @@
 .cmcFormBody .progressTrack,.cmcFormBody .ministryStyleProgressTrack,.cmcFormBody .applicationProgressBar{height:10px;overflow:hidden;border:0;border-radius:999px;background:rgba(41,61,72,.11)}
 .cmcFormBody .progressBar,.cmcFormBody .ministryStyleProgressTrack span,.cmcFormBody .applicationProgressBar span{height:100%;border-radius:inherit;background:linear-gradient(90deg,var(--cmcEmber),var(--cmcSage))}
 .cmcFormBody .questionSlide{min-height:265px;padding:clamp(22px,3vw,30px);border:1px solid var(--formLine);border-radius:20px;background:var(--cmcSand)}
-.cmcFormBody .questionSlide .questionText,.cmcFormBody .isaQuestionText{display:flex;gap:14px;align-items:flex-start;margin-bottom:22px;color:var(--formText);font-size:21px;line-height:1.42}
+.cmcFormBody .questionSlide .questionText,.cmcFormBody .mriQuestionText{display:flex;gap:14px;align-items:flex-start;margin-bottom:22px;color:var(--formText);font-size:21px;line-height:1.42}
 .cmcFormBody .qnum,.cmcFormBody .scaleNum{display:inline-grid;width:34px;height:34px;flex:0 0 auto;place-items:center;border-radius:999px;background:rgba(77,167,156,.14);color:#236f68;font-size:14px;font-weight:900}
-.cmcFormBody .scale.slideScale,.cmcFormBody .isaChoiceList{display:grid;grid-template-columns:1fr;gap:11px}.cmcFormBody .isaChoiceList.yesno{grid-template-columns:repeat(2,minmax(0,1fr))}
-.cmcFormBody .scale label,.cmcFormBody button.isaChoice{display:flex;min-height:68px;align-items:center;justify-content:flex-start;gap:13px;margin:0;padding:15px 17px;border:1px solid var(--formLineStrong);border-radius:15px;background:var(--formSurface);color:var(--formText)!important;box-shadow:none;font-size:16px;text-align:left}
-.cmcFormBody .scale label:hover,.cmcFormBody .scale label:focus-within,.cmcFormBody button.isaChoice:hover,.cmcFormBody button.isaChoice:focus-visible,.cmcFormBody .scale label.selected,.cmcFormBody button.isaChoice.selected{border-color:var(--cmcSlate)!important;background:var(--cmcSlate)!important;color:var(--cmcSand)!important;box-shadow:0 0 0 3px rgba(77,167,156,.18)!important}
-.cmcFormBody .scale label:hover .scaleNum,.cmcFormBody .scale label:focus-within .scaleNum,.cmcFormBody .scale label.selected .scaleNum,.cmcFormBody button.isaChoice:hover .scaleNum,.cmcFormBody button.isaChoice:focus-visible .scaleNum,.cmcFormBody button.isaChoice.selected .scaleNum{background:var(--cmcEmber);color:var(--cmcSlate)}
+.cmcFormBody .scale.slideScale,.cmcFormBody .mriChoiceList{display:grid;grid-template-columns:1fr;gap:11px}.cmcFormBody .mriChoiceList.yesno{grid-template-columns:repeat(2,minmax(0,1fr))}
+.cmcFormBody .scale label,.cmcFormBody button.mriChoice{display:flex;min-height:68px;align-items:center;justify-content:flex-start;gap:13px;margin:0;padding:15px 17px;border:1px solid var(--formLineStrong);border-radius:15px;background:var(--formSurface);color:var(--formText)!important;box-shadow:none;font-size:16px;text-align:left}
+.cmcFormBody .scale label:hover,.cmcFormBody .scale label:focus-within,.cmcFormBody button.mriChoice:hover,.cmcFormBody button.mriChoice:focus-visible,.cmcFormBody .scale label.selected,.cmcFormBody button.mriChoice.selected{border-color:var(--cmcSlate)!important;background:var(--cmcSlate)!important;color:var(--cmcSand)!important;box-shadow:0 0 0 3px rgba(77,167,156,.18)!important}
+.cmcFormBody .scale label:hover .scaleNum,.cmcFormBody .scale label:focus-within .scaleNum,.cmcFormBody .scale label.selected .scaleNum,.cmcFormBody button.mriChoice:hover .scaleNum,.cmcFormBody button.mriChoice:focus-visible .scaleNum,.cmcFormBody button.mriChoice.selected .scaleNum{background:var(--cmcEmber);color:var(--cmcSlate)}
 .cmcFormBody .slideActions{display:flex;align-items:center;justify-content:space-between;gap:14px;margin-top:20px}.cmcFormBody .assessmentCompleteCard{text-align:center}
 .cmcFormBody .autoSaveStatus{display:inline-flex;min-height:32px;align-items:center;gap:8px;margin:0 0 10px;font-size:13px;font-weight:750}.cmcFormBody .autoSaveStatus:before{width:8px;height:8px;border-radius:50%;background:var(--cmcSage);content:""}
 
@@ -60,7 +60,7 @@
 
 /* Completion and reports */
 .cmcFormBody .confirmationWrap{min-height:calc(100vh - 170px);padding:20px 0}.cmcFormBody .confirmationCard{max-width:660px;padding:clamp(28px,5vw,48px)}.cmcFormBody .confirmationIcon{display:grid;width:66px;height:66px;place-items:center;margin:0 auto 19px;border-radius:19px;background:var(--cmcSage);color:#fff;font-size:34px}.cmcFormBody .confirmationCard h1{font-size:42px;line-height:1;letter-spacing:-.05em}.cmcFormBody .confirmationCard p{font-size:16px;line-height:1.65}
-.cmcFormBody .reportHeader,.cmcFormBody .reportSection,.cmcFormBody .overallCard,.cmcFormBody .isaReportTitle,.cmcFormBody .isaOverall,.cmcFormBody .isaReportBlock,.cmcFormBody .isaCategoryCard,.cmcFormBody .qualityCard,.cmcFormBody .applicationReportBlock{border-color:var(--formLine)!important;background:var(--formSurface)!important;box-shadow:none!important}.cmcFormBody .reportSection,.cmcFormBody .isaReportBlock{background:var(--cmcSand)!important}
+.cmcFormBody .reportHeader,.cmcFormBody .reportSection,.cmcFormBody .overallCard,.cmcFormBody .mriReportTitle,.cmcFormBody .mriOverall,.cmcFormBody .mriReportBlock,.cmcFormBody .mriCategoryCard,.cmcFormBody .qualityCard,.cmcFormBody .applicationReportBlock{border-color:var(--formLine)!important;background:var(--formSurface)!important;box-shadow:none!important}.cmcFormBody .reportSection,.cmcFormBody .mriReportBlock{background:var(--cmcSand)!important}
 
 @media(max-width:900px){.cmcApplicationMain .applicationLayout{grid-template-columns:1fr}.cmcApplicationMain .applicationSidebar{position:relative;top:auto}}
 @media(max-width:720px){
@@ -68,11 +68,11 @@
   .cmcFormMain>.cmcFormHero:not(.ministryStyleHero),.cmcFormBody .ministryStyleHero.cmcFormHero{grid-template-columns:1fr;padding:27px 22px;border-radius:23px}
   .cmcFormBody .cmcFormHero h1{font-size:clamp(36px,10.5vw,46px)}.cmcFormBody .cmcFormHero>p:not(.cmcEyebrow),.cmcFormBody .cmcFormHero>div>p:not(.cmcEyebrow){font-size:14px}
   .cmcFormGrid{grid-template-columns:1fr}.cmcFormGrid .wide{grid-column:auto}.cmcFormBody .card,.cmcFormBody .report{padding:19px;border-radius:20px}.cmcFormBody h2{font-size:29px}.cmcFormBody h3{font-size:23px}
-  .cmcFormBody .progressMeta{font-size:13px}.cmcFormBody .questionSlide .questionText,.cmcFormBody .isaQuestionText{font-size:18px}.cmcFormBody .isaChoiceList.yesno{grid-template-columns:1fr}
+  .cmcFormBody .progressMeta{font-size:13px}.cmcFormBody .questionSlide .questionText,.cmcFormBody .mriQuestionText{font-size:18px}.cmcFormBody .mriChoiceList.yesno{grid-template-columns:1fr}
   .cmcFormBody .slideActions{align-items:stretch;flex-direction:column-reverse}.cmcFormBody .slideActions button{width:100%}.cmcFormBody .ministryStyleProgress{grid-template-columns:1fr}.cmcFormBody .ministryStatementCard{grid-template-columns:1fr}.cmcFormBody .ministryChoiceGroup{width:100%;min-width:0}
   .cmcApplicationMain .applicationSectionHead,.cmcApplicationMain .applicationSectionBody{padding:19px}.cmcApplicationMain .applicationActions{display:grid}.cmcApplicationMain .applicationActions button{width:100%;margin:0}
 }
-@media(max-width:480px){.cmcFormBody .progressMeta{align-items:flex-start;flex-direction:column;gap:4px}.cmcFormBody .questionSlide{padding:18px}.cmcFormBody .scale label,.cmcFormBody button.isaChoice{font-size:15px}.cmcFormBody .ministryChoiceGroup{grid-template-columns:1fr}}
+@media(max-width:480px){.cmcFormBody .progressMeta{align-items:flex-start;flex-direction:column;gap:4px}.cmcFormBody .questionSlide{padding:18px}.cmcFormBody .scale label,.cmcFormBody button.mriChoice{font-size:15px}.cmcFormBody .ministryChoiceGroup{grid-template-columns:1fr}}
 @media print{.cmcFormBody .cmcHeader,.cmcFormBody .ministryStyleActions{display:none!important}.cmcFormMain,.ministryStyleMain.cmcFormMain,.cmcApplicationMain{width:100%;padding:0}}
 
 /* Confidential pastoral reference workflow */

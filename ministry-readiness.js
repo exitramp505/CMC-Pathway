@@ -62,19 +62,19 @@ function renderQuestion(){
  const q=MRI_QUESTIONS[current];
  const progress=Math.round(((current+1)/MRI_QUESTIONS.length)*100);
  const opts=optionsFor(q.type);
- container.innerHTML=`<div class="card assessmentShell isaAssessmentShell">
+ container.innerHTML=`<div class="card assessmentShell mriAssessmentShell">
    <h2>Assessment Questions</h2>
    <div class="progressWrap">
      <div class="progressMeta"><span>Question ${current+1} of ${MRI_QUESTIONS.length}</span><span>${progress}% complete</span></div>
      <div class="progressTrack"><div class="progressBar" style="width:${progress}%"></div></div>
    </div>
    <div class="questionSlide tone${(current%3)+1}">
-     <div class="questionText isaQuestionText"><span class="qnum">${current+1}</span><strong>${q.text}</strong></div>
-     <div class="isaChoiceList ${q.type}">${opts.map((opt,i)=>`<button type="button" class="isaChoice ${answers[q.id]===opt?'selected':''}" data-answer="${opt}"><span class="scaleNum">${i+1}</span><strong>${opt}</strong></button>`).join('')}</div>
+     <div class="questionText mriQuestionText"><span class="qnum">${current+1}</span><strong>${q.text}</strong></div>
+     <div class="mriChoiceList ${q.type}">${opts.map((opt,i)=>`<button type="button" class="mriChoice ${answers[q.id]===opt?'selected':''}" data-answer="${opt}"><span class="scaleNum">${i+1}</span><strong>${opt}</strong></button>`).join('')}</div>
    </div>
    <div class="slideActions"><button type="button" class="secondaryBtn" id="prevQuestion" ${current===0?'disabled':''}>Previous Question</button></div>
  </div>`;
- container.querySelectorAll('.isaChoice').forEach(btn=>btn.addEventListener('click',()=>{
+ container.querySelectorAll('.mriChoice').forEach(btn=>btn.addEventListener('click',()=>{
    answers[q.id]=btn.dataset.answer;
    saveMriDraft();
    btn.classList.add('selected');
@@ -85,8 +85,8 @@ function renderQuestion(){
  }));
  document.getElementById('prevQuestion')?.addEventListener('click',()=>{if(current>0){current--;saveMriDraft();renderQuestion()}})
 }
-function bar(v,color){return `<div class="isaBar"><span style="width:${v}%;background:${color}"></span><em>${v}%</em></div>`}
-function reportHtml(scores){return `<div class="reportHeader"><h2>Ministry Readiness Inventory Report</h2><p>${document.querySelector('[name=name]').value} · ${document.querySelector('[name=state]').value} · ${dcAuth.regionForState(document.querySelector('[name=state]').value)} Region</p><div class="overallCard"><span>Overall Readiness</span><strong>${scores.overall}%</strong><em>${scores.overallLabel}</em></div></div><section class="reportSection"><h3>Readiness Profile</h3><p class="muted">This assessment summarizes practical ministry experience and leadership readiness. Benchmark and median lines are based on the sample Ministry Readiness Inventory report format.</p>${scores.categories.map(c=>`<div class="isaCompareRow"><strong>${c.name}</strong>${bar(c.score,'#2a9d8f')}<small>Benchmark: ${c.benchmark}% · Median: ${c.median}%</small></div>`).join('')}</section><section class="reportSection"><h3>Category Descriptions</h3><div class="qualityGrid">${scores.categories.map(c=>`<article class="qualityCard"><div class="qualityCardTop"><h4>${c.name}</h4><span class="qualityScore scoreAbove">${c.score}% <em>${c.label}</em></span></div><p>${c.description}</p></article>`).join('')}</div></section>`}
+function bar(v,color){return `<div class="mriBar"><span style="width:${v}%;background:${color}"></span><em>${v}%</em></div>`}
+function reportHtml(scores){return `<div class="reportHeader"><h2>Ministry Readiness Inventory Report</h2><p>${document.querySelector('[name=name]').value} · ${document.querySelector('[name=state]').value} · ${dcAuth.regionForState(document.querySelector('[name=state]').value)} Region</p><div class="overallCard"><span>Overall Readiness</span><strong>${scores.overall}%</strong><em>${scores.overallLabel}</em></div></div><section class="reportSection"><h3>Readiness Profile</h3><p class="muted">This assessment summarizes practical ministry experience and leadership readiness. Benchmark and median lines are based on the sample Ministry Readiness Inventory report format.</p>${scores.categories.map(c=>`<div class="mriCompareRow"><strong>${c.name}</strong>${bar(c.score,'#2a9d8f')}<small>Benchmark: ${c.benchmark}% · Median: ${c.median}%</small></div>`).join('')}</section><section class="reportSection"><h3>Category Descriptions</h3><div class="qualityGrid">${scores.categories.map(c=>`<article class="qualityCard"><div class="qualityCardTop"><h4>${c.name}</h4><span class="qualityScore scoreAbove">${c.score}% <em>${c.label}</em></span></div><p>${c.description}</p></article>`).join('')}</div></section>`}
 async function init(){dcAuth.setupLogout(); const user=await dcAuth.requireUser(); if(!user)return; const profile=await dcAuth.getProfile(user.id).catch(()=>null); dcAuth.renderRoleNavigation(profile,'pathway'); const form=document.getElementById('mriForm'); dcAuth.fillStateSelect(form.state); if(profile){form.name.value=profile.full_name||''; form.email.value=profile.email||user.email||''; form.phone.value=profile.phone||''; form.state.value=profile.state||''} else form.email.value=user.email||''; loadMriDraft(); mriAutosaveReady=true; showMriAutosaveStatus(Object.keys(answers).length ? 'Progress restored and auto-save is on.' : 'Auto-save is on.'); renderQuestion(); form.addEventListener('input',saveMriDraft); form.addEventListener('change',saveMriDraft); form.addEventListener('submit',async e=>{e.preventDefault(); if(Object.keys(answers).length<MRI_QUESTIONS.length){alert('Please complete all questions.');return} const scores=calculate();
  clearMriDraft(); const payload={assessmentType:'ministry_readiness',candidate:{name:form.name.value,email:form.email.value,phone:form.phone.value,state:form.state.value,region:dcAuth.regionForState(form.state.value)},scores,answers:Object.fromEntries(MRI_QUESTIONS.map(q=>[q.id,{question:q.text,answer:answers[q.id],group:q.group,type:q.type}]))}; const report=document.getElementById('report'); report.classList.remove('hidden'); report.innerHTML=reportHtml(scores)+'<p class="muted">Saving report...</p>'; const session=await dcAuth.getCurrentSession(); const res=await fetch('/.netlify/functions/submit-ministry-readiness',{method:'POST',headers:{'Content-Type':'application/json',Authorization:`Bearer ${session.access_token}`},body:JSON.stringify(payload)}); const data=await res.json().catch(()=>({})); if(!res.ok||!data.ok){report.innerHTML+=`<p class="warningText">${data.error||'Could not save report.'}</p>`;return} report.innerHTML=reportHtml(scores)+`<div class="actions"><a class="buttonLink" href="report.html?id=${encodeURIComponent(data.submissionId)}">Open Saved Report</a></div>`; window.scrollTo({top:report.offsetTop-10,behavior:'smooth'});});}
 init();

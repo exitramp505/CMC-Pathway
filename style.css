@@ -98,36 +98,36 @@
 @media (max-width:720px){ .portalNav{grid-template-columns:1fr auto; gap:.65rem}.assessmentTile,.reportListItem{align-items:flex-start; flex-direction:column}.buttonLink{width:100%} }
 
 /* Ministry Readiness Inventory */
-.isaCompareRow{border:1px solid var(--line,#dbe3ef);border-radius:16px;padding:14px 16px;margin:12px 0;background:#fff;display:grid;grid-template-columns:minmax(180px,240px) 1fr minmax(145px,auto);gap:14px;align-items:center}.isaCompareRow small{color:#5b667a;font-weight:700}.isaBar{height:20px;border-radius:999px;background:#e8edf5;position:relative;overflow:hidden;box-shadow:inset 0 0 0 1px rgba(15,23,42,.06)}.isaBar span{position:absolute;left:0;top:0;bottom:0;border-radius:999px}.isaBar em{position:absolute;right:8px;top:2px;font-size:12px;font-style:normal;font-weight:900;color:#172033}.twoOptions{grid-template-columns:repeat(2,minmax(0,1fr))}@media(max-width:720px){.isaCompareRow{grid-template-columns:1fr}.twoOptions{grid-template-columns:1fr}}
+.mriCompareRow{border:1px solid var(--line,#dbe3ef);border-radius:16px;padding:14px 16px;margin:12px 0;background:#fff;display:grid;grid-template-columns:minmax(180px,240px) 1fr minmax(145px,auto);gap:14px;align-items:center}.mriCompareRow small{color:#5b667a;font-weight:700}.mriBar{height:20px;border-radius:999px;background:#e8edf5;position:relative;overflow:hidden;box-shadow:inset 0 0 0 1px rgba(15,23,42,.06)}.mriBar span{position:absolute;left:0;top:0;bottom:0;border-radius:999px}.mriBar em{position:absolute;right:8px;top:2px;font-size:12px;font-style:normal;font-weight:900;color:#172033}.twoOptions{grid-template-columns:repeat(2,minmax(0,1fr))}@media(max-width:720px){.mriCompareRow{grid-template-columns:1fr}.twoOptions{grid-template-columns:1fr}}
 
 /* Ministry Readiness Inventory assessment flow cleanup */
-.isaAssessmentShell .progressMeta{display:flex;justify-content:space-between;gap:18px;align-items:center;font-weight:900;color:var(--accent);font-size:16px;margin-bottom:10px}
-.isaAssessmentShell .progressTrack{height:14px;border:1px solid var(--line);background:#edf0f6;border-radius:999px;overflow:hidden}
-.isaAssessmentShell .progressBar{height:100%;background:var(--accent);border-radius:999px;transition:width .2s ease}
-.isaQuestionText{display:flex;gap:14px;align-items:flex-start;font-size:24px;line-height:1.35;margin-bottom:22px;color:var(--ink)}
-.isaChoiceList{display:grid;grid-template-columns:1fr;gap:12px;margin-top:18px}
-.isaChoice{display:flex;align-items:center;gap:14px;width:100%;min-height:74px;padding:16px 18px;border:2px solid var(--line);border-radius:16px;background:#fff;color:var(--ink);box-shadow:none;text-align:left;font-size:17px;font-weight:900;cursor:pointer;transition:transform .12s ease,border-color .12s ease,box-shadow .12s ease,background .12s ease}
-.isaChoice:hover{transform:translateY(-1px);border-color:#b8c4dc;background:#fffaf1;box-shadow:0 8px 18px #00000012;color:var(--ink)}
-.isaChoice.selected{border-color:var(--accent)!important;background:#fffaf1!important;box-shadow:0 10px 22px #263b5e1c!important;color:var(--ink)!important}
-.isaChoice .scaleNum{flex:0 0 auto}
-.isaChoiceList.yesno{grid-template-columns:repeat(2,minmax(0,1fr))}
-.isaChoiceList.yesno .isaChoice{justify-content:flex-start}
+.mriAssessmentShell .progressMeta{display:flex;justify-content:space-between;gap:18px;align-items:center;font-weight:900;color:var(--accent);font-size:16px;margin-bottom:10px}
+.mriAssessmentShell .progressTrack{height:14px;border:1px solid var(--line);background:#edf0f6;border-radius:999px;overflow:hidden}
+.mriAssessmentShell .progressBar{height:100%;background:var(--accent);border-radius:999px;transition:width .2s ease}
+.mriQuestionText{display:flex;gap:14px;align-items:flex-start;font-size:24px;line-height:1.35;margin-bottom:22px;color:var(--ink)}
+.mriChoiceList{display:grid;grid-template-columns:1fr;gap:12px;margin-top:18px}
+.mriChoice{display:flex;align-items:center;gap:14px;width:100%;min-height:74px;padding:16px 18px;border:2px solid var(--line);border-radius:16px;background:#fff;color:var(--ink);box-shadow:none;text-align:left;font-size:17px;font-weight:900;cursor:pointer;transition:transform .12s ease,border-color .12s ease,box-shadow .12s ease,background .12s ease}
+.mriChoice:hover{transform:translateY(-1px);border-color:#b8c4dc;background:#fffaf1;box-shadow:0 8px 18px #00000012;color:var(--ink)}
+.mriChoice.selected{border-color:var(--accent)!important;background:#fffaf1!important;box-shadow:0 10px 22px #263b5e1c!important;color:var(--ink)!important}
+.mriChoice .scaleNum{flex:0 0 auto}
+.mriChoiceList.yesno{grid-template-columns:repeat(2,minmax(0,1fr))}
+.mriChoiceList.yesno .mriChoice{justify-content:flex-start}
 .assessmentCompleteCard{border-color:#dbeee1;background:#f7fbf8}
-@media(max-width:760px){.isaQuestionText{font-size:20px}.isaChoiceList.yesno{grid-template-columns:1fr}.isaChoice{min-height:68px;font-size:16px}.isaAssessmentShell .progressMeta{font-size:15px}}
+@media(max-width:760px){.mriQuestionText{font-size:20px}.mriChoiceList.yesno{grid-template-columns:1fr}.mriChoice{min-height:68px;font-size:16px}.mriAssessmentShell .progressMeta{font-size:15px}}
 
 /* Ministry Readiness Inventory report redesign */
-.isaReportTitle{display:flex;justify-content:space-between;gap:24px;align-items:center;margin-bottom:18px;padding:22px;border-radius:20px;background:#ffffff;border:1px solid #d8e1ef;box-shadow:0 10px 28px rgba(15,23,42,.06)}
-.isaReportTitle h2{margin:0 0 6px;color:#1e88c9;font-size:2rem}
-.isaOverall{min-width:132px;border:3px solid #79b943;border-radius:20px;padding:16px;text-align:center;background:#fffaf1}
-.isaOverall strong{display:block;font-size:2.6rem;line-height:1;color:#111827}.isaOverall span{display:block;font-weight:800;color:#475569;margin-top:6px}
-.isaScoreStrip{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin:16px 0 22px;padding:14px;background:#f5f7ed;border:1px solid #e5e7d8;border-radius:16px}
-.isaStripItem{display:flex;align-items:center;gap:8px;font-weight:800;color:#111827;font-size:.9rem}.isaStripItem span{width:12px;height:12px;border-radius:999px;display:inline-block}.isaStripItem em{font-style:normal;color:#475569;margin-left:auto}
-.isaReportBlock{background:#fff;border:1px solid #dbe3ef;border-radius:18px;padding:20px;margin:20px 0}.isaReportBlock h3{margin-top:0;color:#1f334f}
-.isaComparisonGrid{display:grid;grid-template-columns:1.05fr repeat(4,1fr);border:1px solid #d1d5db;border-radius:12px;overflow:hidden;background:#fff}.isaGridHeader{background:#3f3f46;color:#fff;font-weight:800;padding:12px 10px;font-size:.82rem}.isaRowLabel{background:#fffaf1;font-weight:800;color:#334155;padding:14px 10px;border-top:1px solid #e5e7eb}.isaGridCell{padding:11px 10px;border-top:1px solid #e5e7eb;background:#fffaf1}
-.isaMiniBar{height:18px;background:#e5e7eb;border-radius:999px;position:relative;overflow:hidden}.isaMiniBar span{display:block;height:100%;border-radius:999px}.isaMiniBar em{position:absolute;right:6px;top:1px;font-style:normal;font-size:.78rem;font-weight:800;color:#111827}
-.isaCategoryCards{display:grid;grid-template-columns:1fr 1fr;gap:14px}.isaCategoryCard{display:grid;grid-template-columns:8px 1fr;gap:14px;border:1px solid #dbe3ef;border-radius:16px;background:#fffaf1;overflow:hidden}.isaCategoryAccent{height:100%}.isaCategoryCard>div:last-child{padding:16px 16px 16px 0}.isaCategoryCard h4{margin:0 0 8px;font-size:1rem;color:#111827}.isaCategoryCard h4 span{display:block;font-size:.82rem;color:#64748b;margin-top:2px}.isaCategoryCard p{margin:0 0 8px;color:#475569;line-height:1.45}.isaCategoryCard small{font-weight:800;color:#64748b}
-.isaDepthTable{width:100%;border-collapse:collapse;font-size:.86rem}.isaDepthTable th{background:#3f3f46;color:#fff;text-align:left;padding:9px}.isaDepthTable td{border:1px solid #d1d5db;padding:8px;vertical-align:top}.isaDepthTable tr:nth-child(even) td{background:#fffaf1}.isaDepthTable td:first-child,.isaDepthTable td:last-child{width:54px;text-align:center}.isaDepthTable td:nth-child(3){width:110px}
-@media(max-width:800px){.isaReportTitle{display:block}.isaOverall{margin-top:16px}.isaScoreStrip{grid-template-columns:1fr}.isaComparisonGrid{font-size:.78rem;grid-template-columns:1fr}.isaCategoryCards{grid-template-columns:1fr}.isaGridHeader:not(:first-child),.isaGridCell{display:block}.isaRowLabel{margin-top:8px}}
+.mriReportTitle{display:flex;justify-content:space-between;gap:24px;align-items:center;margin-bottom:18px;padding:22px;border-radius:20px;background:#ffffff;border:1px solid #d8e1ef;box-shadow:0 10px 28px rgba(15,23,42,.06)}
+.mriReportTitle h2{margin:0 0 6px;color:#1e88c9;font-size:2rem}
+.mriOverall{min-width:132px;border:3px solid #79b943;border-radius:20px;padding:16px;text-align:center;background:#fffaf1}
+.mriOverall strong{display:block;font-size:2.6rem;line-height:1;color:#111827}.mriOverall span{display:block;font-weight:800;color:#475569;margin-top:6px}
+.mriScoreStrip{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin:16px 0 22px;padding:14px;background:#f5f7ed;border:1px solid #e5e7d8;border-radius:16px}
+.mriStripItem{display:flex;align-items:center;gap:8px;font-weight:800;color:#111827;font-size:.9rem}.mriStripItem span{width:12px;height:12px;border-radius:999px;display:inline-block}.mriStripItem em{font-style:normal;color:#475569;margin-left:auto}
+.mriReportBlock{background:#fff;border:1px solid #dbe3ef;border-radius:18px;padding:20px;margin:20px 0}.mriReportBlock h3{margin-top:0;color:#1f334f}
+.mriComparisonGrid{display:grid;grid-template-columns:1.05fr repeat(4,1fr);border:1px solid #d1d5db;border-radius:12px;overflow:hidden;background:#fff}.mriGridHeader{background:#3f3f46;color:#fff;font-weight:800;padding:12px 10px;font-size:.82rem}.mriRowLabel{background:#fffaf1;font-weight:800;color:#334155;padding:14px 10px;border-top:1px solid #e5e7eb}.mriGridCell{padding:11px 10px;border-top:1px solid #e5e7eb;background:#fffaf1}
+.mriMiniBar{height:18px;background:#e5e7eb;border-radius:999px;position:relative;overflow:hidden}.mriMiniBar span{display:block;height:100%;border-radius:999px}.mriMiniBar em{position:absolute;right:6px;top:1px;font-style:normal;font-size:.78rem;font-weight:800;color:#111827}
+.mriCategoryCards{display:grid;grid-template-columns:1fr 1fr;gap:14px}.mriCategoryCard{display:grid;grid-template-columns:8px 1fr;gap:14px;border:1px solid #dbe3ef;border-radius:16px;background:#fffaf1;overflow:hidden}.mriCategoryAccent{height:100%}.mriCategoryCard>div:last-child{padding:16px 16px 16px 0}.mriCategoryCard h4{margin:0 0 8px;font-size:1rem;color:#111827}.mriCategoryCard h4 span{display:block;font-size:.82rem;color:#64748b;margin-top:2px}.mriCategoryCard p{margin:0 0 8px;color:#475569;line-height:1.45}.mriCategoryCard small{font-weight:800;color:#64748b}
+.mriDepthTable{width:100%;border-collapse:collapse;font-size:.86rem}.mriDepthTable th{background:#3f3f46;color:#fff;text-align:left;padding:9px}.mriDepthTable td{border:1px solid #d1d5db;padding:8px;vertical-align:top}.mriDepthTable tr:nth-child(even) td{background:#fffaf1}.mriDepthTable td:first-child,.mriDepthTable td:last-child{width:54px;text-align:center}.mriDepthTable td:nth-child(3){width:110px}
+@media(max-width:800px){.mriReportTitle{display:block}.mriOverall{margin-top:16px}.mriScoreStrip{grid-template-columns:1fr}.mriComparisonGrid{font-size:.78rem;grid-template-columns:1fr}.mriCategoryCards{grid-template-columns:1fr}.mriGridHeader:not(:first-child),.mriGridCell{display:block}.mriRowLabel{margin-top:8px}}
 
 /* V30 grouped admin dashboard */
 .candidateCard{padding:24px 26px}.candidateTop{display:flex;justify-content:space-between;gap:18px;align-items:flex-start}.candidateTop h3{font-size:1.35rem;margin:0 0 6px}.reportCountBadge{min-width:92px;border:1px solid #d6dee8;border-radius:18px;background:#fffaf1;text-align:center;padding:10px 12px}.reportCountBadge strong{display:block;font-size:1.5rem;color:#132238;line-height:1}.reportCountBadge span{display:block;font-size:.78rem;color:#536173;font-weight:800;margin-top:4px}.candidateMeta{margin-bottom:18px}.candidateReports{display:grid;gap:12px;margin-top:16px}.candidateReportRow{display:grid;grid-template-columns:minmax(0,1fr) 112px auto;gap:14px;align-items:center;border:1px solid #dbe3ef;border-radius:16px;background:#fffaf1;padding:14px}.candidateReportRow .reportInfo strong{display:block;font-size:1rem;color:var(--ink);margin-bottom:4px}.candidateReportRow .reportInfo span{display:block;color:var(--muted);font-size:.9rem;font-weight:700}.candidateReportRow button{font-size:.95rem;padding:12px 18px;border-radius:14px}.compactScore{min-width:96px;padding:8px 10px;border-radius:16px;background:#fff}.compactScore strong{font-size:1.25rem}.compactScore span{font-size:.74rem}.candidateReportRow .warningText{display:block;margin-top:8px;padding:7px 9px}
@@ -2238,34 +2238,34 @@
 }
 
 /* v40 Ministry Readiness Inventory report explanation and static reference styling */
-.isaHowToRead p{
+.mriHowToRead p{
   margin:0 0 12px;
   color:#52617a;
   line-height:1.55;
 }
-.isaHowToRead p:last-child{
+.mriHowToRead p:last-child{
   margin-bottom:0;
 }
-.isaReferenceNote{
+.mriReferenceNote{
   margin-top:-2px;
   margin-bottom:14px;
 }
-.isaComparisonGridV2 .referenceRow,
-.isaComparisonGridV2 .referenceCell{
+.mriComparisonGridV2 .referenceRow,
+.mriComparisonGridV2 .referenceCell{
   background:#fffaf1;
 }
-.isaComparisonGridV2 .referenceRow{
+.mriComparisonGridV2 .referenceRow{
   color:#64748b;
   font-style:italic;
 }
-.isaComparisonGridV2 .planterRow{
+.mriComparisonGridV2 .planterRow{
   background:#ffffff;
   color:#1f2933;
 }
-.isaComparisonGridV2 .planterCell{
+.mriComparisonGridV2 .planterCell{
   background:#ffffff;
 }
-.isaRowLabel span{
+.mriRowLabel span{
   display:block;
   font-size:10px;
   text-transform:uppercase;
@@ -2275,21 +2275,21 @@
   margin-top:3px;
   font-style:normal;
 }
-.isaComparisonGridV2 .referenceCell .isaMiniBar{
+.mriComparisonGridV2 .referenceCell .mriMiniBar{
   opacity:.72;
   filter:saturate(.75);
 }
-.isaComparisonGridV2 .referenceCell .isaMiniBar em{
+.mriComparisonGridV2 .referenceCell .mriMiniBar em{
   color:#475569;
 }
 
 
 /* v42/v44 Ministry Readiness Inventory report HTML-mirrored redesign */
-.isaReportV44{
+.mriReportV44{
   display:grid;
   gap:18px;
 }
-.isaReportHeroV44{
+.mriReportHeroV44{
   padding:30px!important;
   border-radius:28px!important;
   display:grid!important;
@@ -2297,19 +2297,19 @@
   gap:24px;
   align-items:center;
 }
-.isaReportHeroV44 .eyebrow{
+.mriReportHeroV44 .eyebrow{
   font-size:12px;
   letter-spacing:.14em;
   text-transform:uppercase;
   color:#64748b;
   font-weight:850;
 }
-.isaReportHeroV44 h2{
+.mriReportHeroV44 h2{
   font-size:36px!important;
   letter-spacing:-.035em;
   margin:6px 0 6px!important;
 }
-.isaScoreStripV44{
+.mriScoreStripV44{
   background:#fff;
   border:1px solid #d9e2ec;
   border-radius:24px;
@@ -2319,172 +2319,172 @@
   gap:12px;
   box-shadow:0 10px 24px rgba(15,23,42,.04);
 }
-.isaScoreCard{
+.mriScoreCard{
   border:1px solid #eef2f6;
   border-radius:18px;
   padding:14px;
   background:#fffaf1;
 }
-.isaScoreCard strong{
+.mriScoreCard strong{
   display:block;
   font-size:14px;
   margin-bottom:8px;
 }
-.isaScoreTrack{
+.mriScoreTrack{
   height:9px;
   background:#edf2f7;
   border-radius:999px;
   overflow:hidden;
   margin-bottom:8px;
 }
-.isaScoreTrack span{
+.mriScoreTrack span{
   display:block;
   height:100%;
   border-radius:999px;
 }
-.isaScoreCard em{
+.mriScoreCard em{
   font-style:normal;
   font-weight:900;
   font-size:20px;
 }
-.isaGuideBlock h3,
-.isaReportBlock h3{
+.mriGuideBlock h3,
+.mriReportBlock h3{
   font-size:24px;
   letter-spacing:-.02em;
 }
-.isaSectionLead{
+.mriSectionLead{
   font-size:15px;
   color:#52617a;
   max-width:900px;
   margin:0 0 18px;
 }
-.isaGuideGrid{
+.mriGuideGrid{
   display:grid;
   grid-template-columns:1.05fr .95fr;
   gap:16px;
 }
-.isaGuideCard{
+.mriGuideCard{
   border:1px solid #eef2f6;
   border-radius:18px;
   padding:18px;
   background:#fffaf1;
 }
-.isaGuideCard h4{
+.mriGuideCard h4{
   margin:0 0 12px;
   font-size:18px;
 }
-.isaDefinitionList{
+.mriDefinitionList{
   display:grid;
   gap:10px;
 }
-.isaDefinitionList > div{
+.mriDefinitionList > div{
   display:grid;
   grid-template-columns:150px 1fr;
   gap:12px;
   border-top:1px solid #eef2f6;
   padding-top:10px;
 }
-.isaDefinitionList > div:first-child{
+.mriDefinitionList > div:first-child{
   border-top:none;
   padding-top:0;
 }
-.isaDefinitionList strong{
+.mriDefinitionList strong{
   color:#0f172a;
 }
-.isaDefinitionList p,
-.isaLegendList p{
+.mriDefinitionList p,
+.mriLegendList p{
   margin:0;
   color:#52617a;
   font-size:14px;
 }
-.isaLegendList{
+.mriLegendList{
   display:grid;
   gap:10px;
 }
-.isaLegendList > div{
+.mriLegendList > div{
   border:1px solid #eef2f6;
   border-radius:16px;
   padding:14px;
   background:#fff;
 }
-.isaLegendList strong{
+.mriLegendList strong{
   display:block;
   margin-bottom:4px;
 }
-.isaInterpretGrid{
+.mriInterpretGrid{
   display:grid;
   grid-template-columns:repeat(3,1fr);
   gap:12px;
   margin-top:16px;
 }
-.isaInterpretCard{
+.mriInterpretCard{
   border:1px solid #eef2f6;
   border-radius:18px;
   padding:16px;
   background:#fff;
 }
-.isaInterpretCard strong{
+.mriInterpretCard strong{
   display:block;
   margin-bottom:6px;
   font-size:16px;
 }
-.isaInterpretCard p{
+.mriInterpretCard p{
   margin:0;
   color:#52617a;
   font-size:14px;
 }
-.isaInterpretCard.green{
+.mriInterpretCard.green{
   background:#fbfffd;
   border-color:#bee8cf;
 }
-.isaInterpretCard.gold{
+.mriInterpretCard.gold{
   background:#fffdf5;
   border-color:#f8e3a2;
 }
-.isaInterpretCard.blue{
+.mriInterpretCard.blue{
   background:#fffaf1;
   border-color:#cfe1fa;
 }
-.isaReflectionBox{
+.mriReflectionBox{
   margin-top:16px;
   background:#fffaf1;
   border:1px solid #eef2f6;
   border-radius:18px;
   padding:18px;
 }
-.isaReflectionBox strong{
+.mriReflectionBox strong{
   display:block;
   margin-bottom:8px;
 }
-.isaReflectionBox ul{
+.mriReflectionBox ul{
   margin:0;
   padding-left:20px;
   color:#52617a;
 }
-.isaReferenceNote{
+.mriReferenceNote{
   margin:0 0 14px;
   color:#52617a;
 }
-.isaComparisonWrap{
+.mriComparisonWrap{
   overflow-x:auto;
 }
-.isaComparisonGridV44{
+.mriComparisonGridV44{
   min-width:830px;
   border-radius:18px;
 }
-.isaComparisonGridV44 .referenceRow,
-.isaComparisonGridV44 .referenceCell{
+.mriComparisonGridV44 .referenceRow,
+.mriComparisonGridV44 .referenceCell{
   background:#fffaf1;
 }
-.isaComparisonGridV44 .referenceRow{
+.mriComparisonGridV44 .referenceRow{
   color:#64748b;
   font-style:italic;
 }
-.isaComparisonGridV44 .planterRow,
-.isaComparisonGridV44 .planterCell{
+.mriComparisonGridV44 .planterRow,
+.mriComparisonGridV44 .planterCell{
   background:#fff;
 }
-.isaRowLabel span{
+.mriRowLabel span{
   display:block;
   margin-top:3px;
   font-size:10px;
@@ -2494,44 +2494,44 @@
   font-weight:800;
   font-style:normal;
 }
-.isaSoftReferenceBar span{
+.mriSoftReferenceBar span{
   opacity:.62;
 }
-.isaSoftReferenceBar{
+.mriSoftReferenceBar{
   opacity:.88;
 }
-.isaSuggestionGrid{
+.mriSuggestionGrid{
   display:grid;
   grid-template-columns:1fr 1fr;
   gap:14px;
 }
-.isaSuggestionCard{
+.mriSuggestionCard{
   border:1px solid #eef2f6;
   border-radius:18px;
   padding:18px;
   background:#fffaf1;
 }
-.isaSuggestionCard h4{
+.mriSuggestionCard h4{
   margin:0 0 8px;
   font-size:18px;
 }
-.isaSuggestionCard p{
+.mriSuggestionCard p{
   margin:0;
   color:#52617a;
 }
-.isaSuggestionCard.strength{
+.mriSuggestionCard.strength{
   border-color:#bee8cf;
   background:#fbfffd;
 }
-.isaSuggestionCard.conversation{
+.mriSuggestionCard.conversation{
   border-color:#f8e3a2;
   background:#fffdf5;
 }
-.isaSuggestionCard.development{
+.mriSuggestionCard.development{
   border-color:#cfe1fa;
   background:#fffaf1;
 }
-.isaTag{
+.mriTag{
   display:inline-block;
   border-radius:999px;
   padding:5px 9px;
@@ -2541,51 +2541,51 @@
   letter-spacing:.06em;
   margin-bottom:10px;
 }
-.isaTag.green{
+.mriTag.green{
   background:#e7f6ee;
   color:#16834a;
 }
-.isaTag.gold{
+.mriTag.gold{
   background:#fff6dc;
   color:#a16207;
 }
-.isaTag.blue{
+.mriTag.blue{
   background:#e8f1fb;
   color:#1e40af;
 }
-.isaDepthTableV44{
+.mriDepthTableV44{
   font-size:13px;
 }
-.isaDepthTableV44 th{
+.mriDepthTableV44 th{
   background:#0f172a!important;
 }
-.isaDepthTableV44 td:first-child{
+.mriDepthTableV44 td:first-child{
   width:52px;
   font-weight:850;
   color:#64748b;
 }
-.isaDepthTableV44 td:nth-child(3){
+.mriDepthTableV44 td:nth-child(3){
   width:150px;
   font-weight:700;
 }
-.isaDepthTableV44 td:nth-child(4){
+.mriDepthTableV44 td:nth-child(4){
   width:70px;
   text-align:center;
   font-weight:850;
 }
 @media(max-width:900px){
-  .isaReportHeroV44{grid-template-columns:1fr!important}
-  .isaScoreStripV44{grid-template-columns:1fr 1fr}
-  .isaGuideGrid,.isaSuggestionGrid{grid-template-columns:1fr}
-  .isaInterpretGrid{grid-template-columns:1fr}
+  .mriReportHeroV44{grid-template-columns:1fr!important}
+  .mriScoreStripV44{grid-template-columns:1fr 1fr}
+  .mriGuideGrid,.mriSuggestionGrid{grid-template-columns:1fr}
+  .mriInterpretGrid{grid-template-columns:1fr}
 }
 @media print{
   body{background:#fff!important}
-  .reportSection,.isaReportTitle,.isaScoreStripV44{
+  .reportSection,.mriReportTitle,.mriScoreStripV44{
     box-shadow:none!important;
     break-inside:avoid;
   }
-  .isaDepthTableV44 tr{
+  .mriDepthTableV44 tr{
     break-inside:avoid;
   }
 }
@@ -2640,8 +2640,8 @@
     padding:0!important;
   }
   #adminReport,
-  .isaReport,
-  .isaReportV44{
+  .mriReport,
+  .mriReportV44{
     display:block!important;
     width:100%!important;
     max-width:none!important;
@@ -2650,43 +2650,43 @@
     background:#fff!important;
   }
   .reportSection,
-  .isaReportTitle,
-  .isaReportHeroV44,
-  .isaScoreStripV44{
+  .mriReportTitle,
+  .mriReportHeroV44,
+  .mriScoreStripV44{
     box-shadow:none!important;
     border:1px solid #d9e2ec!important;
     break-inside:avoid;
     page-break-inside:avoid;
   }
-  .isaReportHeroV44{
+  .mriReportHeroV44{
     padding:22px!important;
     margin-bottom:14px!important;
   }
-  .isaReportHeroV44 h2{
+  .mriReportHeroV44 h2{
     font-size:25px!important;
     line-height:1.1!important;
   }
-  .isaOverall{
+  .mriOverall{
     width:96px!important;
     min-width:96px!important;
     padding:12px!important;
   }
-  .isaOverall strong{
+  .mriOverall strong{
     font-size:30px!important;
   }
-  .isaScoreStripV44{
+  .mriScoreStripV44{
     grid-template-columns:repeat(4,1fr)!important;
     gap:8px!important;
     padding:12px!important;
     margin-bottom:14px!important;
   }
-  .isaScoreCard{
+  .mriScoreCard{
     padding:10px!important;
   }
-  .isaScoreCard strong{
+  .mriScoreCard strong{
     font-size:9px!important;
   }
-  .isaScoreCard em{
+  .mriScoreCard em{
     font-size:14px!important;
   }
   .reportSection{
@@ -2695,154 +2695,154 @@
     border-radius:16px!important;
   }
   .reportSection h3,
-  .isaGuideBlock h3,
-  .isaReportBlock h3{
+  .mriGuideBlock h3,
+  .mriReportBlock h3{
     font-size:18px!important;
     margin-bottom:8px!important;
   }
-  .isaSectionLead,
-  .isaHowToRead p,
+  .mriSectionLead,
+  .mriHowToRead p,
   .muted{
     font-size:9.5px!important;
     line-height:1.35!important;
   }
-  .isaGuideGrid{
+  .mriGuideGrid{
     grid-template-columns:1fr 1fr!important;
     gap:10px!important;
   }
-  .isaGuideCard{
+  .mriGuideCard{
     padding:12px!important;
     break-inside:avoid;
   }
-  .isaGuideCard h4{
+  .mriGuideCard h4{
     font-size:12px!important;
   }
-  .isaDefinitionList > div{
+  .mriDefinitionList > div{
     grid-template-columns:92px 1fr!important;
     gap:8px!important;
     padding-top:7px!important;
   }
-  .isaDefinitionList strong,
-  .isaLegendList strong{
+  .mriDefinitionList strong,
+  .mriLegendList strong{
     font-size:8px!important;
   }
-  .isaDefinitionList p,
-  .isaLegendList p{
+  .mriDefinitionList p,
+  .mriLegendList p{
     font-size:7.5px!important;
     line-height:1.25!important;
   }
-  .isaLegendList{
+  .mriLegendList{
     gap:7px!important;
   }
-  .isaLegendList > div{
+  .mriLegendList > div{
     padding:9px!important;
   }
-  .isaInterpretGrid{
+  .mriInterpretGrid{
     grid-template-columns:repeat(3,1fr)!important;
     gap:8px!important;
   }
-  .isaInterpretCard{
+  .mriInterpretCard{
     padding:10px!important;
   }
-  .isaInterpretCard strong{
+  .mriInterpretCard strong{
     font-size:9px!important;
   }
-  .isaInterpretCard p{
+  .mriInterpretCard p{
     font-size:7.5px!important;
   }
-  .isaReflectionBox{
+  .mriReflectionBox{
     padding:10px!important;
     font-size:8px!important;
   }
-  .isaComparisonWrap{
+  .mriComparisonWrap{
     overflow:visible!important;
   }
-  .isaComparisonGrid,
-  .isaComparisonGridV44{
+  .mriComparisonGrid,
+  .mriComparisonGridV44{
     min-width:0!important;
     width:100%!important;
     grid-template-columns:105px repeat(4,1fr)!important;
     font-size:8px!important;
   }
-  .isaGridHeader{
+  .mriGridHeader{
     font-size:7px!important;
     padding:8px!important;
   }
-  .isaRowLabel{
+  .mriRowLabel{
     font-size:8px!important;
     padding:8px!important;
   }
-  .isaRowLabel span{
+  .mriRowLabel span{
     font-size:5.5px!important;
   }
-  .isaGridCell{
+  .mriGridCell{
     padding:8px!important;
   }
-  .isaMiniBar{
+  .mriMiniBar{
     grid-template-columns:1fr 28px!important;
     gap:5px!important;
   }
-  .isaMiniBar em{
+  .mriMiniBar em{
     font-size:7px!important;
   }
-  .isaSuggestionGrid{
+  .mriSuggestionGrid{
     grid-template-columns:1fr 1fr!important;
     gap:9px!important;
   }
-  .isaSuggestionCard{
+  .mriSuggestionCard{
     padding:12px!important;
     break-inside:avoid;
   }
-  .isaSuggestionCard h4{
+  .mriSuggestionCard h4{
     font-size:11px!important;
   }
-  .isaSuggestionCard p{
+  .mriSuggestionCard p{
     font-size:8px!important;
     line-height:1.3!important;
   }
-  .isaTag{
+  .mriTag{
     font-size:6px!important;
     padding:4px 7px!important;
   }
-  .isaCategoryCards{
+  .mriCategoryCards{
     grid-template-columns:1fr 1fr!important;
     gap:9px!important;
   }
-  .isaCategoryCard{
+  .mriCategoryCard{
     break-inside:avoid;
     padding:10px!important;
   }
-  .isaCategoryCard h4{
+  .mriCategoryCard h4{
     font-size:10px!important;
   }
-  .isaCategoryCard p,
-  .isaCategoryCard small{
+  .mriCategoryCard p,
+  .mriCategoryCard small{
     font-size:7.5px!important;
   }
-  .isaDepthTable,
-  .isaDepthTableV44{
+  .mriDepthTable,
+  .mriDepthTableV44{
     width:100%!important;
     font-size:7px!important;
     border-collapse:collapse!important;
     break-inside:auto;
   }
-  .isaDepthTable th,
-  .isaDepthTableV44 th{
+  .mriDepthTable th,
+  .mriDepthTableV44 th{
     font-size:7px!important;
     padding:6px!important;
   }
-  .isaDepthTable td,
-  .isaDepthTableV44 td{
+  .mriDepthTable td,
+  .mriDepthTableV44 td{
     padding:5px 6px!important;
     line-height:1.2!important;
   }
-  .isaDepthTable tr,
-  .isaDepthTableV44 tr{
+  .mriDepthTable tr,
+  .mriDepthTableV44 tr{
     break-inside:avoid;
     page-break-inside:avoid;
   }
-  .isaDepthTable thead,
-  .isaDepthTableV44 thead{
+  .mriDepthTable thead,
+  .mriDepthTableV44 thead{
     display:table-header-group;
   }
 }
@@ -4423,7 +4423,7 @@
   background:#fffaf1;
   box-shadow:0 24px 70px rgba(32,50,59,.11);
 }
-.cmcParticipantRecordShell>.isaReport,
+.cmcParticipantRecordShell>.mriReport,
 .cmcParticipantRecordShell>.ministryStyleReport{
   max-width:none;
   margin:0;
@@ -7684,7 +7684,7 @@ body.cmcAuthBody button.oauthBtn:focus-visible .oauthIcon{background:var(--cmcSl
 .cmcFormBody .qnum,
 .cmcFormBody .scaleNum{background:rgba(77,167,156,.12);color:#236f68}
 .cmcFormBody .scale label,
-.cmcFormBody .isaChoice{
+.cmcFormBody .mriChoice{
   border-color:rgba(41,61,72,.16);
   background:#fffaf1;
   color:var(--cmcSlate);
@@ -7692,8 +7692,8 @@ body.cmcAuthBody button.oauthBtn:focus-visible .oauthIcon{background:var(--cmcSl
 }
 .cmcFormBody .scale label:hover,
 .cmcFormBody .scale label.selected,
-.cmcFormBody .isaChoice:hover,
-.cmcFormBody .isaChoice.selected{
+.cmcFormBody .mriChoice:hover,
+.cmcFormBody .mriChoice.selected{
   border-color:var(--cmcSage);
   background:rgba(77,167,156,.09);
   color:var(--cmcSlate)!important;
@@ -7792,15 +7792,15 @@ body.cmcAuthBody button.oauthBtn:focus-visible .oauthIcon{background:var(--cmcSl
   background:var(--cmcSand);
   box-shadow:none;
 }
-.cmcFormBody button.isaChoice,
+.cmcFormBody button.mriChoice,
 .cmcFormBody .scale label{
   border:1px solid rgba(41,61,72,.24);
   background:#fffaf1;
   color:var(--cmcSlate)!important;
   box-shadow:none;
 }
-.cmcFormBody button.isaChoice:hover,
-.cmcFormBody button.isaChoice:focus-visible,
+.cmcFormBody button.mriChoice:hover,
+.cmcFormBody button.mriChoice:focus-visible,
 .cmcFormBody .scale label:hover,
 .cmcFormBody .scale label:focus-within{
   border-color:var(--cmcSlate)!important;
@@ -7809,16 +7809,16 @@ body.cmcAuthBody button.oauthBtn:focus-visible .oauthIcon{background:var(--cmcSl
   box-shadow:0 0 0 3px rgba(41,61,72,.12)!important;
   outline:0;
 }
-.cmcFormBody button.isaChoice.selected,
+.cmcFormBody button.mriChoice.selected,
 .cmcFormBody .scale label.selected{
   border-color:var(--cmcSage)!important;
   background:var(--cmcSlate)!important;
   color:var(--cmcSand)!important;
   box-shadow:0 0 0 3px rgba(77,167,156,.24)!important;
 }
-.cmcFormBody button.isaChoice:hover .scaleNum,
-.cmcFormBody button.isaChoice:focus-visible .scaleNum,
-.cmcFormBody button.isaChoice.selected .scaleNum,
+.cmcFormBody button.mriChoice:hover .scaleNum,
+.cmcFormBody button.mriChoice:focus-visible .scaleNum,
+.cmcFormBody button.mriChoice.selected .scaleNum,
 .cmcFormBody .scale label:hover .scaleNum,
 .cmcFormBody .scale label:focus-within .scaleNum,
 .cmcFormBody .scale label.selected .scaleNum{
@@ -7839,7 +7839,7 @@ body.cmcAuthBody button.oauthBtn:focus-visible .oauthIcon{background:var(--cmcSl
   background:var(--cmcSlate)!important;
   color:#fff!important;
 }
-.cmcFormBody #isaAutosaveStatus{
+.cmcFormBody #mriAutosaveStatus{
   display:inline-flex;
   min-height:32px;
   align-items:center;
@@ -7848,7 +7848,7 @@ body.cmcAuthBody button.oauthBtn:focus-visible .oauthIcon{background:var(--cmcSl
   color:#4e6465;
   font:750 11px Montserrat,Arial,sans-serif;
 }
-.cmcFormBody #isaAutosaveStatus:before{
+.cmcFormBody #mriAutosaveStatus:before{
   width:8px;
   height:8px;
   border-radius:50%;
@@ -7863,53 +7863,53 @@ body.cmcAuthBody button.oauthBtn:focus-visible .oauthIcon{background:var(--cmcSl
 /* v120 warm reports, reliable dialog controls, and centered course reading rhythm */
 .cmcFormBody .report,
 .cmcFormBody .reportHeader,
-.cmcFormBody .isaReportTitle,
-.cmcFormBody .isaReportHeroV44,
-.cmcFormBody .isaScoreStripV44{
+.cmcFormBody .mriReportTitle,
+.cmcFormBody .mriReportHeroV44,
+.cmcFormBody .mriScoreStripV44{
   border-color:rgba(41,61,72,.16)!important;
   background:var(--cmcPaper)!important;
   box-shadow:none!important;
 }
 .cmcFormBody .reportSection,
-.cmcFormBody .isaReportBlock{
+.cmcFormBody .mriReportBlock{
   border-color:rgba(41,61,72,.16)!important;
   background:var(--cmcSand)!important;
   box-shadow:none!important;
 }
 .cmcFormBody .overallCard,
-.cmcFormBody .isaOverall{
+.cmcFormBody .mriOverall{
   border-color:rgba(41,61,72,.16)!important;
   background:var(--cmcSand)!important;
   box-shadow:none!important;
 }
-.cmcFormBody .isaScoreCard,
-.cmcFormBody .isaGuideCard,
-.cmcFormBody .isaLegendList>div,
-.cmcFormBody .isaInterpretCard,
-.cmcFormBody .isaReflectionBox,
-.cmcFormBody .isaCategoryCard,
+.cmcFormBody .mriScoreCard,
+.cmcFormBody .mriGuideCard,
+.cmcFormBody .mriLegendList>div,
+.cmcFormBody .mriInterpretCard,
+.cmcFormBody .mriReflectionBox,
+.cmcFormBody .mriCategoryCard,
 .cmcFormBody .qualityCard{
   border-color:rgba(41,61,72,.16)!important;
   background:var(--cmcPaper)!important;
   box-shadow:none!important;
 }
-.cmcFormBody .isaCompareRow,
-.cmcFormBody .isaComparisonGrid,
-.cmcFormBody .isaComparisonGridV2,
-.cmcFormBody .isaComparisonGridV44,
-.cmcFormBody .isaRowLabel,
-.cmcFormBody .isaGridCell,
+.cmcFormBody .mriCompareRow,
+.cmcFormBody .mriComparisonGrid,
+.cmcFormBody .mriComparisonGridV2,
+.cmcFormBody .mriComparisonGridV44,
+.cmcFormBody .mriRowLabel,
+.cmcFormBody .mriGridCell,
 .cmcFormBody .referenceRow,
 .cmcFormBody .referenceCell,
 .cmcFormBody .planterRow,
 .cmcFormBody .planterCell,
-.cmcFormBody .isaDepthTable td{
+.cmcFormBody .mriDepthTable td{
   border-color:rgba(41,61,72,.14)!important;
   background:var(--cmcPaper)!important;
 }
-.cmcFormBody .isaBar,
-.cmcFormBody .isaMiniBar,
-.cmcFormBody .isaScoreTrack{background:rgba(41,61,72,.12)!important}
+.cmcFormBody .mriBar,
+.cmcFormBody .mriMiniBar,
+.cmcFormBody .mriScoreTrack{background:rgba(41,61,72,.12)!important}
 
 .cmcEventEditorDialog .cmcReviewDialogClose{
   border-color:rgba(41,61,72,.22);

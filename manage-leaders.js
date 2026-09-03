@@ -7,7 +7,7 @@
     window.location.replace('dashboard.html');
     return;
   }
-  dcAuth.renderRoleNavigation(profile, 'leaders');
+  dcAuth.renderRoleNavigation(profile, 'team');
 
   const sb = await dcAuth.getSupabaseClient();
   const session = await sb.auth.getSession();

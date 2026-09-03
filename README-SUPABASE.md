@@ -42,3 +42,6 @@ Reports are still emailed through Resend. They are stored in Supabase and also s
 ## Ministry Readiness Inventory
 
 This version adds a second assessment at `/isa-assessment.html` and links it from the candidate dashboard. Results are stored in the existing `assessment_results` table with `scores.assessmentType = "isa_readiness"`.
+## Coaching integration
+
+Apply `supabase_coaching_schema.sql` after the core CMC Pathway and task-plan schemas. It adds multi-region coach approval, one active coach per participant, assignment history, protected access fields, indexes, RLS, and explicit server-role grants. Coaching tables are intentionally not exposed to browser clients; the app uses authenticated Netlify Functions to enforce administrator, regional leader, coach, and participant scopes.

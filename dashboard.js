@@ -42,6 +42,7 @@
     return;
   }
   dcAuth.renderRoleNavigation(profile, 'pathway');
+  loadMyCoach(accessToken);
   const profileComplete = Boolean(profile?.full_name && profile?.phone && profile?.state);
   if (!profileComplete) {
     window.location.href = 'profile.html?next=dashboard';
@@ -85,6 +86,10 @@
   renderNextStep(nextWork);
   renderStageWorkspace(workItems, currentStage, nextWork?.item.stage_key || currentStage);
   renderEventSummary(workItems);
+
+  async function loadMyCoach(token){
+    try{const response=await fetch('/.netlify/functions/my-coach',{headers:{Authorization:`Bearer ${token}`}});const data=await response.json();if(!response.ok||!data.coach)return;const card=document.getElementById('myCoachCard');card.innerHTML=`<div><p class="cmcEyebrow">YOUR COACH</p><h2>${escapeHtml(data.coach.full_name||data.coach.email)}</h2><p>Your coach is available to help you process next steps and keep your plan moving.</p></div><a class="cmcSecondaryButton" href="mailto:${escapeHtml(data.coach.email)}">Email your coach</a>`;card.classList.remove('hidden')}catch(_){}
+  }
 
   async function getDashboardPayload(token) {
     if (!token) return null;

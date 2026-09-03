@@ -25,7 +25,9 @@
       throw new Error(data.error || 'Could not load this record.');
     }
 
-    dcAuth.renderRoleNavigation(data.viewer, 'people');
+    const coachMode=Boolean(data.viewer?.is_coach&&!['regional_leader','cmc_admin'].includes(data.viewer?.account_role));
+    dcAuth.renderRoleNavigation(data.viewer, coachMode?'coaching':'people');
+    if(coachMode)document.getElementById('backToParticipant').href=`coach-participant.html?id=${encodeURIComponent(participantId)}`;
     const participantName = data.participant?.full_name || data.participant?.email || 'Participant';
     document.title = `${recordTitle(data)} | ${participantName}`;
     shell.innerHTML = data.type === 'application'

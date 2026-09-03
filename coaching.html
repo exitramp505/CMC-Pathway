@@ -1,0 +1,21 @@
+<!doctype html>
+<html lang="en">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Coaching | CMC Pathway</title><link rel="stylesheet" href="style.css?v=130"></head>
+<body class="cmcPathwayBody">
+<header class="cmcHeader"><a class="cmcBrand" href="leader.html"><img class="cmcLogoImage" src="cmc-logo-mark.svg" alt=""><span><strong>CMC Pathway</strong><small>Church Multiplication Collective</small></span></a><nav id="cmcRoleNav" class="cmcNav"></nav></header>
+<main class="cmcManageLeadersMain">
+  <nav class="cmcTeamTabs" aria-label="Team management"><a href="manage-leaders.html">Access</a><a class="active" href="coaching.html">Coaching</a></nav>
+  <section class="cmcManageLeadersIntro cmcAdminPageHero"><div><p class="cmcEyebrow">COACHING TEAM</p><h1>Coaching</h1><p>Approve coaches and connect each pioneer with the right person.</p></div><aside class="cmcLeaderScopeCard"><span>YOUR SCOPE</span><strong id="coachingScope">Loading…</strong><small id="coachingScopeCopy">Confirming access</small></aside></section>
+  <section class="cmcCoachingSummary" aria-label="Coaching summary"><article><span>Coaches</span><strong id="coachCount">0</strong><small>Approved in your scope</small></article><article><span>Active matches</span><strong id="matchCount">0</strong><small>Coach relationships</small></article><article><span>Need a coach</span><strong id="unassignedCount">0</strong><small>Active participants</small></article></section>
+  <section class="cmcCoachingWorkspace">
+    <div class="cmcCoachingActions">
+      <form id="addCoachForm"><div><p class="cmcEyebrow">COACH DIRECTORY</p><h2>Add a coach</h2><p>Approve an existing account for one region. Add another region later if needed.</p></div><label>Account<select id="coachAccount" required></select></label><label>Region<select id="coachRegion" required></select></label><button class="cmcPrimaryButton" type="submit">Add coach</button></form>
+      <form id="assignCoachForm"><div><p class="cmcEyebrow">PARTICIPANT SUPPORT</p><h2>Assign a coach</h2><p>One active coach per participant. A new match ends the previous one.</p></div><label>Region<select id="assignmentRegion" required></select></label><label>Participant<select id="coachParticipant" required></select></label><label>Coach<select id="assignmentCoach" required></select></label><button class="cmcPrimaryButton" type="submit">Assign coach</button></form>
+    </div>
+    <p id="coachingMessage" class="cmcAdminMessage" aria-live="polite"></p>
+    <div class="cmcCoachingListHeading"><div><p class="cmcEyebrow">CURRENT COACHES</p><h2>Coaches and participants</h2></div><input id="coachSearch" type="search" placeholder="Search coaches or participants"></div>
+    <div id="coachList" class="cmcCoachList"><p class="cmcLeaderEmpty">Loading coaches…</p></div>
+  </section>
+</main>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script><script src="auth.js?v=130"></script><script src="coaching.js?v=130"></script>
+</body></html>

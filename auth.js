@@ -82,18 +82,20 @@ function renderRoleNavigation(profile,activeKey){
  const nav=document.getElementById('cmcRoleNav');
  if(!nav)return;
  const role=profile?.account_role||'participant';
+ const isCoach=Boolean(profile?.is_coach);
  const items=[
   {key:'pathway',label:'My Pathway',href:role==='participant'?'dashboard.html':'dashboard.html?view=participant',show:true},
  {key:'people',label:'People',href:'leader.html',show:['regional_leader','cmc_admin'].includes(role)},
  {key:'events',label:'Events',href:'events.html',show:['regional_leader','cmc_admin'].includes(role)},
  {key:'courses',label:'Courses',href:'courses.html',show:role==='cmc_admin'},
   {key:'plans',label:'Task Plans',href:'task-plans.html',show:role==='cmc_admin'},
-  {key:'website',label:'Website',href:'website.html',show:role==='cmc_admin'},
-  {key:'leaders',label:'Leaders',href:'manage-leaders.html',show:['regional_leader','cmc_admin'].includes(role)},
+ {key:'website',label:'Website',href:'website.html',show:role==='cmc_admin'},
+  {key:'team',label:'Team',href:'manage-leaders.html',show:['regional_leader','cmc_admin'].includes(role)},
+  {key:'coaching',label:'My People',href:'coach.html',show:isCoach},
   {key:'profile',label:'Profile',href:'profile.html',show:true}
  ];
  const visibleItems=items.filter(item=>item.show);
- const managementKeys=['people','events','courses','plans','website','leaders'];
+ const managementKeys=['people','events','courses','plans','website','team','coaching'];
  const hasManagementTools=visibleItems.some(item=>managementKeys.includes(item.key));
  const menuItems=visibleItems.map(item=>{
   const dividerBefore=(item.key==='people'&&hasManagementTools)||item.key==='profile';

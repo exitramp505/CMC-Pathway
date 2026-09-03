@@ -58,6 +58,7 @@
     content.classList.remove('hidden');
     await loadManagement();
     await loadTaskPlans();
+    await loadCoaching();
   } catch (error) {
     showError(error.message || 'Could not load this participant.');
   }
@@ -105,6 +106,23 @@
       container.innerHTML = `<p class="cmcDetailEmpty">${escapeHtml(error.message)}</p>`;
       document.getElementById('openTaskPlanAssignment').disabled = true;
     }
+  }
+
+  async function loadCoaching(){
+    const panel=document.getElementById('participantCoachPanel');
+    try{
+      const response=await fetch('/.netlify/functions/coaching-admin',{headers:{Authorization:`Bearer ${token}`}});
+      const data=await response.json();if(!response.ok||!data.ok)throw new Error(data.error||'Could not load coaching.');
+      const active=data.assignments.find(item=>item.participant_id===participantId);
+      const region=participant.region;
+      const coaches=data.coaches.filter(item=>item.regions.includes(region));
+      panel.innerHTML=`${active?`<div class="cmcAssignedCoach"><span class="cmcAvatar">${initials(active.coach.full_name)}</span><div><strong>${escapeHtml(active.coach.full_name||active.coach.email)}</strong><small>${escapeHtml(active.coach.email)} · Since ${formatDate(active.assigned_at)}</small></div></div>`:'<p class="cmcDetailEmpty">No coach is currently assigned.</p>'}<div class="cmcParticipantCoachActions"><select id="participantCoachSelect"><option value="">${active?'Change coach':'Choose a coach'}</option>${coaches.map(coach=>`<option value="${escapeHtml(coach.id)}">${escapeHtml(coach.full_name||coach.email)}</option>`).join('')}</select><button id="saveParticipantCoach" class="cmcSecondaryButton" type="button">${active?'Change':'Assign'}</button>${active?'<button id="endParticipantCoach" class="cmcTextAction" type="button">End relationship</button>':''}</div>`;
+      document.getElementById('saveParticipantCoach').onclick=async()=>{const coachId=document.getElementById('participantCoachSelect').value;if(!coachId)return;await updateCoaching({action:'assign',participant_id:participantId,coach_id:coachId,region})};
+      document.getElementById('endParticipantCoach')?.addEventListener('click',()=>updateCoaching({action:'end_assignment',assignment_id:active.id}));
+    }catch(error){panel.innerHTML=`<p class="cmcDetailEmpty">${escapeHtml(error.message)}</p>`}
+  }
+  async function updateCoaching(body){
+    const response=await fetch('/.netlify/functions/coaching-admin',{method:'POST',headers:{Authorization:`Bearer ${token}`,'Content-Type':'application/json'},body:JSON.stringify(body)});const data=await response.json();if(!response.ok||!data.ok){window.alert(data.error||'Could not update coaching.');return}await loadCoaching();
   }
 
   function openTaskPlanAssignment() {

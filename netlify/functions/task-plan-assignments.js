@@ -1,4 +1,5 @@
 const { json, requireLeader, requireUser, httpError } = require('./_auth');
+const { requireCoachForParticipant } = require('./_coaching');
 const { addDays, nestTasks } = require('./_task-plans');
 
 exports.handler = async event => {
@@ -7,25 +8,28 @@ exports.handler = async event => {
     const body = event.httpMethod === 'POST' ? JSON.parse(event.body || '{}') : {};
     const participantId = String(body.participant_id || event.queryStringParameters?.participant_id || '');
     if (event.httpMethod === 'GET' && !participantId) return participantView(event);
-    const { supabase, viewer } = await requireLeader(event);
     if (!isUuid(participantId)) throw httpError(400, 'Choose a participant.');
-    await ensureParticipantAccess(supabase, viewer, participantId);
-
     if (event.httpMethod === 'GET') {
-      const planId = String(event.queryStringParameters?.plan_id || '');
-      if (planId) {
-        const plan = await accessiblePlan(supabase, viewer, planId, participantId);
-        const tasks = await loadPlanTasks(supabase, plan.id);
-        return json(200, { ok:true, plan, tasks, template_diff:await templateDiff(supabase, plan, tasks) });
+      const { supabase, user } = await requireUser(event);
+      const { data:viewer,error:viewerError }=await supabase.from('candidate_profiles').select('*').eq('id',user.id).single();
+      if(viewerError)throw viewerError;
+      if(!['regional_leader','cmc_admin'].includes(viewer.account_role)){
+        await requireCoachForParticipant(supabase,user.id,participantId);
+        const planId=String(event.queryStringParameters?.plan_id||'');
+        if(!planId)throw httpError(400,'Choose a task plan.');
+        const {data:plan,error:planError}=await supabase.from('cmc_participant_task_plans').select('*').eq('id',planId).eq('user_id',participantId).single();
+        if(planError)throw planError;
+        return json(200,{ok:true,viewer,coach_mode:true,plan,tasks:await loadPlanTasks(supabase,plan.id)});
       }
-      const [templateResult, planResult] = await Promise.all([
-        supabase.from('cmc_task_plan_templates').select('id,title,description,stage_key,version,updated_at').eq('status','published').order('title'),
-        supabase.from('cmc_participant_task_plans').select('*').eq('user_id',participantId).neq('status','archived').order('assigned_at',{ascending:false})
-      ]);
-      if (templateResult.error) throw templateResult.error;
-      if (planResult.error) throw planResult.error;
-      return json(200, { ok:true, templates:templateResult.data || [], plans:await planSummaries(supabase, planResult.data || []) });
+      await ensureParticipantAccess(supabase,viewer,participantId);
+      const planId=String(event.queryStringParameters?.plan_id||'');
+      if(planId){const plan=await accessiblePlan(supabase,viewer,planId,participantId);const tasks=await loadPlanTasks(supabase,plan.id);return json(200,{ok:true,viewer,plan,tasks,template_diff:await templateDiff(supabase,plan,tasks)})}
+      const [templateResult,planResult]=await Promise.all([supabase.from('cmc_task_plan_templates').select('id,title,description,stage_key,version,updated_at').eq('status','published').order('title'),supabase.from('cmc_participant_task_plans').select('*').eq('user_id',participantId).neq('status','archived').order('assigned_at',{ascending:false})]);
+      if(templateResult.error)throw templateResult.error;if(planResult.error)throw planResult.error;
+      return json(200,{ok:true,viewer,templates:templateResult.data||[],plans:await planSummaries(supabase,planResult.data||[])});
     }
+    const { supabase, viewer } = await requireLeader(event);
+    await ensureParticipantAccess(supabase, viewer, participantId);
 
     if (body.action === 'assign') {
       const templateId = String(body.template_id || '');

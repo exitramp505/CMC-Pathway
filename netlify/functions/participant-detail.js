@@ -35,7 +35,7 @@ exports.handler = async (event) => {
 
     const { data:viewer, error:viewerError } = await supabase
       .from('candidate_profiles')
-      .select('id,full_name,email,region,account_role')
+      .select('*')
       .eq('id', userData.user.id)
       .maybeSingle();
     if (viewerError) throw viewerError;

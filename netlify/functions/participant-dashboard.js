@@ -36,7 +36,7 @@ exports.handler = async (event) => {
     ] = await Promise.all([
       supabase
         .from('candidate_profiles')
-        .select('id,full_name,email,phone,state,region,married,account_role,church_name,ministry_role,pathway_interest,current_stage,archived_at')
+        .select('*')
         .eq('id', user.id)
         .maybeSingle(),
       supabase

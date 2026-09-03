@@ -40,7 +40,7 @@ async function requireLeader(event, client = adminClient()) {
   const auth = await requireUser(event, client);
   const { data: viewer, error } = await auth.supabase
     .from('candidate_profiles')
-    .select('id,full_name,email,region,account_role')
+    .select('*')
     .eq('id', auth.user.id)
     .maybeSingle();
   if (error) throw error;

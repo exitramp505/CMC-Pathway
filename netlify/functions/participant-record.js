@@ -14,7 +14,7 @@ exports.handler = async (event) => {
   }
 
   try {
-    const { supabase, viewer } = await requireLeader(event);
+    const { supabase, viewer, coachMode } = await requireRecordViewer(event);
     const participantId = String(event.queryStringParameters?.participant_id || '');
     const recordType = String(event.queryStringParameters?.type || '');
     const recordId = String(event.queryStringParameters?.record_id || '');
@@ -27,6 +27,9 @@ exports.handler = async (event) => {
       return json(404, { ok:false, error:'Participant not found in your region.' });
     }
 
+    if (coachMode && recordType !== 'assessment') {
+      return json(403,{ok:false,error:'Coaches can view assessment reports, but applications, references, and reflections remain leader-only.'});
+    }
     if (recordType === 'application') {
       const { data, error } = await supabase
         .from('candidate_applications')
@@ -119,7 +122,7 @@ async function requireLeader(event) {
   if (userError || !userData?.user) throw httpError(401, 'Invalid session.');
   const { data:viewer, error } = await supabase
     .from('candidate_profiles')
-    .select('id,full_name,email,region,account_role')
+    .select('*')
     .eq('id', userData.user.id)
     .maybeSingle();
   if (error) throw error;
@@ -127,6 +130,20 @@ async function requireLeader(event) {
     throw httpError(403, 'Regional leader access is required.');
   }
   return { supabase, viewer };
+}
+
+async function requireRecordViewer(event){
+  try{return {...await requireLeader(event),coachMode:false}}catch(error){
+    if(error.statusCode!==403)throw error;
+    const token=String(event.headers.authorization||event.headers.Authorization||'').replace(/^Bearer\s+/i,'');
+    const supabase=createClient(process.env.SUPABASE_URL,process.env.SUPABASE_SERVICE_ROLE_KEY);
+    const {data:userData,error:userError}=await supabase.auth.getUser(token);
+    if(userError||!userData?.user)throw httpError(401,'Invalid session.');
+    const participantId=String(event.queryStringParameters?.participant_id||'');
+    const {requireCoachForParticipant}=require('./_coaching');
+    const context=await requireCoachForParticipant(supabase,userData.user.id,participantId);
+    return {supabase,viewer:context.profile,coachMode:true};
+  }
 }
 
 async function loadParticipant(supabase, viewer, id) {

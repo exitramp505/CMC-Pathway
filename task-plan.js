@@ -9,6 +9,7 @@
   const planId = params.get('id');
   const participantId = params.get('participant_id');
   const leaderMode = Boolean(participantId && ['regional_leader', 'cmc_admin'].includes(profile?.account_role));
+  const coachMode = Boolean(participantId && profile?.is_coach && !leaderMode);
   const app = document.getElementById('taskPlanApp');
   const ui = window.cmcTaskPlanUI;
   if (!planId) { location.href = 'dashboard.html'; return; }
@@ -35,7 +36,7 @@
   }
 
   async function loadPlan() {
-    const query = leaderMode
+    const query = leaderMode || coachMode
       ? `?participant_id=${encodeURIComponent(participantId)}&plan_id=${encodeURIComponent(planId)}`
       : `?plan_id=${encodeURIComponent(planId)}`;
     const response = await fetch(`/.netlify/functions/task-plan-assignments${query}`, { headers: { Authorization: `Bearer ${token}` } });
@@ -70,7 +71,7 @@
           <div class="cmcPlanRailStatus"><strong>${phaseProgress.percent}%</strong><span>phase</span></div>
         </div>
         <div class="cmcPlanSidebarContent">
-          <a class="cmcBackToPathway" href="${leaderMode ? `participant.html?id=${encodeURIComponent(participantId)}` : 'dashboard.html'}">← ${leaderMode ? 'Participant dashboard' : 'My Pathway'}</a>
+          <a class="cmcBackToPathway" href="${leaderMode ? `participant.html?id=${encodeURIComponent(participantId)}` : coachMode ? `coach-participant.html?id=${encodeURIComponent(participantId)}` : 'dashboard.html'}">← ${leaderMode ? 'Participant dashboard' : coachMode ? 'Coaching overview' : 'My Pathway'}</a>
           <p class="cmcEyebrow">DEPLOY · TASK PLAN</p>
           <h1>${escapeHtml(plan.title)}</h1>
           <p>${escapeHtml(plan.description || 'Your launch work, dates, and progress in one place.')}</p>
@@ -224,8 +225,8 @@
       button.textContent = 'Save task changes';
       button.disabled = false;
     } else {
-      button.textContent = selected.status === 'completed' ? 'Mark not started' : selected.status === 'pending_review' ? 'Awaiting leader approval' : !selected.participant_editable ? 'Managed by your CMC leader' : selected.blocked_by_dependency ? 'Waiting on earlier work' : selected.requires_approval ? 'Submit for approval' : 'Mark complete';
-      button.disabled = selected.status === 'pending_review' || !selected.participant_editable || (selected.blocked_by_dependency && selected.status !== 'completed');
+      button.textContent = selected.status === 'completed' ? 'Mark not started' : selected.status === 'pending_review' ? 'Awaiting leader approval' : !selected.participant_editable && !coachMode ? 'Managed by your CMC leader' : selected.blocked_by_dependency ? 'Waiting on earlier work' : selected.requires_approval ? 'Submit for approval' : 'Mark complete';
+      button.disabled = selected.status === 'pending_review' || (!selected.participant_editable && !coachMode) || (selected.blocked_by_dependency && selected.status !== 'completed');
     }
     document.getElementById('taskDialogMessage').textContent = '';
     document.getElementById('taskPlanTaskDialog').showModal();

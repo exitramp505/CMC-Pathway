@@ -8696,9 +8696,105 @@ body.cmcAuthBody button.oauthBtn:focus-visible .oauthIcon{background:var(--cmcSl
 .cmcCoachingSummary{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin:24px 0}.cmcCoachingSummary article{padding:21px 23px;border:1px solid rgba(41,61,72,.13);border-radius:19px;background:rgba(255,250,241,.72)}.cmcCoachingSummary span,.cmcCoachingSummary small{display:block;color:#65757b;font-size:var(--cmc-type-label);font-weight:800}.cmcCoachingSummary strong{display:block;margin:6px 0 2px;font-size:var(--cmc-type-section)}
 .cmcCoachingWorkspace{margin-bottom:90px;padding:clamp(22px,3vw,38px);border-radius:30px;background:var(--cmcSlate);color:var(--cmcSand)}.cmcCoachingActions{display:grid;grid-template-columns:1fr 1fr;gap:16px}.cmcCoachingActions form{display:grid;grid-template-columns:1fr 1fr auto;gap:13px;align-items:end;padding:22px;border:1px solid rgba(251,240,222,.16);border-radius:20px;background:rgba(255,255,255,.055)}.cmcCoachingActions form>div{grid-column:1/-1}.cmcCoachingActions h2,.cmcCoachingListHeading h2{margin:3px 0 6px;color:var(--cmcSand);font-size:var(--cmc-type-subsection)}.cmcCoachingActions p{margin:0;color:rgba(251,240,222,.7);font-size:var(--cmc-type-caption);line-height:1.5}.cmcCoachingActions label{display:grid;gap:6px;color:rgba(251,240,222,.72);font-size:var(--cmc-type-label);font-weight:850;text-transform:uppercase}.cmcCoachingActions select{min-height:45px;padding:0 12px;border:0;border-radius:10px;font:inherit}.cmcCoachingActions .cmcPrimaryButton{min-height:45px}.cmcCoachingWorkspace>.cmcAdminMessage{color:var(--cmcSand)}
 .cmcCoachingListHeading{display:flex;align-items:end;justify-content:space-between;gap:20px;margin:32px 0 15px}.cmcCoachingListHeading input{width:min(340px,100%);min-height:45px;padding:0 14px;border:1px solid rgba(251,240,222,.22);border-radius:11px;background:rgba(255,255,255,.08);color:#fff;font:inherit}.cmcCoachList{display:grid;gap:13px}.cmcCoachCard{overflow:hidden;border:1px solid rgba(251,240,222,.16);border-radius:20px;background:rgba(255,255,255,.055)}.cmcCoachCard>header{display:grid;grid-template-columns:auto 1fr auto;gap:13px;align-items:center;padding:18px 20px}.cmcCoachCard>header div{display:grid}.cmcCoachCard small{color:rgba(251,240,222,.65);font-size:var(--cmc-type-caption)}.cmcCoachLoad{padding:7px 10px;border-radius:999px;background:rgba(77,167,156,.18);color:#8bddcf;font-size:var(--cmc-type-label);font-weight:850}.cmcCoachRegions{display:flex;gap:8px;padding:0 20px 15px}.cmcCoachRegions>span{display:flex;align-items:center;gap:7px;padding:6px 9px;border:1px solid rgba(77,167,156,.35);border-radius:999px;color:#8bddcf;font-size:var(--cmc-type-label);font-weight:800}.cmcCoachRegions button{border:0;background:transparent;color:inherit;font-size:17px;cursor:pointer}.cmcCoachRoster{border-top:1px solid rgba(251,240,222,.12)}.cmcCoachRoster>div{display:grid;grid-template-columns:auto 1fr auto auto;gap:12px;align-items:center;padding:13px 20px;border-top:1px solid rgba(251,240,222,.07)}.cmcCoachRoster>div:first-child{border-top:0}.cmcCoachRoster>div>div{display:grid}.cmcCoachRoster a,.cmcCoachRoster button{border:0;background:transparent;color:var(--cmcSand);font:inherit;font-size:var(--cmc-type-caption);font-weight:850}.cmcCoachRoster button{color:#efb170;cursor:pointer}.cmcCoachRoster>p{margin:0;padding:17px 20px;color:rgba(251,240,222,.6);font-size:var(--cmc-type-caption)}.cmcAvatar.small{width:34px;height:34px;font-size:11px}
+/* v132 coaching workspace overhaul */
+.cmcCoachingWorkspace{padding:0;overflow:hidden;border:1px solid rgba(41,61,72,.08);box-shadow:0 28px 70px rgba(29,47,57,.12)}
+.cmcCoachingWorkspaceHeader{display:flex;align-items:center;justify-content:space-between;gap:32px;padding:34px clamp(24px,3.5vw,48px);border-bottom:1px solid rgba(251,240,222,.14)}
+.cmcCoachingWorkspaceHeader h2{margin:4px 0 8px;color:var(--cmcSand);font-size:clamp(30px,3vw,42px);line-height:1.05;letter-spacing:-.045em}
+.cmcCoachingWorkspaceHeader p:last-child{max-width:660px;margin:0;color:rgba(251,240,222,.72);font-size:var(--cmc-type-body-sm);font-weight:650;line-height:1.55}
+.cmcCoachingHeaderActions{display:flex;flex:0 0 auto;gap:10px}
+.cmcCoachingHeaderActions button{width:auto;min-width:148px;min-height:50px;margin:0;padding:0 18px;border-radius:13px;font-size:var(--cmc-type-caption);box-shadow:none}
+.cmcCoachingHeaderActions .cmcSecondaryButton{border-color:rgba(251,240,222,.28);color:var(--cmcSand);background:transparent}
+.cmcCoachingHeaderActions .cmcSecondaryButton:hover,.cmcCoachingHeaderActions .cmcSecondaryButton:focus-visible{border-color:var(--cmcSage);color:var(--cmcSand);background:rgba(77,167,156,.12);box-shadow:none}
+.cmcCoachingHeaderActions .cmcPrimaryButton:hover,.cmcCoachingHeaderActions .cmcPrimaryButton:focus-visible{color:var(--cmcInk);background:#f1b45f;box-shadow:none}
+.cmcCoachingActionPanel{padding:0 clamp(24px,3.5vw,48px);border-bottom:1px solid rgba(251,240,222,.14);background:rgba(255,255,255,.045)}
+.cmcCoachingActionPanel form{display:grid;grid-template-columns:minmax(240px,1fr) minmax(240px,1fr) auto;gap:16px;align-items:end;padding:28px 0}
+.cmcCoachingActionPanel form#assignCoachForm{grid-template-columns:minmax(230px,.75fr) minmax(260px,1fr) minmax(260px,1fr) auto}
+.cmcCoachingActionPanel form.hidden{display:none}
+.cmcCoachingFormIntro{grid-column:1/-1;display:grid;grid-template-columns:minmax(0,1fr) minmax(300px,.8fr);align-items:end;gap:24px;margin-bottom:4px}
+.cmcCoachingFormIntro .cmcEyebrow{grid-column:1;margin:0}
+.cmcCoachingFormIntro h3{grid-column:1;margin:0;color:var(--cmcSand);font-size:var(--cmc-type-subsection);line-height:1.12}
+.cmcCoachingFormIntro p:last-child{grid-column:2;grid-row:1/3;align-self:end;margin:0;color:rgba(251,240,222,.68);font-size:var(--cmc-type-caption);font-weight:650;line-height:1.5}
+.cmcCoachingActionPanel label{display:grid;gap:7px;color:rgba(251,240,222,.76);font-size:var(--cmc-type-label);font-weight:900;letter-spacing:.06em;text-transform:uppercase}
+.cmcCoachingActionPanel select{width:100%;min-height:50px;padding:0 13px;border:1px solid rgba(251,240,222,.15);border-radius:12px;background:#fffaf1;color:var(--cmcSlate);font:750 var(--cmc-type-body-sm)/1.2 var(--cmcBodyFont)}
+.cmcCoachingFormActions{display:flex;gap:8px;align-items:center}
+.cmcCoachingFormActions button{width:auto;min-width:112px;min-height:50px;margin:0;padding:0 16px;border-radius:12px;font-size:var(--cmc-type-caption);box-shadow:none}
+.cmcCoachingFormActions .cmcTextButton{border:0;color:rgba(251,240,222,.76);background:transparent;cursor:pointer}
+.cmcCoachingFormActions .cmcTextButton:hover,.cmcCoachingFormActions .cmcTextButton:focus-visible{color:#fff;background:rgba(255,255,255,.08);box-shadow:none}
+.cmcCoachingWorkspace>.cmcAdminMessage{display:none;margin:0;padding:12px clamp(24px,3.5vw,48px);border-bottom:1px solid rgba(77,167,156,.18);color:#a7e1d8;background:rgba(77,167,156,.1);font-size:var(--cmc-type-caption);font-weight:800}
+.cmcCoachingWorkspace>.cmcAdminMessage.visible{display:block}
+.cmcCoachingWorkspace>.cmcAdminMessage.error{color:#ffd2cb;background:rgba(184,83,70,.16)}
+.cmcCoachingToolbar{display:flex;align-items:end;justify-content:space-between;gap:24px;padding:22px clamp(24px,3.5vw,48px);border-bottom:1px solid rgba(251,240,222,.14)}
+.cmcCoachingViews{display:flex;gap:6px;padding:4px;border:1px solid rgba(251,240,222,.17);border-radius:13px;background:rgba(255,255,255,.045)}
+.cmcCoachingViews button{display:flex;align-items:center;gap:9px;min-height:40px;margin:0;padding:0 13px;border:0;border-radius:9px;color:rgba(251,240,222,.7);background:transparent;font:850 var(--cmc-type-caption)/1 var(--cmcBodyFont);box-shadow:none;cursor:pointer}
+.cmcCoachingViews button span{display:grid;min-width:24px;height:24px;padding:0 6px;place-items:center;border-radius:999px;color:inherit;background:rgba(255,255,255,.1);font-size:var(--cmc-type-micro)}
+.cmcCoachingViews button.active{color:var(--cmcInk);background:var(--cmcSand)}
+.cmcCoachingViews button.active span{color:#fff;background:var(--cmcSage)}
+.cmcCoachingFilters{display:flex;gap:11px;align-items:end}
+.cmcCoachingFilters label{display:grid;gap:6px;color:rgba(251,240,222,.62);font-size:var(--cmc-type-micro);font-weight:900;letter-spacing:.08em;text-transform:uppercase}
+.cmcCoachingFilters select,.cmcCoachingFilters input{min-height:43px;box-sizing:border-box;padding:0 12px;border:1px solid rgba(251,240,222,.2);border-radius:11px;color:var(--cmcSand);background:rgba(255,255,255,.07);font:700 var(--cmc-type-caption)/1 var(--cmcBodyFont)}
+.cmcCoachingFilters select{width:170px}.cmcCoachingFilters input{width:min(290px,28vw)}
+.cmcCoachingFilters select option{color:var(--cmcSlate);background:#fff}
+.cmcCoachingFilters input::placeholder{color:rgba(251,240,222,.48)}
+.cmcCoachList{gap:16px;padding:28px clamp(24px,3.5vw,48px) 44px}
+.cmcCoachCard{border:1px solid rgba(41,61,72,.12);border-radius:20px;color:var(--cmcSlate);background:rgba(255,250,241,.97);box-shadow:0 10px 28px rgba(9,24,31,.09)}
+.cmcCoachCard>header{grid-template-columns:auto minmax(0,1fr) auto;gap:14px;padding:20px 22px 13px}
+.cmcCoachIdentity{gap:2px}.cmcCoachIdentity strong{font-size:var(--cmc-type-body);line-height:1.25}.cmcCoachIdentity small{color:#66777d;font-size:var(--cmc-type-caption)}
+.cmcCoachCardActions{display:flex!important;align-items:center;gap:9px}
+.cmcCoachLoad{padding:7px 10px;color:#277d73;background:rgba(77,167,156,.12)}
+.cmcCoachCardActions button,.cmcUnassignedCoachCard button,.cmcCoachingEmpty button{min-height:38px;margin:0;padding:0 13px;border:1px solid rgba(41,61,72,.15);border-radius:10px;color:var(--cmcSlate);background:transparent;font:850 var(--cmc-type-caption)/1 var(--cmcBodyFont);box-shadow:none;cursor:pointer}
+.cmcCoachCardActions button:hover,.cmcCoachCardActions button:focus-visible,.cmcUnassignedCoachCard button:hover,.cmcUnassignedCoachCard button:focus-visible,.cmcCoachingEmpty button:hover,.cmcCoachingEmpty button:focus-visible{border-color:var(--cmcSage);color:#fff;background:var(--cmcSage);box-shadow:none}
+.cmcCoachRegions{flex-wrap:wrap;gap:7px;padding:0 22px 17px}
+.cmcCoachRegions>span{gap:6px;padding:5px 8px 5px 10px;border-color:rgba(77,167,156,.28);color:#277d73;background:rgba(77,167,156,.07)}
+.cmcCoachRegions button{display:grid;width:20px;height:20px;padding:0;place-items:center;border-radius:999px;color:#277d73;line-height:1}
+.cmcCoachRegions button:hover,.cmcCoachRegions button:focus-visible{color:#fff;background:var(--cmcSage)}
+.cmcCoachRegions button:disabled{opacity:.3;cursor:not-allowed}
+.cmcCoachRoster{border-top:1px solid rgba(41,61,72,.11);background:rgba(255,255,255,.38)}
+.cmcCoachRoster>.cmcCoachRosterLabel{display:block;padding:12px 22px;border:0;color:#718087;font-size:var(--cmc-type-micro);font-weight:900;letter-spacing:.08em;text-transform:uppercase}
+.cmcCoachRoster>.cmcCoachRosterRow{grid-template-columns:auto minmax(0,1fr) auto auto;padding:13px 22px;border-top:1px solid rgba(41,61,72,.08)}
+.cmcCoachRosterRow>div{gap:2px}.cmcCoachRosterRow strong{font-size:var(--cmc-type-body-sm)}.cmcCoachRosterRow small{color:#718087;font-size:var(--cmc-type-caption)}
+.cmcCoachRoster a,.cmcCoachRoster button{min-height:34px;padding:0 9px;border-radius:8px;color:var(--cmcSage);text-decoration:none}
+.cmcCoachRoster a{display:inline-flex;align-items:center}.cmcCoachRoster button{color:#9a5d4f}
+.cmcCoachRoster a:hover,.cmcCoachRoster a:focus-visible{color:#fff;background:var(--cmcSage)}.cmcCoachRoster button:hover,.cmcCoachRoster button:focus-visible{color:#fff;background:#a86353}
+.cmcCoachRoster>p{padding:17px 22px;color:#718087}
+.cmcCoachList.unassigned-view{grid-template-columns:repeat(2,minmax(0,1fr))}
+.cmcUnassignedCoachCard{display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:14px;align-items:center;padding:18px 20px;border:1px solid rgba(41,61,72,.12);border-radius:18px;color:var(--cmcSlate);background:rgba(255,250,241,.97)}
+.cmcUnassignedCoachCard>div{display:grid;gap:3px}.cmcUnassignedCoachCard strong{font-size:var(--cmc-type-body-sm)}.cmcUnassignedCoachCard small{color:#718087;font-size:var(--cmc-type-caption)}
+.cmcCoachingEmpty{grid-column:1/-1;display:grid;justify-items:center;padding:54px 24px;border:1px dashed rgba(251,240,222,.22);border-radius:20px;text-align:center}
+.cmcCoachingEmpty>span{display:grid;width:42px;height:42px;place-items:center;margin-bottom:12px;border-radius:999px;color:var(--cmcSage);background:rgba(77,167,156,.13);font-size:26px}.cmcCoachingEmpty strong{color:var(--cmcSand);font-size:var(--cmc-type-body-lg)}.cmcCoachingEmpty p{margin:6px 0 0;color:rgba(251,240,222,.64);font-size:var(--cmc-type-caption)}.cmcCoachingEmpty button{margin-top:17px;border-color:rgba(251,240,222,.25);color:var(--cmcSand)}
+.cmcCoachingWorkspace.is-busy{cursor:progress}.cmcCoachingWorkspace.is-busy button[type="submit"]{opacity:.55;cursor:wait}
+.cmcCoachingConfirmDialog .cmcAccessDialogMark{background:#f2b8ac}
 .cmcCoachMain{padding-bottom:90px}.cmcCoachPeopleList{display:grid;gap:12px}.cmcCoachPeopleList>article{display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:17px;align-items:center;padding:20px;border:1px solid rgba(41,61,72,.13);border-radius:19px;background:rgba(255,250,241,.72)}.cmcCoachPersonCopy{display:grid;gap:3px}.cmcCoachPersonCopy>small{color:var(--cmcSage);font-size:var(--cmc-type-label);font-weight:900;text-transform:uppercase}.cmcCoachPersonCopy>strong{font-size:var(--cmc-type-body-lg)}.cmcCoachPersonCopy>span,.cmcCoachPersonCopy>em{color:#66777d;font-size:var(--cmc-type-caption);font-style:normal}.cmcCoachPersonProgress{height:6px;margin-top:8px;overflow:hidden;border-radius:99px;background:rgba(41,61,72,.1)}.cmcCoachPersonProgress i{display:block;height:100%;background:linear-gradient(90deg,var(--cmcEmber),var(--cmcSage))}
 .cmcCoachParticipantMain{padding:28px 0 90px}.cmcCoachParticipantHero{margin:18px 0 20px}.cmcCoachParticipantGrid{display:grid;grid-template-columns:minmax(0,1.6fr) minmax(290px,.7fr);gap:18px}.cmcCoachParticipantSide{display:grid;align-content:start;gap:18px}.cmcCoachReportList,.cmcCoachCourseList{display:grid;gap:8px;margin-top:16px}.cmcCoachReportList a,.cmcCoachCourseList>div{display:flex;align-items:center;justify-content:space-between;gap:15px;padding:12px;border:1px solid rgba(41,61,72,.12);border-radius:12px;color:var(--cmcSlate);text-decoration:none}.cmcCoachReportList span,.cmcCoachCourseList span{display:grid}.cmcCoachReportList small,.cmcCoachCourseList small{color:#68797f;font-size:var(--cmc-type-caption)}.cmcCoachCourseList b{color:var(--cmcSage)}
 .cmcAssignedCoach{display:flex;align-items:center;gap:13px}.cmcAssignedCoach>div{display:grid}.cmcAssignedCoach small{color:#68797f;font-size:var(--cmc-type-caption)}.cmcParticipantCoachActions{display:flex;flex-wrap:wrap;gap:9px;margin-top:16px}.cmcParticipantCoachActions select{min-height:43px;flex:1;padding:0 11px;border:1px solid rgba(41,61,72,.16);border-radius:10px;background:#fff;font:inherit}.cmcMyCoachCard{display:flex;align-items:center;justify-content:space-between;gap:22px;margin:18px 0;padding:22px 25px;border:1px solid rgba(77,167,156,.3);border-radius:20px;background:rgba(77,167,156,.07)}.cmcMyCoachCard h2{margin:3px 0;font-size:var(--cmc-type-subsection)}.cmcMyCoachCard p:last-child{margin:0;color:#64757b;font-size:var(--cmc-type-body-sm)}
 @media(max-width:900px){.cmcCoachingActions,.cmcCoachParticipantGrid{grid-template-columns:1fr}.cmcCoachingActions form{grid-template-columns:1fr}.cmcCoachingSummary{grid-template-columns:1fr 1fr}.cmcCoachPeopleList>article{grid-template-columns:auto 1fr}.cmcCoachPeopleList>article>a{grid-column:2;justify-self:start}}
 @media(max-width:620px){.cmcTeamSectionTabs a{flex-basis:50%;min-width:145px}.cmcCoachingSummary{grid-template-columns:1fr}.cmcCoachingListHeading{align-items:stretch;flex-direction:column}.cmcCoachRoster>div{grid-template-columns:auto 1fr}.cmcCoachRoster a,.cmcCoachRoster button{grid-column:2;justify-self:start}.cmcMyCoachCard{align-items:flex-start;flex-direction:column}}
 @media(min-width:901px){.cmcCoachingActions form{grid-template-columns:repeat(3,minmax(0,1fr)) auto}}
+@media(max-width:1120px){
+  .cmcCoachingActionPanel form,.cmcCoachingActionPanel form#assignCoachForm{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .cmcCoachingFormActions{justify-content:flex-end}
+}
+@media(max-width:900px){
+  .cmcCoachingWorkspaceHeader{align-items:flex-start;flex-direction:column}
+  .cmcCoachingToolbar{align-items:stretch;flex-direction:column}
+  .cmcCoachingFilters{justify-content:space-between}
+  .cmcCoachingFilters label{flex:1}.cmcCoachingFilters select,.cmcCoachingFilters input{width:100%}
+  .cmcCoachList.unassigned-view{grid-template-columns:1fr}
+}
+@media(max-width:680px){
+  .cmcCoachingWorkspaceHeader{padding:26px 20px}
+  .cmcCoachingHeaderActions{display:grid;width:100%;grid-template-columns:1fr}
+  .cmcCoachingHeaderActions button{width:100%}
+  .cmcCoachingActionPanel{padding:0 20px}
+  .cmcCoachingActionPanel form,.cmcCoachingActionPanel form#assignCoachForm{grid-template-columns:1fr;padding:24px 0}
+  .cmcCoachingFormIntro{display:block;margin:0}.cmcCoachingFormIntro h3{margin:5px 0 8px}.cmcCoachingFormIntro p:last-child{margin:0}
+  .cmcCoachingFormActions{display:grid;grid-template-columns:1fr 1fr}.cmcCoachingFormActions button{width:100%}
+  .cmcCoachingToolbar{padding:18px 20px}.cmcCoachingViews{display:grid;grid-template-columns:1fr 1fr}.cmcCoachingViews button{justify-content:center}
+  .cmcCoachingFilters{display:grid;grid-template-columns:1fr}
+  .cmcCoachList{padding:22px 20px 32px}
+  .cmcCoachCard>header{grid-template-columns:auto minmax(0,1fr);padding:18px 17px 12px}
+  .cmcCoachCardActions{grid-column:2;justify-content:flex-start;margin-top:5px}
+  .cmcCoachRegions{padding:0 17px 15px}
+  .cmcCoachRoster>.cmcCoachRosterRow{grid-template-columns:auto minmax(0,1fr);padding:13px 17px}
+  .cmcCoachRosterRow a,.cmcCoachRosterRow button{grid-column:2;justify-self:start}
+  .cmcUnassignedCoachCard{grid-template-columns:auto minmax(0,1fr)}.cmcUnassignedCoachCard button{grid-column:2;justify-self:start}
+}

@@ -1,21 +1,57 @@
 <!doctype html>
 <html lang="en">
-<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Coaching | CMC Pathway</title><link rel="stylesheet" href="style.css?v=131"></head>
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Coaching | CMC Pathway</title><link rel="stylesheet" href="style.css?v=132"></head>
 <body class="cmcPathwayBody">
 <header class="cmcHeader"><a class="cmcBrand" href="leader.html"><img class="cmcLogoImage" src="cmc-logo-mark.svg" alt=""><span><strong>CMC Pathway</strong><small>Church Multiplication Collective</small></span></a><nav id="cmcRoleNav" class="cmcNav"></nav></header>
 <main class="cmcManageLeadersMain">
   <section class="cmcManageLeadersIntro cmcAdminPageHero"><div><p class="cmcEyebrow">COACHING TEAM</p><h1>Coaching</h1><p>Approve coaches and connect each pioneer with the right person.</p><span id="coachingScope" class="hidden"></span><span id="coachingScopeCopy" class="hidden"></span></div></section>
   <nav class="cmcWebsiteTabs cmcTeamSectionTabs" aria-label="Team sections"><a href="manage-leaders.html"><span>01</span>Access</a><a class="active" href="coaching.html" aria-current="page"><span>02</span>Coaching</a></nav>
-  <section class="cmcCoachingSummary" aria-label="Coaching summary"><article><span>Coaches</span><strong id="coachCount">0</strong><small>Approved in your scope</small></article><article><span>Active matches</span><strong id="matchCount">0</strong><small>Coach relationships</small></article><article><span>Need a coach</span><strong id="unassignedCount">0</strong><small>Active participants</small></article></section>
   <section class="cmcCoachingWorkspace">
-    <div class="cmcCoachingActions">
-      <form id="addCoachForm"><div><p class="cmcEyebrow">COACH DIRECTORY</p><h2>Add a coach</h2><p>Approve an existing account for one region. Add another region later if needed.</p></div><label>Account<select id="coachAccount" required></select></label><label>Region<select id="coachRegion" required></select></label><button class="cmcPrimaryButton" type="submit">Add coach</button></form>
-      <form id="assignCoachForm"><div><p class="cmcEyebrow">PARTICIPANT SUPPORT</p><h2>Assign a coach</h2><p>One active coach per participant. A new match ends the previous one.</p></div><label>Region<select id="assignmentRegion" required></select></label><label>Participant<select id="coachParticipant" required></select></label><label>Coach<select id="assignmentCoach" required></select></label><button class="cmcPrimaryButton" type="submit">Assign coach</button></form>
+    <header class="cmcCoachingWorkspaceHeader">
+      <div><p class="cmcEyebrow">COACHING RELATIONSHIPS</p><h2>Coaches and pioneers</h2><p>Manage who can coach and keep each pioneer connected to the right support.</p></div>
+      <div class="cmcCoachingHeaderActions">
+        <button class="cmcSecondaryButton" type="button" data-open-coaching-panel="add" aria-expanded="false">Add a coach</button>
+        <button class="cmcPrimaryButton" type="button" data-open-coaching-panel="assign" aria-expanded="false">Assign a coach</button>
+      </div>
+    </header>
+
+    <div id="coachingActionPanel" class="cmcCoachingActionPanel hidden">
+      <form id="addCoachForm" class="hidden">
+        <div class="cmcCoachingFormIntro"><p class="cmcEyebrow">COACH DIRECTORY</p><h3>Add a coach</h3><p>Choose an existing account and the region where they may coach.</p></div>
+        <label>Region<select id="coachRegion" required></select></label>
+        <label>Account<select id="coachAccount" required></select></label>
+        <div class="cmcCoachingFormActions"><button type="button" class="cmcTextButton" data-close-coaching-panel>Cancel</button><button class="cmcPrimaryButton" type="submit">Add coach</button></div>
+      </form>
+      <form id="assignCoachForm" class="hidden">
+        <div class="cmcCoachingFormIntro"><p class="cmcEyebrow">PARTICIPANT SUPPORT</p><h3>Assign a coach</h3><p>Select a region first, then connect a pioneer with an approved coach.</p></div>
+        <label>Region<select id="assignmentRegion" required></select></label>
+        <label>Participant<select id="coachParticipant" required></select></label>
+        <label>Coach<select id="assignmentCoach" required></select></label>
+        <div class="cmcCoachingFormActions"><button type="button" class="cmcTextButton" data-close-coaching-panel>Cancel</button><button class="cmcPrimaryButton" type="submit">Assign coach</button></div>
+      </form>
     </div>
     <p id="coachingMessage" class="cmcAdminMessage" aria-live="polite"></p>
-    <div class="cmcCoachingListHeading"><div><p class="cmcEyebrow">CURRENT COACHES</p><h2>Coaches and participants</h2></div><input id="coachSearch" type="search" placeholder="Search coaches or participants"></div>
+    <div class="cmcCoachingToolbar">
+      <div class="cmcCoachingViews" role="group" aria-label="Coaching view">
+        <button class="active" type="button" data-coaching-view="coaches" aria-pressed="true">Coaches <span id="coachCount">0</span></button>
+        <button type="button" data-coaching-view="unassigned" aria-pressed="false">Needs a coach <span id="unassignedCount">0</span></button>
+      </div>
+      <div class="cmcCoachingFilters">
+        <label><span>Region</span><select id="coachRegionFilter"><option value="all">All regions</option></select></label>
+        <label class="cmcCoachingSearch"><span>Search</span><input id="coachSearch" type="search" placeholder="Search by name or email"></label>
+      </div>
+    </div>
     <div id="coachList" class="cmcCoachList"><p class="cmcLeaderEmpty">Loading coaches…</p></div>
   </section>
 </main>
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script><script src="auth.js?v=130"></script><script src="coaching.js?v=130"></script>
+<dialog id="coachingConfirmDialog" class="cmcAccessDialog cmcCoachingConfirmDialog">
+  <form method="dialog">
+    <span class="cmcAccessDialogMark" aria-hidden="true">!</span>
+    <p class="cmcEyebrow">CONFIRM CHANGE</p>
+    <h2 id="coachingConfirmTitle">Confirm coaching change</h2>
+    <p id="coachingConfirmMessage"></p>
+    <div class="cmcAccessDialogActions"><button class="secondary" value="cancel">Cancel</button><button id="coachingConfirmButton" value="confirm">Confirm</button></div>
+  </form>
+</dialog>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script><script src="auth.js?v=130"></script><script src="coaching.js?v=132"></script>
 </body></html>

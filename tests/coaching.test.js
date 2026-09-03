@@ -24,4 +24,15 @@ assert.match(progress,/actor_role:coachAssignment\?'coach':'participant'/);
 const plan=root('task-plan.js');
 assert.match(plan,/const coachMode/);
 assert.match(plan,/Coaching overview/);
+const accessPage=root('manage-leaders.html');
+const coachingPage=root('coaching.html');
+for(const page of [accessPage,coachingPage]){
+  assert.match(page,/cmcWebsiteTabs cmcTeamSectionTabs/);
+  assert.doesNotMatch(page,/cmcLeaderScopeCard/);
+  assert.ok(page.indexOf('cmcAdminPageHero')<page.indexOf('cmcTeamSectionTabs'));
+}
+assert.match(accessPage,/aria-current="page"[^>]*><span>01<\/span>Access/);
+assert.match(coachingPage,/aria-current="page"[^>]*><span>02<\/span>Coaching/);
+const styles=root('style.css');
+assert.match(styles,/\.cmcTeamSectionTabs a\.active/);
 console.log('Coaching integration tests passed.');

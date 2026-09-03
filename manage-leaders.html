@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <title>Manage Leaders | CMC Pathway</title>
-  <link rel="stylesheet" href="style.css?v=126">
+  <link rel="stylesheet" href="style.css?v=127">
 </head>
 <body class="cmcPathwayBody">
 <header class="cmcHeader">
@@ -29,48 +29,6 @@
     </aside>
   </section>
 
-  <section class="cmcAccessGuide" aria-labelledby="accessGuideTitle">
-    <div class="cmcAccessGuideHeading">
-      <div>
-        <p class="cmcEyebrow">ACCESS LEVELS</p>
-        <h2 id="accessGuideTitle">Choose the right level of access</h2>
-      </div>
-      <p>Leadership access expands what someone can see and change. Review the responsibilities below before assigning a role.</p>
-    </div>
-    <div class="cmcAccessGuideGrid">
-      <article class="cmcAccessRoleCard regional">
-        <div class="cmcAccessRoleHeader">
-          <span class="cmcAccessRoleMark" aria-hidden="true">RL</span>
-          <div><span class="cmcAccessRoleType">ONE REGION</span><h3>Regional leader</h3></div>
-        </div>
-        <p>Supports participants and ministry activity within one assigned Open Bible region.</p>
-        <ul>
-          <li>View and manage people in their region</li>
-          <li>Review applications, assessments, reports, and pastoral references</li>
-          <li>Assign published pathway work, courses, events, and task plans</li>
-          <li>Create and manage events for their region</li>
-          <li>Add or remove regional leaders in the same region</li>
-        </ul>
-        <small>Does not manage master course or task-plan content, the public website, other regions, or full administrators.</small>
-      </article>
-      <article class="cmcAccessRoleCard administrator">
-        <div class="cmcAccessRoleHeader">
-          <span class="cmcAccessRoleMark" aria-hidden="true">FA</span>
-          <div><span class="cmcAccessRoleType">ALL REGIONS</span><h3>Full administrator</h3></div>
-        </div>
-        <p>Has national access to participant work, leadership tools, and system-wide content.</p>
-        <ul>
-          <li>Everything available to regional leaders across every region</li>
-          <li>Create, edit, publish, and assign courses</li>
-          <li>Create and manage master task-plan templates</li>
-          <li>Edit and publish the public CMC website</li>
-          <li>Assign or remove regional and full administrator access</li>
-        </ul>
-        <small>Use this role sparingly. Full administrators can make changes that affect every region and the public website.</small>
-      </article>
-    </div>
-  </section>
-
   <section class="cmcLeaderManagement">
     <div class="cmcLeaderManagementHeading">
       <div>
@@ -78,6 +36,16 @@
         <h2>Assign leadership access</h2>
       </div>
       <p>Choose someone who already has a CMC Pathway account, then select the access they need. Their profile and pathway work will remain intact.</p>
+    </div>
+    <div class="cmcAccessAtGlance" aria-label="Leadership access summary">
+      <article>
+        <div><span class="cmcAccessRoleMark" aria-hidden="true">RL</span><strong>Regional leader</strong><small>One region</small></div>
+        <p>People and reviews <span>·</span> Assignments <span>·</span> Regional events <span>·</span> Regional leader access</p>
+      </article>
+      <article class="administrator">
+        <div><span class="cmcAccessRoleMark" aria-hidden="true">FA</span><strong>Full administrator</strong><small>All regions</small></div>
+        <p>Everything above <span>·</span> Course and task-plan builders <span>·</span> Public website <span>·</span> Administrator access</p>
+      </article>
     </div>
     <form id="leaderAccessForm" class="cmcLeaderAccessForm">
       <label>
@@ -101,7 +69,6 @@
       </label>
       <button id="leaderAccessSubmit" type="submit">Assign access</button>
     </form>
-    <p id="leaderAccessSummary" class="cmcLeaderAccessSummary"></p>
     <p id="leaderAccessMessage" class="cmcLeaderAccessMessage" aria-live="polite"></p>
 
     <div id="administratorSection" class="cmcAccessListSection hidden">
@@ -141,6 +108,6 @@
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="auth.js?v=124"></script>
-<script src="manage-leaders.js?v=117"></script>
+<script src="manage-leaders.js?v=118"></script>
 </body>
 </html>

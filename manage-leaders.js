@@ -177,9 +177,6 @@
     const fullAdmin = role === 'cmc_admin';
     document.getElementById('leaderRegionField').classList.toggle('hidden', fullAdmin || viewer.account_role === 'regional_leader');
     document.getElementById('leaderRegion').required = !fullAdmin && viewer.account_role !== 'regional_leader';
-    document.getElementById('leaderAccessSummary').textContent = fullAdmin
-      ? 'Full administrators can manage every region, all builders, the public website, and other leadership roles.'
-      : `Regional leaders can manage people and activity only within ${viewer.account_role === 'regional_leader' ? viewer.region || 'their assigned region' : 'the selected region'}.`;
   }
 
   function confirmChange(title, message, confirmLabel){

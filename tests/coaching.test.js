@@ -13,7 +13,7 @@ assert.match(schema,/where ended_at is null/);
 assert.match(schema,/revoke all on table public\.cmc_coach_assignments from anon, authenticated/);
 
 const auth=root('auth.js');
-assert.match(auth,/label:'Team'/);
+assert.match(auth,/label:'Team',href:'coaching\.html'/);
 assert.match(auth,/label:'My People'/);
 assert.match(auth,/profile\?\.is_coach/);
 const record=root('netlify/functions/participant-record.js');
@@ -31,8 +31,8 @@ for(const page of [accessPage,coachingPage]){
   assert.doesNotMatch(page,/cmcLeaderScopeCard/);
   assert.ok(page.indexOf('cmcAdminPageHero')<page.indexOf('cmcTeamSectionTabs'));
 }
-assert.match(accessPage,/aria-current="page"[^>]*><span>01<\/span>Access/);
-assert.match(coachingPage,/aria-current="page"[^>]*><span>02<\/span>Coaching/);
+assert.match(accessPage,/aria-current="page"[^>]*><span>02<\/span>Roles &amp; Access/);
+assert.match(coachingPage,/aria-current="page"[^>]*><span>01<\/span>Coaching/);
 assert.doesNotMatch(coachingPage,/cmcCoachingSummary/);
 assert.match(coachingPage,/data-open-coaching-panel="add"/);
 assert.match(coachingPage,/data-open-coaching-panel="assign"/);

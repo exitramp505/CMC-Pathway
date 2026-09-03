@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <title>Manage Leaders | CMC Pathway</title>
-  <link rel="stylesheet" href="style.css?v=125">
+  <link rel="stylesheet" href="style.css?v=126">
 </head>
 <body class="cmcPathwayBody">
 <header class="cmcHeader">
@@ -19,8 +19,8 @@
   <section class="cmcManageLeadersIntro cmcAdminPageHero">
     <div>
       <p id="leaderScopeLabel" class="cmcEyebrow">LEADERSHIP ACCESS</p>
-      <h1 id="leaderManagementTitle">Regional leaders</h1>
-      <p id="leaderManagementDescription">Grant trusted leaders access within their Open Bible region.</p>
+      <h1 id="leaderManagementTitle">Leadership access</h1>
+      <p id="leaderManagementDescription">Assign the right level of access while keeping regional and national responsibilities clear.</p>
     </div>
     <aside class="cmcLeaderScopeCard">
       <span>ACCESS SCOPE</span>
@@ -29,13 +29,55 @@
     </aside>
   </section>
 
+  <section class="cmcAccessGuide" aria-labelledby="accessGuideTitle">
+    <div class="cmcAccessGuideHeading">
+      <div>
+        <p class="cmcEyebrow">ACCESS LEVELS</p>
+        <h2 id="accessGuideTitle">Choose the right level of access</h2>
+      </div>
+      <p>Leadership access expands what someone can see and change. Review the responsibilities below before assigning a role.</p>
+    </div>
+    <div class="cmcAccessGuideGrid">
+      <article class="cmcAccessRoleCard regional">
+        <div class="cmcAccessRoleHeader">
+          <span class="cmcAccessRoleMark" aria-hidden="true">RL</span>
+          <div><span class="cmcAccessRoleType">ONE REGION</span><h3>Regional leader</h3></div>
+        </div>
+        <p>Supports participants and ministry activity within one assigned Open Bible region.</p>
+        <ul>
+          <li>View and manage people in their region</li>
+          <li>Review applications, assessments, reports, and pastoral references</li>
+          <li>Assign published pathway work, courses, events, and task plans</li>
+          <li>Create and manage events for their region</li>
+          <li>Add or remove regional leaders in the same region</li>
+        </ul>
+        <small>Does not manage master course or task-plan content, the public website, other regions, or full administrators.</small>
+      </article>
+      <article class="cmcAccessRoleCard administrator">
+        <div class="cmcAccessRoleHeader">
+          <span class="cmcAccessRoleMark" aria-hidden="true">FA</span>
+          <div><span class="cmcAccessRoleType">ALL REGIONS</span><h3>Full administrator</h3></div>
+        </div>
+        <p>Has national access to participant work, leadership tools, and system-wide content.</p>
+        <ul>
+          <li>Everything available to regional leaders across every region</li>
+          <li>Create, edit, publish, and assign courses</li>
+          <li>Create and manage master task-plan templates</li>
+          <li>Edit and publish the public CMC website</li>
+          <li>Assign or remove regional and full administrator access</li>
+        </ul>
+        <small>Use this role sparingly. Full administrators can make changes that affect every region and the public website.</small>
+      </article>
+    </div>
+  </section>
+
   <section class="cmcLeaderManagement">
     <div class="cmcLeaderManagementHeading">
       <div>
-        <p class="cmcEyebrow">ADD A LEADER</p>
-        <h2>Grant regional access</h2>
+        <p class="cmcEyebrow">MANAGE ACCESS</p>
+        <h2>Assign leadership access</h2>
       </div>
-      <p>Choose someone who already has a CMC Pathway account. Their existing pathway work and profile will remain intact.</p>
+      <p>Choose someone who already has a CMC Pathway account, then select the access they need. Their profile and pathway work will remain intact.</p>
     </div>
     <form id="leaderAccessForm" class="cmcLeaderAccessForm">
       <label>
@@ -44,28 +86,61 @@
           <option value="">Choose an existing account</option>
         </select>
       </label>
+      <label id="leaderRoleField">
+        <span>Access level</span>
+        <select id="leaderAccessLevel" required>
+          <option value="regional_leader">Regional leader</option>
+          <option value="cmc_admin">Full administrator</option>
+        </select>
+      </label>
       <label id="leaderRegionField">
         <span>Open Bible region</span>
         <select id="leaderRegion" required>
           <option value="">Choose a region</option>
         </select>
       </label>
-      <button type="submit">Grant regional access</button>
+      <button id="leaderAccessSubmit" type="submit">Assign access</button>
     </form>
+    <p id="leaderAccessSummary" class="cmcLeaderAccessSummary"></p>
     <p id="leaderAccessMessage" class="cmcLeaderAccessMessage" aria-live="polite"></p>
 
+    <div id="administratorSection" class="cmcAccessListSection hidden">
+      <div class="cmcCurrentLeadersHeading">
+        <div><p class="cmcEyebrow">FULL ACCESS</p><h2>Full administrators</h2></div>
+        <span id="administratorCount">0</span>
+      </div>
+      <div id="administratorList" class="cmcCurrentLeaderList cmcAdministratorList">
+        <p class="cmcLeaderEmpty">Loading full administrators…</p>
+      </div>
+    </div>
+
+    <div class="cmcAccessListSection">
     <div class="cmcCurrentLeadersHeading">
-      <div><p class="cmcEyebrow">CURRENT ACCESS</p><h2>Regional leaders</h2></div>
+      <div><p class="cmcEyebrow">REGIONAL ACCESS</p><h2>Regional leaders</h2></div>
       <span id="regionalLeaderCount">0</span>
     </div>
     <div id="regionalLeaderList" class="cmcCurrentLeaderList">
       <p class="cmcLeaderEmpty">Loading regional leaders…</p>
     </div>
+    </div>
   </section>
 </main>
 
+<dialog id="leaderAccessDialog" class="cmcAccessDialog">
+  <form method="dialog">
+    <span class="cmcAccessDialogMark" aria-hidden="true">!</span>
+    <p class="cmcEyebrow">CONFIRM ACCESS</p>
+    <h2 id="leaderAccessDialogTitle">Confirm leadership access</h2>
+    <p id="leaderAccessDialogMessage"></p>
+    <div class="cmcAccessDialogActions">
+      <button class="secondary" value="cancel">Cancel</button>
+      <button id="leaderAccessDialogConfirm" value="confirm">Confirm</button>
+    </div>
+  </form>
+</dialog>
+
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="auth.js?v=124"></script>
-<script src="manage-leaders.js?v=116"></script>
+<script src="manage-leaders.js?v=117"></script>
 </body>
 </html>

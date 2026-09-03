@@ -1,6 +1,38 @@
 const { createClient } = require('@supabase/supabase-js');
 
 const REGIONS = ['Central', 'East', 'Mountain Plains', 'Pacific', 'Southeast'];
+const ACCOUNT_ROLES = ['participant', 'regional_leader', 'cmc_admin'];
+
+function accessError(statusCode, message) {
+  const error = new Error(message);
+  error.statusCode = statusCode;
+  return error;
+}
+
+function resolveRoleChange({ viewer, target, accountRole, region }) {
+  if (!ACCOUNT_ROLES.includes(accountRole)) throw accessError(400, 'Choose a valid access level.');
+  if (!target) throw accessError(404, 'That account could not be updated.');
+  if (target.id === viewer.id) throw accessError(400, 'You cannot change your own administrator access here.');
+  if (target.archived_at) throw accessError(400, 'Restore this person before changing leadership access.');
+
+  if (viewer.account_role === 'regional_leader') {
+    if (target.account_role === 'cmc_admin' || accountRole === 'cmc_admin') {
+      throw accessError(403, 'Only a full administrator can manage full administrator access.');
+    }
+    if (target.region !== viewer.region) {
+      throw accessError(403, 'You can only manage leaders in your own region.');
+    }
+  }
+
+  const requestedRegion = viewer.account_role === 'regional_leader' ? viewer.region : region;
+  if (accountRole === 'regional_leader' && !REGIONS.includes(requestedRegion)) {
+    throw accessError(400, 'Choose a valid Open Bible region.');
+  }
+
+  const update = { account_role: accountRole, updated_at: new Date().toISOString() };
+  if (accountRole === 'regional_leader') update.region = requestedRegion;
+  return update;
+}
 
 function json(status, body) {
   return {
@@ -51,56 +83,34 @@ exports.handler = async (event) => {
       const region = String(body.region || '');
 
       if (!profileId) return json(400, { ok:false, error:'Choose an account.' });
-      if (profileId === viewer.id) {
-        return json(400, { ok:false, error:'You cannot change your own national administrator access here.' });
-      }
-      if (!['participant', 'regional_leader'].includes(accountRole)) {
-        return json(400, { ok:false, error:'Choose a valid account role.' });
-      }
-      const requestedRegion = viewer.account_role === 'regional_leader' ? viewer.region : region;
-      if (accountRole === 'regional_leader' && !REGIONS.includes(requestedRegion)) {
-        return json(400, { ok:false, error:'Choose a valid Open Bible region.' });
-      }
-
       const { data:target, error:targetError } = await supabase
         .from('candidate_profiles')
         .select('id,region,account_role,archived_at')
         .eq('id', profileId)
         .maybeSingle();
       if (targetError) throw targetError;
-      if (!target || target.account_role === 'cmc_admin') {
-        return json(404, { ok:false, error:'That account could not be updated.' });
-      }
-      if (target.archived_at) {
-        return json(400, { ok:false, error:'Restore this person before changing leader access.' });
-      }
-      if (viewer.account_role === 'regional_leader' && target.region !== viewer.region) {
-        return json(403, { ok:false, error:'You can only manage leaders in your own region.' });
-      }
+      const update = resolveRoleChange({ viewer, target, accountRole, region });
 
-      const update = {
-        account_role: accountRole,
-        updated_at: new Date().toISOString()
-      };
-      if (accountRole === 'regional_leader') update.region = requestedRegion;
-
-      const { data:profile, error:updateError } = await supabase
+      const updateQuery = supabase
         .from('candidate_profiles')
         .update(update)
         .eq('id', profileId)
-        .neq('account_role', 'cmc_admin')
-        .select('id,full_name,email,region,account_role')
+        .eq('account_role', target.account_role);
+      const { data:profile, error:updateError } = await updateQuery
+        .select('id,full_name,email,region,account_role,created_at,archived_at')
         .maybeSingle();
 
       if (updateError) throw updateError;
-      if (!profile) return json(404, { ok:false, error:'That account could not be updated.' });
+      if (!profile) return json(409, { ok:false, error:'This account changed while you were editing it. Refresh and try again.' });
       return json(200, { ok:true, profile });
     }
 
     let profileQuery = supabase
       .from('candidate_profiles')
       .select('id,full_name,email,region,account_role,created_at,archived_at')
-      .in('account_role', ['participant', 'regional_leader'])
+      .in('account_role', viewer.account_role === 'cmc_admin'
+        ? ['participant', 'regional_leader', 'cmc_admin']
+        : ['participant', 'regional_leader'])
       .is('archived_at', null)
       .order('full_name', { ascending:true });
     if (viewer.account_role === 'regional_leader') {
@@ -116,6 +126,8 @@ exports.handler = async (event) => {
       regions:viewer.account_role === 'regional_leader' ? [viewer.region] : REGIONS
     });
   } catch (error) {
-    return json(500, { ok:false, error:error.message || 'Could not manage regional leaders.' });
+    return json(error.statusCode || 500, { ok:false, error:error.message || 'Could not manage leadership access.' });
   }
 };
+
+exports._test = { REGIONS, resolveRoleChange };

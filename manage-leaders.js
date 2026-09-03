@@ -17,6 +17,7 @@
   let viewer = profile;
 
   document.getElementById('leaderAccessForm').addEventListener('submit', grantAccess);
+  document.getElementById('leaderAccessLevel').addEventListener('change', updateAccessForm);
   await load();
 
   async function load(){
@@ -39,11 +40,16 @@
   }
 
   function render(){
-    const candidates = profiles.filter(item => item.account_role === 'participant');
+    const candidates = profiles.filter(item =>
+      item.id !== viewer.id &&
+      item.account_role !== 'cmc_admin' &&
+      (viewer.account_role === 'cmc_admin' || item.account_role === 'participant')
+    );
     const leaders = profiles.filter(item => item.account_role === 'regional_leader');
+    const administrators = profiles.filter(item => item.account_role === 'cmc_admin');
     document.getElementById('leaderAccount').innerHTML =
       '<option value="">Choose an existing account</option>' +
-      candidates.map(item => `<option value="${escapeHtml(item.id)}">${escapeHtml(item.full_name || item.email)} · ${escapeHtml(item.email)}</option>`).join('');
+      candidates.map(item => `<option value="${escapeHtml(item.id)}">${escapeHtml(item.full_name || item.email)} · ${escapeHtml(item.email)}${item.account_role === 'regional_leader' ? ` · ${escapeHtml(item.region || 'Regional leader')}` : ''}</option>`).join('');
     const regionSelect = document.getElementById('leaderRegion');
     regionSelect.innerHTML =
       '<option value="">Choose a region</option>' +
@@ -51,7 +57,20 @@
     if(viewer.account_role === 'regional_leader'){
       regionSelect.value = viewer.region || regions[0] || '';
     }
+    document.getElementById('administratorSection').classList.toggle('hidden', viewer.account_role !== 'cmc_admin');
+    document.getElementById('administratorCount').textContent = String(administrators.length);
     document.getElementById('regionalLeaderCount').textContent = String(leaders.length);
+
+    const administratorList = document.getElementById('administratorList');
+    administratorList.innerHTML = administrators.length ? administrators.map(item => `
+      <article>
+        <span class="cmcAvatar cmcAdminAvatar">${initials(item.full_name)}</span>
+        <div><strong>${escapeHtml(item.full_name || item.email)}</strong><small>${escapeHtml(item.email)}</small></div>
+        <span class="cmcLeaderRegion cmcFullAdminRegion">All regions</span>
+        ${item.id === viewer.id
+          ? '<span class="cmcLeaderSelf">Your account</span>'
+          : `<button type="button" data-remove-admin="${escapeHtml(item.id)}" data-person-name="${escapeHtml(item.full_name || item.email)}">Remove full access</button>`}
+      </article>`).join('') : '<p class="cmcLeaderEmpty">No full administrators were found.</p>';
 
     const list = document.getElementById('regionalLeaderList');
     list.innerHTML = leaders.length ? leaders.map(item => `
@@ -67,20 +86,47 @@
     list.querySelectorAll('[data-remove-leader]').forEach(button => {
       button.addEventListener('click', () => updateRole(button.dataset.removeLeader, 'participant', ''));
     });
+    administratorList.querySelectorAll('[data-remove-admin]').forEach(button => {
+      button.addEventListener('click', async () => {
+        const confirmed = await confirmChange(
+          'Remove full administrator access?',
+          `${button.dataset.personName} will return to participant access and will no longer be able to manage national content or leadership roles.`,
+          'Remove full access'
+        );
+        if(confirmed) await updateRole(button.dataset.removeAdmin, 'participant', '');
+      });
+    });
+    updateAccessForm();
   }
 
   async function grantAccess(event){
     event.preventDefault();
     const id = document.getElementById('leaderAccount').value;
-    const region = viewer.account_role === 'regional_leader'
+    const role = viewer.account_role === 'regional_leader'
+      ? 'regional_leader'
+      : document.getElementById('leaderAccessLevel').value;
+    const region = role === 'regional_leader' && viewer.account_role === 'regional_leader'
       ? viewer.region
-      : document.getElementById('leaderRegion').value;
-    if(!id || !region) return setMessage('Choose an account and region.', true);
-    await updateRole(id, 'regional_leader', region);
+      : role === 'regional_leader' ? document.getElementById('leaderRegion').value : '';
+    if(!id) return setMessage('Choose an account.', true);
+    if(role === 'regional_leader' && !region) return setMessage('Choose an Open Bible region.', true);
+    if(role === 'cmc_admin'){
+      const person = profiles.find(item => item.id === id);
+      const confirmed = await confirmChange(
+        'Grant full administrator access?',
+        `${person?.full_name || person?.email || 'This person'} will be able to manage people across every region, publish courses and task plans, edit the public website, and assign other administrators.`,
+        'Grant full access'
+      );
+      if(!confirmed) return;
+    }
+    await updateRole(id, role, region);
   }
 
   async function updateRole(id, role, region){
-    setMessage(role === 'regional_leader' ? 'Granting regional access…' : 'Removing regional access…');
+    const action = role === 'cmc_admin' ? 'Granting full administrator access…'
+      : role === 'regional_leader' ? 'Assigning regional access…'
+      : 'Removing leadership access…';
+    setMessage(action);
     try{
       const response = await fetch('/.netlify/functions/admin-leaders', {
         method:'POST',
@@ -93,10 +139,12 @@
       if(index >= 0) profiles[index] = data.profile;
       render();
       document.getElementById('leaderAccessForm').reset();
+      document.getElementById('leaderAccessLevel').value = 'regional_leader';
       if(viewer.account_role === 'regional_leader'){
         document.getElementById('leaderRegion').value = viewer.region || '';
       }
-      setMessage(role === 'regional_leader' ? 'Regional access granted.' : 'Regional access removed.');
+      updateAccessForm();
+      setMessage(role === 'cmc_admin' ? 'Full administrator access granted.' : role === 'regional_leader' ? 'Regional access assigned.' : 'Leadership access removed.');
     }catch(error){
       setMessage(error.message, true);
     }
@@ -107,10 +155,10 @@
     document.getElementById('leaderScopeLabel').textContent = regional
       ? `OPEN BIBLE ${String(viewer.region || '').toUpperCase()} REGION`
       : 'NATIONAL LEADERSHIP';
-    document.getElementById('leaderManagementTitle').textContent = 'Regional leaders';
+    document.getElementById('leaderManagementTitle').textContent = 'Leadership access';
     document.getElementById('leaderManagementDescription').textContent = regional
-      ? 'Grant trusted leaders access within your Open Bible region.'
-      : 'Grant trusted leaders access within each Open Bible region.';
+      ? 'Assign trusted leaders within your Open Bible region and review exactly what their role includes.'
+      : 'Assign regional or full administrator access while keeping responsibilities clear.';
     document.getElementById('leaderScopeName').textContent = regional
       ? `Open Bible ${viewer.region} Region`
       : 'All Open Bible regions';
@@ -118,6 +166,32 @@
       ? 'You can only view and manage leaders in this region.'
       : 'You can view and manage leaders across every region.';
     document.getElementById('leaderRegionField').classList.toggle('hidden', regional);
+    const accessLevel = document.getElementById('leaderAccessLevel');
+    accessLevel.querySelector('[value="cmc_admin"]').disabled = regional;
+    accessLevel.value = 'regional_leader';
+    updateAccessForm();
+  }
+
+  function updateAccessForm(){
+    const role = viewer.account_role === 'regional_leader' ? 'regional_leader' : document.getElementById('leaderAccessLevel').value;
+    const fullAdmin = role === 'cmc_admin';
+    document.getElementById('leaderRegionField').classList.toggle('hidden', fullAdmin || viewer.account_role === 'regional_leader');
+    document.getElementById('leaderRegion').required = !fullAdmin && viewer.account_role !== 'regional_leader';
+    document.getElementById('leaderAccessSummary').textContent = fullAdmin
+      ? 'Full administrators can manage every region, all builders, the public website, and other leadership roles.'
+      : `Regional leaders can manage people and activity only within ${viewer.account_role === 'regional_leader' ? viewer.region || 'their assigned region' : 'the selected region'}.`;
+  }
+
+  function confirmChange(title, message, confirmLabel){
+    const dialog = document.getElementById('leaderAccessDialog');
+    if(!dialog?.showModal) return Promise.resolve(window.confirm(`${title}\n\n${message}`));
+    document.getElementById('leaderAccessDialogTitle').textContent = title;
+    document.getElementById('leaderAccessDialogMessage').textContent = message;
+    document.getElementById('leaderAccessDialogConfirm').textContent = confirmLabel;
+    dialog.showModal();
+    return new Promise(resolve => {
+      dialog.addEventListener('close', () => resolve(dialog.returnValue === 'confirm'), { once:true });
+    });
   }
 
   function setMessage(message,isError){

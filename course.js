@@ -106,16 +106,18 @@
     const button = document.getElementById('courseSidebarToggle');
     if (!button) return;
     button.setAttribute('aria-expanded', String(!collapsed));
-    button.setAttribute('aria-label', collapsed ? 'Expand course navigation' : 'Collapse course navigation');
-    button.innerHTML = sidebarToggleIcon(collapsed);
+    const action = collapsed ? 'Show lesson outline' : 'Hide lesson outline';
+    button.setAttribute('aria-label', action);
+    button.setAttribute('title', action);
+    button.innerHTML = `<span class="cmcSidebarToggleText">${collapsed ? 'Show outline' : 'Hide outline'}</span>${sidebarToggleIcon(collapsed)}`;
     if (remember) window.localStorage.setItem('cmcCourseSidebarCollapsed', String(collapsed));
   }
 
   function sidebarToggleIcon(collapsed) {
     return `<svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
-      <rect x="3" y="3" width="18" height="18" rx="2"></rect>
-      <path d="M9 3v18"></path>
-      <path d="${collapsed ? 'm14 9 3 3-3 3' : 'm16 9-3 3 3 3'}"></path>
+      <rect x="3.5" y="4" width="17" height="16" rx="3"></rect>
+      <path d="M9 4v16"></path>
+      <path d="${collapsed ? 'm13 9 3 3-3 3' : 'm16 9-3 3 3 3'}"></path>
     </svg>`;
   }
 
@@ -127,28 +129,43 @@
     const resource = resourceHtml(lesson.resource_url, lesson.resource_label);
     const content = CMCLessonContent.render(lesson.content);
     const format = lessonTypeLabel(formats);
-    document.getElementById('lessonContent').innerHTML = `
-      <div class="cmcLessonMeta">
-        <span>${escapeHtml(lesson.module.title)} · ${escapeHtml(format)}</span>
-        <span>Lesson ${lesson.moduleIndex + 1}.${lesson.lessonIndex + 1}${lesson.estimated_minutes ? ` · ${lesson.estimated_minutes} min` : ''}</span>
-      </div>
-      <h2>${escapeHtml(lesson.title)}</h2>
-      ${lesson.summary ? `<p class="cmcLessonSummary">${escapeHtml(lesson.summary)}</p>` : ''}
-      ${video}
-      ${image}
-      ${content ? `<div class="cmcLessonProse">${content}</div>` : (formats.includes('article') && canEditCourse ? '<div class="cmcLessonProse"><p>No written content has been added to this lesson.</p></div>' : '')}
-      ${resource}
-      ${reflectionHtml(lesson)}
-      <footer class="cmcLessonFooter">
-        <button id="previousLessonBtn" class="cmcSecondaryButton" type="button"${currentIndex === 0 ? ' disabled' : ''}>← Previous</button>
-        <button id="completeLessonBtn" class="cmcPrimaryButton ${lesson.completed ? 'complete' : ''}" type="button">
-          ${lesson.completed ? 'Completed ✓' : currentIndex === lessons.length - 1 ? 'Complete course' : 'Complete and continue'} 
-        </button>
-      </footer>`;
+    const lessonElement = document.getElementById('lessonContent');
+    lessonElement.innerHTML = `
+      <header class="cmcLessonHeader">
+        <div class="cmcLessonMeta">
+          <span>${escapeHtml(lesson.module.title)} · ${escapeHtml(format)}</span>
+          <span>Lesson ${lesson.moduleIndex + 1}.${lesson.lessonIndex + 1}${lesson.estimated_minutes ? ` · ${lesson.estimated_minutes} min` : ''}</span>
+        </div>
+        <h2 class="cmcLessonHeading" id="cmcCurrentLessonTitle">${escapeHtml(lesson.title)}</h2>
+        ${lesson.summary ? `<div class="cmcLessonLead"><p class="cmcLessonSummary">${escapeHtml(lesson.summary)}</p></div>` : ''}
+      </header>
+      <div class="cmcLessonMain">
+        ${video}
+        ${image}
+        ${content ? `<div class="cmcLessonProse">${content}</div>` : (formats.includes('article') && canEditCourse ? '<div class="cmcLessonProse"><p>No written content has been added to this lesson.</p></div>' : '')}
+        ${resource}
+        ${reflectionHtml(lesson)}
+        <footer class="cmcLessonFooter">
+          <button id="previousLessonBtn" class="cmcSecondaryButton" type="button"${currentIndex === 0 ? ' disabled' : ''}>← Previous</button>
+          <button id="completeLessonBtn" class="cmcPrimaryButton ${lesson.completed ? 'complete' : ''}" type="button">
+            ${lesson.completed ? 'Completed ✓' : currentIndex === lessons.length - 1 ? 'Complete course' : 'Complete and continue'} 
+          </button>
+        </footer>
+      </div>`;
+    removeDuplicateLessonHeading(lessonElement.querySelector('.cmcLessonProse'), lesson.title);
     document.getElementById('previousLessonBtn').addEventListener('click', () => goTo(currentIndex - 1));
     document.getElementById('completeLessonBtn').addEventListener('click', completeCurrentLesson);
     updateOutlineSelection();
     window.scrollTo({top:0,behavior:'smooth'});
+  }
+
+  // Authors sometimes paste a heading identical to the lesson title. Hide only
+  // that first duplicate in the participant view; never edit saved lesson text.
+  function removeDuplicateLessonHeading(prose, title) {
+    const heading = prose?.firstElementChild;
+    if (!heading || !['H2','H3','H4'].includes(heading.tagName)) return;
+    const normalize = value => String(value || '').replace(/\s+/g, ' ').trim().toLowerCase();
+    if (normalize(heading.textContent) === normalize(title)) heading.remove();
   }
 
   async function completeCurrentLesson() {

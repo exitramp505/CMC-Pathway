@@ -9034,9 +9034,36 @@ body.cmcAuthBody button.oauthBtn:focus-visible .oauthIcon{background:var(--cmcSl
   box-shadow:none;
 }
 .cmcCourseMain.sidebar-collapsed .cmcCourseSidebarRail{
-  left:calc(var(--cmc-course-sidebar-width) - 18px);
+  left:0;
+  width:var(--cmc-course-sidebar-width);
+  align-items:center;
   flex-direction:column;
-  gap:13px;
+  gap:11px;
+}
+/* The progress readout lives inside the narrow, dark collapsed rail—not over
+   the cream lesson workspace. It remains legible even at 100% completion. */
+.cmcCourseMain.sidebar-collapsed .cmcCourseRailStatus{
+  box-sizing:border-box;
+  display:grid;
+  width:62px;
+  justify-items:center;
+  gap:3px;
+  margin:0;
+  padding:9px 3px 8px;
+  border:1px solid rgba(251,240,222,.16);
+  border-radius:11px;
+  background:rgba(251,240,222,.075);
+  text-align:center;
+}
+.cmcCourseMain.sidebar-collapsed .cmcCourseRailStatus strong{
+  color:var(--cmcEmber);
+  font:900 16px/1.1 Montserrat,Arial,sans-serif;
+}
+.cmcCourseMain.sidebar-collapsed .cmcCourseRailStatus span{
+  color:rgba(251,240,222,.88);
+  font:800 8px/1.2 Montserrat,Arial,sans-serif;
+  letter-spacing:.025em;
+  text-transform:uppercase;
 }
 .cmcCourseMain.sidebar-collapsed .cmcCourseSidebarToggle{
   width:40px;
@@ -9089,6 +9116,20 @@ body.cmcAuthBody button.oauthBtn:focus-visible .oauthIcon{background:var(--cmcSl
   }
   .cmcCourseMain .cmcCourseSidebarToggle{height:40px}
   .cmcCourseMain.sidebar-collapsed .cmcCourseSidebarToggle{height:42px}
+  .cmcCourseMain.sidebar-collapsed .cmcCourseSidebarRail{
+    width:auto;
+    align-items:center;
+  }
+  .cmcCourseMain.sidebar-collapsed .cmcCourseRailStatus{
+    display:flex;
+    width:auto;
+    align-items:center;
+    gap:6px;
+    padding:9px 11px;
+    border-radius:10px;
+    background:#293d48;
+  }
+  .cmcCourseMain.sidebar-collapsed .cmcCourseRailStatus span{font-size:8px}
 }
 @media print{
   .cmcCourseBody .cmcLessonContent{

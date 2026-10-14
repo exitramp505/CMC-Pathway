@@ -1,5 +1,6 @@
 const { createClient } = require('@supabase/supabase-js');
 const { assignmentKey, assignmentRecord } = require('./_course-access');
+const lessonContent = require('../../lesson-content');
 
 function json(status, body) {
   return { statusCode:status, headers:{'Content-Type':'application/json'}, body:JSON.stringify(body) };
@@ -187,6 +188,14 @@ async function loadCourse(supabase, id) {
   };
 }
 
+function validateLessonContent(value) {
+  try {
+    return lessonContent.validateContent(value);
+  } catch (error) {
+    throw httpError(400, error.message || 'Invalid lesson content.');
+  }
+}
+
 function validateCourse(body) {
   const status = body.status === 'published' ? 'published' : 'draft';
   const allowIncomplete = status === 'draft' || body.autosave === true;
@@ -203,7 +212,7 @@ function validateCourse(body) {
       id:uuidOrBlank(lesson.id),
       title:clean(lesson.title, 160),
       summary:clean(lesson.summary, 500),
-      content:String(lesson.content || '').trim().slice(0, 50000),
+      content:validateLessonContent(lesson.content),
       lesson_type:validChoice(lesson.lesson_type, ['article','video','reflection','resource'], 'article'),
       video_url:validVideoUrl(lesson.video_url),
       image_url:validContentUrl(lesson.image_url, true, 'Lesson image'),

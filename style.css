@@ -8855,3 +8855,248 @@ body.cmcAuthBody button.oauthBtn:focus-visible .oauthIcon{background:var(--cmcSl
   .cmcLessonFormats legend small{display:block;margin:4px 0 0}
   .cmcLessonFields .cmcLessonFormatChoices label{flex-basis:125px;padding:9px}
 }
+
+
+/* Course reading experience: quiet contrast, intentional hierarchy, clearer controls.
+   Scoped to the participant course page; the builder and other Pathway pages are unchanged. */
+.cmcCourseBody .cmcLessonWorkspace{
+  min-width:0;
+  background-color:#f6f0e5;
+  background-image:radial-gradient(circle at 1px 1px,rgba(41,61,72,.043) 1px,transparent 1.2px);
+  background-size:20px 20px;
+}
+.cmcCourseBody .cmcLessonContent{
+  box-sizing:border-box;
+  width:min(1030px,calc(100% - 84px));
+  margin:48px auto 84px;
+  padding:0;
+  overflow:hidden;
+  border:1px solid rgba(41,61,72,.13);
+  border-radius:25px;
+  background:#fffdf9;
+  box-shadow:0 20px 68px rgba(33,49,57,.065),0 2px 8px rgba(33,49,57,.025);
+}
+.cmcLessonHeader{
+  position:relative;
+  padding:clamp(39px,4.6vw,65px) clamp(32px,6.2vw,80px) clamp(34px,4vw,54px);
+  border-bottom:1px solid rgba(41,61,72,.12);
+  background:linear-gradient(135deg,rgba(234,159,67,.045),transparent 65%),#fcf7ed;
+}
+.cmcLessonHeader::before{
+  position:absolute;
+  top:0;right:0;left:0;
+  height:3px;
+  background:linear-gradient(90deg,var(--cmcEmber),rgba(77,167,156,.56) 48%,transparent 86%);
+  content:"";
+}
+.cmcLessonHeader .cmcLessonMeta{
+  box-sizing:border-box;
+  width:min(100%,800px);
+  margin:0 auto 28px;
+  color:#6d7775;
+  font-size:10px;
+  line-height:1.55;
+  letter-spacing:.09em;
+}
+.cmcLessonHeader .cmcLessonMeta>span:first-child{color:#53756f}
+.cmcLessonHeader .cmcLessonHeading{
+  display:block;
+  box-sizing:border-box;
+  width:min(100%,800px);
+  max-width:none;
+  margin:0 auto 23px;
+  padding:0;
+  border:0;
+  color:#1c2c32;
+  font:900 clamp(37px,3.75vw,59px)/1.08 Montserrat,Arial,sans-serif;
+  letter-spacing:-.055em;
+  overflow-wrap:break-word;
+}
+.cmcLessonLead{
+  box-sizing:border-box;
+  width:min(100%,800px);
+  margin:0 auto;
+  padding-left:19px;
+  border-left:3px solid rgba(77,167,156,.8);
+}
+.cmcLessonHeader .cmcLessonSummary{
+  width:100%;
+  max-width:none;
+  margin:0;
+  color:#53656b;
+  font:600 17px/1.72 Montserrat,Arial,sans-serif;
+}
+.cmcLessonMain{
+  padding:clamp(34px,4.7vw,59px) clamp(32px,6.2vw,80px) clamp(36px,5vw,63px);
+}
+.cmcLessonMain>.cmcLessonProse,
+.cmcLessonMain>.cmcLessonResource,
+.cmcLessonMain>.cmcReflection,
+.cmcLessonMain>.cmcLessonFooter{
+  box-sizing:border-box;
+  width:min(100%,800px);
+  max-width:none;
+  margin-right:auto;
+  margin-left:auto;
+}
+.cmcLessonMain>.cmcLessonProse{margin-top:30px}
+.cmcLessonMain>.cmcLessonProse:first-child{margin-top:0}
+.cmcLessonMain .cmcLessonProse p,
+.cmcLessonMain .cmcLessonProse li{
+  color:#3d535b;
+  font-size:16px;
+  line-height:1.88;
+}
+.cmcLessonMain .cmcLessonProse p{margin-bottom:21px}
+.cmcLessonMain .cmcLessonProse h2,
+.cmcLessonMain .cmcLessonProse h3{
+  padding-bottom:11px;
+  border-bottom:1px solid rgba(41,61,72,.12);
+  color:#23373d;
+  line-height:1.25;
+}
+.cmcLessonMain .cmcLessonProse h2:first-child,
+.cmcLessonMain .cmcLessonProse h3:first-child,
+.cmcLessonMain .cmcLessonProse h4:first-child{margin-top:0}
+.cmcLessonMain .cmcLessonProse blockquote{background:#f1f7f3}
+.cmcLessonMain>.cmcVideoFrame,
+.cmcLessonMain>.cmcLessonImage{
+  box-sizing:border-box;
+  width:min(100%,860px);
+  margin-right:auto;
+  margin-left:auto;
+}
+.cmcLessonMain>.cmcVideoFrame:first-child,
+.cmcLessonMain>.cmcLessonImage:first-child{margin-top:0}
+.cmcLessonMain>.cmcReflection{
+  padding:28px 30px;
+  border-left-width:4px;
+  background:#fbf6eb;
+}
+.cmcLessonMain>.cmcLessonFooter{
+  margin-top:58px;
+  padding-top:28px;
+  border-top:1px solid rgba(41,61,72,.14);
+}
+
+/* A readable Outline control replaces the tiny floating square.
+   Collapsing still shows an icon, and its accessible label changes with state. */
+.cmcCourseMain .cmcCourseSidebarRail{
+  position:fixed;
+  z-index:40;
+  top:107px;
+  right:auto;
+  left:calc(var(--cmc-course-sidebar-width) - 148px);
+  align-items:center;
+  transition:left .25s ease;
+}
+.cmcCourseMain .cmcCourseSidebarToggle{
+  display:inline-flex;
+  width:120px;
+  height:37px;
+  align-items:center;
+  justify-content:center;
+  gap:8px;
+  padding:0 12px;
+  border:1px solid rgba(251,240,222,.22);
+  border-radius:11px;
+  background:rgba(251,240,222,.075);
+  box-shadow:none;
+  color:var(--cmcSand);
+  font:800 10px/1 Montserrat,Arial,sans-serif;
+  letter-spacing:.015em;
+  transform:none;
+  transition:background-color .15s,border-color .15s,box-shadow .15s;
+}
+.cmcCourseMain .cmcSidebarToggleText{white-space:nowrap}
+.cmcCourseMain .cmcCourseSidebarToggle svg{
+  width:18px;
+  height:18px;
+  flex:0 0 auto;
+  fill:none;
+  stroke:currentColor;
+  stroke-width:1.75;
+  stroke-linecap:round;
+  stroke-linejoin:round;
+}
+.cmcCourseMain .cmcCourseSidebarToggle svg path:first-of-type{stroke:var(--cmcEmber)}
+.cmcCourseMain .cmcCourseSidebarToggle:hover{
+  border-color:rgba(234,159,67,.53);
+  background:rgba(251,240,222,.14);
+  color:#fff!important;
+  transform:none;
+  box-shadow:none;
+}
+.cmcCourseMain .cmcCourseSidebarToggle:focus-visible{
+  outline:2px solid var(--cmcEmber);
+  outline-offset:3px;
+  background:rgba(251,240,222,.13);
+  box-shadow:none;
+}
+.cmcCourseMain.sidebar-collapsed .cmcCourseSidebarRail{
+  left:calc(var(--cmc-course-sidebar-width) - 18px);
+  flex-direction:column;
+  gap:13px;
+}
+.cmcCourseMain.sidebar-collapsed .cmcCourseSidebarToggle{
+  width:40px;
+  height:43px;
+  padding:0;
+  border-radius:12px;
+  background:#334c59;
+  box-shadow:0 7px 19px rgba(21,35,41,.18);
+}
+.cmcCourseMain.sidebar-collapsed .cmcSidebarToggleText{display:none}
+@media(max-width:1050px) and (min-width:721px){
+  .cmcCourseBody .cmcLessonContent{width:calc(100% - 48px);margin-top:36px}
+  .cmcLessonHeader{padding-right:38px;padding-left:38px}
+  .cmcLessonMain{padding-right:38px;padding-left:38px}
+}
+@media(max-width:720px){
+  .cmcCourseBody .cmcLessonWorkspace{background-image:none}
+  .cmcCourseBody .cmcLessonContent{
+    width:calc(100% - 24px);
+    margin:19px auto 43px;
+    border-radius:19px;
+    box-shadow:0 10px 32px rgba(33,49,57,.045);
+  }
+  .cmcLessonHeader{padding:34px 25px 32px}
+  .cmcLessonHeader .cmcLessonMeta{
+    display:flex;
+    flex-wrap:wrap;
+    gap:4px 14px;
+    margin-bottom:21px;
+    font-size:9px;
+  }
+  .cmcLessonHeader .cmcLessonHeading{
+    margin-bottom:21px;
+    font-size:clamp(32px,8.7vw,43px);
+    line-height:1.13;
+  }
+  .cmcLessonLead{padding-left:14px}
+  .cmcLessonHeader .cmcLessonSummary{font-size:15px;line-height:1.7}
+  .cmcLessonMain{padding:31px 23px 38px}
+  .cmcLessonMain .cmcLessonProse p,
+  .cmcLessonMain .cmcLessonProse li{font-size:15px;line-height:1.8}
+  .cmcLessonMain>.cmcReflection{padding:21px}
+  .cmcCourseMain .cmcCourseSidebarRail,
+  .cmcCourseMain.sidebar-collapsed .cmcCourseSidebarRail{
+    top:82px;
+    right:14px;
+    left:auto;
+    flex-direction:row;
+    gap:9px;
+  }
+  .cmcCourseMain .cmcCourseSidebarToggle{height:40px}
+  .cmcCourseMain.sidebar-collapsed .cmcCourseSidebarToggle{height:42px}
+}
+@media print{
+  .cmcCourseBody .cmcLessonContent{
+    width:100%;
+    margin:0;
+    border:0;
+    border-radius:0;
+    box-shadow:none;
+  }
+  .cmcLessonHeader,.cmcLessonMain{padding:22px 0}
+}

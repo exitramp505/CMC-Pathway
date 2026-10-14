@@ -8986,13 +8986,13 @@ body.cmcAuthBody button.oauthBtn:focus-visible .oauthIcon{background:var(--cmcSl
   z-index:40;
   top:107px;
   right:auto;
-  left:calc(var(--cmc-course-sidebar-width) - 148px);
+  left:calc(var(--cmc-course-sidebar-width) - 125px);
   align-items:center;
   transition:left .25s ease;
 }
 .cmcCourseMain .cmcCourseSidebarToggle{
   display:inline-flex;
-  width:120px;
+  width:112px;
   height:37px;
   align-items:center;
   justify-content:center;

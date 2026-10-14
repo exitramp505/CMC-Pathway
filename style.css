@@ -9141,3 +9141,74 @@ body.cmcAuthBody button.oauthBtn:focus-visible .oauthIcon{background:var(--cmcSl
   }
   .cmcLessonHeader,.cmcLessonMain{padding:22px 0}
 }
+
+
+/* Account recovery pages and accessible login recovery link. */
+.cmcAuthBody .cmcAuthRecoveryRow{
+  display:flex;
+  justify-content:flex-end;
+  margin:-4px 0 0;
+}
+.cmcAuthBody .cmcAuthRecoveryRow a{
+  display:inline-flex;
+  align-items:center;
+  min-height:36px;
+  padding:3px 0 3px 8px;
+  color:var(--cmcSlate);
+  font-size:14px;
+  font-weight:800;
+  text-decoration:underline;
+  text-decoration-color:var(--cmcSage);
+  text-decoration-thickness:2px;
+  text-underline-offset:4px;
+}
+.cmcAuthBody .cmcAuthRecoveryRow a:hover,
+.cmcAuthBody .cmcAuthRecoveryRow a:focus-visible{
+  color:#246e65;
+  text-decoration-color:var(--cmcEmber);
+}
+.cmcAuthBody .cmcAuthRecoveryRow a:focus-visible,
+.cmcAuthBody .cmcRecoveryAction:focus-visible{
+  outline:2px solid var(--cmcSage);
+  outline-offset:4px;
+  border-radius:4px;
+}
+.cmcAuthBody .cmcAuthHelpText{
+  margin:0;
+  color:#617279;
+  font-size:13px;
+  line-height:1.65;
+}
+.cmcAuthBody .cmcRecoveryMessage{
+  min-height:26px;
+  margin:9px 0 18px;
+  font-size:15px;
+  line-height:1.65;
+}
+.cmcAuthBody .cmcRecoveryComplete p{
+  margin:0 0 16px;
+  color:#52676e;
+  font-size:16px;
+  line-height:1.7;
+}
+.cmcAuthBody .cmcRecoveryAction{
+  display:inline-flex;
+  min-height:48px;
+  align-items:center;
+  justify-content:center;
+  padding:10px 23px;
+  border-radius:13px;
+  background:var(--cmcEmber);
+  color:var(--cmcInk);
+  font-size:15px;
+  font-weight:900;
+  text-decoration:none;
+}
+.cmcAuthBody .cmcRecoveryAction:hover{background:#efae58;color:var(--cmcInk)}
+.cmcAuthBody .cmcRecoveryBack{margin-top:22px}
+.cmcAuthBody [hidden]{display:none!important}
+.cmcAuthBody .authSubmitBtn:disabled{
+  cursor:wait;
+  opacity:.65;
+  transform:none;
+}

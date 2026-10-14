@@ -8944,8 +8944,8 @@ body.cmcAuthBody button.oauthBtn:focus-visible .oauthIcon{background:var(--cmcSl
 .cmcLessonMain .cmcLessonProse p,
 .cmcLessonMain .cmcLessonProse li{
   color:#3d535b;
-  font-size:16px;
-  line-height:1.88;
+  font-size:17px;
+  line-height:1.84;
 }
 .cmcLessonMain .cmcLessonProse p{margin-bottom:21px}
 .cmcLessonMain .cmcLessonProse h2,
@@ -9077,7 +9077,7 @@ body.cmcAuthBody button.oauthBtn:focus-visible .oauthIcon{background:var(--cmcSl
   .cmcLessonHeader .cmcLessonSummary{font-size:15px;line-height:1.7}
   .cmcLessonMain{padding:31px 23px 38px}
   .cmcLessonMain .cmcLessonProse p,
-  .cmcLessonMain .cmcLessonProse li{font-size:15px;line-height:1.8}
+  .cmcLessonMain .cmcLessonProse li{font-size:16px;line-height:1.8}
   .cmcLessonMain>.cmcReflection{padding:21px}
   .cmcCourseMain .cmcCourseSidebarRail,
   .cmcCourseMain.sidebar-collapsed .cmcCourseSidebarRail{

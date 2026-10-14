@@ -109,8 +109,27 @@
     node.dataset.id = data.id || '';
     setNodeValue(node, '[data-lesson-title]', data.title);
     setNodeValue(node, '[data-lesson-summary]', data.summary);
-    setNodeValue(node, '[data-lesson-type]', data.lesson_type || 'article');
-    initLessonEditor(node, data.content || '');
+    node._legacyType = data.lesson_type || 'article';
+    node._savedStoredContent = data.content || '';
+    let savedBody = data.content || '';
+    try {
+      savedBody = CMCLessonContent.lessonBody(data.content);
+      node._initialFormats = CMCLessonContent.lessonFormats(data.content, data);
+    } catch (_) {
+      node._initialFormats = [node._legacyType];
+    }
+    node.querySelectorAll('[data-lesson-format]').forEach(checkbox => {
+      checkbox.checked = node._initialFormats.includes(checkbox.value);
+      checkbox.addEventListener('change', () => {
+        if (!selectedLessonFormats(node).length) {
+          checkbox.checked = true;
+          return setMessage('Choose at least one lesson format.', true);
+        }
+        setMessage('');
+        updateLessonSummary(node);
+      });
+    });
+    initLessonEditor(node, savedBody);
     setNodeValue(node, '[data-lesson-video]', data.video_url);
     setNodeValue(node, '[data-lesson-image]', data.image_url);
     setNodeValue(node, '[data-lesson-image-alt]', data.image_alt);
@@ -122,7 +141,6 @@
     node.querySelector('[data-lesson-response]').checked = data.response_required === true;
     node.querySelector('[data-toggle-lesson]').addEventListener('click', () => setCollapsed(node, !node.classList.contains('collapsed')));
     node.querySelector('[data-lesson-title]').addEventListener('input', () => updateLessonSummary(node));
-    node.querySelector('[data-lesson-type]').addEventListener('change', () => updateLessonSummary(node));
     node.querySelector('[data-lesson-minutes]').addEventListener('input', () => updateLessonSummary(node));
     node.querySelector('[data-lesson-required]').addEventListener('change', () => updateLessonSummary(node));
     node.querySelector('[data-lesson-response]').addEventListener('change', () => updateLessonSummary(node));
@@ -192,13 +210,43 @@
     return node.querySelector('[data-lesson-content]').value;
   }
 
+  function selectedLessonFormats(node) {
+    return [...node.querySelectorAll('[data-lesson-format]:checked')].map(checkbox => checkbox.value);
+  }
+
+  function sameFormats(left, right) {
+    return JSON.stringify(left) === JSON.stringify(right);
+  }
+
+  function getStoredLessonContent(node) {
+    const body = getLessonContent(node);
+    const formats = selectedLessonFormats(node);
+    if (body === node._savedContent && sameFormats(formats, node._initialFormats)) {
+      return node._savedStoredContent;
+    }
+    if (CMCLessonContent.isLessonEnvelope(node._savedStoredContent)
+        || !sameFormats(formats, node._initialFormats)) {
+      return CMCLessonContent.serializeLesson(formats, body);
+    }
+    return body;
+  }
+
+  function legacyLessonType(node) {
+    const formats = selectedLessonFormats(node);
+    if (formats.includes(node._legacyType)) return node._legacyType;
+    return formats.find(format => format !== 'image') || 'article';
+  }
+
   function saveEditorSnapshot(payload) {
     const modules = [...document.querySelectorAll('[data-module]')];
     modules.forEach((module, moduleIndex) => {
       [...module.querySelectorAll('[data-lesson]')].forEach((node, lessonIndex) => {
         const content = payload.modules?.[moduleIndex]?.lessons?.[lessonIndex]?.content;
-        if (content !== undefined && getLessonContent(node) === content) {
-          node._savedContent = content;
+        if (content !== undefined && getStoredLessonContent(node) === content) {
+          node._savedStoredContent = content;
+          node._savedContent = CMCLessonContent.lessonBody(content);
+          node._initialFormats = selectedLessonFormats(node);
+          node._legacyType = payload.modules[moduleIndex].lessons[lessonIndex].lesson_type;
           node._richDirty = false;
         }
       });
@@ -247,7 +295,8 @@
 
   function updateLessonSummary(lesson) {
     const title = lesson.querySelector('[data-lesson-title]').value.trim() || 'Untitled lesson';
-    const type = selectedNodeLabel(lesson, '[data-lesson-type]') || 'Article';
+    const names = {article:'Written', video:'Video', image:'Image', reflection:'Reflection', resource:'Resource'};
+    const type = selectedLessonFormats(lesson).map(format => names[format]).join(' + ') || 'Written';
     const minutes = Number(lesson.querySelector('[data-lesson-minutes]').value || 0);
     const required = lesson.querySelector('[data-lesson-required]').checked;
     const response = lesson.querySelector('[data-lesson-response]').checked;
@@ -383,8 +432,8 @@
         id:lesson.dataset.id || '',
         title:lesson.querySelector('[data-lesson-title]').value,
         summary:lesson.querySelector('[data-lesson-summary]').value,
-        lesson_type:lesson.querySelector('[data-lesson-type]').value,
-        content:getLessonContent(lesson),
+        lesson_type:legacyLessonType(lesson),
+        content:getStoredLessonContent(lesson),
         video_url:lesson.querySelector('[data-lesson-video]').value,
         image_url:lesson.querySelector('[data-lesson-image]').value,
         image_alt:lesson.querySelector('[data-lesson-image-alt]').value,
@@ -442,10 +491,10 @@
       autosaveQueued = true;
       return false;
     }
-    saveInFlight = true;
     let payload;
     try { payload = buildPayload(status); }
     catch (error) { setAutosaveStatus(error.message, true); return false; }
+    saveInFlight = true;
     payload.autosave = Boolean(options.automatic);
     setWorking(true);
     if (options.automatic) setAutosaveStatus('Saving changes…');

@@ -8,6 +8,8 @@
 })(typeof window !== 'undefined' ? window : globalThis, function () {
   'use strict';
   const PREFIX = 'cmc:delta:v1:';
+  const LESSON_PREFIX = 'cmc:lesson:v1:';
+  const LESSON_FORMATS = ['article','video','image','reflection','resource'];
   const MAX_LENGTH = 50000;
   const MAX_OPERATIONS = 8000;
 
@@ -109,13 +111,76 @@
     return saved;
   }
 
-  function validateContent(value) {
+  function validateBody(value) {
     const content = String(value == null ? '' : value).trim();
     if (!isRichText(content)) return content.slice(0, MAX_LENGTH);
     if (content.length > MAX_LENGTH) {
       throw new Error('Written content exceeds the 50,000-character limit.');
     }
     return serializeDelta(readDelta(content).ops);
+  }
+
+  // Preserve the original lesson_type database value for older clients. Additional
+  // format choices are versioned alongside the lesson body in the existing TEXT field.
+  // No migration, progress reset, or rewrite of untouched Markdown lessons is needed.
+  function normalizeFormats(formats) {
+    if (!Array.isArray(formats) || !formats.length || formats.length > 25 ||
+        formats.some(function (format) { return !LESSON_FORMATS.includes(format); })) {
+      throw new Error('Select at least one supported lesson format.');
+    }
+    return LESSON_FORMATS.filter(function (format) { return formats.includes(format); });
+  }
+
+  function isLessonEnvelope(value) {
+    return typeof value === 'string' && value.startsWith(LESSON_PREFIX);
+  }
+
+  function readLesson(value) {
+    const stored = String(value == null ? '' : value);
+    if (!isLessonEnvelope(stored)) return { content:stored, formats:null };
+    if (stored.length > MAX_LENGTH) throw new Error('Lesson content exceeds the 50,000-character limit.');
+    let parsed;
+    try { parsed = JSON.parse(stored.slice(LESSON_PREFIX.length)); }
+    catch (_) { throw new Error('The lesson format settings could not be read.'); }
+    if (!parsed || typeof parsed !== 'object' || Array.isArray(parsed) ||
+        typeof parsed.content !== 'string' || isLessonEnvelope(parsed.content)) {
+      throw new Error('The lesson format settings are invalid.');
+    }
+    return { content:parsed.content, formats:normalizeFormats(parsed.formats) };
+  }
+
+  function lessonBody(value) {
+    return readLesson(value).content;
+  }
+
+  function lessonFormats(value, lesson) {
+    const parsed = readLesson(value);
+    if (parsed.formats) return parsed.formats;
+    const inferred = [];
+    const legacyType = lesson && lesson.lesson_type;
+    if (LESSON_FORMATS.includes(legacyType)) inferred.push(legacyType);
+    if (parsed.content.trim()) inferred.push('article');
+    if (lesson && lesson.video_url) inferred.push('video');
+    if (lesson && lesson.image_url) inferred.push('image');
+    if (lesson && (lesson.reflection_prompt || lesson.response_required)) inferred.push('reflection');
+    if (lesson && lesson.resource_url) inferred.push('resource');
+    return normalizeFormats(inferred.length ? inferred : ['article']);
+  }
+
+  function serializeLesson(formats, body) {
+    const normalized = normalizeFormats(formats);
+    const content = validateBody(body);
+    if (isLessonEnvelope(content)) throw new Error('Nested lesson formats are not supported.');
+    const stored = LESSON_PREFIX + JSON.stringify({ formats:normalized, content:content });
+    if (stored.length > MAX_LENGTH) throw new Error('Lesson content exceeds the 50,000-character limit.');
+    return stored;
+  }
+
+  function validateContent(value) {
+    const stored = String(value == null ? '' : value).trim();
+    if (!isLessonEnvelope(stored)) return validateBody(stored);
+    const parsed = readLesson(stored);
+    return serializeLesson(parsed.formats, parsed.content);
   }
 
   function inlineMarkdown(value) {
@@ -244,14 +309,19 @@
   }
 
   function render(value) {
-    if (!isRichText(value)) return renderMarkdown(value);
-    try { return renderDelta(value); }
-    catch (_) { return '<p>This lesson content could not be displayed. Please contact the course administrator.</p>'; }
+    try {
+      const body = lessonBody(value);
+      return isRichText(body) ? renderDelta(body) : renderMarkdown(body);
+    } catch (_) {
+      return '<p>This lesson content could not be displayed. Please contact the course administrator.</p>';
+    }
   }
 
   return {
-    PREFIX:PREFIX, MAX_LENGTH:MAX_LENGTH, isRichText:isRichText,
+    PREFIX:PREFIX, LESSON_PREFIX:LESSON_PREFIX, MAX_LENGTH:MAX_LENGTH,
+    LESSON_FORMATS:LESSON_FORMATS, isRichText:isRichText, isLessonEnvelope:isLessonEnvelope,
     readDelta:readDelta, serializeDelta:serializeDelta, validateContent:validateContent,
+    lessonBody:lessonBody, lessonFormats:lessonFormats, serializeLesson:serializeLesson,
     render:render, renderMarkdown:renderMarkdown, safeUrl:safeUrl
   };
 });

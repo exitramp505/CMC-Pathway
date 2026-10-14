@@ -121,11 +121,12 @@
 
   function renderLesson() {
     const lesson = lessons[currentIndex];
-    const video = videoHtml(lesson.video_url, lesson.lesson_type);
+    const formats = CMCLessonContent.lessonFormats(lesson.content, lesson);
+    const video = videoHtml(lesson.video_url, formats.includes('video') ? 'video' : '');
     const image = imageHtml(lesson.image_url, lesson.image_alt);
     const resource = resourceHtml(lesson.resource_url, lesson.resource_label);
     const content = CMCLessonContent.render(lesson.content);
-    const format = lessonTypeLabel(lesson.lesson_type);
+    const format = lessonTypeLabel(formats);
     document.getElementById('lessonContent').innerHTML = `
       <div class="cmcLessonMeta">
         <span>${escapeHtml(lesson.module.title)} · ${escapeHtml(format)}</span>
@@ -135,7 +136,7 @@
       ${lesson.summary ? `<p class="cmcLessonSummary">${escapeHtml(lesson.summary)}</p>` : ''}
       ${video}
       ${image}
-      <div class="cmcLessonProse">${content || '<p>No written content has been added to this lesson.</p>'}</div>
+      ${content ? `<div class="cmcLessonProse">${content}</div>` : (formats.includes('article') && canEditCourse ? '<div class="cmcLessonProse"><p>No written content has been added to this lesson.</p></div>' : '')}
       ${resource}
       ${reflectionHtml(lesson)}
       <footer class="cmcLessonFooter">
@@ -267,8 +268,9 @@
     </aside>`;
   }
 
-  function lessonTypeLabel(value) {
-    return ({article:'Article',video:'Video',reflection:'Reflection',resource:'Resource'})[value] || 'Article';
+  function lessonTypeLabel(formats) {
+    const names = {article:'Written',video:'Video',image:'Image',reflection:'Reflection',resource:'Resource'};
+    return formats.map(format => names[format]).filter(Boolean).join(' + ') || 'Written';
   }
   function escapeHtml(value){return String(value??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[m]))}
   function escapeAttribute(value){return escapeHtml(value)}

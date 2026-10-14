@@ -42,6 +42,14 @@ There is no shared-password admin page. Administrators and regional leaders use 
 
 Regional leaders are limited to their own region. National administrators can work across all regions.
 
+## Multi-format course lessons
+
+The Course Builder lets administrators select more than one lesson format: **Written teaching**, **Video**, **Image**, **Reflection**, and **Resource**. Selecting several formats does not split the lesson, change its ID, or delete any lesson fields. Participant lesson pages show all populated components together.
+
+The existing `cmc_course_lessons.lesson_type` column remains a single legacy value for compatibility with existing SQL constraints. Explicit multi-format selections are stored in a versioned `cmc:lesson:v1:` JSON envelope inside the existing `content` text value, alongside the existing Markdown or `cmc:delta:v1:` rich-text body. The server validates the allowed format names, validates Delta operations, and reserializes data to prevent unsafe HTML. Unchanged legacy lessons remain stored in their original format, without conversion, schema migrations, reseeding, or touching progress records.
+
+On older lessons, selections are initially inferred from the primary lesson type and filled video, image, resource, reflection, and written-content fields. Selections are saved even when the corresponding field has not yet been filled. The fields remain accessible independently of the selected labels so existing material is never silently dropped.
+
 ## Task plans
 
 Task Plans are reusable, versioned launch checklists for the Deploy stage. National administrators can create, duplicate, publish, archive, and revise master templates. Regional leaders can assign a published template to a pioneer, adjust that participant's copy, add custom tasks, and review a newer master version before applying it. A participant sees their priority work, dates, dependencies, progress, timeline, and completed work without being able to change the master.

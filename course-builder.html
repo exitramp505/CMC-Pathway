@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <title>Course Builder | CMC Pathway</title>
-  <link rel="stylesheet" href="style.css?v=130">
+  <link rel="stylesheet" href="style.css?v=131">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/quill@2.0.3/dist/quill.snow.css">
 </head>
 <body class="cmcPathwayBody">
@@ -151,16 +151,18 @@
       <div class="cmcLessonFields">
         <label class="wide"><span>Lesson title</span><input data-lesson-title maxlength="160" required placeholder="Lesson title"></label>
         <label class="wide"><span>Short summary</span><input data-lesson-summary maxlength="500" placeholder="One sentence describing this lesson"></label>
-        <label>
-          <span>Lesson format</span>
-          <select data-lesson-type>
-            <option value="article">Article</option>
-            <option value="video">Video</option>
-            <option value="reflection">Reflection</option>
-            <option value="resource">Resource</option>
-          </select>
-        </label>
         <label><span>Minutes</span><input data-lesson-minutes type="number" min="0" max="600" inputmode="numeric"></label>
+        <fieldset class="wide cmcLessonFormats" data-lesson-formats>
+          <legend>Lesson formats <small>Select as many as you need</small></legend>
+          <div class="cmcLessonFormatChoices">
+            <label><input type="checkbox" data-lesson-format value="article" checked><span>Written teaching</span></label>
+            <label><input type="checkbox" data-lesson-format value="video"><span>Video</span></label>
+            <label><input type="checkbox" data-lesson-format value="image"><span>Image</span></label>
+            <label><input type="checkbox" data-lesson-format value="reflection"><span>Reflection</span></label>
+            <label><input type="checkbox" data-lesson-format value="resource"><span>Resource</span></label>
+          </div>
+          <small>One lesson can include several formats. Your selections save with the lesson; the fields below remain available.</small>
+        </fieldset>
         <div class="wide cmcRichField"><span class="cmcRichLabel">Written content</span><div data-lesson-content class="cmcRichEditor" aria-label="Written content"></div><small>Paste formatted text from ChatGPT, Google Docs, or Word. Changes save automatically.</small></div>
         <label class="wide"><span>Video link (optional)</span><input data-lesson-video type="url" placeholder="https://youtube.com/... or https://vimeo.com/..."></label>
         <label class="wide"><span>Lesson image (optional)</span><input data-lesson-image placeholder="/assets/image.svg or https://..."></label>
@@ -179,7 +181,7 @@
 <script src="auth.js?v=131"></script>
 <script src="builder-ui.js?v=1"></script>
 <script src="https://cdn.jsdelivr.net/npm/quill@2.0.3/dist/quill.js"></script>
-<script src="lesson-content.js?v=1"></script>
-<script src="course-builder.js?v=103"></script>
+<script src="lesson-content.js?v=2"></script>
+<script src="course-builder.js?v=104"></script>
 </body>
 </html>

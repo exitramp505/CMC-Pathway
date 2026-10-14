@@ -124,7 +124,7 @@
     const video = videoHtml(lesson.video_url, lesson.lesson_type);
     const image = imageHtml(lesson.image_url, lesson.image_alt);
     const resource = resourceHtml(lesson.resource_url, lesson.resource_label);
-    const content = contentHtml(lesson.content);
+    const content = CMCLessonContent.render(lesson.content);
     const format = lessonTypeLabel(lesson.lesson_type);
     document.getElementById('lessonContent').innerHTML = `
       <div class="cmcLessonMeta">
@@ -265,58 +265,6 @@
         <small id="lessonResponseMessage">Your response will be saved with your course progress.</small>
       </label>` : ''}
     </aside>`;
-  }
-
-  function contentHtml(value) {
-    const lines = String(value || '').split(/\n/);
-    let html = '';
-    let listType = '';
-    const closeList = () => {
-      if (!listType) return;
-      html += `</${listType}>`;
-      listType = '';
-    };
-    for (const raw of lines) {
-      const line = raw.trim();
-      if (line.startsWith('- ')) {
-        if (listType !== 'ul') { closeList(); html += '<ul>'; listType = 'ul'; }
-        html += `<li>${inlineHtml(line.slice(2))}</li>`;
-        continue;
-      }
-      if (/^\d+\.\s+/.test(line)) {
-        if (listType !== 'ol') { closeList(); html += '<ol>'; listType = 'ol'; }
-        html += `<li>${inlineHtml(line.replace(/^\d+\.\s+/, ''))}</li>`;
-        continue;
-      }
-      if (!line) continue;
-      closeList();
-      if (line === '---') html += '<hr>';
-      else if (line.startsWith('### ')) html += `<h4>${inlineHtml(line.slice(4))}</h4>`;
-      else if (line.startsWith('## ')) html += `<h3>${inlineHtml(line.slice(3))}</h3>`;
-      else if (line.startsWith('> ')) html += `<blockquote>${inlineHtml(line.slice(2))}</blockquote>`;
-      else html += `<p>${inlineHtml(line)}</p>`;
-    }
-    closeList();
-    return html;
-  }
-
-  function inlineHtml(value) {
-    const links = [];
-    const linked = String(value || '').replace(/\[([^\]]+)\]\((https:\/\/[^)\s]+)\)/g, (_, text, url) => {
-      const token = `CMC_LINK_${links.length}_TOKEN`;
-      links.push({ token, text, url });
-      return token;
-    });
-    let html = escapeHtml(linked)
-      .replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>')
-      .replace(/\*([^*]+)\*/g, '<em>$1</em>');
-    links.forEach(link => {
-      html = html.replace(
-        link.token,
-        `<a href="${escapeAttribute(link.url)}" target="_blank" rel="noopener">${escapeHtml(link.text)}</a>`
-      );
-    });
-    return html;
   }
 
   function lessonTypeLabel(value) {

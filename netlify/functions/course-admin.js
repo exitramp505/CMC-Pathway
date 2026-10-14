@@ -46,115 +46,160 @@ exports.handler = async (event) => {
       return json(200, { ok:true });
     }
 
-    const payload = validateCourse(body);
-    const now = new Date().toISOString();
-    const courseRecord = {
-      slug:payload.slug,
-      title:payload.title,
-      subtitle:payload.subtitle,
-      description:payload.description,
-      status:payload.status,
-      stage_key:payload.stage_key,
-      access_mode:payload.access_mode,
-      navigation_mode:payload.navigation_mode,
-      estimated_minutes:payload.estimated_minutes,
-      updated_at:now,
-      published_at:payload.status === 'published' ? (payload.published_at || now) : null
-    };
-
-    let courseId = payload.id;
-    const previousCourse = courseId ? await loadCourse(supabase, courseId) : null;
-    if (courseId) {
-      const { error } = await supabase.from('cmc_courses').update(courseRecord).eq('id', courseId);
-      if (error) throw error;
-    } else {
-      const { data, error } = await supabase
-        .from('cmc_courses')
-        .insert({ ...courseRecord, created_by:viewer.id })
-        .select('id')
-        .single();
-      if (error) throw error;
-      courseId = data.id;
-    }
-
-    const existing = previousCourse || await loadCourse(supabase, courseId);
-    const incomingModuleIds = new Set(payload.modules.map(item => item.id).filter(Boolean));
-    const incomingLessonIds = new Set(payload.modules.flatMap(module => module.lessons.map(item => item.id)).filter(Boolean));
-    const existingModules = existing?.modules || [];
-    const existingLessons = existingModules.flatMap(module => module.lessons || []);
-
-    const lessonIdsToDelete = existingLessons.map(item => item.id).filter(id => !incomingLessonIds.has(id));
-    if (lessonIdsToDelete.length) {
-      const { error } = await supabase.from('cmc_course_lessons').delete().in('id', lessonIdsToDelete);
-      if (error) throw error;
-    }
-
-    for (let moduleIndex = 0; moduleIndex < payload.modules.length; moduleIndex += 1) {
-      const module = payload.modules[moduleIndex];
-      const moduleRecord = {
-        course_id:courseId,
-        title:module.title,
-        description:module.description,
-        position:moduleIndex,
-        updated_at:now
-      };
-      let moduleId = module.id;
-      if (moduleId) {
-        const { error } = await supabase.from('cmc_course_modules').update(moduleRecord).eq('id', moduleId).eq('course_id', courseId);
-        if (error) throw error;
-      } else {
-        const { data, error } = await supabase.from('cmc_course_modules').insert(moduleRecord).select('id').single();
-        if (error) throw error;
-        moduleId = data.id;
-      }
-
-      for (let lessonIndex = 0; lessonIndex < module.lessons.length; lessonIndex += 1) {
-        const lesson = module.lessons[lessonIndex];
-        const lessonRecord = {
-          course_id:courseId,
-          module_id:moduleId,
-          title:lesson.title,
-          summary:lesson.summary,
-          content:lesson.content,
-          lesson_type:lesson.lesson_type,
-          video_url:lesson.video_url,
-          image_url:lesson.image_url,
-          image_alt:lesson.image_alt,
-          resource_url:lesson.resource_url,
-          resource_label:lesson.resource_label,
-          reflection_prompt:lesson.reflection_prompt,
-          response_required:lesson.response_required,
-          estimated_minutes:lesson.estimated_minutes,
-          is_required:lesson.is_required,
-          position:lessonIndex,
-          updated_at:now
-        };
-        if (lesson.id) {
-          const { error } = await supabase.from('cmc_course_lessons').update(lessonRecord).eq('id', lesson.id).eq('course_id', courseId);
-          if (error) throw error;
-        } else {
-          const { error } = await supabase.from('cmc_course_lessons').insert(lessonRecord);
-          if (error) throw error;
-        }
-      }
-    }
-
-    const moduleIdsToDelete = existingModules.map(item => item.id).filter(id => !incomingModuleIds.has(id));
-    if (moduleIdsToDelete.length) {
-      const { error } = await supabase.from('cmc_course_modules').delete().in('id', moduleIdsToDelete);
-      if (error) throw error;
-    }
-
-    const saved = await loadCourse(supabase, courseId);
-    if (courseAccessChanged(saved, previousCourse)) {
-      await syncCourseAccess(supabase, saved, previousCourse);
-    }
-    return json(200, { ok:true, course:saved });
+    return await saveCoursePatch(supabase, viewer, body);
   } catch (error) {
     const status = error.statusCode || 500;
     return json(status, { ok:false, error:error.message || 'Could not manage courses.' });
   }
 };
+
+
+const COURSE_PATCH_KEYS = new Set([
+  'title','subtitle','slug','description','stage_key','access_mode',
+  'navigation_mode','estimated_minutes','status'
+]);
+
+function requireUuid(value, label) {
+  if (!/^[0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(String(value || ''))) {
+    throw httpError(400, label + ' is invalid.');
+  }
+  return String(value).toLowerCase();
+}
+function requireArray(value, label, maxLength) {
+  if (!Array.isArray(value) || value.length > maxLength) {
+    throw httpError(400, label + ' is invalid or exceeds the size limit.');
+  }
+  return value;
+}
+function requirePosition(value) {
+  if (!Number.isInteger(value) || value < 0 || value > 10000) {
+    throw httpError(400, 'Course item order is invalid.');
+  }
+  return value;
+}
+function uniqueIds(items, label) {
+  if (new Set(items.map(item => typeof item === 'string' ? item : item.id)).size !== items.length) {
+    throw httpError(400, 'Duplicate ' + label + ' IDs are not allowed.');
+  }
+}
+function validateCoursePatch(body) {
+  if (!body || body.save_version !== 2) {
+    throw httpError(428, 'Course Builder has been upgraded. Refresh this page before saving.');
+  }
+  const id = requireUuid(body.id, 'Course ID');
+  if (!Number.isSafeInteger(body.expected_revision) || body.expected_revision < 0) {
+    throw httpError(400, 'Invalid course revision.');
+  }
+  const rawCourse = body.course;
+  if (!rawCourse || typeof rawCourse !== 'object' || Array.isArray(rawCourse)) {
+    throw httpError(400, 'Course changes are invalid.');
+  }
+  const course = {};
+  for (const key of Object.keys(rawCourse)) {
+    if (!COURSE_PATCH_KEYS.has(key)) throw httpError(400, 'Unsupported course field.');
+    const value = rawCourse[key];
+    switch (key) {
+      case 'title': course[key] = clean(value, 160) || 'Untitled course'; break;
+      case 'subtitle': course[key] = clean(value, 240); break;
+      case 'description': course[key] = clean(value, 3000); break;
+      case 'slug':
+        course[key] = clean(value, 100).toLowerCase().replace(/[^a-z0-9-]+/g, '-').replace(/^-|-$/g, '') || temporaryDraftSlug(id);
+        break;
+      case 'status':
+        if (!['draft','published'].includes(value)) throw httpError(400, 'Invalid publishing status.');
+        course[key] = value;
+        break;
+      case 'stage_key':
+        if (!['discover','discern','develop','deploy'].includes(value)) throw httpError(400, 'Invalid pathway stage.');
+        course[key] = value;
+        break;
+      case 'access_mode':
+        if (!['automatic','assigned'].includes(value)) throw httpError(400, 'Invalid course availability.');
+        course[key] = value;
+        break;
+      case 'navigation_mode':
+        if (!['guided','open'].includes(value)) throw httpError(400, 'Invalid lesson navigation.');
+        course[key] = value;
+        break;
+      case 'estimated_minutes': course[key] = numberInRange(value,0,100000); break;
+    }
+  }
+
+  const modules_upsert = requireArray(body.modules_upsert, 'Modules', 300).map(module => ({
+    id:requireUuid(module?.id, 'Module ID'),
+    title:clean(module.title,160),
+    description:clean(module.description,1000),
+    position:requirePosition(module.position)
+  }));
+  const lessons_upsert = requireArray(body.lessons_upsert, 'Lessons', 2000).map(lesson => ({
+    id:requireUuid(lesson?.id, 'Lesson ID'),
+    module_id:requireUuid(lesson.module_id, 'Lesson module ID'),
+    title:clean(lesson.title,160),
+    summary:clean(lesson.summary,500),
+    lesson_type:validChoice(lesson.lesson_type,['article','video','reflection','resource'],'article'),
+    content:validateLessonContent(lesson.content),
+    video_url:validVideoUrl(lesson.video_url),
+    image_url:validContentUrl(lesson.image_url,true,'Lesson image'),
+    image_alt:clean(lesson.image_alt,300),
+    resource_url:validContentUrl(lesson.resource_url,false,'Resource'),
+    resource_label:clean(lesson.resource_label,120),
+    reflection_prompt:clean(lesson.reflection_prompt,2000),
+    response_required:lesson.response_required === true,
+    estimated_minutes:numberInRange(lesson.estimated_minutes,0,600),
+    is_required:lesson.is_required !== false,
+    position:requirePosition(lesson.position)
+  }));
+  const module_ids_to_delete = requireArray(body.module_ids_to_delete,'Removed modules',300)
+    .map(id => requireUuid(id,'Removed module ID'));
+  const lesson_ids_to_delete = requireArray(body.lesson_ids_to_delete,'Removed lessons',2000)
+    .map(id => requireUuid(id,'Removed lesson ID'));
+  uniqueIds(modules_upsert,'module');
+  uniqueIds(lessons_upsert,'lesson');
+  uniqueIds(module_ids_to_delete,'removed module');
+  uniqueIds(lesson_ids_to_delete,'removed lesson');
+  if (modules_upsert.some(module => module_ids_to_delete.includes(module.id))
+      || lessons_upsert.some(lesson => lesson_ids_to_delete.includes(lesson.id))) {
+    throw httpError(400, 'A course item cannot be saved and deleted in the same request.');
+  }
+  return {
+    save_version:2, id, expected_revision:body.expected_revision,
+    course, modules_upsert, lessons_upsert, module_ids_to_delete, lesson_ids_to_delete
+  };
+}
+
+async function saveCoursePatch(supabase, viewer, body) {
+  const patch = validateCoursePatch(body);
+  const { data, error } = await supabase.rpc('cmc_apply_course_patch', {
+    p_patch:patch,
+    p_actor:viewer.id
+  });
+  if (error) {
+    const message = String(error.message || '');
+    if (message.includes('CMC_COURSE_CONFLICT')) {
+      throw httpError(409, 'Another administrator has saved changes to this course. Copy any unsaved edits, then reload the latest version.');
+    }
+    if (message.includes('CMC_LESSON_HAS_PROGRESS')) {
+      throw httpError(409, 'This lesson already has participant progress or responses. It cannot be deleted.');
+    }
+    if (message.includes('CMC_COURSE_NOT_PUBLISHABLE')) {
+      throw httpError(400, 'Add a title to every module and lesson before publishing.');
+    }
+    if (message.includes('CMC_INVALID_PATCH')) {
+      throw httpError(400, 'Invalid course changes; please reload and try again.');
+    }
+    if (error.code === 'PGRST202' || /could not find.*cmc_apply_course_patch|does not exist/i.test(message)) {
+      throw httpError(503, 'Safe course saving is not enabled in Supabase yet. Your edits remain in this browser; please contact the administrator.');
+    }
+    if (error.code === '23505') {
+      throw httpError(409, 'This course URL or item ID is already in use.');
+    }
+    throw error;
+  }
+  if (!data || !data.id || !Number.isSafeInteger(Number(data.save_revision))) {
+    throw httpError(503, 'Supabase returned an invalid save confirmation. Please contact an administrator.');
+  }
+  return json(200, { ok:true, course:data });
+}
 
 async function requireAdmin(event) {
   const token = String(event.headers.authorization || event.headers.Authorization || '').replace(/^Bearer\s+/i, '');

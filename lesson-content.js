@@ -124,7 +124,7 @@
   // format choices are versioned alongside the lesson body in the existing TEXT field.
   // No migration, progress reset, or rewrite of untouched Markdown lessons is needed.
   function normalizeFormats(formats) {
-    if (!Array.isArray(formats) || !formats.length || formats.length > LESSON_FORMATS.length ||
+    if (!Array.isArray(formats) || !formats.length || formats.length > 25 ||
         formats.some(function (format) { return !LESSON_FORMATS.includes(format); })) {
       throw new Error('Select at least one supported lesson format.');
     }

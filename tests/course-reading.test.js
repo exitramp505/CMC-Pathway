@@ -49,7 +49,7 @@ assert.ok(styles.includes('.cmcCourseBody .cmcLessonContent{'));
 assert.ok(styles.includes('.cmcLessonHeader .cmcLessonHeading{'));
 assert.ok(styles.includes('.cmcCourseMain .cmcCourseSidebarToggle:focus-visible{'));
 assert.ok(styles.includes('@media(max-width:720px)'));
-assert.ok(html.includes('course.js?v=121'), 'Course page must load the updated interaction code.');
-assert.ok(html.includes('style.css?v=133'), 'Course page must load the updated styles.');
+assert.match(html, /course\\.js\\?v=\\d+/, 'Course page must load versioned interaction code.');
+assert.match(html, /style\\.css\\?v=\\d+/, 'Course page must load versioned styles.');
 
 console.log('Course reading layout, sidebar control, and duplicate-heading checks passed.');

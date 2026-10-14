@@ -4,7 +4,8 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <title>Course Builder | CMC Pathway</title>
-  <link rel="stylesheet" href="style.css?v=129">
+  <link rel="stylesheet" href="style.css?v=130">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/quill@2.0.3/dist/quill.snow.css">
 </head>
 <body class="cmcPathwayBody">
 <header class="cmcHeader">
@@ -160,7 +161,7 @@
           </select>
         </label>
         <label><span>Minutes</span><input data-lesson-minutes type="number" min="0" max="600" inputmode="numeric"></label>
-        <label class="wide"><span>Written content</span><textarea data-lesson-content rows="10" maxlength="50000" placeholder="Add the lesson text here. Use a blank line between paragraphs. Start a heading with ## and a list item with -"></textarea></label>
+        <div class="wide cmcRichField"><span class="cmcRichLabel">Written content</span><div data-lesson-content class="cmcRichEditor" aria-label="Written content"></div><small>Paste formatted text from ChatGPT, Google Docs, or Word. Changes save automatically.</small></div>
         <label class="wide"><span>Video link (optional)</span><input data-lesson-video type="url" placeholder="https://youtube.com/... or https://vimeo.com/..."></label>
         <label class="wide"><span>Lesson image (optional)</span><input data-lesson-image placeholder="/assets/image.svg or https://..."></label>
         <label class="wide"><span>Image description</span><input data-lesson-image-alt maxlength="300" placeholder="Describe the image for participants who cannot see it"></label>
@@ -177,6 +178,8 @@
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="auth.js?v=131"></script>
 <script src="builder-ui.js?v=1"></script>
-<script src="course-builder.js?v=102"></script>
+<script src="https://cdn.jsdelivr.net/npm/quill@2.0.3/dist/quill.js"></script>
+<script src="lesson-content.js?v=1"></script>
+<script src="course-builder.js?v=103"></script>
 </body>
 </html>

@@ -110,7 +110,7 @@
     setNodeValue(node, '[data-lesson-title]', data.title);
     setNodeValue(node, '[data-lesson-summary]', data.summary);
     setNodeValue(node, '[data-lesson-type]', data.lesson_type || 'article');
-    setNodeValue(node, '[data-lesson-content]', data.content);
+    initLessonEditor(node, data.content || '');
     setNodeValue(node, '[data-lesson-video]', data.video_url);
     setNodeValue(node, '[data-lesson-image]', data.image_url);
     setNodeValue(node, '[data-lesson-image-alt]', data.image_alt);
@@ -136,6 +136,73 @@
     setCollapsed(node, Boolean(options.collapsed));
     renumber();
     if (!options.collapsed && !data.id) node.querySelector('[data-lesson-title]').focus();
+  }
+
+
+  function initLessonEditor(node, savedContent) {
+    const element = node.querySelector('[data-lesson-content]');
+    node._savedContent = savedContent;
+    node._richDirty = false;
+    if (typeof Quill !== 'function' || !window.CMCLessonContent) {
+      const fallback = document.createElement('textarea');
+      fallback.rows = 10;
+      fallback.value = savedContent;
+      fallback.className = 'cmcRichFallback';
+      element.replaceWith(fallback);
+      fallback.setAttribute('data-lesson-content', '');
+      fallback.addEventListener('input', queueAutosave);
+      return;
+    }
+    const quill = new Quill(element, {
+      theme:'snow',
+      placeholder:'Start writing or paste your formatted lesson here…',
+      modules:{
+        toolbar:[
+          [{header:[false,2,3,4]}],
+          ['bold','italic','underline'],
+          [{list:'ordered'},{list:'bullet'}],
+          ['blockquote','link','image'],
+          ['clean']
+        ],
+        history:{delay:700,maxStack:100,userOnly:true}
+      },
+      formats:['header','bold','italic','underline','list','blockquote','link','image','indent']
+    });
+    node._quill = quill;
+    if (savedContent) {
+      try {
+        if (CMCLessonContent.isRichText(savedContent)) quill.setContents(CMCLessonContent.readDelta(savedContent), 'silent');
+        else quill.clipboard.dangerouslyPasteHTML(CMCLessonContent.renderMarkdown(savedContent), 'silent');
+      } catch (error) {
+        quill.setText('This lesson could not be loaded. Please contact an administrator.', 'silent');
+      }
+    }
+    quill.on('text-change', function (_delta, _old, source) {
+      if (source === 'silent') return;
+      node._richDirty = true;
+      queueAutosave();
+    });
+  }
+
+  function getLessonContent(node) {
+    if (node._quill) {
+      if (!node._richDirty) return node._savedContent;
+      return CMCLessonContent.serializeDelta(node._quill.getContents().ops);
+    }
+    return node.querySelector('[data-lesson-content]').value;
+  }
+
+  function saveEditorSnapshot(payload) {
+    const modules = [...document.querySelectorAll('[data-module]')];
+    modules.forEach((module, moduleIndex) => {
+      [...module.querySelectorAll('[data-lesson]')].forEach((node, lessonIndex) => {
+        const content = payload.modules?.[moduleIndex]?.lessons?.[lessonIndex]?.content;
+        if (content !== undefined && getLessonContent(node) === content) {
+          node._savedContent = content;
+          node._richDirty = false;
+        }
+      });
+    });
   }
 
   function moveNode(node, direction) {
@@ -286,7 +353,9 @@
       return;
     }
     const status = currentCourse?.status === 'published' ? 'published' : 'draft';
-    const payload = buildPayload(status);
+    let payload;
+    try { payload = buildPayload(status); }
+    catch (error) { setAutosaveStatus(error.message, true); return; }
     if (!hasStartedWriting()) {
       setAutosaveStatus('Autosave ready');
       return;
@@ -315,7 +384,7 @@
         title:lesson.querySelector('[data-lesson-title]').value,
         summary:lesson.querySelector('[data-lesson-summary]').value,
         lesson_type:lesson.querySelector('[data-lesson-type]').value,
-        content:lesson.querySelector('[data-lesson-content]').value,
+        content:getLessonContent(lesson),
         video_url:lesson.querySelector('[data-lesson-video]').value,
         image_url:lesson.querySelector('[data-lesson-image]').value,
         image_alt:lesson.querySelector('[data-lesson-image-alt]').value,
@@ -374,7 +443,9 @@
       return false;
     }
     saveInFlight = true;
-    const payload = buildPayload(status);
+    let payload;
+    try { payload = buildPayload(status); }
+    catch (error) { setAutosaveStatus(error.message, true); return false; }
     payload.autosave = Boolean(options.automatic);
     setWorking(true);
     if (options.automatic) setAutosaveStatus('Saving changes…');
@@ -400,6 +471,7 @@
       preview.classList.remove('hidden');
       if (options.automatic) {
         syncSavedIds(currentCourse);
+        saveEditorSnapshot(payload);
       } else {
         isHydrating = true;
         document.getElementById('moduleList').innerHTML = '';
@@ -407,7 +479,8 @@
         isHydrating = false;
         setMessage(status === 'published' ? 'Course published.' : 'Draft saved.');
       }
-      lastSavedSignature = JSON.stringify(buildPayload(currentCourse.status));
+      lastSavedSignature = JSON.stringify(Object.assign({}, payload, {autosave:undefined}));
+      if (JSON.stringify(buildPayload(currentCourse.status)) !== lastSavedSignature) autosaveQueued = true;
       updateCourseDetailsSummary();
       setAutosaveStatus('All changes saved');
       return true;

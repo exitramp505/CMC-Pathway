@@ -82,7 +82,7 @@
           return;
         }
 
-        setMessage('Account created. Check your email to confirm your account, then complete your candidate profile.', 'success');
+        setMessage('Account created. Check your email to confirm your account, then complete your CMC profile.', 'success');
       }catch(err){
         setMessage(err.message || 'Could not create account.', 'error');
       }

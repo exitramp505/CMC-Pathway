@@ -2,6 +2,12 @@
 
 CMC Pathway is the authenticated workspace for Church Multiplication Collective participants, regional leaders, and national administrators. It includes courses, assignments, assessments, applications, reports, events, and role-based regional administration.
 
+## Design and accessibility
+
+The **[CMC Pathway Style Guide](STYLE-GUIDE.md)** is the single source of truth for typography, palette, cards, forms, navigation, mobile layout, and keyboard/touch interactions. The former `TYPOGRAPHY-GUIDE.md` is a forwarding link, not an independent standard.
+
+Changes to shared styles should follow the guide, keep all page stylesheet versions synchronized, preserve the lesson-reading experience, and pass `npm test` (including the design-harmony and design-system contract checks). Authenticated phone/tablet preview checks are still required before publishing.
+
 ## Required Netlify environment variables
 
 - `SUPABASE_URL`

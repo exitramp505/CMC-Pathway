@@ -9212,3 +9212,86 @@ body.cmcAuthBody button.oauthBtn:focus-visible .oauthIcon{background:var(--cmcSl
   opacity:.65;
   transform:none;
 }
+
+
+/* Password visibility controls remain reachable by keyboard and on phones. */
+.cmcAuthBody .cmcPasswordInputWrap{
+  position:relative;
+  display:block;
+  min-width:0;
+  width:100%;
+}
+.cmcAuthBody .cmcPasswordInputWrap input{
+  box-sizing:border-box;
+  width:100%;
+  padding-right:76px;
+}
+.cmcAuthBody .cmcPasswordToggle{
+  position:absolute;
+  right:5px;
+  top:50%;
+  transform:translateY(-50%);
+  display:inline-flex;
+  min-width:62px;
+  min-height:42px;
+  align-items:center;
+  justify-content:center;
+  border:0;
+  border-radius:9px;
+  background:transparent;
+  color:#315b63;
+  cursor:pointer;
+  font:800 13px/1 Montserrat,Arial,sans-serif;
+}
+.cmcAuthBody .cmcPasswordToggle:hover{
+  background:rgba(77,167,156,.1);
+  color:#205f57;
+}
+.cmcAuthBody .cmcPasswordToggle:focus-visible{
+  outline:2px solid #287d72;
+  outline-offset:1px;
+}
+.cmcAuthBody .cmcPasswordToggle[aria-pressed="true"]{
+  color:#17665e;
+}
+.cmcAuthBody .authSubmitBtn:disabled,
+.cmcAuthBody .oauthBtn:disabled,
+.profilePageMain .authSubmitBtn:disabled{
+  opacity:.68;
+  cursor:wait;
+}
+.profilePageMain .cmcProfileSetupActions{
+  grid-column:1/-1;
+  display:flex;
+  flex-wrap:wrap;
+  gap:12px;
+  margin-top:8px;
+}
+.profilePageMain .cmcProfileSetupActions a,
+.profilePageMain .cmcProfileSetupActions button{
+  display:inline-flex;
+  min-height:44px;
+  align-items:center;
+  justify-content:center;
+  padding:11px 17px;
+  border-radius:11px;
+  font:800 13px/1.3 Montserrat,Arial,sans-serif;
+}
+.profilePageMain .cmcProfileSetupActions button{
+  background:#314e57;
+  border:0;
+  color:white;
+  cursor:pointer;
+}
+.profilePageMain .cmcProfileSetupActions a{
+  color:#285d56;
+  text-decoration:underline;
+  text-underline-offset:3px;
+}
+.profilePageMain .cmcProfileSetupActions button:focus-visible,
+.profilePageMain .cmcProfileSetupActions a:focus-visible{
+  outline:2px solid #287d72;
+  outline-offset:3px;
+}
+
+.profilePageMain .cmcProfileSetupActions[hidden]{display:none!important}

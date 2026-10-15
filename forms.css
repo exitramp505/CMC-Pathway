@@ -85,3 +85,19 @@
 .cmcPublicReferenceHeader{justify-content:flex-start}.cmcPublicReferenceForm{display:grid;gap:20px}.cmcPublicReferenceForm fieldset{margin:0;padding:24px;border:1px solid var(--formLine);border-radius:20px;background:rgba(251,240,222,.42)}.cmcPublicReferenceForm legend{padding:0 9px;color:var(--cmcInk);font:900 24px/1.2 Montserrat,Arial,sans-serif}.cmcFieldHelp{margin:0 0 16px;font-size:14px}
 .cmcReferenceRatingGrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px 18px}.cmcReferenceCheck{display:flex;align-items:flex-start;gap:11px;margin-top:16px}.cmcReferenceCheck input{width:20px;height:20px;flex:0 0 auto;margin-top:1px;accent-color:var(--cmcSage)}
 @media(max-width:720px){.cmcReferenceStatus{flex-direction:column}.cmcReferenceActions{align-items:stretch;flex-direction:column}.cmcReferenceActions button{width:100%}.cmcReferenceRatingGrid{grid-template-columns:1fr}.cmcPublicReferenceForm fieldset{padding:19px}.cmcPublicReferenceHeader .cmcBrand small{display:block}}
+
+
+/* Match the shared CMC mobile reading hierarchy on forms and assessments. */
+@media(max-width:720px){
+  .cmcFormBody .cmcFormHero>p:not(.cmcEyebrow),
+  .cmcFormBody .cmcFormHero>div>p:not(.cmcEyebrow){
+    font-size:var(--cmc-type-body);
+    line-height:1.65;
+  }
+  .cmcFormBody .progressMeta{font-size:var(--cmc-type-body-sm)}
+  .cmcFormBody .scale label,
+  .cmcFormBody button.isaChoice,
+  .cmcFormBody .ministryChoiceBtn{
+    font-size:var(--cmc-type-body);
+  }
+}

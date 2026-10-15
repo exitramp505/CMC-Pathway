@@ -1,18 +1,30 @@
 (async function(){
   window.CMCBuilderUI?.initShell({ shellId:'courseBuilderShell', toggleId:'courseBuilderSidebarToggle', storageKey:'cmcCourseBuilderSidebarCollapsed' });
-  const user = await dcAuth.requireUser();
-  if (!user) return;
-  const profile = await dcAuth.getProfile(user.id).catch(() => null);
+  const session = await dcAuth.getCurrentSession().catch(() => null);
+  if (!session?.user) { window.location.href = 'login.html'; return; }
+  const token = session.access_token || '';
+  const params = new URLSearchParams(window.location.search);
+  let courseId = params.get('id') || '';
+  // Independently load the course and check the current administrator role.
+  // The server authorizes the fetch; the editor stays blocked until the role
+  // is verified, and rejects are captured while that check is in flight.
+  const profilePromise = dcAuth.getProfile(session.user.id).catch(() => null);
+  const initialCoursePromise = courseId ? (async () => {
+    try {
+      const response = await fetch(`/.netlify/functions/course-admin?id=${encodeURIComponent(courseId)}`, {
+        headers:{ Authorization:`Bearer ${token}` }
+      });
+      const data = await response.json().catch(() => ({}));
+      if (!response.ok || !data.ok) throw new Error(data.error || 'Could not load course.');
+      return { data };
+    } catch (error) { return { error }; }
+  })() : null;
+  const profile = await profilePromise;
   if (profile?.account_role !== 'cmc_admin') {
     window.location.replace(profile?.account_role === 'regional_leader' ? 'leader.html' : 'dashboard.html');
     return;
   }
   dcAuth.renderRoleNavigation(profile, 'courses');
-  const sb = await dcAuth.getSupabaseClient();
-  const session = await sb.auth.getSession();
-  const token = session.data?.session?.access_token || '';
-  const params = new URLSearchParams(window.location.search);
-  let courseId = params.get('id') || '';
   let currentCourse = null;
   const draftCourseId = window.crypto.randomUUID();
   let lastSavedPayload = null;
@@ -45,7 +57,7 @@
   document.getElementById('courseBuilderForm').addEventListener('input', handleBuilderChange);
   document.getElementById('courseBuilderForm').addEventListener('change', handleBuilderChange);
 
-  if (courseId) await loadCourse();
+  if (courseId) await loadCourse(initialCoursePromise);
   else addModule({ title:'', description:'', lessons:[{}] });
   isHydrating = false;
   updateCourseDetailsSummary();
@@ -59,14 +71,11 @@
   lastSavedSignature = lastSavedPayload ? JSON.stringify(lastSavedPayload) : '';
   if (!saveBlocked) setAutosaveStatus(currentCourse ? 'All changes saved' : 'Autosave starts when you begin typing');
 
-  async function loadCourse() {
+  async function loadCourse(request) {
     setMessage('Loading course…');
     try {
-      const response = await fetch(`/.netlify/functions/course-admin?id=${encodeURIComponent(courseId)}`, {
-        headers:{ Authorization:`Bearer ${token}` }
-      });
-      const data = await response.json().catch(() => ({}));
-      if (!response.ok || !data.ok) throw new Error(data.error || 'Could not load course.');
+      const {data,error} = await request;
+      if (error) throw error;
       currentCourse = data.course;
       if (currentCourse.save_revision === undefined || currentCourse.save_revision === null ||
           !Number.isSafeInteger(Number(currentCourse.save_revision))) {

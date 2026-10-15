@@ -1,5 +1,12 @@
 /* CMC Pathway form system. Loads after legacy page CSS. */
-.cmcFormBody{--formText:#293d48;--formMuted:#607078;--formLine:rgba(41,61,72,.16);--formLineStrong:rgba(41,61,72,.26);--formSurface:#fffaf1}
+/* Form aliases map to the shared CMC Pathway palette; avoid a second theme. */
+.cmcFormBody{
+  --formText:var(--cmcSlate);
+  --formMuted:var(--cmcTextMuted);
+  --formLine:var(--cmcBorder);
+  --formLineStrong:var(--cmcBorderStrong);
+  --formSurface:var(--cmcPaper);
+}
 .cmcFormMain,.ministryStyleMain.cmcFormMain,.cmcApplicationMain{width:min(1120px,calc(100% - 48px));margin:0 auto;padding:48px 0 96px}
 
 /* Introductions */

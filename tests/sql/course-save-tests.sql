@@ -9,6 +9,7 @@ declare
   v_lesson2 uuid := '55555555-5555-4555-8555-555555555555';
   v_user uuid := '77777777-7777-4777-8777-777777777777';
   v_actor uuid := '88888888-8888-4888-8888-888888888888';
+  v_empty uuid := '99999999-9999-4999-8999-999999999999';
   v_course_fields jsonb;
   v_lesson_row jsonb;
   v_lesson2_row jsonb;
@@ -147,12 +148,62 @@ begin
     raise exception 'publish or auto-assignment failed';
   end if;
 
+
+  -- A course that has enrollment or completion data cannot be deleted.
+  v_caught:=false;
+  begin
+    perform public.cmc_delete_course_safely(v_course, 3);
+  exception when others then
+    if sqlerrm not like '%CMC_COURSE_HAS_PROGRESS%' then raise; end if;
+    v_caught:=true;
+  end;
+  if not v_caught
+      or not exists(select 1 from public.cmc_course_lesson_progress where course_id=v_course)
+      or not exists(select 1 from public.candidate_assignments where item_key='course:'||v_course::text)
+      or (select save_revision from public.cmc_courses where id=v_course) <> 3 then
+    raise exception 'course delete guard damaged participant data or assignments';
+  end if;
+
+  -- A never-enrolled, unused draft can be deleted, removing its assignments
+  -- in the same committed transaction.
+  v_response:=public.cmc_apply_course_patch(
+    jsonb_build_object('save_version',2,'id',v_empty,'expected_revision',0,
+      'course',jsonb_build_object('slug','disposable-draft','title','Disposable Draft','status','draft'),
+      'modules_upsert','[]'::jsonb,'lessons_upsert','[]'::jsonb,
+      'module_ids_to_delete','[]'::jsonb,'lesson_ids_to_delete','[]'::jsonb),v_actor);
+  insert into public.candidate_assignments(
+    user_id,item_key,candidate_email,candidate_name,item_type,stage_key,status,assignment_source
+  ) values(
+    v_user,'course:'||v_empty::text,'sample@example.test','Sample Member',
+    'course','discover','assigned','leader'
+  );
+  -- Revision checks apply to deletion, just as they do to saves.
+  v_caught:=false;
+  begin
+    perform public.cmc_delete_course_safely(v_empty, 0);
+  exception when others then
+    if sqlerrm not like '%CMC_COURSE_CONFLICT%' then raise; end if;
+    v_caught:=true;
+  end;
+  if not v_caught then raise exception 'stale delete did not detect conflict'; end if;
+  perform public.cmc_delete_course_safely(v_empty,1);
+  if exists(select 1 from public.cmc_courses where id=v_empty)
+     or exists(select 1 from public.candidate_assignments where item_key='course:'||v_empty::text) then
+    raise exception 'unused course deletion failed to remove assignments atomically';
+  end if;
+
+  if has_function_privilege('anon','public.cmc_delete_course_safely(uuid,bigint)','EXECUTE')
+     or has_function_privilege('authenticated','public.cmc_delete_course_safely(uuid,bigint)','EXECUTE')
+     or not has_function_privilege('service_role','public.cmc_delete_course_safely(uuid,bigint)','EXECUTE') then
+    raise exception 'safe delete RPC is not restricted to service_role';
+  end if;
+
   if has_function_privilege('anon','public.cmc_apply_course_patch(jsonb,uuid)','EXECUTE')
      or has_function_privilege('authenticated','public.cmc_apply_course_patch(jsonb,uuid)','EXECUTE')
      or not has_function_privilege('service_role','public.cmc_apply_course_patch(jsonb,uuid)','EXECUTE') then
     raise exception 'RPC access not restricted to service_role';
   end if;
 
-  raise notice 'PASS: atomic rollback, changed-only saves, progress protection, access sync, and revision conflict';
+  raise notice 'PASS: atomic saves/deletes, revision conflict, progress protection, and access sync';
 end;
 $$;

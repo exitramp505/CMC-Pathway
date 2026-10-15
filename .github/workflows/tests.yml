@@ -18,4 +18,6 @@ jobs:
           node-version: '20'
           cache: npm
       - run: npm ci
+      - name: Review dependency security advisories
+        run: npm audit --omit=dev --audit-level=high || true
       - run: npm test

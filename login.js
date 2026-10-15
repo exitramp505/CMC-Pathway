@@ -2,6 +2,18 @@
   const form = document.getElementById('loginForm');
   const msg = document.getElementById('authMessage');
   const googleBtn = document.getElementById('googleLoginBtn');
+  const submitBtn = form?.querySelector('button[type="submit"]');
+  let pending = false;
+
+  function setPending(value) {
+    pending = value;
+    if (submitBtn) {
+      submitBtn.disabled = value;
+      submitBtn.textContent = value ? 'Signing in…' : 'Login';
+    }
+    if (googleBtn) googleBtn.disabled = value;
+    if (form) form.setAttribute('aria-busy', String(value));
+  }
 
   function setMessage(text, type){
     if(!msg) return;
@@ -22,7 +34,10 @@
   }
 
   async function signInWithGoogle(){
+    if (pending) return;
+    setPending(true);
     setMessage('Redirecting to Google...');
+    let redirectStarted = false;
     try{
       const sb = await dcAuth.getSupabaseClient();
       const { error } = await sb.auth.signInWithOAuth({
@@ -30,8 +45,11 @@
         options: { redirectTo: loginRedirectTo() }
       });
       if(error) throw error;
+      redirectStarted = true;
     }catch(err){
       setMessage(err.message || 'Could not continue with Google.', 'error');
+    }finally{
+      if (!redirectStarted) setPending(false);
     }
   }
 
@@ -50,8 +68,11 @@
   if(form){
     form.addEventListener('submit', async e => {
       e.preventDefault();
-      setMessage('Logging in...');
+      if (pending || !form.reportValidity()) return;
       const fd = new FormData(form);
+      setPending(true);
+      setMessage('Logging in...');
+      let redirectStarted = false;
 
       try{
         const sb = await dcAuth.getSupabaseClient();
@@ -61,8 +82,11 @@
         });
         if(error) throw error;
         await routeSignedInUser(data.user);
+        redirectStarted = true;
       }catch(err){
         setMessage(err.message || 'Could not log in.', 'error');
+      }finally{
+        if (!redirectStarted) setPending(false);
       }
     });
   }

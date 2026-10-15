@@ -317,3 +317,54 @@ grant execute on function public.cmc_apply_course_patch(jsonb,uuid) to service_r
 -- After applying, verify the function exists and only service_role can execute:
 -- select routine_name from information_schema.routines
 -- where routine_schema='public' and routine_name='cmc_apply_course_patch';
+
+
+-- Course deletion uses one transaction, too. Never remove enrollment or progress
+-- records as a side effect of the delete action, and do not orphan assignments.
+create or replace function public.cmc_delete_course_safely(
+  p_course_id uuid,
+  p_expected_revision bigint
+)
+returns jsonb
+language plpgsql
+security invoker
+set search_path = pg_catalog
+as $$
+declare
+  v_course public.cmc_courses%rowtype;
+  v_item_key text;
+begin
+  if p_course_id is null or p_expected_revision is null or p_expected_revision < 0 then
+    raise exception using errcode='P0001', message='CMC_INVALID_PATCH';
+  end if;
+
+  select * into v_course
+  from public.cmc_courses
+  where id=p_course_id
+  for update;
+
+  if not found then
+    raise exception using errcode='P0001', message='CMC_COURSE_NOT_FOUND';
+  end if;
+  if v_course.save_revision <> p_expected_revision then
+    raise exception using errcode='P0001', message='CMC_COURSE_CONFLICT';
+  end if;
+  if exists(select 1 from public.cmc_course_enrollments where course_id=p_course_id)
+     or exists(select 1 from public.cmc_course_lesson_progress where course_id=p_course_id)
+     or exists(select 1 from public.cmc_course_lesson_responses where course_id=p_course_id) then
+    raise exception using errcode='P0001', message='CMC_COURSE_HAS_PROGRESS';
+  end if;
+
+  v_item_key := case when v_course.slug='discover' then 'discover_course'
+                     else 'course:'||p_course_id::text end;
+  delete from public.candidate_assignments where item_key=v_item_key;
+  delete from public.cmc_courses where id=p_course_id;
+
+  return jsonb_build_object('id', p_course_id, 'deleted', true);
+end;
+$$;
+
+revoke all on function public.cmc_delete_course_safely(uuid,bigint) from public;
+revoke all on function public.cmc_delete_course_safely(uuid,bigint) from anon;
+revoke all on function public.cmc_delete_course_safely(uuid,bigint) from authenticated;
+grant execute on function public.cmc_delete_course_safely(uuid,bigint) to service_role;

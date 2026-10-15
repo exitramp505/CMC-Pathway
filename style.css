@@ -9337,3 +9337,145 @@ body.cmcAuthBody button.oauthBtn:focus-visible .oauthIcon{background:var(--cmcSl
     font-size:16px;
   }
 }
+
+
+/* CMC visual harmony: responsive navigation, accessible typography, tap targets.
+   Applies after legacy rules; shared color and type variables remain authoritative. */
+
+/* Role menus need room before the tablet layout becomes cramped. The existing
+   menu component already handles toggling, Escape, outside clicks and focus. */
+@media (min-width:721px) and (max-width:1080px) {
+  .cmcHeader{min-height:76px;padding:12px 24px}
+  .cmcHeader .cmcBrand small{display:none}
+  .cmcNav:not(.cmcAuthNav){position:relative;margin-left:auto;gap:0}
+  .cmcNav:not(.cmcAuthNav) .cmcNavMenu{
+    position:absolute;
+    top:calc(100% + 10px);
+    right:0;
+    display:none;
+    width:min(310px,calc(100vw - 40px));
+    padding:10px;
+    border:1px solid rgba(41,61,72,.18);
+    border-radius:18px;
+    background:var(--cmcSand);
+    box-shadow:0 18px 50px rgba(24,38,44,.18);
+    z-index:45;
+  }
+  .cmcNav:not(.cmcAuthNav).cmcNavOpen .cmcNavMenu{display:grid;gap:2px}
+  .cmcNav:not(.cmcAuthNav) .cmcNavMenu a,
+  .cmcNav:not(.cmcAuthNav) .cmcNavMenu button{
+    display:flex;
+    box-sizing:border-box;
+    min-height:46px;
+    width:100%;
+    align-items:center;
+    justify-content:flex-start;
+    padding:10px 14px;
+    border-radius:11px;
+    font-size:var(--cmc-type-body-sm);
+  }
+  .cmcNav:not(.cmcAuthNav) .cmcNavMenu a.active{
+    background:rgba(234,159,67,.14);
+  }
+  .cmcNav:not(.cmcAuthNav) .cmcNavDivider{
+    display:block;width:100%;height:1px;margin:5px 0;
+  }
+  .cmcNav:not(.cmcAuthNav) .cmcMobileNavToggle{
+    display:inline-flex;
+    min-height:46px;
+    align-items:center;
+    gap:8px;
+    padding:0 14px;
+    border:1px solid rgba(41,61,72,.18);
+    border-radius:13px;
+    background:var(--cmcPaper);
+    color:var(--cmcSlate);
+    font:800 var(--cmc-type-body-sm)/1.2 Montserrat,Arial,sans-serif;
+  }
+  .cmcNav:not(.cmcAuthNav) .cmcMobileNavIcon{display:grid;gap:3px}
+  .cmcNav:not(.cmcAuthNav) .cmcMobileNavIcon i{
+    display:block;width:16px;height:2px;border-radius:3px;background:currentColor;
+  }
+}
+
+/* Consistent navigation legibility and focus on phones, including the
+   direct log-in/create-account links used by public auth screens. */
+@media(max-width:720px){
+  .cmcNav .cmcMobileNavToggle{
+    font-size:var(--cmc-type-body-sm);
+    line-height:1.2;
+  }
+  .cmcNav .cmcNavMenu a,
+  .cmcNav .cmcNavMenu button{font-size:var(--cmc-type-body-sm)}
+  .cmcHeader .cmcAuthNav>a{
+    display:inline-flex;
+    min-height:44px;
+    align-items:center;
+    padding:8px 2px;
+    font-size:var(--cmc-type-body-sm);
+    white-space:nowrap;
+  }
+  .cmcAdminPageHero .cmcEyebrow{font-size:var(--cmc-type-label)}
+  .cmcLeaderWelcome.cmcAdminPageHero .cmcIntro,
+  .cmcEventsIntro.cmcAdminPageHero .cmcIntro,
+  .cmcCourseAdminIntro.cmcAdminPageHero>div>p:last-child,
+  .cmcManageLeadersIntro.cmcAdminPageHero>div>p:last-child,
+  .cmcAdminPageHero .cmcIntro{
+    font-size:var(--cmc-type-body);
+    line-height:1.58;
+  }
+  .cmcLeaderStats span,
+  .cmcLeaderStats small{
+    font-size:var(--cmc-type-label);
+    line-height:1.4;
+    overflow-wrap:break-word;
+  }
+  .cmcLessonHeader .cmcLessonMeta{
+    font-size:var(--cmc-type-label);
+    line-height:1.45;
+  }
+  .cmcLessonHeader .cmcLessonSummary{
+    font-size:var(--cmc-type-body);
+    line-height:1.7;
+  }
+  .cmcTaskPlanHero>div>p:last-child{
+    font-size:var(--cmc-type-body);
+    line-height:1.6;
+  }
+  .cmcWebsiteTabs button,
+  .cmcWebsiteTabs a{
+    font-size:var(--cmc-type-body-sm);
+    scroll-snap-align:start;
+  }
+  .cmcWebsiteTabs{
+    scroll-snap-type:x proximity;
+    -webkit-overflow-scrolling:touch;
+  }
+  .cmcStageAssignmentTabs button{min-height:44px;font-size:var(--cmc-type-body-sm)}
+  .cmcReviewDialogClose{min-width:44px;min-height:44px}
+  .cmcPathwayBody input:not([type="checkbox"]):not([type="radio"]):not([type="file"]):not([type="hidden"]),
+  .cmcPathwayBody select,
+  .cmcPathwayBody textarea{font-size:var(--cmc-type-body)}
+}
+
+/* A compact course-navigation control is still a functional label. */
+.cmcCourseMain .cmcCourseSidebarToggle{
+  min-height:44px;
+  font-size:var(--cmc-type-caption);
+}
+.cmcPathwayBody .cmcNav a:focus-visible,
+.cmcPathwayBody .cmcNav button:focus-visible,
+.cmcPathwayBody .cmcWebsiteTabs button:focus-visible,
+.cmcPathwayBody .cmcWebsiteTabs a:focus-visible{
+  outline:2px solid var(--cmcSage);
+  outline-offset:3px;
+}
+@media(prefers-reduced-motion:reduce){
+  .cmcPathwayBody *,
+  .cmcPathwayBody *::before,
+  .cmcPathwayBody *::after{
+    scroll-behavior:auto!important;
+    animation-duration:.01ms!important;
+    transition-duration:.01ms!important;
+  }
+}

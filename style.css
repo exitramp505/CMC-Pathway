@@ -8308,7 +8308,7 @@ body.cmcAuthBody button.oauthBtn:focus-visible .oauthIcon{background:var(--cmcSl
   box-shadow:none;
 }
 .cmcWebsiteTabs button:last-of-type{border-right:1px solid rgba(41,61,72,.13)}
-.cmcWebsiteTabs a{border-right:0}
+.cmcWebsiteTabs a{position:relative;border-right:0}
 .cmcWebsiteTabs button>span,
 .cmcWebsiteTabs a>span{
   color:var(--cmcEmber);
@@ -8316,7 +8316,7 @@ body.cmcAuthBody button.oauthBtn:focus-visible .oauthIcon{background:var(--cmcSl
   line-height:1;
   letter-spacing:.12em;
 }
-.cmcWebsiteTabs a b{position:absolute;margin-left:52px;font-size:12px;font-weight:900}
+.cmcWebsiteTabs a b{position:absolute;right:12px;top:50%;margin-left:0;transform:translateY(-50%);font-size:12px;font-weight:900}
 .cmcWebsiteTabs button:hover,
 .cmcWebsiteTabs button:focus-visible,
 .cmcWebsiteTabs a:hover,

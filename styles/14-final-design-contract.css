@@ -1,0 +1,74 @@
+/* v143: Shared design-system contract. These rules only align accessibility
+   and contrast; established dashboard, course and builder layouts are kept. */
+.cmcPathwayBody .cmcSkipLink{
+  position:fixed;
+  z-index:10000;
+  top:var(--cmc-space-3);
+  left:var(--cmc-space-3);
+  transform:translateY(calc(-100% - 28px));
+  opacity:0;
+  pointer-events:none;
+  display:inline-flex;
+  min-height:var(--cmcTouchTarget);
+  align-items:center;
+  padding:10px var(--cmc-space-4);
+  border-radius:var(--cmcRadiusControl);
+  background:var(--cmcSlate);
+  color:var(--cmcSand);
+  font:800 var(--cmc-type-body-sm)/1.4 Montserrat,Arial,sans-serif;
+  text-decoration:none;
+}
+.cmcPathwayBody .cmcSkipLink:focus,
+.cmcPathwayBody .cmcSkipLink:focus-visible{
+  transform:none;
+  opacity:1;
+  pointer-events:auto;
+  outline:var(--cmcFocusRing);
+  outline-offset:3px;
+}
+/* The bright sage accent needs dark ink when it is a text-bearing surface.
+   Ink (#151616) on sage (#4da79c) is about 6.3:1, versus 2.9:1 for white. */
+.cmcPathwayBody :is(
+  .cmcTaskPlanFocusStatus span,
+  .cmcTaskPlanPreviewNotice .cmcInfoBadge,
+  .cmcPlanTaskCard:hover>button,
+  .cmcStageCard.complete .cmcStageStatus,
+  .cmcStageCard.complete>a,
+  .cmcRegionCard>div,
+  .cmcAvatar,
+  .cmcParticipantAvatar,
+  .cmcPrimaryButton.complete,
+  .cmcCourseStatus.published,
+  .cmcAssignmentCourseCard input:checked+.cmcAssignmentCourseCheck,
+  .cmcCourseOutline button.complete i,
+  .cmcEventInvitee input:checked+.cmcAssignmentOptionCheck,
+  .cmcReviewItem>span,
+  .cmcAssignmentOption input:checked+.cmcAssignmentOptionCheck,
+  .cmcNextStepState>span,
+  .cmcRowAction:hover,
+  .cmcRowAction:focus-visible,
+  .cmcAccessRoleMark,
+  .cmcCoachingViews button.active span,
+  .cmcCoachCardActions button:hover,
+  .cmcCoachCardActions button:focus-visible,
+  .cmcUnassignedCoachCard button:hover,
+  .cmcUnassignedCoachCard button:focus-visible,
+  .cmcCoachRegions button:hover,
+  .cmcCoachRegions button:focus-visible,
+  .cmcCoachRoster a:hover,
+  .cmcCoachRoster a:focus-visible
+){color:var(--cmcInk)}
+@media(max-width:720px){
+  .cmcPathwayBody :is(
+    .cmcAdminPageHero,
+    .cmcFormHero,
+    .cmcPeopleHeading,
+    .cmcCourseDetailsHeading
+  )>*{min-width:0}
+  .cmcPathwayBody :is(.cmcFormHero,.cmcAdminPageHero) h1{
+    overflow-wrap:break-word;
+  }
+}
+@media print{
+  .cmcPathwayBody .cmcSkipLink{display:none!important}
+}

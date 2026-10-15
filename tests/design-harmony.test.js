@@ -58,4 +58,13 @@ assert.match(css,/\.cmcPathwayBody \.cmcInfoTip::before\{[\s\S]*?width:44px;[\s\
 assert.match(css,/\.cmcPathwayBody \.cmcPlanSidebarToggle\{[\s\S]*?min-height:44px/);
 assert.match(guide,/Color contrast and functional controls/);
 
+
+assert.match(css,/v142: Maintain ink-on-amber contrast/);
+assert.ok(contrast('#151616','#f1b45f')>=4.5,
+  'Primary hover background and ink text must meet WCAG AA');
+assert.match(css,/\.cmcInviteButton:not\(:disabled\):is\(:hover,:focus-visible\)/);
+assert.match(css,/\.authSubmitBtn:not\(:disabled\):is\(:hover,:focus-visible\)/);
+assert.match(css,/\.cmcLeaderAccessForm button:not\(:disabled\):is\(:hover,:focus-visible\)/);
+assert.match(css,/color:var\(--cmcInk\)!important/);
+
 console.log('Shared visual system, responsive navigation, accessible type and touch rules passed.');

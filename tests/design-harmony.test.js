@@ -10,6 +10,13 @@ assert.ok(styled.length>=30,'All user and admin pages must share the stylesheet'
 for(const page of styled){
   assert.match(read(page),/style\.css\?v=139/,page+' must use the latest shared visual rules');
 }
+const formsCss=read('forms.css');
+for(const page of pages){
+  const html=read(page);
+  if(html.includes('forms.css?v='))assert.match(html,/forms\.css\?v=127/,page+' must load the updated shared form styles');
+}
+assert.match(formsCss,/\.cmcFormBody \.cmcFormHero>p:not\(\.cmcEyebrow\)/);
+assert.match(formsCss,/font-size:var\(--cmc-type-body\)/);
 assert.match(css,/--cmc-type-body:16px/);
 assert.match(css,/--cmc-space-4:16px/);
 assert.match(css,/--cmcSand:#fbf0de/);

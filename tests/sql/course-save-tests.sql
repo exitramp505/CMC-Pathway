@@ -8,6 +8,7 @@ declare
   v_lesson uuid := '44444444-4444-4444-8444-444444444444';
   v_lesson2 uuid := '55555555-5555-4555-8555-555555555555';
   v_user uuid := '77777777-7777-4777-8777-777777777777';
+  v_manual uuid := 'aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa';
   v_actor uuid := '88888888-8888-4888-8888-888888888888';
   v_empty uuid := '99999999-9999-4999-8999-999999999999';
   v_course_fields jsonb;
@@ -135,6 +136,17 @@ begin
     raise exception 'course progress delete protection failed';
   end if;
 
+  -- A manually assigned participant must keep their leader assignment even
+  -- when the course becomes automatically available to everyone.
+  insert into public.candidate_profiles(id,email,full_name,account_role)
+  values(v_manual,'manual@example.test','Manual Assignment','participant');
+  insert into public.candidate_assignments(
+    user_id,item_key,candidate_email,candidate_name,item_type,stage_key,status,assignment_source
+  ) values (
+    v_manual,'course:'||v_course::text,'manual@example.test','Manual Assignment',
+    'course','discover','assigned','leader'
+  );
+
   -- Publication and automatic participant assignment must commit together.
   v_patch:=jsonb_build_object(
     'save_version',2,'id',v_course,'expected_revision',2,
@@ -144,8 +156,9 @@ begin
   );
   v_response:=public.cmc_apply_course_patch(v_patch,v_actor);
   if v_response->>'status'<>'published' or v_response->>'save_revision'<>'3'
-    or (select count(*) from public.candidate_assignments where item_key='course:'||v_course::text and user_id=v_user)<>1 then
-    raise exception 'publish or auto-assignment failed';
+    or (select count(*) from public.candidate_assignments where item_key='course:'||v_course::text and user_id=v_user)<>1
+    or (select assignment_source from public.candidate_assignments where item_key='course:'||v_course::text and user_id=v_manual)<>'leader' then
+    raise exception 'publish, auto-assignment, or manual-assignment preservation failed';
   end if;
 
 

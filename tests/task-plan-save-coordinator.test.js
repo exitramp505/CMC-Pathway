@@ -67,7 +67,7 @@ async function run(){
   assert.match(script,/saveCoordinator\.flush\(\)/);
   assert.match(script,/saveCoordinator\.publish\(\)/);
   assert.match(script,/syncSavedIds\(data.sections\|\|\[\],payload.sections\|\|\[\]\)/);
-  assert.match(script,/CMCTaskPlanSave\\.buildIdMap\\(savedSections,submittedSections\\)/);
+  assert.match(script,/CMCTaskPlanSave\.buildIdMap\(savedSections,submittedSections\)/);
   const identifierMap=buildIdMap([
     {id:'section-A',tasks:[{id:'group-A',tasks:[{id:'task-A'}]}]},
     {id:'section-B',tasks:[{id:'task-B'}]}

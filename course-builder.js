@@ -45,7 +45,12 @@
   isHydrating = false;
   updateCourseDetailsSummary();
   refreshBuilderSidebar();
+  // The placeholder module shown for a truly empty existing course has not
+  // been stored. Keep the server snapshot empty so the first edit inserts it.
   lastSavedPayload = currentCourse ? buildPayload(currentCourse.status) : null;
+  if (lastSavedPayload && !(currentCourse.modules || []).length) {
+    lastSavedPayload.modules = [];
+  }
   lastSavedSignature = lastSavedPayload ? JSON.stringify(lastSavedPayload) : '';
   if (!saveBlocked) setAutosaveStatus(currentCourse ? 'All changes saved' : 'Autosave starts when you begin typing');
 
@@ -58,7 +63,8 @@
       const data = await response.json().catch(() => ({}));
       if (!response.ok || !data.ok) throw new Error(data.error || 'Could not load course.');
       currentCourse = data.course;
-      if (!Number.isSafeInteger(Number(currentCourse.save_revision))) {
+      if (currentCourse.save_revision === undefined || currentCourse.save_revision === null ||
+          !Number.isSafeInteger(Number(currentCourse.save_revision))) {
         throw new Error('Safe Course Builder saving is not enabled yet. A database update is required.');
       }
       document.getElementById('builderTitle').textContent = 'Edit the course.';
@@ -532,7 +538,8 @@
         throw error;
       }
       const saved = data.course;
-      if (!saved?.id || !Number.isSafeInteger(Number(saved.save_revision))) {
+      if (!saved?.id || saved.save_revision === undefined || saved.save_revision === null ||
+          !Number.isSafeInteger(Number(saved.save_revision))) {
         throw new Error('The server did not confirm a safe save.');
       }
 

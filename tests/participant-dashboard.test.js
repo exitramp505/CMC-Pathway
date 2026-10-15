@@ -148,6 +148,22 @@ async function run() {
   }
 
   {
+    const manual = {
+      id:'leader-1', user_id:'user-1', item_key:'discover_course',
+      item_type:'course', stage_key:'discover', status:'assigned',
+      assignment_source:'leader', hidden_at:null,
+      progress:0, external_status:'', completed_at:null, created_at:'2026-08-01T12:00:00.000Z'
+    };
+    const state = fixture({ assignments:[manual] });
+    const handler = await loadHandler(state);
+    const response = await handler({ httpMethod:'GET', headers:{ authorization:'Bearer valid-token' } });
+    assert.equal(response.statusCode, 200);
+    assert.equal(state.writes.length, 0, 'Manual assignments should not be rewritten on every dashboard visit');
+    const assignment = JSON.parse(response.body).assignments.find(item => item.item_key === 'discover_course');
+    assert.equal(assignment.assignment_source, 'leader', 'Preserve leader attribution');
+  }
+
+  {
     const state = fixture({ errors:{ cmc_course_enrollments:'Enrollment query failed' } });
     const handler = await loadHandler(state);
     const response = await handler({ httpMethod:'GET', headers:{ authorization:'Bearer valid-token' } });

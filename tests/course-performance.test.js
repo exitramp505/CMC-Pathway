@@ -101,6 +101,18 @@ async function main(){
   assert.ok(Math.max(...contentCalls.map(e=>e.at))-Math.min(...contentCalls.map(e=>e.at))<8,
     'Lesson reads and last-opened updates should run concurrently');
 
+  const { _test:{withTiming} }=require('../netlify/functions/course-admin');
+  const timed=withTiming({statusCode:200,headers:{'Content-Type':'application/json'},body:'{}'},100,245,690);
+  assert.equal(timed.statusCode,200);
+  assert.equal(timed.body,'{}','Instrumentation must not rewrite payloads');
+  assert.equal(timed.headers['Content-Type'],'application/json');
+  assert.equal(timed.headers['Cache-Control'],'private, no-store',
+    'Private Course Admin responses must never be cached');
+  assert.equal(timed.headers['Server-Timing'],'auth;dur=145, operation;dur=445, total;dur=590');
+  const unauthenticated=withTiming({statusCode:401,headers:{},body:'{}'},100,null,175);
+  assert.equal(unauthenticated.headers['Server-Timing'],'total;dur=75');
+  assert.equal(unauthenticated.headers['Cache-Control'],'private, no-store');
+  console.log('Course Admin Server-Timing, privacy, and original response preservation passed.');
   console.log('Course loading security, concurrency and assignment tests passed.');
 }
 main().catch(error=>{console.error(error);process.exitCode=1;});

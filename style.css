@@ -9479,3 +9479,35 @@ body.cmcAuthBody button.oauthBtn:focus-visible .oauthIcon{background:var(--cmcSl
     transition-duration:.01ms!important;
   }
 }
+
+
+/* Keep tiny phase indicators visually subtle, but give fingers a real target. */
+@media(max-width:720px){
+  .cmcPlanPhaseDots{gap:0}
+  .cmcPlanPhaseDots button,
+  .cmcPlanPhaseDots button.active{
+    display:grid;
+    place-items:center;
+    flex:0 0 44px;
+    width:44px;
+    min-width:44px;
+    height:44px;
+    padding:0;
+    border-radius:12px;
+    background:transparent;
+  }
+  .cmcPlanPhaseDots button::after{
+    display:block;
+    width:8px;
+    height:8px;
+    border-radius:999px;
+    background:rgba(41,61,72,.3);
+    content:"";
+  }
+  .cmcPlanPhaseDots button.active::after{width:20px;background:var(--cmcSage)}
+  .cmcPlanPhaseDots button:hover::after,
+  .cmcPlanPhaseDots button:focus-visible::after{background:var(--cmcEmber)}
+  .cmcApplicationMain .applicationActions{
+    bottom:max(12px,env(safe-area-inset-bottom));
+  }
+}

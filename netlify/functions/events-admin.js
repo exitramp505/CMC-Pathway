@@ -62,12 +62,14 @@ async function loadAdminData(supabase, viewer, query) {
   const participantPromise = participantId && isUuid(participantId)
     ? loadParticipant(supabase, viewer, participantId)
     : null;
-  const { data:events, error:eventError } = await eventQuery;
+  const [{ data:events, error:eventError }, participantInfo] = await Promise.all([
+    eventQuery, participantPromise
+  ]);
   if (eventError) throw eventError;
 
   if (participantId) {
     if (!isUuid(participantId)) throw httpError(400, 'A valid participant is required.');
-    const participant = await participantPromise;
+    const participant = participantInfo;
     if (!participant) throw httpError(404, 'Participant not found in your region.');
     const { data:invitations, error } = await supabase
       .from('cmc_event_invitations')

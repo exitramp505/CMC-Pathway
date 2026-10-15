@@ -274,17 +274,7 @@
   function syncSavedIds(savedSections,submittedSections) {
     // Correlate the server response against the submitted snapshot, *not*
     // the live DOM index: a person can add or reorder items during autosave.
-    const idMap=new Map();
-    submittedSections.forEach((submitted,index)=>{
-      const saved=savedSections[index];
-      if(!saved)return;
-      idMap.set(submitted.client_id,saved.id);
-      const submittedTasks=flatten(submitted.tasks||[]);
-      const savedTasks=flatten(saved.tasks||[]);
-      submittedTasks.forEach((task,taskIndex)=>{
-        if(savedTasks[taskIndex])idMap.set(task.client_id,savedTasks[taskIndex].id);
-      });
-    });
+    const idMap=window.CMCTaskPlanSave.buildIdMap(savedSections,submittedSections);
     [...sectionsEl.children].forEach(sectionNode=>{
       sectionNode.dataset.clientId=idMap.get(sectionNode.dataset.clientId)||sectionNode.dataset.clientId;
       sectionNode.querySelectorAll('.cmcTaskPlanTask').forEach(taskNode=>{

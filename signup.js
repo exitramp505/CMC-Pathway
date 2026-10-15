@@ -2,6 +2,10 @@
   const form = document.getElementById('signupForm');
   const msg = document.getElementById('authMessage');
   const googleBtn = document.getElementById('googleSignupBtn');
+  const submitBtn = form?.querySelector('button[type="submit"]');
+  let pending = false;
+  let accountCreated = false;
+  const initialGoogleText = googleBtn?.innerHTML || '';
   const inviteEmail = new URLSearchParams(window.location.search).get('email');
 
   if(form && inviteEmail){
@@ -32,7 +36,22 @@
       : 'profile.html?next=dashboard';
   }
 
+  function setPending(value) {
+    pending = value;
+    if (submitBtn) {
+      submitBtn.disabled = value || accountCreated;
+      submitBtn.textContent = accountCreated ? 'Check your email' : value ? 'Creating account…' : 'Create Account';
+    }
+    if (googleBtn) {
+      googleBtn.disabled = value || accountCreated;
+      googleBtn.setAttribute('aria-busy', String(value));
+    }
+    if (form) form.setAttribute('aria-busy', String(value));
+  }
+
   async function signUpWithGoogle(){
+    if (pending || accountCreated) return;
+    setPending(true);
     setMessage('Redirecting to Google...');
     try{
       const sb = await dcAuth.getSupabaseClient();
@@ -43,6 +62,8 @@
       if(error) throw error;
     }catch(err){
       setMessage(err.message || 'Could not continue with Google.', 'error');
+    }finally{
+      setPending(false);
     }
   }
 
@@ -61,9 +82,11 @@
   if(form){
     form.addEventListener('submit', async e => {
       e.preventDefault();
-      setMessage('Creating account...');
+      if (pending || accountCreated || !form.reportValidity()) return;
       const fd = new FormData(form);
       const email = String(fd.get('email') || '').trim();
+      setPending(true);
+      setMessage('Creating account...');
 
       try{
         const sb = await dcAuth.getSupabaseClient();
@@ -82,9 +105,12 @@
           return;
         }
 
+        accountCreated = true;
         setMessage('Account created. Check your email to confirm your account, then complete your CMC profile.', 'success');
       }catch(err){
         setMessage(err.message || 'Could not create account.', 'error');
+      }finally{
+        setPending(false);
       }
     });
   }

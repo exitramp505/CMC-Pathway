@@ -48,7 +48,9 @@
         }
         if(dirty())setStatus('More changes waiting to save…');
       }
-      if(lastTemplate?.published_at && lastTemplate.status!=='published'){
+      if(lastTemplate?.status==='published'){
+        setStatus(`Published · version ${lastTemplate.version}`);
+      }else if(lastTemplate?.published_at){
         setStatus('Draft saved · Unpublished edits');
       }else{
         setStatus('All changes saved');

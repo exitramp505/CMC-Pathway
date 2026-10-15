@@ -6,26 +6,44 @@ function json(status, body) {
   return { statusCode:status, headers:{'Content-Type':'application/json'}, body:JSON.stringify(body) };
 }
 
+// Expose a coarse breakdown without logging tokens, identifiers or course data.
+// Like the existing course-get Server-Timing, these values describe server work,
+// not browser rendering or network transit.
+function withTiming(response, startedAt, authenticatedAt, completedAt=Date.now()) {
+  const total=Math.max(0,completedAt-startedAt);
+  const timing=authenticatedAt==null
+    ? `total;dur=${total}`
+    : `auth;dur=${Math.max(0,authenticatedAt-startedAt)}, operation;dur=${Math.max(0,completedAt-authenticatedAt)}, total;dur=${total}`;
+  return {
+    ...response,
+    headers:{...response.headers,'Cache-Control':'private, no-store','Server-Timing':timing}
+  };
+}
+
 exports.handler = async (event) => {
+  const startedAt=Date.now();
+  let authenticatedAt=null;
+  const timed=response=>withTiming(response,startedAt,authenticatedAt);
   if (!['GET','POST','DELETE'].includes(event.httpMethod)) {
-    return json(405, { ok:false, error:'Method not allowed.' });
+    return timed(json(405, { ok:false, error:'Method not allowed.' }));
   }
 
   try {
     const { supabase, viewer } = await requireAdmin(event);
+    authenticatedAt=Date.now();
 
     if (event.httpMethod === 'GET') {
       const id = String(event.queryStringParameters?.id || '');
       if (id) {
         const course = await loadCourse(supabase, id);
-        return course ? json(200, { ok:true, course }) : json(404, { ok:false, error:'Course not found.' });
+        return timed(course ? json(200, { ok:true, course }) : json(404, { ok:false, error:'Course not found.' }));
       }
       const { data, error } = await supabase
         .from('cmc_courses')
         .select('id,slug,title,subtitle,description,status,stage_key,access_mode,navigation_mode,estimated_minutes,created_at,updated_at,published_at')
         .order('updated_at', { ascending:false });
       if (error) throw error;
-      return json(200, { ok:true, courses:data || [] });
+      return timed(json(200, { ok:true, courses:data || [] }));
     }
 
     const body = JSON.parse(event.body || '{}');
@@ -59,13 +77,13 @@ exports.handler = async (event) => {
         }
         throw error;
       }
-      return json(200, { ok:true });
+      return timed(json(200, { ok:true }));
     }
 
-    return await saveCoursePatch(supabase, viewer, body);
+    return timed(await saveCoursePatch(supabase, viewer, body));
   } catch (error) {
     const status = error.statusCode || 500;
-    return json(status, { ok:false, error:error.message || 'Could not manage courses.' });
+    return timed(json(status, { ok:false, error:error.message || 'Could not manage courses.' }));
   }
 };
 
@@ -417,3 +435,5 @@ async function syncCourseAccess(supabase, course, previousCourse) {
     .insert(rows);
   if (assignmentError) throw assignmentError;
 }
+
+module.exports._test = { withTiming };

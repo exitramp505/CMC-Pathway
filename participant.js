@@ -56,9 +56,13 @@
     render(data);
     loading.classList.add('hidden');
     content.classList.remove('hidden');
-    await loadManagement();
-    await loadTaskPlans();
-    await loadCoaching();
+    // These panels are independent. Do not delay later panels or interactive
+    // controls while an earlier network request is still loading.
+    void Promise.allSettled([
+      loadManagement(),
+      loadTaskPlans(),
+      loadCoaching()
+    ]);
   } catch (error) {
     showError(error.message || 'Could not load this participant.');
   }

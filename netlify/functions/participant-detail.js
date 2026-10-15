@@ -33,31 +33,27 @@ exports.handler = async (event) => {
       return json(401, { ok:false, error:'Invalid session.' });
     }
 
-    const { data:viewer, error:viewerError } = await supabase
-      .from('candidate_profiles')
-      .select('*')
-      .eq('id', userData.user.id)
-      .maybeSingle();
-    if (viewerError) throw viewerError;
+    // The viewer and requested participant can be fetched together. Region
+    // and role checks below still gate every response and follow-up query.
+    const [viewerResult, participantResult] = await Promise.all([
+      supabase.from('candidate_profiles').select('*').eq('id', userData.user.id).maybeSingle(),
+      supabase.from('candidate_profiles')
+        .select('id,full_name,email,phone,state,region,church_name,ministry_role,pathway_interest,married,current_stage,stage_updated_at,account_role,created_at,updated_at,archived_at')
+        .eq('id', participantId).maybeSingle()
+    ]);
+    if (viewerResult.error) throw viewerResult.error;
+    if (participantResult.error) throw participantResult.error;
+    const viewer = viewerResult.data;
     if (!viewer || !['regional_leader','cmc_admin'].includes(viewer.account_role)) {
       return json(403, { ok:false, error:'Regional leader access is required.' });
     }
-
-    let participantQuery = supabase
-      .from('candidate_profiles')
-      .select('id,full_name,email,phone,state,region,church_name,ministry_role,pathway_interest,married,current_stage,stage_updated_at,account_role,created_at,updated_at,archived_at')
-      .eq('id', participantId);
-
-    if (viewer.account_role === 'regional_leader') {
-      if (!viewer.region) {
-        return json(403, { ok:false, error:'Your leader account does not have a region.' });
-      }
-      participantQuery = participantQuery.eq('region', viewer.region);
+    if (viewer.account_role === 'regional_leader' && !viewer.region) {
+      return json(403, { ok:false, error:'Your leader account does not have a region.' });
     }
-
-    const { data:participantData, error:participantError } = await participantQuery.maybeSingle();
-    if (participantError) throw participantError;
-    const participant = visiblePathwayAccount(viewer, participantData) ? participantData : null;
+    const selected = participantResult.data;
+    const participant = visiblePathwayAccount(viewer, selected)
+      && (viewer.account_role === 'cmc_admin' || viewer.region === selected.region)
+      ? selected : null;
     if (!participant) {
       return json(404, { ok:false, error:'Participant not found in your region.' });
     }

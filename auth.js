@@ -11,7 +11,11 @@ async function getSupabaseClient(){
   const cfg=await res.json().catch(()=>({}));
   if(!res.ok||!cfg.url||!cfg.anonKey) throw new Error('Supabase is not configured. Add SUPABASE_URL and SUPABASE_ANON_KEY in Netlify.');
   return window.supabase.createClient(cfg.url,cfg.anonKey);
- })();
+ })().catch(error=>{
+  // A temporary configuration failure should not block all retries.
+  supabaseClientPromise=null;
+  throw error;
+ });
  return supabaseClientPromise;
 }
 async function getCurrentSession(){const sb=await getSupabaseClient();const {data}=await sb.auth.getSession();return data.session||null}

@@ -12,7 +12,7 @@ for (const file of files) {
   assert.match(html, /name=["']viewport["']/i, file + ' must be mobile responsive');
   assert.match(html, /<title>/i, file + ' must have a title');
   if (html.includes('style.css?v=')) {
-    assert.match(html,/style\.css\?v=137/,file + ' must load the latest shared stylesheet');
+    assert.match(html,/style\.css\?v=138/,file + ' must load the latest shared stylesheet');
   }
   if (html.includes('@supabase/supabase-js@2')) {
     assert.ok(html.includes('@supabase/supabase-js@2.105.4'),file + ' must pin its browser SDK');

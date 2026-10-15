@@ -53,6 +53,7 @@
     if (pending || accountCreated) return;
     setPending(true);
     setMessage('Redirecting to Google...');
+    let redirectStarted = false;
     try{
       const sb = await dcAuth.getSupabaseClient();
       const { error } = await sb.auth.signInWithOAuth({
@@ -60,10 +61,11 @@
         options: { redirectTo: redirectTo() }
       });
       if(error) throw error;
+      redirectStarted = true;
     }catch(err){
       setMessage(err.message || 'Could not continue with Google.', 'error');
     }finally{
-      setPending(false);
+      if (!redirectStarted) setPending(false);
     }
   }
 

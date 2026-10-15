@@ -9663,3 +9663,27 @@ body.cmcAuthBody button.oauthBtn:focus-visible .oauthIcon{background:var(--cmcSl
     content:"";
   }
 }
+
+
+/* v142: Maintain ink-on-amber contrast in hover and keyboard-focus states.
+   An older generic button hover rule forced white text on every button;
+   primary amber controls must retain readable dark text instead. */
+.cmcPathwayBody .cmcInviteButton:not(:disabled):is(:hover,:focus-visible),
+.cmcPathwayBody .cmcAdminPageAction:is(:hover,:focus-visible),
+.cmcPathwayBody .cmcPrimaryButton.cmcAdminPageAction:not(:disabled):is(:hover,:focus-visible),
+.cmcAuthBody.cmcPathwayBody .authSubmitBtn:not(:disabled):is(:hover,:focus-visible),
+.cmcPathwayBody .profileFormPanel .authSubmitBtn:not(:disabled):is(:hover,:focus-visible),
+.cmcPathwayBody .cmcLeaderAccessForm button:not(:disabled):is(:hover,:focus-visible),
+.cmcPathwayBody .cmcAccessDialogActions button:not(.secondary):not(:disabled):is(:hover,:focus-visible){
+  background:#f1b45f!important;
+  color:var(--cmcInk)!important;
+}
+.cmcPathwayBody .cmcInviteButton:focus-visible,
+.cmcPathwayBody .cmcAdminPageAction:focus-visible,
+.cmcAuthBody.cmcPathwayBody .authSubmitBtn:focus-visible,
+.cmcPathwayBody .profileFormPanel .authSubmitBtn:focus-visible,
+.cmcPathwayBody .cmcLeaderAccessForm button:focus-visible,
+.cmcPathwayBody .cmcAccessDialogActions button:not(.secondary):focus-visible{
+  outline:2px solid var(--cmcSage);
+  outline-offset:3px;
+}

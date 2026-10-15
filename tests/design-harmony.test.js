@@ -8,7 +8,7 @@ const pages=fs.readdirSync(path.join(__dirname,'..')).filter(file=>file.endsWith
 const styled=pages.filter(page=>read(page).includes('style.css?v='));
 assert.ok(styled.length>=30,'All user and admin pages must share the stylesheet');
 for(const page of styled){
-  assert.match(read(page),/style\.css\?v=141/,page+' must use the latest shared visual rules');
+  assert.match(read(page),/style\.css\?v=142/,page+' must use the latest shared visual rules');
 }
 const formsCss=read('forms.css');
 for(const page of pages){
@@ -57,5 +57,14 @@ assert.match(css,/\.cmcPathwayBody \.cmcReorderActions button\{[\s\S]*?min-heigh
 assert.match(css,/\.cmcPathwayBody \.cmcInfoTip::before\{[\s\S]*?width:44px;[\s\S]*?height:44px/);
 assert.match(css,/\.cmcPathwayBody \.cmcPlanSidebarToggle\{[\s\S]*?min-height:44px/);
 assert.match(guide,/Color contrast and functional controls/);
+
+
+assert.match(css,/v142: Maintain ink-on-amber contrast/);
+assert.ok(contrast('#151616','#f1b45f')>=4.5,
+  'Primary hover background and ink text must meet WCAG AA');
+assert.match(css,/\.cmcInviteButton:not\(:disabled\):is\(:hover,:focus-visible\)/);
+assert.match(css,/\.authSubmitBtn:not\(:disabled\):is\(:hover,:focus-visible\)/);
+assert.match(css,/\.cmcLeaderAccessForm button:not\(:disabled\):is\(:hover,:focus-visible\)/);
+assert.match(css,/color:var\(--cmcInk\)!important/);
 
 console.log('Shared visual system, responsive navigation, accessible type and touch rules passed.');

@@ -3,17 +3,18 @@ const fs=require('node:fs');
 const path=require('node:path');
 const read=file=>fs.readFileSync(path.join(__dirname,'..',file),'utf8');
 const css=read('style.css');
-const guide=read('TYPOGRAPHY-GUIDE.md');
+const guide=read('STYLE-GUIDE.md');
+const legacyGuide=read('TYPOGRAPHY-GUIDE.md');
 const pages=fs.readdirSync(path.join(__dirname,'..')).filter(file=>file.endsWith('.html'));
 const styled=pages.filter(page=>read(page).includes('style.css?v='));
 assert.ok(styled.length>=30,'All user and admin pages must share the stylesheet');
 for(const page of styled){
-  assert.match(read(page),/style\.css\?v=142/,page+' must use the latest shared visual rules');
+  assert.match(read(page),/style\.css\?v=143/,page+' must use the latest shared visual rules');
 }
 const formsCss=read('forms.css');
 for(const page of pages){
   const html=read(page);
-  if(html.includes('forms.css?v='))assert.match(html,/forms\.css\?v=127/,page+' must load the updated shared form styles');
+  if(html.includes('forms.css?v='))assert.match(html,/forms\.css\?v=128/,page+' must load the updated shared form styles');
 }
 assert.match(formsCss,/\.cmcFormBody \.cmcFormHero>p:not\(\.cmcEyebrow\)/);
 assert.match(formsCss,/font-size:var\(--cmc-type-body\)/);
@@ -30,9 +31,9 @@ assert.match(css,/\.cmcReviewDialogClose\{min-width:44px;min-height:44px\}/);
 assert.match(css,/\.cmcPlanPhaseDots button\.active\{[\s\S]*?width:44px/);
 assert.match(css,/env\(safe-area-inset-bottom\)/);
 assert.match(css,/@media\(prefers-reduced-motion:reduce\)/);
-assert.match(guide,/44 × 44px touch target/);
+assert.match(guide,/44×44px/);
 assert.match(guide,/tablets?/i);
-assert.match(guide,/Inputs, selects, and textareas should use Body/);
+assert.match(guide,/16px minimum on iPhone/);
 for(const page of ['login.html','signup.html','course.html','participant.html','leader.html','events.html','course-builder.html','task-plan-builder.html']){
   assert.match(read(page),/cmcPathwayBody/,page+' must use the shared design system');
 }
@@ -56,7 +57,8 @@ assert.match(css,/\.cmcPathwayBody \.cmcPlanOutlinePhase strong\{[\s\S]*?font-si
 assert.match(css,/\.cmcPathwayBody \.cmcReorderActions button\{[\s\S]*?min-height:44px/);
 assert.match(css,/\.cmcPathwayBody \.cmcInfoTip::before\{[\s\S]*?width:44px;[\s\S]*?height:44px/);
 assert.match(css,/\.cmcPathwayBody \.cmcPlanSidebarToggle\{[\s\S]*?min-height:44px/);
-assert.match(guide,/Color contrast and functional controls/);
+assert.match(guide,/Contrast rule/);
+assert.match(legacyGuide,/STYLE-GUIDE\.md/);
 
 
 assert.match(css,/v142: Maintain ink-on-amber contrast/);
@@ -66,5 +68,19 @@ assert.match(css,/\.cmcInviteButton:not\(:disabled\):is\(:hover,:focus-visible\)
 assert.match(css,/\.authSubmitBtn:not\(:disabled\):is\(:hover,:focus-visible\)/);
 assert.match(css,/\.cmcLeaderAccessForm button:not\(:disabled\):is\(:hover,:focus-visible\)/);
 assert.match(css,/color:var\(--cmcInk\)!important/);
+
+
+assert.match(guide,/single source of truth/i);
+assert.match(guide,/Page-family reference/);
+assert.match(guide,/Course reading/);
+assert.match(guide,/200% text zoom/);
+assert.match(css,/--cmcRadiusControl:13px/);
+assert.match(css,/--cmcTouchTarget:44px/);
+assert.match(css,/--cmcSageText:#236f68/);
+assert.match(css,/--cmcFocusRing:2px solid var\(--cmcSage\)/);
+assert.ok(contrast('#151616','#4da79c')>=4.5,
+  'Ink on bright sage backgrounds must meet normal-text contrast');
+assert.match(css,/\.cmcPathwayBody \.cmcSkipLink\{/);
+assert.match(css,/\.cmcPathwayBody \.cmcSkipLink:focus-visible/);
 
 console.log('Shared visual system, responsive navigation, accessible type and touch rules passed.');

@@ -9,7 +9,7 @@ const script=fs.readFileSync(path.join(root,'task-plan-builder.js'),'utf8');
 const html=fs.readFileSync(path.join(root,'task-plan-builder.html'),'utf8');
 const browser={window:{}};
 vm.runInNewContext(source,browser);
-const create=browser.window.CMCTaskPlanSave.create;
+const {create,buildIdMap}=browser.window.CMCTaskPlanSave;
 
 function deferred(){
   let resolve,reject;
@@ -67,6 +67,22 @@ async function run(){
   assert.match(script,/saveCoordinator\.flush\(\)/);
   assert.match(script,/saveCoordinator\.publish\(\)/);
   assert.match(script,/syncSavedIds\(data.sections\|\|\[\],payload.sections\|\|\[\]\)/);
+  assert.match(script,/CMCTaskPlanSave\\.buildIdMap\\(savedSections,submittedSections\\)/);
+  const identifierMap=buildIdMap([
+    {id:'section-A',tasks:[{id:'group-A',tasks:[{id:'task-A'}]}]},
+    {id:'section-B',tasks:[{id:'task-B'}]}
+  ],[
+    {client_id:'local-section-A',tasks:[{client_id:'local-group-A',tasks:[{client_id:'local-task-A'}]}]},
+    {client_id:'local-section-B',tasks:[{client_id:'local-task-B'}]}
+  ]);
+  // Mapping is independent of the live DOM order; users can reorder
+  // sections and tasks while a network request is still running.
+  assert.equal(identifierMap.get('local-section-A'),'section-A');
+  assert.equal(identifierMap.get('local-section-B'),'section-B');
+  assert.equal(identifierMap.get('local-group-A'),'group-A');
+  assert.equal(identifierMap.get('local-task-A'),'task-A');
+  assert.equal(identifierMap.get('local-task-B'),'task-B');
+  assert.equal(identifierMap.has('local-added-after-request'),false);
   assert.doesNotMatch(script,/if \(saving\) \{ queued = true; return current; \}/,
     'The old non-awaited save-in-progress shortcut must stay removed.');
 

@@ -9511,3 +9511,55 @@ body.cmcAuthBody button.oauthBtn:focus-visible .oauthIcon{background:var(--cmcSl
     bottom:max(12px,env(safe-area-inset-bottom));
   }
 }
+
+
+/* v140: Final small-type fixes after the site-wide mobile harmony release.
+   Preserve the existing layouts, palette and tablet menu behavior. */
+.cmcPathwayBody .cmcParticipantRow .cmcPerson strong{
+  font-size:var(--cmc-type-body);
+  line-height:1.35;
+}
+.cmcPathwayBody .cmcParticipantStats span,
+.cmcPathwayBody .cmcParticipantStats small{
+  font-size:var(--cmc-type-label);
+  line-height:1.45;
+  letter-spacing:.025em;
+}
+.cmcPathwayBody .cmcActionPill{
+  font-size:var(--cmc-type-label);
+  line-height:1.25;
+}
+.cmcPathwayBody .cmcBackLink{
+  display:inline-flex;
+  min-height:44px;
+  align-items:center;
+  font-size:var(--cmc-type-body-sm);
+}
+.cmcPathwayBody .cmcRowAction{
+  min-height:44px;
+  font-size:var(--cmc-type-body-sm);
+}
+.cmcPathwayBody .cmcBuilderSettings label>span,
+.cmcPathwayBody .cmcModuleFields label>span,
+.cmcPathwayBody .cmcLessonFields label>span,
+.cmcPathwayBody .cmcEventFieldGrid label,
+.cmcPathwayBody .cmcProfileFieldGrid label{
+  font-size:var(--cmc-type-body-sm);
+  letter-spacing:.025em;
+}
+.cmcAuthBody .cmcPasswordToggle{
+  min-height:44px;
+  font-size:var(--cmc-type-body-sm);
+}
+@media(max-width:720px){
+  .cmcPathwayBody .cmcParticipantIdentity h1,
+  .cmcPathwayBody .cmcWelcome h1,
+  .cmcPathwayBody .cmcAdminPageHero h1{
+    overflow-wrap:break-word;
+  }
+  .cmcPathwayBody .cmcParticipantInfoCard dd,
+  .cmcPathwayBody .cmcParticipantRow .cmcPerson strong{
+    overflow-wrap:anywhere;
+    min-width:0;
+  }
+}

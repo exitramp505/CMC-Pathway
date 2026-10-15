@@ -18,6 +18,7 @@
   let lastSavedPayload = null;
   let saveBlocked = false;
   let publishQueued = false;
+  let retryStatus = 'draft';
   let autosaveTimer = 0;
   let saveInFlight = false;
   let autosaveQueued = false;
@@ -30,6 +31,10 @@
   document.getElementById('collapseAllBtn').addEventListener('click', toggleAllModules);
   document.getElementById('courseDetailsToggle').addEventListener('click', toggleCourseDetails);
   document.getElementById('publishBtn').addEventListener('click', () => save('published'));
+  document.getElementById('retrySaveBtn').addEventListener('click', () => {
+    document.getElementById('retrySaveBtn').classList.add('hidden');
+    save(retryStatus);
+  });
   document.getElementById('reloadCourseBtn').addEventListener('click', () => {
     if (window.confirm('Reload the latest saved course? Unsaved edits in this tab will be lost. Copy important text before continuing.')) {
       window.location.reload();
@@ -549,6 +554,7 @@
       courseId = currentCourse.id;
       lastSavedPayload = payload;
       lastSavedSignature = JSON.stringify(payload);
+      document.getElementById('retrySaveBtn').classList.add('hidden');
       saveEditorSnapshot(payload);
       const slugElement = document.getElementById('courseSlug');
       if (!slugElement.value.trim() || slugElement.value.trim() === payload.slug) {
@@ -571,10 +577,21 @@
     } catch (error) {
       const conflict = error.statusCode === 409;
       const unready = error.statusCode === 503 || error.statusCode === 428;
+      retryStatus = status;
       if (conflict || unready) {
         saveBlocked = true;
         clearTimeout(autosaveTimer);
-        if (conflict) document.getElementById('reloadCourseBtn').classList.remove('hidden');
+        document.getElementById('retrySaveBtn').classList.add('hidden');
+        if (conflict) {
+          // A new course might have been committed but its HTTP response lost.
+          // Keep the generated ID in the URL so reloading can retrieve it.
+          if (!currentCourse) {
+            history.replaceState(null, '', 'course-builder.html?id=' + encodeURIComponent(draftCourseId));
+          }
+          document.getElementById('reloadCourseBtn').classList.remove('hidden');
+        }
+      } else {
+        document.getElementById('retrySaveBtn').classList.remove('hidden');
       }
       const message = error.message || 'Save failed. Your unsaved edits remain in this browser.';
       setAutosaveStatus(message, true);

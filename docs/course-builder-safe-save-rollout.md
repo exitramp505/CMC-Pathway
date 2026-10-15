@@ -13,7 +13,7 @@ This upgrade protects existing courses and participant data. It never reseeds Di
 
 ## Enable the transactional save function
 
-1. In the **correct** Supabase project's SQL Editor, review and run `db/course_builder_safe_save.sql`. The script adds only the `save_revision` column (default 0) and a service-role-only RPC. It does **not** delete, reseed, or rewrite course records.
+1. In the **correct** Supabase project's SQL Editor, review and run `db/course_builder_safe_save.sql`. The script adds only the `save_revision` column (default 0) and two service-role-only transactional RPCs (safe patch and safe deletion). It does **not** delete, reseed, or rewrite course records.
 2. Verify the function exists and that only the service role can execute it. Also check Supabase database advisors.
 3. Verify current Discover 101 module, lesson, and participant progress counts before and after the migration. They must match.
 4. Publish the latest `main` commit **only after** the function has been installed. Existing browser sessions may need to refresh.
@@ -26,7 +26,7 @@ This upgrade protects existing courses and participant data. It never reseeds Di
 
 - `course-save-patch.js`: creates changed-only patches; unchanged lesson content is not transmitted.
 - `netlify/functions/course-admin.js`: validates input and authorizes the admin, then calls `cmc_apply_course_patch`.
-- `db/course_builder_safe_save.sql`: PostgreSQL transaction, course-level revision lock, rollback on any invalid row, and participant-progress deletion guards.
+- `db/course_builder_safe_save.sql`: PostgreSQL transactions for saving and safe deletion, course-level revision locking, rollback on errors, and participant-progress deletion guards.
 - `course-builder.js`: keeps a known-saved snapshot, tracks revisions, serializes saves, detects conflicts, and avoids false success messages.
 - `tests/course-saving.test.js`: changed-only patch tests.
 - `tests/sql/course-save-tests.sql`: tested against an ephemeral PostgreSQL 17 service via GitHub Actions.

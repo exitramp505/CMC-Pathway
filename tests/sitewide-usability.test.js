@@ -12,12 +12,18 @@ for (const file of files) {
   assert.match(html, /name=["']viewport["']/i, file + ' must be mobile responsive');
   assert.match(html, /<title>/i, file + ' must have a title');
   if (html.includes('style.css?v=')) {
-    assert.match(html,/style\.css\?v=137/,file + ' must load the latest shared stylesheet');
+    assert.match(html,/style\.css\?v=138/,file + ' must load the latest shared stylesheet');
+    assert.match(html,/rel="icon" type="image\/svg\+xml" href="cmc-logo-mark\.svg"/,file + ' must provide a favicon');
   }
   if (html.includes('@supabase/supabase-js@2')) {
     assert.ok(html.includes('@supabase/supabase-js@2.105.4'),file + ' must pin its browser SDK');
   }
 }
+const css = read('style.css');
+assert.match(css, /\.cmcPathwayBody \.cmcBuilderSettings label>span/);
+assert.match(css, /\.cmcPathwayBody \.cmcEventFieldGrid label/);
+assert.match(css, /font-size:13px/);
+assert.match(css, /font-size:16px/);
 assert.match(read('website.html'),/target="_blank" rel="noopener noreferrer"/);
 assert.match(read('course.js'),/<h1 class="cmcLessonHeading"/);
 assert.match(read('login.html'),/aria-live="polite"/);

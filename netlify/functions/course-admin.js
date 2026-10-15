@@ -31,30 +31,34 @@ exports.handler = async (event) => {
     const body = JSON.parse(event.body || '{}');
 
     if (event.httpMethod === 'DELETE') {
-      const id = String(body.id || '');
-      if (!id) return json(400, { ok:false, error:'Course id is required.' });
-      const course = await loadCourse(supabase, id);
-      if (course) {
-        // Deleting a parent course cascades into progress and responses. Never
-        // destroy participant work through the administrative delete action.
-        const activity = await Promise.all([
-          supabase.from('cmc_course_enrollments').select('id', { count:'exact', head:true }).eq('course_id', id),
-          supabase.from('cmc_course_lesson_progress').select('id', { count:'exact', head:true }).eq('course_id', id),
-          supabase.from('cmc_course_lesson_responses').select('id', { count:'exact', head:true }).eq('course_id', id)
-        ]);
-        const firstError = activity.find(item => item.error)?.error;
-        if (firstError) throw firstError;
-        if (activity.some(item => (item.count || 0) > 0)) {
-          throw httpError(409, 'This course contains participant enrollments, progress, or responses and cannot be deleted.');
-        }
-        const { error:assignmentError } = await supabase
-          .from('candidate_assignments')
-          .delete()
-          .eq('item_key', assignmentKey(course));
-        if (assignmentError) throw assignmentError;
+      const id = requireUuid(body.id, 'Course ID');
+      const { data:course, error:lookupError } = await supabase
+        .from('cmc_courses').select('id,save_revision').eq('id', id).maybeSingle();
+      if (lookupError) throw lookupError;
+      if (!course) throw httpError(404, 'Course not found.');
+      if (course.save_revision === undefined || course.save_revision === null) {
+        throw httpError(503, 'Safe course deletion is not configured. A database update is required.');
       }
-      const { error } = await supabase.from('cmc_courses').delete().eq('id', id);
-      if (error) throw error;
+      const { error } = await supabase.rpc('cmc_delete_course_safely', {
+        p_course_id:id,
+        p_expected_revision:course.save_revision
+      });
+      if (error) {
+        const message = String(error.message || '');
+        if (message.includes('CMC_COURSE_HAS_PROGRESS')) {
+          throw httpError(409, 'This course contains participant enrollments, progress, or responses and cannot be deleted. Unpublish it instead.');
+        }
+        if (message.includes('CMC_COURSE_CONFLICT')) {
+          throw httpError(409, 'This course changed while deletion was being requested. Reload before trying again.');
+        }
+        if (message.includes('CMC_COURSE_NOT_FOUND')) {
+          throw httpError(404, 'Course not found.');
+        }
+        if (error.code === 'PGRST202' || /could not find.*cmc_delete_course_safely|does not exist/i.test(message)) {
+          throw httpError(503, 'Safe course deletion is not enabled in Supabase yet.');
+        }
+        throw error;
+      }
       return json(200, { ok:true });
     }
 

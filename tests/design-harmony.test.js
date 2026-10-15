@@ -20,6 +20,8 @@ assert.match(css,/\.cmcLeaderStats span,[\s\S]*?font-size:var\(--cmc-type-label\
 assert.match(css,/\.cmcWebsiteTabs button,[\s\S]*?scroll-snap-align:start/);
 assert.match(css,/\.cmcLessonHeader \.cmcLessonSummary\{[\s\S]*?font-size:var\(--cmc-type-body\)/);
 assert.match(css,/\.cmcReviewDialogClose\{min-width:44px;min-height:44px\}/);
+assert.match(css,/\.cmcPlanPhaseDots button\.active\{[\s\S]*?width:44px/);
+assert.match(css,/env\(safe-area-inset-bottom\)/);
 assert.match(css,/@media\(prefers-reduced-motion:reduce\)/);
 assert.match(guide,/44 × 44px touch target/);
 assert.match(guide,/tablets?/i);

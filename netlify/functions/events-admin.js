@@ -59,11 +59,23 @@ async function loadAdminData(supabase, viewer, query) {
   if (viewer.account_role === 'regional_leader') {
     eventQuery = eventQuery.eq('region', viewer.region);
   }
+  let participantQuery = null;
+  if (!participantId) {
+    participantQuery = supabase
+      .from('candidate_profiles')
+      .select('id,full_name,email,state,region,church_name,current_stage')
+      .eq('account_role', 'participant')
+      .is('archived_at', null)
+      .order('full_name');
+    if (viewer.account_role === 'regional_leader') {
+      participantQuery = participantQuery.eq('region', viewer.region);
+    }
+    }
   const participantPromise = participantId && isUuid(participantId)
     ? loadParticipant(supabase, viewer, participantId)
     : null;
-  const [{ data:events, error:eventError }, participantInfo] = await Promise.all([
-    eventQuery, participantPromise
+  const [{ data:events, error:eventError }, participantInfo, participantResult] = await Promise.all([
+    eventQuery, participantPromise, participantQuery
   ]);
   if (eventError) throw eventError;
 
@@ -86,16 +98,7 @@ async function loadAdminData(supabase, viewer, query) {
     return { ok:true, viewer, participant, events:availableEvents };
   }
 
-  let participantQuery = supabase
-    .from('candidate_profiles')
-    .select('id,full_name,email,state,region,church_name,current_stage')
-    .eq('account_role', 'participant')
-    .is('archived_at', null)
-    .order('full_name');
-  if (viewer.account_role === 'regional_leader') {
-    participantQuery = participantQuery.eq('region', viewer.region);
-  }
-  const { data:participants, error:participantError } = await participantQuery;
+  const { data:participants, error:participantError } = participantResult;
   if (participantError) throw participantError;
 
   const eventIds = (events || []).map(item => item.id);

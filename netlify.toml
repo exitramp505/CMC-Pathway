@@ -1,3 +1,7 @@
 [build]
   publish = "."
   functions = "netlify/functions"
+
+# Limited bundler experiment: no changes to authenticated or write functions.
+[functions."public-site-content"]
+  node_bundler = "esbuild"

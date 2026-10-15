@@ -113,6 +113,17 @@ Do not stretch ordinary paragraphs across the full width of a large desktop card
 - Page and Display roles scale through their approved `clamp()` values. Other roles remain stable across breakpoints.
 - A mobile layout should never require horizontal scrolling to preserve a heading.
 
+## Mobile usability and interaction
+
+- Apply the same type roles across participant and administration screens; content may differ, but the CMC visual identity should not.
+- Interactive navigation and buttons use at least Small body (14px), including the mobile menu. Form labels use Small body (14px), and form inputs use Body (16px).
+- Touch targets should be at least 44 × 44px; 48px is preferred for primary mobile navigation. If an icon is visually smaller, extend its clickable area.
+- Show a clearly visible keyboard focus indicator on links, buttons, and form inputs; do not rely on color alone to communicate focus or status.
+- Aim for at least 4.5:1 contrast for normal reading text and 3:1 for large text and meaningful interface boundaries. Do not reduce important labels to translucent decorative text.
+- At 320px, 390px, 720px, and standard desktop widths, content should reflow without a whole-page horizontal scrollbar. Long names, emails, and headings should wrap where necessary.
+- On iOS, keep text inputs at 16px or larger to avoid unwanted Safari zoom when a field gains focus.
+- Dense tables and tools can use localized scrolling when necessary, but primary page navigation and the next action must remain easy to find.
+
 ## Duplication and hierarchy
 
 Do not stack an eyebrow and heading that repeat the same word or idea. For example, use one heading that says “Assigned work,” not an eyebrow saying “Assigned work” followed by a heading saying “Assigned.” Eyebrows should add context, not repeat it.

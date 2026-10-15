@@ -9295,3 +9295,73 @@ body.cmcAuthBody button.oauthBtn:focus-visible .oauthIcon{background:var(--cmcSl
 }
 
 .profilePageMain .cmcProfileSetupActions[hidden]{display:none!important}
+
+
+/* Readability pass: small interface labels should not require zooming.
+   Scope these adjustments to CMC Pathway screens and leave reading-page
+   headings, brand proportions, and established color treatments unchanged. */
+.cmcPathwayBody .cmcBuilderSettings label>span,
+.cmcPathwayBody .cmcModuleFields label>span,
+.cmcPathwayBody .cmcLessonFields label>span,
+.cmcPathwayBody .cmcLeaderAccessForm label span,
+.cmcPathwayBody .cmcRichLabel,
+.cmcPathwayBody .cmcLessonFormats legend,
+.cmcPathwayBody .cmcBuilderStatusBox>span,
+.cmcPathwayBody .cmcReflectionResponse>span{
+  font-size:13px;
+  line-height:1.4;
+  letter-spacing:.03em;
+}
+.cmcPathwayBody .cmcAutosaveStatus,
+.cmcPathwayBody .cmcAdminMessage,
+.cmcPathwayBody .cmcBuilderSettings label>small,
+.cmcPathwayBody .cmcLessonFormats>small,
+.cmcPathwayBody .cmcRichField>small,
+.cmcPathwayBody .cmcBuilderStatusBox p,
+.cmcPathwayBody .cmcEditorToggle small,
+.cmcPathwayBody .cmcCourseDetailsHeading .cmcEditorToggle small{
+  font-size:12px;
+  line-height:1.6;
+}
+.cmcPathwayBody .cmcModuleHandle,
+.cmcPathwayBody .cmcLessonToggle [data-lesson-number],
+.cmcPathwayBody .cmcLessonFormats legend small,
+.cmcPathwayBody .cmcCourseCardTop>span:last-child{
+  font-size:11px;
+}
+.cmcPathwayBody .cmcLessonFormatChoices label>span,
+.cmcPathwayBody .cmcCourseCardActions a,
+.cmcPathwayBody .cmcAssignmentCourseCard small,
+.cmcPathwayBody .cmcCourseOutline section h2,
+.cmcPathwayBody .cmcBuilderOutline button strong,
+.cmcPathwayBody .cmcCourseOutline button strong{
+  font-size:13px;
+}
+.cmcPathwayBody .cmcParticipantInfoCard dt,
+.cmcPathwayBody .cmcParticipantStats small,
+.cmcPathwayBody .cmcLeaderStats small,
+.cmcPathwayBody .cmcPerson small,
+.cmcPathwayBody .cmcPersonMetric span,
+.cmcPathwayBody .cmcDetailEmpty{
+  font-size:12px;
+}
+.cmcPathwayBody .cmcParticipantInfoCard dd,
+.cmcPathwayBody .cmcCurrentLeaderList article small{
+  font-size:14px;
+  line-height:1.55;
+}
+@media(max-width:720px){
+  /* At least 16px keeps iOS from zooming in whenever a user enters text. */
+  .cmcPathwayBody input:is([type="text"],[type="email"],[type="tel"],[type="password"],[type="url"],[type="number"]),
+  .cmcPathwayBody input:not([type]),
+  .cmcPathwayBody textarea,
+  .cmcPathwayBody select{
+    font-size:16px;
+  }
+  .cmcPathwayBody .cmcBuilderSettings label>span,
+  .cmcPathwayBody .cmcModuleFields label>span,
+  .cmcPathwayBody .cmcLessonFields label>span,
+  .cmcPathwayBody .cmcLeaderAccessForm label span{
+    font-size:13px;
+  }
+}

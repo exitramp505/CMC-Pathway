@@ -8,7 +8,7 @@
   const session=localPreview?null:await sb.auth.getSession();
   const token=session?.data?.session?.access_token||'';
   const editor=document.getElementById('websiteEditor');
-  const state={active:'team',content:{},dirty:false};
+  const state={active:'team',content:{},dirty:false,saving:false};
   const META={
     team:['ABOUT PAGE','CMC team','Manage the people shown on the public About page.'],
     resources:['RESOURCES PAGE','Resources','Manage the resources and featured introduction on the public Resources page.'],
@@ -17,7 +17,11 @@
   };
   document.querySelectorAll('[data-site-tab]').forEach(button=>button.addEventListener('click',()=>selectTab(button.dataset.siteTab)));
   document.getElementById('saveWebsiteDraft').addEventListener('click',()=>save('draft'));
-  document.getElementById('publishWebsiteSection').addEventListener('click',()=>save('publish'));
+  document.getElementById('publishWebsiteSection').addEventListener('click',()=>{
+    if(state.saving)return;
+    if(!window.confirm(`Publish ${META[state.active][1]} changes to the public CMC website?`))return;
+    return save('publish');
+  });
   editor.addEventListener('input',()=>{state.dirty=true;setStatus('Unsaved changes')});
   editor.addEventListener('click',handleEditorClick);
   window.addEventListener('beforeunload',event=>{if(state.dirty){event.preventDefault();event.returnValue=''}});
@@ -34,6 +38,8 @@
     }catch(error){message(error.message,true)}
   }
   function selectTab(key){
+    if(key===state.active)return;
+    if(state.saving){message('Please wait for the current save to finish before switching sections.');return}
     if(state.dirty&&!window.confirm('Discard unsaved changes in this section?'))return;
     state.active=key;state.dirty=false;
     document.querySelectorAll('[data-site-tab]').forEach(button=>button.classList.toggle('active',button.dataset.siteTab===key));
@@ -93,10 +99,54 @@
     try{const encoded=await fileData(file);const response=await fetch('/.netlify/functions/site-media-upload',{method:'POST',headers:{'Content-Type':'application/json',Authorization:`Bearer ${token}`},body:JSON.stringify({content_type:file.type,data:encoded})});const result=await response.json().catch(()=>({}));if(!response.ok||!result.ok)throw new Error(result.error||'Upload failed.');data.team[Number(input.dataset.uploadIndex)].image=result.url;storeAndRerender(data);message('Picture uploaded. Publish the Team section when ready.')}catch(error){message(error.message,true)}finally{input.disabled=false}
   }))}
   async function save(action){
-    const data=currentData();const button=document.getElementById(action==='publish'?'publishWebsiteSection':'saveWebsiteDraft');button.disabled=true;
+    if(state.saving)return;
+    const key=state.active;
+    const data=currentData();
+    const submitted=JSON.stringify(data);
+    state.saving=true;
+    document.getElementById('saveWebsiteDraft').disabled=true;
+    document.getElementById('publishWebsiteSection').disabled=true;
     message(action==='publish'?'Publishing changes…':'Saving draft…');
-    if(localPreview){state.content[state.active]={draft_data:clone(data),published_data:action==='publish'?clone(data):state.content[state.active]?.published_data||{},published_at:action==='publish'?new Date().toISOString():state.content[state.active]?.published_at};state.dirty=false;render();message(action==='publish'?'Preview published locally. Nothing was sent to the live website.':'Preview draft saved locally.');button.disabled=false;return}
-    try{const response=await fetch('/.netlify/functions/site-content-admin',{method:'POST',headers:{'Content-Type':'application/json',Authorization:`Bearer ${token}`},body:JSON.stringify({content_key:state.active,data,action})});const result=await response.json().catch(()=>({}));if(!response.ok||!result.ok)throw new Error(result.error||'Could not save changes.');state.content[state.active]=result.item;state.dirty=false;setStatus(savedStatus(result.item));document.getElementById('websitePublishedAt').textContent=result.item.published_at?`Published ${formatDate(result.item.published_at)}`:'Not published yet';message(action==='publish'?'Published. The public website will update within a few minutes.':'Draft saved.')}catch(error){message(error.message,true)}finally{button.disabled=false}
+    try{
+      if(localPreview){
+        const previous=state.content[key];
+        state.content[key]={
+          draft_data:clone(data),
+          published_data:action==='publish'?clone(data):previous?.published_data||{},
+          published_at:action==='publish'?new Date().toISOString():previous?.published_at
+        };
+        state.dirty=editor.dataset.value!==submitted;
+        if(!state.dirty)render();
+        else setStatus('Unsaved changes');
+        message(action==='publish'?'Preview published locally. Nothing was sent to the live website.':'Preview draft saved locally.');
+        return;
+      }
+      const response=await fetch('/.netlify/functions/site-content-admin',{
+        method:'POST',
+        headers:{'Content-Type':'application/json',Authorization:`Bearer ${token}`},
+        body:JSON.stringify({content_key:key,data,action})
+      });
+      const result=await response.json().catch(()=>({}));
+      if(!response.ok||!result.ok)throw new Error(result.error||'Could not save changes.');
+      state.content[key]=result.item;
+      // Keep edits typed while a request was running. A successful response
+      // acknowledges the submitted snapshot, not subsequent unsaved input.
+      const hasNewEdits=editor.dataset.value!==submitted;
+      state.dirty=hasNewEdits;
+      setStatus(hasNewEdits?'Unsaved changes':savedStatus(result.item));
+      document.getElementById('websitePublishedAt').textContent=result.item.published_at
+        ?`Published ${formatDate(result.item.published_at)}`:'Not published yet';
+      message(action==='publish'
+        ? (hasNewEdits?'Earlier changes published. New edits are still unsaved.':'Published. The public website will update within a few minutes.')
+        : (hasNewEdits?'Earlier draft saved. New edits are still unsaved.':'Draft saved.'));
+    }catch(error){
+      if(state.dirty)setStatus('Unsaved changes');
+      message(error.message||'Could not save website content.',true);
+    }finally{
+      state.saving=false;
+      document.getElementById('saveWebsiteDraft').disabled=false;
+      document.getElementById('publishWebsiteSection').disabled=false;
+    }
   }
   function currentData(){try{return JSON.parse(editor.dataset.value||'{}')}catch{return defaults(state.active)}}
   function sync(data){editor.dataset.value=JSON.stringify(data);state.dirty=true;setStatus('Unsaved changes')}

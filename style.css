@@ -9563,3 +9563,103 @@ body.cmcAuthBody button.oauthBtn:focus-visible .oauthIcon{background:var(--cmcSl
     min-width:0;
   }
 }
+
+
+/* v141: finishing touches to the existing CMC design system.
+   High-contrast eyebrow ink is for light panels; the original amber remains
+   the brand accent and stays on navy/dark surfaces. */
+.cmcPathwayBody{--cmcEmberText:#935312}
+.cmcPathwayBody :is(
+  .cmcWelcome,
+  .cmcAdminPageHero,
+  .cmcUtilityCard,
+  .cmcRegionCard,
+  .cmcReviewDialogCard,
+  .cmcCourseDetailsHeading,
+  .cmcModuleBuilderHeading,
+  .cmcWebsiteSectionHeader,
+  .cmcPeopleHeading
+) .cmcEyebrow{
+  color:var(--cmcEmberText);
+}
+/* Make essential course and task-plan navigation readable at a glance. */
+.cmcPathwayBody .cmcPlanOutlinePhase{
+  grid-template-columns:32px minmax(0,1fr) auto;
+}
+.cmcPathwayBody .cmcPlanOutlinePhase strong{
+  font-size:var(--cmc-type-body-sm);
+  line-height:1.45;
+  white-space:normal;
+  overflow-wrap:break-word;
+}
+.cmcPathwayBody .cmcPlanOutlinePhase>span,
+.cmcPathwayBody .cmcPlanOutlinePhase small{
+  font-size:var(--cmc-type-label);
+  line-height:1.45;
+}
+.cmcPathwayBody .cmcPlanRailStatus span,
+.cmcPathwayBody .cmcCourseMain.sidebar-collapsed .cmcCourseRailStatus span{
+  color:rgba(251,240,222,.9);
+  font-size:var(--cmc-type-micro);
+  letter-spacing:0;
+}
+.cmcPathwayBody .cmcModuleHandle,
+.cmcPathwayBody .cmcLessonToggle [data-lesson-number]{
+  font-size:var(--cmc-type-label);
+}
+.cmcPathwayBody .cmcCourseCardActions a{
+  display:inline-flex;
+  min-height:44px;
+  align-items:center;
+  font-size:var(--cmc-type-body-sm);
+  line-height:1.4;
+  text-underline-offset:3px;
+}
+.cmcPathwayBody .cmcCourseCardActions a:focus-visible,
+.cmcPathwayBody .cmcReorderActions button:focus-visible,
+.cmcPathwayBody .cmcInfoTip:focus-visible{
+  outline:2px solid var(--cmcSage);
+  outline-offset:3px;
+}
+.cmcPathwayBody .cmcPlanSidebarToggle{
+  min-width:44px;
+  min-height:44px;
+}
+.cmcPathwayBody .cmcPlanSidebarToggle:focus-visible{
+  outline:2px solid var(--cmcEmber);
+  outline-offset:3px;
+}
+.cmcPathwayBody .cmcBackToPathway{
+  display:inline-flex;
+  min-height:44px;
+  align-items:center;
+  font-size:var(--cmc-type-body-sm);
+  line-height:1.4;
+}
+@media(max-width:720px){
+  .cmcPathwayBody .cmcReorderActions button{
+    min-width:44px;
+    min-height:44px;
+    height:44px;
+    font-size:var(--cmc-type-body-sm);
+  }
+  .cmcPathwayBody .cmcCourseMain.sidebar-collapsed .cmcCourseSidebarToggle{
+    min-width:44px;
+    min-height:44px;
+  }
+  .cmcPathwayBody .cmcCourseMain.sidebar-collapsed .cmcCourseRailStatus span,
+  .cmcPathwayBody .cmcPlanRailStatus span{
+    font-size:var(--cmc-type-label);
+  }
+  /* Keep the 17px information icon visually light while making its
+     clickable region a usable 44x44 target on a phone. */
+  .cmcPathwayBody .cmcInfoTip::before{
+    position:absolute;
+    top:50%;
+    left:50%;
+    width:44px;
+    height:44px;
+    transform:translate(-50%,-50%);
+    content:"";
+  }
+}

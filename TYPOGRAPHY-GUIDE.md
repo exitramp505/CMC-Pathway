@@ -37,6 +37,14 @@ All new interface styles must use one of the CSS variables below. Do not introdu
 7. Mobile layouts may change wrapping and spacing, but should not reduce important text below its desktop role.
 8. Avoid using all caps for sentences. Reserve it for short eyebrows, categories, and statuses.
 
+## Color contrast and functional controls
+
+- Preserve the CMC cream, slate, amber, and sage palette, but distinguish **decorative accents** from **readable text**.
+- On cream, paper, or white surfaces, small amber text (such as eyebrows and categories) uses `--cmcEmberText` (`#935312`). The original brighter `--cmcEmber` remains appropriate on slate/dark surfaces and for decorative accents.
+- Aim for at least **4.5:1 text contrast** for normal text and **3:1 for large text**. Never rely on color alone to communicate a saved state, progress, an error, or the selected tab.
+- A control with a small visible icon may keep that delicate visual appearance, but its **interactive tap target must still be at least 44 × 44px** on touch screens.
+- Progress percentages, lesson numbers, and action links need sufficient contrast and an approved type role. Do not reduce important labels to an 8–9px decorative micro size.
+
 ## Weight and line height
 
 - 600: supporting prose

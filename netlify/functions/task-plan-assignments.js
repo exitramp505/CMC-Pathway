@@ -261,31 +261,74 @@ async function participantView(event) {
 }
 
 async function loadPlanTasks(supabase,planId){
-  const {data,error}=await supabase.from('cmc_participant_plan_tasks').select('*').eq('plan_id',planId).order('section_position').order('position');
-  if(error) throw error;
-  const tasks=data||[];
-  const ids=tasks.map(task=>task.id);
-  if(!ids.length)return tasks;
-  const {data:dependencies,error:dependencyError}=await supabase.from('cmc_participant_plan_dependencies').select('*').in('task_id',ids);
-  if(dependencyError)throw dependencyError;
+  const tasks=await fetchPagedByIds(supabase,'cmc_participant_plan_tasks','plan_id',[planId],
+    ['section_position','position']);
+  if(!tasks.length)return tasks;
+  const dependencies=await fetchPagedByIds(supabase,'cmc_participant_plan_dependencies',
+    'task_id',tasks.map(task=>task.id));
+  return withDependencies(tasks,dependencies);
+}
+
+// Fetch plan summaries in batches. Previously every plan made two separate
+// Supabase requests, resulting in an N+1 query pattern as plans accumulated.
+async function planSummaries(supabase,plans){
+  if(!plans.length)return [];
+  const tasks=await fetchPagedByIds(supabase,'cmc_participant_plan_tasks','plan_id',
+    plans.map(plan=>plan.id),['section_position','position']);
+  const dependencies=tasks.length
+    ? await fetchPagedByIds(supabase,'cmc_participant_plan_dependencies','task_id',
+        tasks.map(task=>task.id))
+    : [];
+  const hydrated=withDependencies(tasks,dependencies);
+  const byPlan=new Map();
+  hydrated.forEach(task=>{
+    if(!byPlan.has(task.plan_id))byPlan.set(task.plan_id,[]);
+    byPlan.get(task.plan_id).push(task);
+  });
+  return plans.map(plan=>{
+    const planTasks=byPlan.get(plan.id)||[];
+    const actionable=planTasks.filter(task=>task.task_type!=='group'&&task.status!=='not_applicable');
+    const complete=actionable.filter(task=>task.status==='completed').length;
+    return {...plan,total_tasks:actionable.length,completed_tasks:complete,
+      progress:actionable.length?Math.round(complete/actionable.length*100):0,
+      next_task:nextTask(planTasks)};
+  });
+}
+
+function withDependencies(tasks,dependencies){
   const taskById=new Map(tasks.map(task=>[task.id,task]));
   const dependenciesByTask=new Map();
-  (dependencies||[]).forEach(row=>{
+  dependencies.forEach(row=>{
     if(!dependenciesByTask.has(row.task_id))dependenciesByTask.set(row.task_id,[]);
     dependenciesByTask.get(row.task_id).push(row.depends_on_task_id);
   });
   return tasks.map(task=>{
     const dependencyIds=dependenciesByTask.get(task.id)||[];
-    return {...task,dependency_ids:dependencyIds,blocked_by_dependency:dependencyIds.some(id=>!['completed','not_applicable'].includes(taskById.get(id)?.status))};
+    return {...task,dependency_ids:dependencyIds,
+      blocked_by_dependency:dependencyIds.some(id=>
+        !['completed','not_applicable'].includes(taskById.get(id)?.status))};
   });
 }
-async function planSummaries(supabase,plans){
-  return Promise.all(plans.map(async plan=>{
-    const tasks=await loadPlanTasks(supabase,plan.id);
-    const actionable=tasks.filter(task=>task.task_type!=='group'&&task.status!=='not_applicable');
-    const complete=actionable.filter(task=>task.status==='completed').length;
-    return {...plan,total_tasks:actionable.length,completed_tasks:complete,progress:actionable.length?Math.round(complete/actionable.length*100):0,next_task:nextTask(tasks)};
-  }));
+
+// Keep each request below Supabase/PostgREST's default 1,000-row maximum.
+// Most users need one tasks query and one dependencies query.
+async function fetchPagedByIds(supabase,table,field,ids,sortFields=[]){
+  const rows=[];
+  for(let batchStart=0;batchStart<ids.length;batchStart+=60){
+    const batch=ids.slice(batchStart,batchStart+60);
+    let offset=0;
+    while(true){
+      let query=supabase.from(table).select('*').in(field,batch);
+      for(const orderField of sortFields)query=query.order(orderField);
+      const {data,error}=await query.range(offset,offset+899);
+      if(error)throw error;
+      const page=data||[];
+      rows.push(...page);
+      if(page.length<900)break;
+      offset+=900;
+    }
+  }
+  return rows;
 }
 async function templateDiff(supabase,plan,instanceTasks){
   if(!plan.template_id) return {available:false,reason:'This plan is not connected to a template.',added:[],removed:[],changed:[]};
@@ -338,4 +381,4 @@ function validDate(value){return /^\d{4}-\d{2}-\d{2}$/.test(String(value||''))}
 function bounded(value,min,max,fallback){const n=Number(value);return Number.isInteger(n)&&n>=min&&n<=max?n:fallback}
 function isUuid(value){return /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(value)}
 
-module.exports._test={nextTask,taskUpdates,validDate,templateDiff};
+module.exports._test={nextTask,taskUpdates,validDate,templateDiff,planSummaries,withDependencies,fetchPagedByIds};

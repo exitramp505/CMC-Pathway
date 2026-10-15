@@ -81,7 +81,15 @@ Primary: **Montserrat**; fallback: **Arial**, then system sans-serif. Hierarchy 
 
 Reading measures: `--cmc-measure-compact:48ch`, `--cmc-measure-reading:68ch`, `--cmc-measure-wide:80ch`.
 
-Shared component tokens: `--cmcRadiusControl:13px`, `--cmcRadiusCard:24px`, `--cmcRadiusHero:32px`, `--cmcTouchTarget:44px`, `--cmcFocusRing:2px solid var(--cmcSage)`.
+#### Shared component dimensions
+
+| Token | Value | Purpose |
+| --- | --- | --- |
+| `--cmcRadiusControl` | `13px` | Inputs, buttons and compact controls |
+| `--cmcRadiusCard` | `24px` | Standard cards and form surfaces |
+| `--cmcRadiusHero` | `32px` | Large page and feature panels |
+| `--cmcTouchTarget` | `44px` | Minimum width and height for touch actions |
+| `--cmcFocusRing` | `2px solid var(--cmcSage)` | Reusable focus outline |
 
 Use the smaller space when things belong together and a larger step when the topic changes. Keep paragraph lines within their reading measure instead of stretching text across a large dashboard card. Existing specialty hero and lesson-card radii may differ intentionally; don't override them globally.
 

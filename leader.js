@@ -1,11 +1,9 @@
 (async function(){
   dcAuth.setupLogout();
-  const user = await dcAuth.requireUser();
-  if (!user) return;
-
-  const sb = await dcAuth.getSupabaseClient();
-  const session = await sb.auth.getSession();
-  const token = session.data?.session?.access_token || '';
+  const session = await dcAuth.getCurrentSession().catch(() => null);
+  if (!session?.user) { window.location.href = 'login.html'; return; }
+  // regional-participants returns the viewer and applies region/role checks.
+  const token = session.access_token || '';
   const list = document.getElementById('participantList');
   let participants = [];
   let followupsOnly = false;

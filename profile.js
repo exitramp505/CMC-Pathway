@@ -8,12 +8,21 @@
   const form = document.getElementById('profileForm');
   const msg = document.getElementById('profileMessage');
   const params = new URLSearchParams(window.location.search);
-  const next = params.get('next') || 'dashboard';
+  const requestedNext = params.get('next') || 'dashboard';
+  // Permit only same-site HTML destinations. Never redirect to a supplied URL.
+  const next = /^(?:[a-z0-9-]+\.html)(?:\?[a-z0-9_=&%.-]+)?$/i.test(requestedNext)
+    ? requestedNext
+    : 'dashboard.html';
+  const submitButton = form.querySelector('button[type="submit"]');
+  const retryButton = document.getElementById('retryCourseSetupBtn');
+  const actions = document.getElementById('profileSetupActions');
+  document.getElementById('continueToPathwayLink').href = next === 'dashboard' ? 'dashboard.html' : next;
+  let saving = false;
   async function ensureDefaultAssignments(){
     const sb = await dcAuth.getSupabaseClient();
     const session = await sb.auth.getSession();
     const accessToken = session.data?.session?.access_token || '';
-    if(!accessToken) return;
+    if(!accessToken) throw new Error('Your session has expired. Log in again to finish course setup.');
 
     const res = await fetch('/.netlify/functions/candidate-default-assignments', {
       method: 'POST',
@@ -58,9 +67,45 @@
   form.ministryRole.value = profile?.ministry_role || '';
   form.pathwayInterest.value = profile?.pathway_interest || '';
 
+  async function finishCourseSetup(){
+    try {
+      await ensureDefaultAssignments();
+      actions.hidden = true;
+      setMessage('CMC profile saved. Your course assignments are ready.', 'success');
+      setTimeout(() => {
+        window.location.href = next === 'dashboard' ? 'dashboard.html' : next;
+      }, 500);
+    } catch (error) {
+      // The profile upsert already succeeded. This is NOT a profile save error.
+      actions.hidden = false;
+      setMessage(
+        'Your CMC profile was saved, but we could not finish setting up your starting courses. ' +
+        'You can retry course setup or continue to your dashboard.',
+        'error'
+      );
+    }
+  }
+
+  retryButton.addEventListener('click', async () => {
+    if (saving) return;
+    saving = true;
+    retryButton.disabled = true;
+    setMessage('Retrying course setup…');
+    try {
+      await finishCourseSetup();
+    } finally {
+      retryButton.disabled = false;
+      saving = false;
+    }
+  });
+
   form.addEventListener('submit', async e => {
     e.preventDefault();
-    setMessage('Saving...');
+    if(saving || !form.reportValidity()) return;
+    saving = true;
+    submitButton.disabled = true;
+    actions.hidden = true;
+    setMessage('Saving your CMC profile…');
     const fd = new FormData(form);
 
     try{
@@ -76,16 +121,18 @@
         ministry_role: String(fd.get('ministryRole') || '').trim(),
         pathway_interest: String(fd.get('pathwayInterest') || '').trim()
       });
-
-      await ensureDefaultAssignments();
-
-      setMessage('Profile saved.', 'success');
-
-      setTimeout(() => {
-        window.location.href = next === 'dashboard' ? 'dashboard.html' : next;
-      }, 400);
     }catch(err){
-      setMessage(err.message || 'Could not save profile.', 'error');
+      setMessage(err.message || 'Could not save your CMC profile.', 'error');
+      saving = false;
+      submitButton.disabled = false;
+      return;
+    }
+
+    try {
+      await finishCourseSetup();
+    } finally {
+      saving = false;
+      submitButton.disabled = false;
     }
   });
 

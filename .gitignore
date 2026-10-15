@@ -6,3 +6,6 @@
 node_modules
 .DS_Store
 **/.DS_Store
+
+# Generated on Netlify; do not commit environment-specific public settings.
+cmc-public-config.json

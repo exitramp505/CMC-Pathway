@@ -1,13 +1,14 @@
 {
   "scripts": {
     "dev": "netlify dev",
-    "build": "node scripts/build-styles.js",
+    "build": "node scripts/build-styles.js && node scripts/build-public-config.js",
     "seed:task-plan": "node scripts/generate-curated-task-plan-seed.js",
     "publish:task-plan": "node scripts/publish-task-plan-template.js",
-    "test": "node tests/participant-dashboard.test.js && node tests/security-hardening.test.js && node tests/pastoral-reference.test.js && node tests/public-website-admin.test.js && node tests/task-plans.test.js && node tests/leaders-access.test.js && node tests/coaching.test.js && node tests/course-formats.test.js && node tests/course-reading.test.js && node tests/password-recovery.test.js && node tests/onboarding-usability.test.js && node tests/sitewide-usability.test.js && node tests/site-links.test.js && node tests/course-saving.test.js && node tests/course-library-load.test.js && node tests/admin-loading-performance.test.js && node tests/course-performance.test.js && node tests/task-plan-performance.test.js && node tests/events-performance.test.js && node tests/participant-performance.test.js && node tests/design-harmony.test.js && node tests/design-system-contract.test.js && node tests/css-source-integrity.test.js && node tests/css-mobile-harmony.test.js",
+    "test": "node tests/participant-dashboard.test.js && node tests/security-hardening.test.js && node tests/pastoral-reference.test.js && node tests/public-website-admin.test.js && node tests/task-plans.test.js && node tests/leaders-access.test.js && node tests/coaching.test.js && node tests/course-formats.test.js && node tests/course-reading.test.js && node tests/password-recovery.test.js && node tests/onboarding-usability.test.js && node tests/public-config.test.js && node tests/sitewide-usability.test.js && node tests/site-links.test.js && node tests/course-saving.test.js && node tests/course-library-load.test.js && node tests/admin-loading-performance.test.js && node tests/course-performance.test.js && node tests/task-plan-performance.test.js && node tests/events-performance.test.js && node tests/participant-performance.test.js && node tests/design-harmony.test.js && node tests/design-system-contract.test.js && node tests/css-source-integrity.test.js && node tests/css-mobile-harmony.test.js",
     "build:styles": "node scripts/build-styles.js",
     "build:styles:check": "node scripts/build-styles.js --check",
-    "audit:css": "node scripts/audit-css-selectors.js"
+    "audit:css": "node scripts/audit-css-selectors.js",
+    "build:public-config": "node scripts/build-public-config.js"
   },
   "dependencies": {
     "resend": "6.12.3",

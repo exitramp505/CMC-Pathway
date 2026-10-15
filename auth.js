@@ -3,13 +3,34 @@ const STATES={AL:'Alabama',AK:'Alaska',AZ:'Arizona',AR:'Arkansas',CA:'California
 const REGION_BY_STATE={WA:'Pacific',HI:'Pacific',AK:'Pacific',AZ:'Pacific',UT:'Pacific',CA:'Pacific',NV:'Pacific',ID:'Pacific',OR:'Pacific',TX:'Central',OK:'Central',AR:'Central',WI:'Central',MN:'Central',IA:'Central',IL:'Central',MO:'Central',KS:'Central',CO:'Mountain Plains',WY:'Mountain Plains',NE:'Mountain Plains',SD:'Mountain Plains',ND:'Mountain Plains',MT:'Mountain Plains',NH:'East',VT:'East',MA:'East',ME:'East',RI:'East',CT:'East',NJ:'East',DE:'East',MD:'East',WV:'East',PA:'East',OH:'East',VA:'East',KY:'East',TN:'East',IN:'East',MI:'East',NY:'East',FL:'Southeast',GA:'Southeast',AL:'Southeast',MS:'Southeast',LA:'Southeast',SC:'Southeast',NC:'Southeast',PR:'Southeast'};
 function fillStateSelect(select){if(!select)return;select.innerHTML='<option value="">Select state</option>'+Object.entries(STATES).map(([k,v])=>`<option value="${k}">${v}</option>`).join('')}
 function regionForState(state){return REGION_BY_STATE[state]||'Unassigned'}
+async function readPublicConfig(url){
+ const res=await fetch(url,{credentials:'omit'});
+ const cfg=await res.json().catch(()=>({}));
+ if(!res.ok||!cfg.url||!cfg.anonKey){
+  throw new Error('Supabase is not configured. Add SUPABASE_URL and SUPABASE_ANON_KEY in Netlify.');
+ }
+ // Keys are public but no script should ever accept credentials from an
+ // untrusted/non-HTTPS config URL.
+ const parsed=new URL(cfg.url);
+ if(parsed.protocol!=='https:'||!parsed.hostname||parsed.username||parsed.password){
+  throw new Error('Invalid public Supabase URL.');
+ }
+ return cfg;
+}
 let supabaseClientPromise;
 async function getSupabaseClient(){
  if(supabaseClientPromise)return supabaseClientPromise;
  supabaseClientPromise=(async()=>{
-  const res=await fetch('/.netlify/functions/supabase-config');
-  const cfg=await res.json().catch(()=>({}));
-  if(!res.ok||!cfg.url||!cfg.anonKey) throw new Error('Supabase is not configured. Add SUPABASE_URL and SUPABASE_ANON_KEY in Netlify.');
+  // Netlify generates this static file during each deploy. It contains only
+  // the public URL and anonymous key, not any service credentials, and avoids
+  // starting a Lambda just to configure Supabase. Keep the established
+  // function as fallback for local/preview builds or a missing static file.
+  let cfg;
+  try{
+    cfg=await readPublicConfig('/cmc-public-config.json');
+  }catch(_){
+    cfg=await readPublicConfig('/.netlify/functions/supabase-config');
+  }
   return window.supabase.createClient(cfg.url,cfg.anonKey);
  })().catch(error=>{
   // A temporary configuration failure should not block all retries.

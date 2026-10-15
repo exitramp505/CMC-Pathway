@@ -1,3 +1,11 @@
 [build]
   publish = "."
+  command = "npm run build"
   functions = "netlify/functions"
+
+# This file holds ONLY the publishable Supabase URL and anon key. A build
+# creates it for each deploy; dynamic auth endpoints remain private/no-store.
+[[headers]]
+  for = "/cmc-public-config.json"
+  [headers.values]
+    Cache-Control = "public, max-age=60, must-revalidate"

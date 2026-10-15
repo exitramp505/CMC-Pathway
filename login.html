@@ -1,10 +1,10 @@
 <!doctype html>
-<html>
+<html lang="en">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <title>Log In | CMC Pathway</title>
-  <link rel="stylesheet" href="style.css?v=136">
+  <link rel="stylesheet" href="style.css?v=137">
 </head>
 <body class="cmcPathwayBody cmcAuthBody">
 <header class="cmcHeader">
@@ -70,7 +70,7 @@
 
         <button type="submit" class="authSubmitBtn">Login</button>
 
-        <p id="authMessage" class="authMessage muted"></p>
+        <p id="authMessage" class="authMessage muted" role="status" aria-live="polite"></p>
 
         <p class="authSwitchText">Need an account? <a href="signup.html">Create one</a></p>
       </form>
@@ -78,9 +78,9 @@
   </section>
 </main>
 
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.105.4"></script>
 <script src="auth.js?v=131"></script>
 <script src="password-toggle.js?v=1"></script>
-<script src="login.js?v=121"></script>
+<script src="login.js?v=122"></script>
 </body>
 </html>

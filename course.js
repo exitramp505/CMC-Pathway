@@ -136,7 +136,7 @@
           <span>${escapeHtml(lesson.module.title)} · ${escapeHtml(format)}</span>
           <span>Lesson ${lesson.moduleIndex + 1}.${lesson.lessonIndex + 1}${lesson.estimated_minutes ? ` · ${lesson.estimated_minutes} min` : ''}</span>
         </div>
-        <h2 class="cmcLessonHeading" id="cmcCurrentLessonTitle">${escapeHtml(lesson.title)}</h2>
+        <h1 class="cmcLessonHeading" id="cmcCurrentLessonTitle">${escapeHtml(lesson.title)}</h1>
         ${lesson.summary ? `<div class="cmcLessonLead"><p class="cmcLessonSummary">${escapeHtml(lesson.summary)}</p></div>` : ''}
       </header>
       <div class="cmcLessonMain">

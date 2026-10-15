@@ -50,7 +50,7 @@
   function diff(before, after, expectedRevision) {
     if (!after?.id) throw new Error('A course ID is required to save safely.');
     const revision = Number(expectedRevision);
-    if (!Number.isSafeInteger(revision) || revision < 0) throw new Error('Invalid course version.');
+    if (!Number.isSafeInteger(revision) || revision < 0) throw new Error('Invalid course revision.');
     const oldCourse = before ? select(COURSE_FIELDS, before) : {};
     const newCourse = select(COURSE_FIELDS, after);
     const fields = {};

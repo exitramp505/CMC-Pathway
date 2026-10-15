@@ -8,7 +8,7 @@ const pages=fs.readdirSync(path.join(__dirname,'..')).filter(file=>file.endsWith
 const styled=pages.filter(page=>read(page).includes('style.css?v='));
 assert.ok(styled.length>=30,'All user and admin pages must share the stylesheet');
 for(const page of styled){
-  assert.match(read(page),/style\.css\?v=140/,page+' must use the latest shared visual rules');
+  assert.match(read(page),/style\.css\?v=141/,page+' must use the latest shared visual rules');
 }
 const formsCss=read('forms.css');
 for(const page of pages){
@@ -41,4 +41,21 @@ assert.match(css,/\.cmcParticipantRow \.cmcPerson strong\{[\s\S]*?font-size:var\
 assert.match(css,/\.cmcParticipantStats span,[\s\S]*?font-size:var\(--cmc-type-label\)/);
 assert.match(css,/\.cmcBackLink\{[\s\S]*?min-height:44px/);
 assert.match(css,/\.cmcRowAction\{[\s\S]*?font-size:var\(--cmc-type-body-sm\)/);
+
+function luminance(color){
+  const rgb=[1,3,5].map(pos=>parseInt(color.slice(pos,pos+2),16)/255)
+    .map(value=>value<=0.04045?value/12.92:Math.pow((value+0.055)/1.055,2.4));
+  return rgb[0]*.2126+rgb[1]*.7152+rgb[2]*.0722;
+}
+const contrast=(a,b)=>(Math.max(luminance(a),luminance(b))+.05)/
+  (Math.min(luminance(a),luminance(b))+.05);
+assert.ok(contrast('#935312','#fbf0de')>=4.5,
+  'Light-panel ember text must reach WCAG AA contrast');
+assert.match(css,/--cmcEmberText:#935312/);
+assert.match(css,/\.cmcPathwayBody \.cmcPlanOutlinePhase strong\{[\s\S]*?font-size:var\(--cmc-type-body-sm\)/);
+assert.match(css,/\.cmcPathwayBody \.cmcReorderActions button\{[\s\S]*?min-height:44px/);
+assert.match(css,/\.cmcPathwayBody \.cmcInfoTip::before\{[\s\S]*?width:44px;[\s\S]*?height:44px/);
+assert.match(css,/\.cmcPathwayBody \.cmcPlanSidebarToggle\{[\s\S]*?min-height:44px/);
+assert.match(guide,/Color contrast and functional controls/);
+
 console.log('Shared visual system, responsive navigation, accessible type and touch rules passed.');

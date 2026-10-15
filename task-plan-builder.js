@@ -19,8 +19,6 @@
   const statusEl = document.getElementById('taskPlanSaveStatus');
   let current = null;
   let saveTimer = null;
-  let saving = false;
-  let queued = false;
   if (templateId) {
     try {
       const data = await api(`?id=${encodeURIComponent(templateId)}`);
@@ -36,6 +34,23 @@
     addSection({ title:'Phase 1 · Getting Started', tasks:[] });
   }
 
+  const saveCoordinator=window.CMCTaskPlanSave.create({
+    getPayload:serialize,
+    write:payload=>api('',payload),
+    hasExisting:()=>Boolean(current?.id),
+    setStatus:status,
+    applyResponse:(data,payload)=>{
+      current=data.template;
+      syncSavedIds(data.sections||[],payload.sections||[]);
+      history.replaceState({},'',`task-plan-builder.html?id=${current.id}`);
+      document.getElementById('builderPageTitle').textContent=current.title;
+      document.getElementById('taskPlanSlug').value=current.slug||document.getElementById('taskPlanSlug').value;
+      refreshBuilderSidebar();
+    }
+  });
+  if(current?.id)status(current.status==='published'
+    ? `Published · version ${current.version}` : 'All changes saved');
+
   document.querySelectorAll('#taskPlanTitle,#taskPlanDescription,#taskPlanStage')
     .forEach(input => input.addEventListener('input', () => { refreshBuilderSidebar(); scheduleSave(); }));
   document.getElementById('addTaskPlanSection').addEventListener('click', () => {
@@ -49,24 +64,16 @@
     document.getElementById('collapseTaskPlan').textContent = collapse ? 'Expand all' : 'Collapse all';
   });
   document.getElementById('publishTaskPlan').addEventListener('click', async () => {
-    await saveNow();
-    if (!current?.id) return;
-    try {
-      status('Publishing…');
-      const data = await api('', { ...serialize(), action:'publish' });
-      current = data.template;
-      status(`Published · version ${current.version}`);
-      refreshBuilderSidebar();
-    } catch (error) {
-      status(error.message, true);
-    }
+    if(saveCoordinator.isPublishing())return;
+    if(!window.confirm('Publish this template for regional leaders? Review the plan before publishing.'))return;
+    await saveCoordinator.publish();
   });
   document.getElementById('previewTaskPlan').addEventListener('click', async () => {
-    await saveNow();
-    if (!current?.id) {
-      status('Add a task plan title before previewing.', true);
+    if(saveCoordinator.isPublishing()){
+      status('Please wait until publishing has finished before previewing.');
       return;
     }
+    if(!await saveCoordinator.flush())return;
     window.open(`task-plan-preview.html?id=${encodeURIComponent(current.id)}`, '_blank', 'noopener');
   });
 
@@ -259,58 +266,22 @@
   }
 
   function scheduleSave() {
-    status('Unsaved changes');
+    saveCoordinator.markDirty();
     clearTimeout(saveTimer);
-    saveTimer = setTimeout(saveNow, 900);
+    saveTimer=setTimeout(()=>{void saveCoordinator.flush();},900);
   }
 
-  async function saveNow() {
-    clearTimeout(saveTimer);
-    if (saving) { queued = true; return current; }
-    const payload = serialize();
-    if (!payload.template.title.trim()) { status('Add a title to start autosave'); return current; }
-    saving = true;
-    try {
-      status('Saving…');
-      const data = await api('', payload);
-      current = data.template;
-      syncSavedIds(data.sections || []);
-      history.replaceState({}, '', `task-plan-builder.html?id=${current.id}`);
-      document.getElementById('builderPageTitle').textContent = current.title;
-      document.getElementById('taskPlanSlug').value = current.slug || document.getElementById('taskPlanSlug').value;
-      status('All changes saved');
-      refreshBuilderSidebar();
-    } catch (error) {
-      status(error.message, true);
-    } finally {
-      saving = false;
-      if (queued) { queued = false; saveNow(); }
-    }
-    return current;
-  }
-
-  function syncSavedIds(savedSections) {
-    const sectionNodes = [...sectionsEl.children];
-    const idMap = new Map();
-    sectionNodes.forEach((sectionNode, sectionIndex) => {
-      const savedSection = savedSections[sectionIndex];
-      if (!savedSection) return;
-      idMap.set(sectionNode.dataset.clientId, savedSection.id);
-      sectionNode.dataset.clientId = savedSection.id;
-      const localTasks = [...sectionNode.querySelectorAll('.cmcTaskPlanTask')];
-      const savedTasks = flatten(savedSection.tasks || []);
-      localTasks.forEach((taskNode, taskIndex) => {
-        const savedTask = savedTasks[taskIndex];
-        if (!savedTask) return;
-        idMap.set(taskNode.dataset.clientId, savedTask.id);
-        taskNode.dataset.clientId = savedTask.id;
-      });
-    });
-    sectionNodes.forEach(sectionNode => {
-      sectionNode.querySelectorAll('.cmcTaskPlanTask').forEach(taskNode => {
-        taskNode.dataset.parentId = idMap.get(taskNode.dataset.parentId) || taskNode.dataset.parentId || '';
-        const dependencies = JSON.parse(taskNode.dataset.dependencyIds || '[]');
-        taskNode.dataset.dependencyIds = JSON.stringify(dependencies.map(id => idMap.get(id) || id));
+  function syncSavedIds(savedSections,submittedSections) {
+    // Correlate the server response against the submitted snapshot, *not*
+    // the live DOM index: a person can add or reorder items during autosave.
+    const idMap=window.CMCTaskPlanSave.buildIdMap(savedSections,submittedSections);
+    [...sectionsEl.children].forEach(sectionNode=>{
+      sectionNode.dataset.clientId=idMap.get(sectionNode.dataset.clientId)||sectionNode.dataset.clientId;
+      sectionNode.querySelectorAll('.cmcTaskPlanTask').forEach(taskNode=>{
+        taskNode.dataset.clientId=idMap.get(taskNode.dataset.clientId)||taskNode.dataset.clientId;
+        taskNode.dataset.parentId=idMap.get(taskNode.dataset.parentId)||taskNode.dataset.parentId||'';
+        const dependencies=JSON.parse(taskNode.dataset.dependencyIds||'[]');
+        taskNode.dataset.dependencyIds=JSON.stringify(dependencies.map(id=>idMap.get(id)||id));
       });
     });
     refreshAllOptions();

@@ -12,7 +12,7 @@ for (const file of files) {
   assert.match(html, /name=["']viewport["']/i, file + ' must be mobile responsive');
   assert.match(html, /<title>/i, file + ' must have a title');
   if (html.includes('style.css?v=')) {
-    assert.match(html,/style\.css\?v=143/,file + ' must load the latest shared stylesheet');
+    assert.match(html,/style\.css\?v=144/,file + ' must load the latest shared stylesheet');
     assert.match(html,/rel="icon" type="image\/svg\+xml" href="cmc-logo-mark\.svg"/,file + ' must provide a favicon');
   }
   if (html.includes('@supabase/supabase-js@2')) {

@@ -1,0 +1,11 @@
+const assert=require('node:assert/strict');
+const fs=require('node:fs');
+const path=require('node:path');
+const root=path.resolve(__dirname,'..');
+const css=fs.readFileSync(path.join(root,'style.css'),'utf8');
+const source=fs.readFileSync(path.join(root,'styles/11-management-and-builder-workspaces.css'),'utf8');
+assert.match(source,/\.cmcWebsiteTabs\{[\s\S]*?width:100%;[\s\S]*?min-width:0;[\s\S]*?overflow-x:auto;/);
+assert.match(css,/\.cmcApplicationMain input\[type="file"\]\{font-size:var\(--cmc-type-body\)/);
+assert.match(css,/\.cmcPeopleTools input,\.cmcPeopleTools select\{[^}]*font:700 var\(--cmc-type-body\)\/1\.35/);
+assert.match(css,/\.cmcPathwayBody \.cmcBuilderSettings :is\([\s\S]*?\{\n  font-size:var\(--cmc-type-body\);/);
+console.log('Mobile tab containment, accessible inputs and shared builder text roles passed.');

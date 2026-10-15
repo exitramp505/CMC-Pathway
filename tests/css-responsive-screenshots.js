@@ -52,9 +52,9 @@ async function main(){
             fullPage:true,animations:'disabled',timeout:20000
           });
           const metrics=await page.evaluate(()=>{
-            const inputs=[...document.querySelectorAll('input:not([type=hidden]),textarea,select')];
+            const inputs=[...document.querySelectorAll('input:not([type=hidden]):not([type=checkbox]):not([type=radio]),textarea,select')];
             return {
-              viewport:document.documentElement.clientWidth,
+              viewportWidth:document.documentElement.clientWidth,
               pageWidth:document.documentElement.scrollWidth,
               bodyWidth:document.body.scrollWidth,
               inputsBelow16:inputs
@@ -67,6 +67,20 @@ async function main(){
                     (el.classList.length?'.'+[...el.classList].join('.'):''),
                   fontSize:getComputedStyle(el).fontSize
                 })),
+              websiteLayout:(()=>{
+                const detail=el=>{
+                  if(!el)return null;
+                  const r=el.getBoundingClientRect(),style=getComputedStyle(el);
+                  return {left:Math.round(r.left),right:Math.round(r.right),
+                    width:Math.round(r.width),scrollWidth:el.scrollWidth,
+                    overflowX:style.overflowX,display:style.display,minWidth:style.minWidth};
+                };
+                return {
+                  main:detail(document.querySelector('.cmcWebsiteMain')),
+                  tabs:detail(document.querySelector('.cmcWebsiteTabs')),
+                  workspace:detail(document.querySelector('.cmcWebsiteWorkspace'))
+                };
+              })(),
               overflowElements:[...document.querySelectorAll('body *')]
                 .filter(el=>el.getClientRects().length)
                 .map(el=>({el,rect:el.getBoundingClientRect()}))
@@ -81,7 +95,7 @@ async function main(){
                 }))
             };
           });
-          const overflow=Math.max(metrics.pageWidth,metrics.bodyWidth)-metrics.viewport;
+          const overflow=Math.max(metrics.pageWidth,metrics.bodyWidth)-metrics.viewportWidth;
           records.push({page:filename,viewport:size.name,...metrics,
             overflowPx:Math.max(0,overflow)});
         }finally{
@@ -99,12 +113,25 @@ async function main(){
   console.log('Captured '+records.length+' responsive screenshots across '+families.length+' page families.');
   console.log('Static shell overflow observations: '+overflow.length);
   for(const row of overflow.slice(0,30)){
-    console.log('  REVIEW '+row.page+' / '+row.viewport+': '+row.overflowPx+'px overflow; elements '+JSON.stringify(row.overflowElements.slice(0,5)));
+    console.log('  REVIEW '+row.page+' / '+row.viewport+': '+row.overflowPx+'px overflow; elements '+JSON.stringify(row.overflowElements.slice(0,5))+
+      '; website layout '+JSON.stringify(row.websiteLayout));
   }
   console.log('Static shell small input observations: '+tiny.length);
   for(const row of tiny.slice(0,20)){
     console.log('  REVIEW '+row.page+' / '+row.viewport+': '+row.inputsBelow16+' inputs below 16px; '+JSON.stringify(row.smallInputs.slice(0,5)));
   }
   console.log('Note: JavaScript-disabled shells are not a substitute for signed-in role QA.');
+  // Safety gates for already-observed, user-visible issues. The browser
+  // screenshot report still captures the other responsive observations.
+  const sitePhones=overflow.filter(row=>row.page==='website.html'&&
+    ['small-phone','phone','large-phone'].includes(row.viewport));
+  const inputScreens=tiny.filter(row=>[
+    'application.html','leader.html','course-builder.html','task-plan-builder.html'
+  ].includes(row.page));
+  if(sitePhones.length||inputScreens.length){
+    throw new Error('Responsive CMC regressions: '+sitePhones.length+
+      ' website mobile overflows; '+inputScreens.length+' pages have undersized form inputs.');
+  }
+
 }
 main().catch(error=>{console.error(error);process.exitCode=1;});

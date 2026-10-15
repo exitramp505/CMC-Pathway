@@ -1,0 +1,53 @@
+/* CMC Pathway */
+/* CMC visual foundation. See STYLE-GUIDE.md before extending this system. */
+.cmcPathwayBody{
+  --cmcInk:#151616;
+  --cmcSlate:#293d48;
+  --cmcSlate2:#20323b;
+  --cmcSand:#fbf0de;
+  --cmcPaper:#fffaf1;
+  --cmcEmber:#ea9f43;
+  --cmcEmberText:#935312;
+  --cmcSage:#4da79c;
+  --cmcSageText:#236f68;
+  --cmcTextMuted:#607078;
+  --cmcBorder:rgba(41,61,72,.16);
+  --cmcBorderStrong:rgba(41,61,72,.26);
+  --cmcPanelSoft:rgba(255,250,241,.72);
+  --cmcRadiusControl:13px;
+  --cmcRadiusCard:24px;
+  --cmcRadiusHero:32px;
+  --cmcTouchTarget:44px;
+  --cmcFocusRing:2px solid var(--cmcSage);
+  margin:0;
+  background:radial-gradient(circle at 1px 1px,rgba(41,61,72,.06) 1px,transparent 1.2px) 0 0/19px 19px,var(--cmcSand);
+  color:var(--cmcInk);
+  font-family:Montserrat,Arial,sans-serif;
+}
+.cmcPathwayBody{
+  /* CMC type scale. New interface styles should use these roles instead of one-off sizes. */
+  --cmc-type-micro:10px;
+  --cmc-type-label:12px;
+  --cmc-type-caption:13px;
+  --cmc-type-body-sm:14px;
+  --cmc-type-body:16px;
+  --cmc-type-body-lg:18px;
+  --cmc-type-title-sm:21px;
+  --cmc-type-title:25px;
+  --cmc-type-section:34px;
+  --cmc-type-page:clamp(42px,4.2vw,60px);
+  --cmc-type-display:clamp(50px,6vw,80px);
+  /* Shared spacing and reading measures pair layout rhythm with the type scale. */
+  --cmc-space-1:4px;
+  --cmc-space-2:8px;
+  --cmc-space-3:12px;
+  --cmc-space-4:16px;
+  --cmc-space-5:24px;
+  --cmc-space-6:32px;
+  --cmc-space-7:48px;
+  --cmc-space-8:64px;
+  --cmc-measure-compact:48ch;
+  --cmc-measure-reading:68ch;
+  --cmc-measure-wide:80ch;
+}
+

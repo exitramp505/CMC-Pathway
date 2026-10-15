@@ -1,0 +1,899 @@
+/* v67 landing page redesign */
+.landingMain{
+  max-width:1120px;
+  margin:0 auto;
+  padding:34px 28px 60px;
+}
+.landingHero{
+  position:relative;
+  overflow:hidden;
+  background:
+    radial-gradient(circle at top right, rgba(30,136,201,.16), transparent 34%),
+    linear-gradient(135deg,#ffffff 0%,#fffaf1 100%);
+  border:1px solid var(--line);
+  border-radius:34px;
+  padding:42px;
+  box-shadow:0 18px 44px rgba(15,23,42,.08);
+  margin:18px 0;
+}
+.landingHeroGrid{
+  display:grid;
+  grid-template-columns:1.1fr .9fr;
+  gap:32px;
+  align-items:center;
+}
+.landingHero h1{
+  margin:0;
+  font-size:48px;
+  line-height:1.02;
+  letter-spacing:-.055em;
+  color:#111827;
+}
+.landingLead{
+  margin:18px 0 0;
+  color:#52617a;
+  font-size:18px;
+  line-height:1.55;
+  max-width:650px;
+}
+.landingActions{
+  margin-top:26px;
+}
+.buttonLink.white{
+  background:#fff;
+  color:#0f172a;
+  border-color:#fff;
+}
+.landingPathCard{
+  background:rgba(255,255,255,.9);
+  border:1px solid #d9e2ec;
+  border-radius:26px;
+  padding:24px;
+  box-shadow:0 14px 32px rgba(15,23,42,.07);
+}
+.landingPathCard h2{
+  margin:0 0 8px;
+  font-size:24px;
+  line-height:1.15;
+  letter-spacing:-.035em;
+  color:#172033;
+  border:0;
+  padding:0;
+}
+.landingPathCard p{
+  margin:0 0 18px;
+  color:#64748b;
+  font-size:15px;
+  line-height:1.45;
+}
+.landingPathSteps{
+  display:grid;
+  gap:10px;
+}
+.landingPathStep{
+  display:grid;
+  grid-template-columns:auto 1fr auto;
+  align-items:center;
+  gap:13px;
+  border:1px solid #eef2f6;
+  background:#fffaf1;
+  border-radius:17px;
+  padding:13px 14px;
+}
+.landingPathNumber{
+  width:34px;
+  height:34px;
+  border-radius:12px;
+  display:grid;
+  place-items:center;
+  background:#e8f1fb;
+  color:#1e40af;
+  font-weight:900;
+  flex:0 0 auto;
+}
+.landingPathStep strong{
+  display:block;
+  font-size:15px;
+  color:#172033;
+}
+.landingPathPill{
+  border:1px solid #d9e2ec;
+  background:#fff;
+  color:#64748b;
+  border-radius:999px;
+  padding:6px 10px;
+  font-size:12px;
+  font-weight:900;
+  white-space:nowrap;
+}
+.landingSection{
+  margin-top:18px;
+  background:#fff;
+  border:1px solid var(--line);
+  border-radius:28px;
+  padding:28px;
+  box-shadow:0 14px 34px rgba(15,23,42,.055);
+}
+.landingSectionHead{
+  display:flex;
+  justify-content:space-between;
+  gap:18px;
+  align-items:end;
+  border-bottom:1px solid #e4e9f1;
+  padding-bottom:14px;
+  margin-bottom:18px;
+}
+.landingSectionHead h2{
+  margin:0;
+  border:0;
+  padding:0;
+  font-size:26px;
+  letter-spacing:-.035em;
+}
+.landingSectionHead p{
+  margin:0;
+  color:#64748b;
+  font-size:14px;
+}
+.landingSteps{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:14px;
+}
+.landingStep{
+  background:#fffaf1;
+  border:1px solid #eef2f6;
+  border-radius:20px;
+  padding:18px;
+}
+.landingStepNumber{
+  width:34px;
+  height:34px;
+  border-radius:12px;
+  display:grid;
+  place-items:center;
+  background:#0f172a;
+  color:#fff;
+  font-weight:900;
+  margin-bottom:12px;
+}
+.landingStep h3{
+  margin:0 0 7px;
+  font-size:18px;
+}
+.landingStep p,
+.landingAssignmentCard p,
+.landingInfoBox p{
+  margin:0;
+  color:#64748b;
+  line-height:1.45;
+  font-size:14px;
+}
+.landingAvailableGrid{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:14px;
+}
+.landingAssignmentCard{
+  border:1px solid #d9e2ec;
+  border-radius:22px;
+  background:#fffaf1;
+  padding:18px;
+}
+.landingAssignmentTop{
+  display:flex;
+  justify-content:space-between;
+  gap:12px;
+  align-items:start;
+  margin-bottom:10px;
+}
+.landingAssignmentTop h3{
+  margin:0;
+  font-size:19px;
+}
+.landingAssignmentTop span{
+  flex:0 0 auto;
+  border-radius:999px;
+  padding:6px 9px;
+  font-size:11px;
+  font-weight:900;
+  background:#e7f6ee;
+  color:#16834a;
+  border:1px solid #bee8cf;
+}
+.landingInfoGrid{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:18px;
+}
+.landingInfoBox{
+  border:1px solid #eef2f6;
+  border-radius:22px;
+  padding:20px;
+  background:#fff;
+}
+.landingInfoBox h3{
+  margin:0 0 8px;
+  font-size:20px;
+}
+.landingFooterCta{
+  margin-top:18px;
+  background:#0f172a;
+  color:white;
+  border-radius:28px;
+  padding:28px;
+  display:flex;
+  justify-content:space-between;
+  gap:20px;
+  align-items:center;
+}
+.landingFooterCta h2{
+  margin:0 0 6px;
+  font-size:26px;
+  border:0;
+  padding:0;
+}
+.landingFooterCta p{
+  margin:0;
+  color:#cbd5e1;
+}
+
+/* v67 redesigned login page with OAuth */
+.authPageMain{
+  max-width:1120px;
+  margin:0 auto;
+  padding:36px 28px 60px;
+}
+.authShell{
+  display:grid;
+  grid-template-columns:.95fr 1.05fr;
+  gap:20px;
+  align-items:stretch;
+}
+.authIntroPanel{
+  position:relative;
+  overflow:hidden;
+  background:
+    radial-gradient(circle at top right, rgba(30,136,201,.16), transparent 34%),
+    linear-gradient(135deg,#ffffff 0%,#fffaf1 100%);
+  border:1px solid var(--line);
+  border-radius:34px;
+  padding:38px;
+  box-shadow:0 18px 44px rgba(15,23,42,.08);
+  display:flex;
+  flex-direction:column;
+  justify-content:space-between;
+  min-height:560px;
+}
+.authIntroPanel h1{
+  margin:0;
+  font-size:48px;
+  line-height:1.02;
+  letter-spacing:-.055em;
+  color:#111827;
+}
+.authLead{
+  margin:18px 0 0;
+  color:#52617a;
+  font-size:18px;
+  line-height:1.55;
+  max-width:520px;
+}
+.authPathMini{
+  display:grid;
+  gap:10px;
+  margin-top:32px;
+}
+.authPathMini div{
+  display:grid;
+  grid-template-columns:auto 1fr;
+  gap:12px;
+  align-items:center;
+  border:1px solid #eef2f6;
+  background:rgba(255,255,255,.75);
+  border-radius:17px;
+  padding:13px 14px;
+}
+.authPathMini span{
+  width:34px;
+  height:34px;
+  border-radius:12px;
+  display:grid;
+  place-items:center;
+  background:#e8f1fb;
+  color:#1e40af;
+  font-weight:900;
+}
+.authPathMini strong{
+  font-size:15px;
+  color:#172033;
+}
+.authFormPanel{
+  background:#fff;
+  border:1px solid var(--line);
+  border-radius:34px;
+  padding:34px;
+  box-shadow:0 18px 44px rgba(15,23,42,.08);
+}
+.authFormHeader{
+  margin-bottom:20px;
+}
+.authFormHeader h2{
+  margin:0 0 7px;
+  padding:0;
+  border:0;
+  font-size:32px;
+  letter-spacing:-.04em;
+}
+.authFormHeader p{
+  margin:0;
+  color:#64748b;
+}
+.oauthStack{
+  display:grid;
+  gap:10px;
+  margin:20px 0;
+}
+.oauthBtn{
+  width:100%;
+  min-height:50px;
+  border-radius:15px;
+  border:1px solid #d9e2ec;
+  background:#fff;
+  color:#172033;
+  box-shadow:none;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:10px;
+  font-size:15px;
+  font-weight:900;
+  padding:12px 14px;
+}
+.oauthBtn:hover{
+  background:#fffaf1;
+  color:#172033;
+  box-shadow:none;
+  transform:translateY(-1px);
+}
+.oauthBtn.apple{
+  background:#0f172a;
+  color:#fff;
+  border-color:#0f172a;
+}
+.oauthBtn.apple:hover{
+  background:#1e293b;
+  color:#fff;
+}
+.oauthIcon{
+  width:26px;
+  height:26px;
+  border-radius:50%;
+  display:grid;
+  place-items:center;
+  font-weight:950;
+  background:#fffaf1;
+  color:#172033;
+  line-height:1;
+}
+.oauthBtn.apple .oauthIcon{
+  background:#fff;
+  color:#0f172a;
+  font-size:18px;
+}
+.authDivider{
+  display:flex;
+  align-items:center;
+  gap:12px;
+  color:#64748b;
+  font-size:12px;
+  font-weight:850;
+  text-transform:uppercase;
+  letter-spacing:.08em;
+  margin:22px 0;
+}
+.authDivider:before,
+.authDivider:after{
+  content:"";
+  height:1px;
+  background:#e4e9f1;
+  flex:1;
+}
+.authForm{
+  display:grid;
+  gap:14px;
+}
+.authForm label{
+  margin:0;
+}
+.authForm input{
+  margin-top:7px;
+}
+.authSubmitBtn{
+  width:100%;
+  min-height:50px;
+  margin-top:4px;
+  border-radius:15px;
+}
+.authMessage{
+  min-height:20px;
+  margin:0;
+  font-weight:750;
+}
+.authMessage.error{
+  color:#991b1b;
+}
+.authMessage.success{
+  color:#166534;
+}
+.authSwitchText{
+  margin:0;
+  text-align:center;
+  color:#64748b;
+}
+.authSwitchText a{
+  font-weight:900;
+  color:#263b5e;
+}
+
+@media(max-width:900px){
+  .landingHeroGrid,
+  .landingInfoGrid,
+  .landingAvailableGrid,
+  .authShell{
+    grid-template-columns:1fr;
+  }
+  .landingSteps{
+    grid-template-columns:1fr;
+  }
+  .landingHero h1,
+  .authIntroPanel h1{
+    font-size:39px;
+  }
+  .landingFooterCta{
+    align-items:flex-start;
+    flex-direction:column;
+  }
+  .authIntroPanel{
+    min-height:auto;
+  }
+}
+@media(max-width:560px){
+  .landingMain,
+  .authPageMain{
+    padding:18px 14px 40px;
+  }
+  .landingHero,
+  .landingSection,
+  .landingFooterCta,
+  .authIntroPanel,
+  .authFormPanel{
+    padding:22px;
+    border-radius:24px;
+  }
+  .landingHero h1,
+  .authIntroPanel h1{
+    font-size:33px;
+  }
+  .landingLead,
+  .authLead{
+    font-size:16px;
+  }
+  .landingSectionHead{
+    display:block;
+  }
+  .landingSectionHead p{
+    margin-top:6px;
+  }
+  .landingPathStep{
+    grid-template-columns:auto 1fr;
+  }
+  .landingPathPill{
+    grid-column:2;
+    width:max-content;
+    margin-top:-4px;
+  }
+  .authFormHeader h2{
+    font-size:28px;
+  }
+}
+
+
+/* v68 two-step signup and profile completion */
+.signupPageMain,
+.profilePageMain{
+  max-width:1120px;
+  margin:0 auto;
+  padding:36px 28px 60px;
+}
+.signupIntroPanel .authPathMini strong{
+  line-height:1.2;
+}
+.profileNotice{
+  background:#fffaf1;
+  border:1px solid #eef2f6;
+  border-radius:16px;
+  padding:13px 14px;
+  color:#64748b;
+  font-size:13px;
+  line-height:1.4;
+}
+.profileShell{
+  display:grid;
+  grid-template-columns:.95fr 1.05fr;
+  gap:20px;
+  align-items:stretch;
+}
+.profileIntroPanel{
+  position:relative;
+  overflow:hidden;
+  background:
+    radial-gradient(circle at top right, rgba(30,136,201,.16), transparent 34%),
+    linear-gradient(135deg,#ffffff 0%,#fffaf1 100%);
+  border:1px solid var(--line);
+  border-radius:34px;
+  padding:38px;
+  box-shadow:0 18px 44px rgba(15,23,42,.08);
+  display:flex;
+  flex-direction:column;
+  justify-content:space-between;
+  min-height:480px;
+}
+.profileIntroPanel h1{
+  margin:0;
+  font-size:44px;
+  line-height:1.04;
+  letter-spacing:-.055em;
+  color:#111827;
+}
+.profileIntroPanel p{
+  margin:18px 0 0;
+  color:#52617a;
+  font-size:17px;
+  line-height:1.55;
+}
+.profileMiniCard{
+  margin-top:32px;
+  background:rgba(255,255,255,.78);
+  border:1px solid #e4e9f1;
+  border-radius:22px;
+  padding:18px;
+}
+.profileMiniCard strong{
+  display:block;
+  color:#172033;
+  margin-bottom:6px;
+}
+.profileMiniCard span{
+  display:block;
+  color:#64748b;
+  line-height:1.45;
+  font-size:14px;
+}
+.profileFormPanel{
+  background:#fff;
+  border:1px solid var(--line);
+  border-radius:34px;
+  padding:34px;
+  box-shadow:0 18px 44px rgba(15,23,42,.08);
+}
+.profileFormGrid{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:14px;
+}
+.profileFormGrid .full{
+  grid-column:1 / -1;
+}
+.profileFormGrid label{
+  margin:0;
+}
+.profileFormGrid input,
+.profileFormGrid select{
+  margin-top:7px;
+}
+
+/* CMC Pathway account and profile onboarding */
+.cmcAuthBody{min-height:100vh}
+.cmcAuthNav a{padding:0 2px}
+.cmcAuthBody .authPageMain,.profilePageMain{width:min(1180px,calc(100% - 48px));max-width:none;padding:58px 0 80px}
+.cmcAuthBody .authShell,.profileShell{gap:22px}
+.cmcAuthBody .authIntroPanel,.profileIntroPanel{min-height:590px;padding:clamp(30px,4vw,52px);border:1px solid rgba(41,61,72,.16);border-radius:32px;background:radial-gradient(circle at 88% 10%,rgba(77,167,156,.22),transparent 32%),var(--cmcSlate);color:var(--cmcSand);box-shadow:0 26px 70px rgba(32,50,59,.16)}
+.cmcAuthBody .authIntroPanel h1,.profileIntroPanel h1{max-width:560px;color:var(--cmcSand);font-size:clamp(44px,5vw,68px);line-height:.94;letter-spacing:-.06em}
+.cmcAuthBody .authLead,.profileIntroPanel>div>p:last-child{max-width:540px;color:rgba(251,240,222,.72);font-size:17px;font-weight:600;line-height:1.65}
+.cmcAuthBody .authPathMini{gap:8px}
+.cmcAuthBody .authPathMini div{min-height:70px;padding:14px 16px;border-color:rgba(251,240,222,.14);background:rgba(255,255,255,.035)}
+.cmcAuthBody .authPathMini span{width:38px;height:38px;border-radius:12px;background:var(--cmcEmber);color:var(--cmcInk);font-size:11px}
+.cmcAuthBody .authPathMini strong{color:var(--cmcSand);font-size:14px}
+.cmcAuthBody .authPathMini p{display:grid;gap:4px;margin:0}
+.cmcAuthBody .authPathMini small{color:rgba(251,240,222,.62);font-size:12px;font-weight:600;line-height:1.45}
+.cmcAuthBody .authFormPanel,.profileFormPanel{padding:clamp(28px,3.5vw,46px);border:1px solid rgba(41,61,72,.16);border-radius:32px;background:rgba(255,250,241,.84);box-shadow:0 26px 70px rgba(32,50,59,.1)}
+.cmcAuthBody .authFormHeader h2,.profileFormPanel .authFormHeader h2{color:var(--cmcInk);font-size:38px;font-weight:900}
+.cmcAuthBody .authFormHeader p,.profileFormPanel .authFormHeader p{color:#607078}
+.cmcAuthBody .oauthBtn{border-color:rgba(41,61,72,.2);background:#fffaf1;color:var(--cmcSlate)}
+body.cmcAuthBody button.oauthBtn:hover,
+body.cmcAuthBody button.oauthBtn:focus-visible{background:#fff;color:var(--cmcSlate)!important;outline:2px solid rgba(77,167,156,.34);outline-offset:2px}
+body.cmcAuthBody button.oauthBtn:hover .oauthIcon,
+body.cmcAuthBody button.oauthBtn:focus-visible .oauthIcon{background:var(--cmcSlate);color:var(--cmcSand)!important}
+.cmcAuthBody .oauthIcon{background:var(--cmcSlate);color:var(--cmcSand)}
+.cmcAuthBody .authDivider{color:#718087}.cmcAuthBody .authDivider:before,.cmcAuthBody .authDivider:after{background:rgba(41,61,72,.16)}
+.cmcAuthBody .authSubmitBtn,.profileFormPanel .authSubmitBtn{border:0;background:var(--cmcEmber);color:var(--cmcInk);font-weight:900;box-shadow:0 12px 28px rgba(234,159,67,.22)}
+.cmcAuthBody .profileNotice{border-color:rgba(77,167,156,.25);background:rgba(77,167,156,.08);color:#47626a}
+.cmcAuthBody .authSwitchText a{color:var(--cmcSlate);text-decoration-color:var(--cmcEmber)}
+.profileIntroPanel{justify-content:space-between}
+.profileIntroPanel .cmcEyebrow{color:var(--cmcEmber)}
+.profileMiniCard{display:grid;grid-template-columns:auto 1fr;gap:15px;align-items:center;margin-top:36px;padding:18px;border-color:rgba(251,240,222,.16);background:rgba(255,255,255,.045)}
+.profileMiniIcon{display:grid!important;width:42px;height:42px;place-items:center;border-radius:13px;background:var(--cmcEmber);color:var(--cmcInk)!important;font-size:10px!important;font-weight:900}
+.profileMiniCard strong{color:var(--cmcSand);font-size:15px}.profileMiniCard div>span{color:rgba(251,240,222,.65);font-size:13px}
+.profileFormPanel{background:rgba(255,250,241,.86)}
+.profileFormGrid input,.profileFormGrid select{border-color:rgba(41,61,72,.2);background:#fffaf1}
+@media(max-width:900px){.cmcAuthBody .authPageMain,.profilePageMain{width:min(100% - 32px,1180px);padding:34px 0 60px}.cmcAuthBody .authIntroPanel,.profileIntroPanel{min-height:auto}}
+@media(max-width:560px){.cmcAuthBody .authPageMain,.profilePageMain{width:min(100% - 24px,1180px);padding:22px 0 42px}.cmcAuthBody .authIntroPanel,.cmcAuthBody .authFormPanel,.profileIntroPanel,.profileFormPanel{padding:25px;border-radius:24px}.cmcAuthBody .authIntroPanel h1,.profileIntroPanel h1{font-size:42px}.cmcAuthBody .cmcHeader .cmcNav a{display:inline-flex}.cmcAuthBody .cmcBrand small{display:none}}
+@media(max-width:900px){
+  .profileShell{
+    grid-template-columns:1fr;
+  }
+  .profileIntroPanel{
+    min-height:auto;
+  }
+}
+@media(max-width:560px){
+  .signupPageMain,
+  .profilePageMain{
+    padding:18px 14px 40px;
+  }
+  .profileIntroPanel,
+  .profileFormPanel{
+    padding:22px;
+    border-radius:24px;
+  }
+  .profileIntroPanel h1{
+    font-size:34px;
+  }
+  .profileIntroPanel p{
+    font-size:16px;
+  }
+  .profileFormGrid{
+    grid-template-columns:1fr;
+  }
+  .profileFormGrid .full{
+    grid-column:auto;
+  }
+}
+
+
+/* v74 admin progress panel polish */
+.adminFileSection:has(.adminProgressRow){
+  background:#fff!important;
+  border:1px solid #d9e2ec!important;
+  border-radius:22px!important;
+  overflow:hidden!important;
+}
+
+.adminFileSection:has(.adminProgressRow) .adminFileHead{
+  background:#fffaf1!important;
+  border-bottom:1px solid #e7edf5!important;
+  padding:14px 16px!important;
+  display:flex!important;
+  align-items:center!important;
+  justify-content:space-between!important;
+  gap:12px!important;
+}
+
+.adminFileSection:has(.adminProgressRow) .adminFileHead strong{
+  letter-spacing:.16em!important;
+  text-transform:uppercase!important;
+  font-size:12px!important;
+  color:#475569!important;
+}
+
+.adminFileSection:has(.adminProgressRow) .adminFileHead span{
+  font-size:12px!important;
+  font-weight:800!important;
+  color:#64748b!important;
+}
+
+.adminProgressRow{
+  grid-template-columns:auto 1fr auto auto!important;
+  gap:12px!important;
+  align-items:center!important;
+  padding:15px 16px!important;
+  border-top:1px solid #eef2f6!important;
+  background:#fff!important;
+  transition:background .14s ease!important;
+}
+
+.adminProgressRow:first-of-type{
+  border-top:0!important;
+}
+
+.adminProgressRow:hover{
+  background:#fffaf1!important;
+}
+
+.adminProgressDot{
+  width:12px!important;
+  height:12px!important;
+  border-radius:999px!important;
+  box-shadow:0 0 0 4px rgba(34,197,94,.10)!important;
+}
+
+.adminProgressDot.complete{
+  background:#22c55e!important;
+}
+
+.adminProgressDot.pending{
+  background:#f59e0b!important;
+  box-shadow:0 0 0 4px rgba(245,158,11,.12)!important;
+}
+
+.adminProgressDot.empty{
+  background:#cbd5e1!important;
+  box-shadow:0 0 0 4px rgba(148,163,184,.12)!important;
+}
+
+.adminProgressRow > div{
+  min-width:0!important;
+}
+
+.adminProgressRow > div strong{
+  display:block!important;
+  font-size:14px!important;
+  line-height:1.22!important;
+  color:#172033!important;
+  margin-bottom:3px!important;
+}
+
+.adminProgressRow > div span{
+  display:block!important;
+  font-size:12px!important;
+  line-height:1.25!important;
+  color:#64748b!important;
+}
+
+.adminProgressRow .adminPill{
+  border-radius:999px!important;
+  padding:7px 12px!important;
+  font-size:12px!important;
+  font-weight:900!important;
+}
+
+.adminProgressRow .adminTiny{
+  border-radius:12px!important;
+  padding:9px 13px!important;
+  font-size:12px!important;
+  font-weight:900!important;
+  background:#edf2f7!important;
+  border:1px solid #d9e2ec!important;
+  color:#0f172a!important;
+}
+
+.adminProgressRow .adminTiny:hover{
+  background:#0f172a!important;
+  border-color:#0f172a!important;
+  color:#fff!important;
+}
+
+@media(max-width:760px){
+  .adminProgressRow{
+    grid-template-columns:auto 1fr auto!important;
+  }
+  .adminProgressRow .adminTiny{
+    grid-column:2 / -1!important;
+    width:max-content!important;
+  }
+}
+
+@media(max-width:520px){
+  .adminFileSection:has(.adminProgressRow) .adminFileHead{
+    align-items:flex-start!important;
+    flex-direction:column!important;
+  }
+  .adminProgressRow{
+    grid-template-columns:auto 1fr!important;
+  }
+  .adminProgressRow .adminPill,
+  .adminProgressRow .adminTiny{
+    grid-column:2!important;
+    width:max-content!important;
+  }
+}
+
+
+/* v84 admin candidate summary button readability fix
+   The candidate header is a button, so the global button:hover rule was turning
+   the whole card dark blue. Keep the card header white and readable. */
+.adminCandidateSummary,
+.adminCandidateSummary:hover,
+.adminCandidateSummary:focus,
+.adminCandidateSummary:active,
+.expandableAdminCard.open .adminCandidateSummary,
+.expandableAdminCard.open .adminCandidateSummary:hover,
+.expandableAdminCard.open .adminCandidateSummary:focus,
+.expandableAdminCard.open .adminCandidateSummary:active{
+  background:#ffffff!important;
+  color:#172033!important;
+  transform:none!important;
+  box-shadow:none!important;
+}
+
+.adminCandidateSummary h3,
+.adminCandidateSummary:hover h3,
+.adminCandidateSummary:focus h3,
+.adminCandidateSummary:active h3,
+.expandableAdminCard.open .adminCandidateSummary h3{
+  color:#172033!important;
+}
+
+.adminCandidateSummary .adminMeta,
+.adminCandidateSummary:hover .adminMeta,
+.adminCandidateSummary:focus .adminMeta,
+.adminCandidateSummary:active .adminMeta,
+.expandableAdminCard.open .adminCandidateSummary .adminMeta,
+.adminCandidateSummary .adminMeta span,
+.adminCandidateSummary:hover .adminMeta span,
+.adminCandidateSummary:focus .adminMeta span,
+.adminCandidateSummary:active .adminMeta span,
+.expandableAdminCard.open .adminCandidateSummary .adminMeta span{
+  color:#64748b!important;
+}
+
+.adminCandidateSummary .adminAvatar,
+.adminCandidateSummary:hover .adminAvatar,
+.adminCandidateSummary:focus .adminAvatar,
+.adminCandidateSummary:active .adminAvatar{
+  background:#e5eef8!important;
+  color:#1d4ed8!important;
+}
+
+.adminCandidateSummary .adminPill.region,
+.adminCandidateSummary:hover .adminPill.region,
+.adminCandidateSummary:focus .adminPill.region,
+.adminCandidateSummary:active .adminPill.region{
+  background:#e8f1fb!important;
+  color:#1e40af!important;
+  border-color:#cfe1fa!important;
+}
+
+.adminCandidateSummary .adminPill.complete,
+.adminCandidateSummary:hover .adminPill.complete,
+.adminCandidateSummary:focus .adminPill.complete,
+.adminCandidateSummary:active .adminPill.complete{
+  background:#e7f6ee!important;
+  color:#16834a!important;
+  border-color:#bee8cf!important;
+}
+
+.adminCandidateSummary .adminPill.pending,
+.adminCandidateSummary:hover .adminPill.pending,
+.adminCandidateSummary:focus .adminPill.pending,
+.adminCandidateSummary:active .adminPill.pending{
+  background:#fff6dc!important;
+  color:#a16207!important;
+  border-color:#f8e3a2!important;
+}
+
+.adminCandidateSummary .adminPill.neutral,
+.adminCandidateSummary:hover .adminPill.neutral,
+.adminCandidateSummary:focus .adminPill.neutral,
+.adminCandidateSummary:active .adminPill.neutral{
+  background:#fffaf1!important;
+  color:#64748b!important;
+  border-color:#d9e2ec!important;
+}
+
+.adminCandidateSummary .adminChevron,
+.adminCandidateSummary:hover .adminChevron,
+.adminCandidateSummary:focus .adminChevron,
+.adminCandidateSummary:active .adminChevron{
+  background:#ffffff!important;
+  color:#475569!important;
+  border-color:#d9e2ec!important;
+}
+
+.expandableAdminCard.open .adminCandidateSummary .adminChevron{
+  background:#0f172a!important;
+  color:#ffffff!important;
+  border-color:#0f172a!important;
+}
+

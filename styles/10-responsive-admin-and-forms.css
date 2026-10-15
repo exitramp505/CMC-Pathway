@@ -1,0 +1,780 @@
+/* v115 must remain last: shared administration and participant layout */
+.cmcLeaderMain,
+.cmcEventsMain,
+.cmcCourseAdminMain,
+.cmcManageLeadersMain,
+.cmcParticipantDetailMain{
+  width:min(1420px,calc(100% - 48px));
+  max-width:none;
+  margin-right:auto;
+  margin-left:auto;
+}
+.cmcLeaderMain,
+.cmcEventsMain,
+.cmcCourseAdminMain,
+.cmcManageLeadersMain{padding-top:36px;padding-bottom:110px}
+.cmcAdminPageHero,
+.cmcLeaderWelcome.cmcAdminPageHero,
+.cmcEventsIntro.cmcAdminPageHero,
+.cmcCourseAdminIntro.cmcAdminPageHero,
+.cmcManageLeadersIntro.cmcAdminPageHero{
+  display:grid;
+  grid-template-columns:minmax(0,850px) auto;
+  align-items:start;
+  justify-content:space-between;
+  gap:clamp(32px,6vw,88px);
+  min-height:196px;
+  margin:0;
+  padding:0 0 24px;
+}
+.cmcAdminPageHero .cmcEyebrow{margin:0 0 14px}
+.cmcAdminPageHero h1,
+.cmcLeaderWelcome.cmcAdminPageHero h1,
+.cmcEventsIntro.cmcAdminPageHero h1,
+.cmcCourseAdminIntro.cmcAdminPageHero h1,
+.cmcManageLeadersIntro.cmcAdminPageHero h1{
+  max-width:850px;
+  margin:0 0 14px;
+  font-size:clamp(46px,4.3vw,64px);
+  line-height:.96;
+  letter-spacing:-.06em;
+}
+.cmcAdminPageHero .cmcIntro,
+.cmcCourseAdminIntro.cmcAdminPageHero>div>p:last-child,
+.cmcManageLeadersIntro.cmcAdminPageHero>div>p:last-child{
+  max-width:760px;
+  margin:0;
+  color:#5d6e76;
+  font-size:17px;
+  font-weight:600;
+  line-height:1.6;
+}
+.cmcAdminPageAction,
+.cmcInviteButton.cmcAdminPageAction,
+.cmcPrimaryButton.cmcAdminPageAction{
+  display:inline-flex;
+  width:204px;
+  min-width:204px;
+  min-height:62px;
+  align-self:center;
+  align-items:center;
+  justify-content:space-between;
+  box-sizing:border-box;
+  margin:0;
+  padding:0 22px;
+  border:0;
+  border-radius:17px;
+  color:#111;
+  background:var(--cmcEmber);
+  box-shadow:0 13px 28px rgba(234,159,67,.2);
+  font:900 12px Montserrat,Arial,sans-serif;
+  text-decoration:none;
+}
+.cmcAdminPageAction span{font-size:19px;line-height:1}
+.cmcManageLeadersIntro.cmcAdminPageHero{
+  grid-template-columns:minmax(0,850px) minmax(280px,330px);
+}
+.cmcManageLeadersIntro.cmcAdminPageHero .cmcLeaderScopeCard{
+  min-height:148px;
+  align-self:center;
+  box-sizing:border-box;
+}
+.cmcParticipantRow{
+  grid-template-columns:minmax(230px,1.4fr) minmax(130px,.64fr) minmax(130px,.62fr) minmax(112px,.55fr) minmax(82px,auto) minmax(150px,auto);
+}
+.cmcPersonEventMetric small{
+  display:block;
+  margin-top:5px;
+  color:#8edbd3;
+  font-size:8px;
+  font-weight:850;
+}
+.cmcParticipantOverviewPanel{overflow:hidden;padding:0}
+.cmcParticipantOverviewPanel>.cmcDetailSectionHeading{
+  margin:0;
+  padding:30px 36px 26px;
+  border-bottom:1px solid rgba(41,61,72,.13);
+}
+.cmcParticipantOverviewPanel>.cmcDetailSectionHeading h2{
+  font-size:clamp(31px,3vw,43px);
+}
+.cmcParticipantStatsInOverview{
+  margin:0;
+  border:0;
+  border-bottom:1px solid rgba(41,61,72,.13);
+  border-radius:0;
+  background:rgba(41,61,72,.025);
+}
+.cmcParticipantStatsInOverview article{min-height:116px;padding:20px 26px}
+.cmcParticipantStatsInOverview strong{margin:11px 0 8px;font-size:29px}
+.cmcParticipantStatsInOverview .cmcParticipantEventStat{
+  box-shadow:inset 0 3px 0 rgba(77,167,156,.7);
+}
+.cmcParticipantStatsInOverview .cmcParticipantEventStat small{color:#398e84}
+.cmcParticipantOverviewWork{padding:30px 36px 36px}
+.cmcParticipantOverviewWorkHeading{
+  display:grid;
+  grid-template-columns:minmax(0,1fr) minmax(280px,520px);
+  align-items:end;
+  gap:34px;
+  margin-bottom:24px;
+}
+.cmcParticipantOverviewWorkHeading h3{
+  margin:6px 0 0;
+  color:var(--cmcInk);
+  font-size:30px;
+  line-height:1;
+  letter-spacing:-.04em;
+}
+.cmcParticipantOverviewWorkHeading>p{
+  margin:0;
+  color:#66767d;
+  font-size:12px;
+  font-weight:700;
+  line-height:1.55;
+}
+.cmcParticipantOverviewGrid{margin-top:22px}
+@media(max-width:1120px){
+  .cmcParticipantRow{
+    grid-template-columns:minmax(230px,1.4fr) repeat(3,minmax(120px,1fr));
+  }
+  .cmcParticipantRow .cmcActionPill{grid-column:2}
+  .cmcParticipantRow .cmcRowActions{grid-column:3/5;width:100%}
+}
+@media(max-width:900px){
+  .cmcAdminPageHero,
+  .cmcLeaderWelcome.cmcAdminPageHero,
+  .cmcEventsIntro.cmcAdminPageHero,
+  .cmcCourseAdminIntro.cmcAdminPageHero,
+  .cmcManageLeadersIntro.cmcAdminPageHero{
+    grid-template-columns:1fr;
+    min-height:0;
+    gap:24px;
+  }
+  .cmcAdminPageAction,
+  .cmcInviteButton.cmcAdminPageAction,
+  .cmcPrimaryButton.cmcAdminPageAction,
+  .cmcManageLeadersIntro.cmcAdminPageHero .cmcLeaderScopeCard{align-self:start}
+  .cmcParticipantOverviewWorkHeading{grid-template-columns:1fr;gap:10px}
+}
+@media(max-width:720px){
+  .cmcLeaderMain,
+  .cmcEventsMain,
+  .cmcCourseAdminMain,
+  .cmcManageLeadersMain,
+  .cmcParticipantDetailMain{width:calc(100% - 28px)}
+  .cmcLeaderMain,
+  .cmcEventsMain,
+  .cmcCourseAdminMain,
+  .cmcManageLeadersMain{padding-top:32px;padding-bottom:72px}
+  .cmcAdminPageHero h1,
+  .cmcLeaderWelcome.cmcAdminPageHero h1,
+  .cmcEventsIntro.cmcAdminPageHero h1,
+  .cmcCourseAdminIntro.cmcAdminPageHero h1,
+  .cmcManageLeadersIntro.cmcAdminPageHero h1{
+    font-size:clamp(40px,12vw,50px);
+  }
+  .cmcAdminPageAction,
+  .cmcInviteButton.cmcAdminPageAction,
+  .cmcPrimaryButton.cmcAdminPageAction{width:100%;min-width:0}
+  .cmcParticipantRow{grid-template-columns:1fr}
+  .cmcParticipantRow .cmcActionPill,
+  .cmcParticipantRow .cmcRowActions{grid-column:auto}
+  .cmcParticipantOverviewPanel>.cmcDetailSectionHeading,
+  .cmcParticipantOverviewWork{padding-right:20px;padding-left:20px}
+  .cmcParticipantStatsInOverview{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .cmcParticipantStatsInOverview article{min-height:108px;padding:17px}
+}
+
+/* v117 pathway clarity, mobile navigation, and interaction safeguards */
+.cmcNavMenu{display:flex;align-items:center;gap:26px}
+.cmcMobileNavToggle{display:none}
+.cmcCourseSidebarRail{
+  position:fixed;
+  z-index:40;
+  top:102px;
+  left:calc(var(--cmc-course-sidebar-width) - 57px);
+}
+.cmcPrimaryButton:hover,
+.cmcPrimaryButton:focus-visible,
+.cmcInviteButton:hover,
+.cmcInviteButton:focus-visible,
+.cmcAdminPageAction:hover,
+.cmcAdminPageAction:focus-visible,
+.cmcRowAction:hover,
+.cmcRowAction:focus-visible,
+.cmcReviewDialogClose:hover,
+.cmcReviewDialogClose:focus-visible{
+  color:#fff;
+}
+.cmcReviewDialogClose{
+  position:relative;
+  display:grid;
+  place-items:center;
+  font-size:0;
+  line-height:1;
+}
+.cmcReviewDialogClose::before,
+.cmcReviewDialogClose::after{
+  position:absolute;
+  top:50%;
+  left:50%;
+  width:15px;
+  height:2px;
+  border-radius:99px;
+  background:currentColor;
+  content:"";
+}
+.cmcReviewDialogClose::before{transform:translate(-50%,-50%) rotate(45deg)}
+.cmcReviewDialogClose::after{transform:translate(-50%,-50%) rotate(-45deg)}
+.cmcAssignmentManagerFooter .cmcPrimaryButton.hasChanges{
+  box-shadow:0 0 0 3px rgba(77,167,156,.24),0 12px 30px rgba(234,159,67,.24);
+}
+
+@media(max-width:720px){
+  .cmcHeader{
+    position:sticky;
+    min-height:70px;
+    padding:10px 14px;
+  }
+  .cmcBrand{gap:10px}
+  .cmcLogoImage{width:42px;height:42px}
+  .cmcBrand span strong{font-size:15px}
+  .cmcNav{position:relative;margin-left:auto}
+  .cmcNavMenu{
+    position:absolute;
+    top:calc(100% + 11px);
+    right:0;
+    display:none;
+    width:min(285px,calc(100vw - 28px));
+    padding:10px;
+    border:1px solid rgba(41,61,72,.16);
+    border-radius:18px;
+    background:rgba(251,240,222,.98);
+    box-shadow:0 18px 50px rgba(24,38,44,.2);
+  }
+  .cmcNav.cmcNavOpen .cmcNavMenu{display:grid;gap:2px}
+  .cmcNav .cmcNavMenu a,
+  .cmcNav .cmcNavMenu button{
+    display:flex;
+    min-height:46px;
+    width:100%;
+    justify-content:flex-start;
+    box-sizing:border-box;
+    padding:0 14px;
+    border-radius:11px;
+    color:var(--cmcSlate);
+    font-size:13px;
+  }
+  .cmcNav .cmcNavMenu a.active{background:rgba(234,159,67,.13)}
+  .cmcNav .cmcNavMenu a.active::after{right:14px;bottom:5px;left:14px}
+  .cmcNav .cmcNavMenu button:hover{color:#fff}
+  .cmcNavDivider{display:block;width:100%;height:1px;margin:5px 0;background:rgba(41,61,72,.14)}
+  .cmcNav .cmcMobileNavToggle{
+    display:inline-flex;
+    min-height:46px;
+    align-items:center;
+    gap:8px;
+    padding:0 13px;
+    border:1px solid rgba(41,61,72,.18);
+    border-radius:13px;
+    background:rgba(255,250,241,.78);
+    color:var(--cmcSlate);
+    box-shadow:none;
+    font:850 11px Montserrat,Arial,sans-serif;
+  }
+  .cmcMobileNavToggle:hover,
+  .cmcMobileNavToggle:focus-visible{background:var(--cmcSlate);color:#fff}
+  .cmcMobileNavIcon{display:grid;gap:3px}
+  .cmcMobileNavIcon i{display:block;width:16px;height:2px;border-radius:4px;background:currentColor}
+  .cmcNav.cmcNavOpen .cmcMobileNavIcon i:first-child{transform:translateY(5px) rotate(45deg)}
+  .cmcNav.cmcNavOpen .cmcMobileNavIcon i:nth-child(2){opacity:0}
+  .cmcNav.cmcNavOpen .cmcMobileNavIcon i:last-child{transform:translateY(-5px) rotate(-45deg)}
+
+  .cmcLeaderMain,
+  .cmcEventsMain,
+  .cmcCourseAdminMain,
+  .cmcManageLeadersMain{padding-top:24px}
+  .cmcAdminPageHero,
+  .cmcLeaderWelcome.cmcAdminPageHero,
+  .cmcEventsIntro.cmcAdminPageHero,
+  .cmcCourseAdminIntro.cmcAdminPageHero,
+  .cmcManageLeadersIntro.cmcAdminPageHero{gap:18px;padding-bottom:24px}
+  .cmcAdminPageHero .cmcEyebrow{margin-bottom:9px;font-size:9px}
+  .cmcAdminPageHero h1,
+  .cmcLeaderWelcome.cmcAdminPageHero h1,
+  .cmcEventsIntro.cmcAdminPageHero h1,
+  .cmcCourseAdminIntro.cmcAdminPageHero h1,
+  .cmcManageLeadersIntro.cmcAdminPageHero h1{
+    margin-bottom:10px;
+    font-size:clamp(34px,10.5vw,43px);
+    line-height:1;
+  }
+  .cmcAdminPageHero .cmcIntro,
+  .cmcCourseAdminIntro.cmcAdminPageHero>div>p:last-child,
+  .cmcManageLeadersIntro.cmcAdminPageHero>div>p:last-child{font-size:14px;line-height:1.52}
+  .cmcAdminPageAction,
+  .cmcInviteButton.cmcAdminPageAction,
+  .cmcPrimaryButton.cmcAdminPageAction{min-height:54px;border-radius:15px}
+  .cmcLeaderStats{margin-bottom:16px;border-radius:20px}
+  .cmcLeaderStats article{min-height:105px;padding:15px}
+  .cmcLeaderStats strong{margin:8px 0 7px;font-size:31px}
+  .cmcLeaderStats span{font-size:8px;line-height:1.35}
+  .cmcLeaderStats small{font-size:8px;line-height:1.35}
+  .cmcPeoplePanel{padding:16px}
+  .cmcPeopleHeading h2{font-size:34px}
+  .cmcCourseSidebarRail,
+  .cmcCourseMain.sidebar-collapsed .cmcCourseSidebarRail{position:fixed;top:82px;right:12px;left:auto}
+}
+
+/* v118 course controls, navigation visibility, button contrast, and form system */
+.cmcNav .cmcMobileNavToggle{display:none}
+
+/* Keep the course control visually attached to the sidebar while it stays in view. */
+.cmcCourseSidebarRail{
+  position:fixed;
+  top:102px;
+  right:auto;
+  left:calc(var(--cmc-course-sidebar-width) - 57px);
+  z-index:40;
+}
+.cmcCourseMain,
+.cmcCourseMain.sidebar-collapsed{width:100%;max-width:none;margin:0;padding:0}
+
+/* Any control that changes to the dark blue interaction color must carry white text. */
+.cmcPathwayBody button:not(:disabled):hover,
+.cmcPathwayBody button:not(:disabled):focus-visible{color:#fff!important}
+.cmcPathwayBody .secondaryButton:hover,
+.cmcPathwayBody .secondaryButton:focus-visible,
+.cmcPathwayBody .secondaryBtn:hover,
+.cmcPathwayBody .secondaryBtn:focus-visible{background:var(--cmcSlate)!important;color:#fff!important;border-color:var(--cmcSlate)!important}
+.cmcPathwayBody .cmcEditorToggle:hover,
+.cmcPathwayBody .cmcEditorToggle:focus-visible{background:transparent!important;color:var(--cmcSlate)!important}
+.cmcPathwayBody .cmcCourseOutline button:hover,
+.cmcPathwayBody .cmcCourseOutline button:focus-visible{color:var(--cmcSand)!important}
+.cmcPathwayBody .cmcCourseOutline button.locked:hover{color:rgba(251,240,222,.36)!important}
+
+/* Shared layout for participant forms and assessments. */
+.cmcFormBody{min-height:100vh}
+.cmcFormMain,
+.ministryStyleMain.cmcFormMain,
+.cmcApplicationMain{
+  box-sizing:border-box;
+  width:min(1120px,calc(100% - 48px));
+  max-width:none;
+  margin:0 auto;
+  padding:52px 0 100px;
+}
+.cmcFormBody .cmcFormHero,
+.cmcFormBody .ministryStyleHero.cmcFormHero{
+  display:grid;
+  grid-template-columns:minmax(0,1fr) auto;
+  gap:30px;
+  align-items:end;
+  margin:0 0 24px;
+  padding:clamp(30px,5vw,58px);
+  border:0;
+  border-radius:30px;
+  background:radial-gradient(circle at 88% 14%,rgba(77,167,156,.18),transparent 30%),var(--cmcSlate);
+  box-shadow:none;
+  color:var(--cmcSand);
+}
+.cmcFormBody .cmcFormHero>div:first-child{min-width:0}
+.cmcFormBody .cmcFormHero .cmcEyebrow{grid-column:1/-1;margin:0 0 -14px;color:var(--cmcEmber)}
+.cmcFormBody .cmcFormHero h1{
+  max-width:800px;
+  margin:0;
+  color:var(--cmcSand);
+  font-size:clamp(42px,6vw,68px);
+  line-height:.98;
+  letter-spacing:-.055em;
+}
+.cmcFormBody .cmcFormHero>p:not(.cmcEyebrow),
+.cmcFormBody .cmcFormHero>div>p:not(.cmcEyebrow){
+  max-width:690px;
+  margin:15px 0 0;
+  color:rgba(251,240,222,.72);
+  font-size:15px;
+  font-weight:650;
+  line-height:1.65;
+}
+.cmcFormBody .ministryStyleHero.cmcFormHero .cmcEyebrow{grid-column:auto;margin:0 0 9px}
+.cmcFormBody .card,
+.cmcFormBody .report,
+.cmcFormBody .ministryStyleNotice,
+.cmcFormBody .ministryStyleProgress,
+.cmcFormBody .ministryQuestionCard,
+.cmcFormBody .ministryResultPreview,
+.cmcFormBody .applicationSidebar,
+.cmcFormBody .applicationSection,
+.cmcFormBody .applicationReview{
+  border:1px solid rgba(41,61,72,.15);
+  border-radius:24px;
+  background:rgba(255,250,241,.86);
+  box-shadow:none;
+}
+.cmcFormBody .card,
+.cmcFormBody .report{padding:clamp(21px,3vw,32px);margin:18px 0}
+.cmcFormBody h2{color:var(--cmcInk);border-color:rgba(41,61,72,.13);font-family:Montserrat,Arial,sans-serif;letter-spacing:-.035em}
+.cmcFormBody h3,.cmcFormBody h4{font-family:Montserrat,Arial,sans-serif}
+.cmcFormBody p,.cmcFormBody .muted{color:#5d6e76}
+.cmcFormBody label{color:var(--cmcSlate);font:800 12px/1.45 Montserrat,Arial,sans-serif}
+.cmcFormBody input,
+.cmcFormBody select,
+.cmcFormBody textarea{
+  min-height:48px;
+  padding:12px 14px;
+  border:1px solid rgba(41,61,72,.2);
+  border-radius:12px;
+  background:#fff;
+  color:var(--cmcInk);
+  font:600 13px/1.55 Montserrat,Arial,sans-serif;
+}
+.cmcFormBody textarea{min-height:116px}
+.cmcFormBody input:focus,
+.cmcFormBody select:focus,
+.cmcFormBody textarea:focus{outline:0;border-color:var(--cmcSage);box-shadow:0 0 0 3px rgba(77,167,156,.14)}
+.cmcFormBody button,
+.cmcFormBody .buttonLink{
+  border-radius:13px;
+  background:var(--cmcEmber);
+  color:var(--cmcInk);
+  box-shadow:none;
+  font-family:Montserrat,Arial,sans-serif;
+}
+.cmcFormBody button:hover,
+.cmcFormBody button:focus-visible,
+.cmcFormBody .buttonLink:hover,
+.cmcFormBody .buttonLink:focus-visible{background:var(--cmcSlate);color:#fff;outline:0}
+
+/* Public website management */
+.cmcWebsiteMain{max-width:1440px;margin:0 auto;padding:52px clamp(24px,5vw,76px) 80px}
+.cmcWebsiteHero{padding-top:0}
+.cmcWebsiteWorkspace{background:var(--cmcSlate);color:var(--cmcSand);border-radius:30px;overflow:hidden;box-shadow:0 24px 55px rgba(26,47,57,.13)}
+.cmcWebsiteTabs{display:flex;align-items:stretch;border-bottom:1px solid rgba(251,240,222,.2);overflow-x:auto}
+.cmcWebsiteTabs button,.cmcWebsiteTabs a{appearance:none;border:0;border-right:1px solid rgba(251,240,222,.16);background:transparent;color:rgba(251,240,222,.72);padding:20px 26px;font:800 14px/1 var(--cmcBodyFont);text-decoration:none;white-space:nowrap;cursor:pointer}
+.cmcWebsiteTabs button.active,.cmcWebsiteTabs button:hover,.cmcWebsiteTabs a:hover{background:rgba(76,174,164,.15);color:#fff;box-shadow:inset 0 -3px 0 var(--cmcTeal)}
+.cmcWebsiteTabs a{margin-left:auto;border-left:1px solid rgba(251,240,222,.16);border-right:0}
+.cmcWebsiteSectionHeader{display:flex;justify-content:space-between;gap:32px;align-items:flex-end;padding:42px 46px 28px}
+.cmcWebsiteSectionHeader h2{margin:6px 0 8px;font-size:clamp(32px,4vw,54px);line-height:.98;color:var(--cmcSand)}
+.cmcWebsiteSectionHeader p:last-child{margin:0;max-width:720px;color:rgba(251,240,222,.72);font-size:15px}
+.cmcWebsiteStatus{text-align:right;display:flex;flex-direction:column;gap:4px;white-space:nowrap}
+.cmcWebsiteStatus span{color:var(--cmcTeal);font-weight:900}.cmcWebsiteStatus small{color:rgba(251,240,222,.58)}
+.cmcWebsiteWorkspace>.cmcAdminMessage{margin:0 46px 12px}
+.cmcWebsiteEditor{padding:0 46px 8px}
+.cmcWebsiteRepeater{display:grid;gap:18px}
+.cmcWebsiteItem,.cmcWebsiteSettings{border:1px solid rgba(251,240,222,.22);background:rgba(255,255,255,.035);border-radius:20px;padding:24px}
+.cmcWebsiteItem>header{display:flex;justify-content:space-between;align-items:center;padding-bottom:17px;margin-bottom:20px;border-bottom:1px solid rgba(251,240,222,.16)}
+.cmcWebsiteItem>header strong{color:var(--cmcOrange);font-size:12px;letter-spacing:.13em;text-transform:uppercase}
+.cmcWebsiteItem>header button{border:0;background:transparent;color:rgba(251,240,222,.7);font-weight:800;cursor:pointer}.cmcWebsiteItem>header button:hover{color:#fff}
+.cmcWebsiteFieldGrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px}
+.cmcWebsiteFieldGrid label,.cmcWebsiteSettings label{display:flex;flex-direction:column;gap:8px;color:rgba(251,240,222,.7);font-size:11px;font-weight:900;letter-spacing:.08em;text-transform:uppercase}
+.cmcWebsiteFieldGrid label.full{grid-column:1/-1}
+.cmcWebsiteFieldGrid input,.cmcWebsiteFieldGrid textarea,.cmcWebsiteSettings input,.cmcWebsiteSettings textarea{width:100%;box-sizing:border-box;border:1px solid rgba(251,240,222,.28);border-radius:12px;background:rgba(251,240,222,.07);color:#fff;padding:13px 14px;font:700 15px/1.5 var(--cmcBodyFont);text-transform:none;letter-spacing:0}
+.cmcWebsiteFieldGrid input:focus,.cmcWebsiteFieldGrid textarea:focus,.cmcWebsiteSettings input:focus,.cmcWebsiteSettings textarea:focus{outline:2px solid var(--cmcTeal);outline-offset:2px}
+.cmcWebsiteSettings{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-bottom:18px}.cmcWebsiteSettings h3{grid-column:1/-1;margin:0 0 4px;color:var(--cmcSand)}.cmcWebsiteSettings label:has(textarea){grid-column:1/-1}
+.cmcWebsiteImageField,.cmcWebsitePositionFields{grid-column:1/-1;display:grid;grid-template-columns:2fr 1fr;gap:18px;align-items:end}
+.cmcWebsitePortraitPreview{grid-column:1/-1;width:160px;aspect-ratio:1;border:1px solid rgba(251,240,222,.24);border-radius:24px;overflow:hidden;display:grid;place-items:center;background:rgba(251,240,222,.08);color:var(--cmcOrange);font-weight:950;font-size:22px}
+.cmcWebsitePortraitPreview img{width:100%;height:100%;object-fit:cover;display:block}
+.cmcWebsiteUpload input{padding:8px;font-size:12px}.cmcWebsitePositionFields{grid-template-columns:1fr 1fr}
+.cmcWebsiteCheck{grid-column:1/-1!important;display:flex!important;flex-direction:row!important;align-items:center;gap:11px!important;text-transform:none!important;letter-spacing:0!important;color:var(--cmcSand)!important;cursor:pointer}
+.cmcWebsiteCheck input{width:22px!important;height:22px!important;flex:0 0 auto;padding:0!important;accent-color:var(--cmcTeal)}
+.cmcWebsiteAdd{width:100%;margin:18px 0 0;border:1px dashed rgba(251,240,222,.38);border-radius:15px;background:transparent;color:var(--cmcSand);padding:17px;font-weight:900;cursor:pointer}.cmcWebsiteAdd:hover{background:rgba(76,174,164,.14);border-color:var(--cmcTeal)}
+.cmcWebsiteActions{display:flex;justify-content:flex-end;gap:12px;padding:26px 46px 42px}.cmcWebsiteActions button{min-width:150px}
+@media(max-width:760px){.cmcWebsiteMain{padding:28px 16px 50px}.cmcWebsiteWorkspace{border-radius:22px}.cmcWebsiteTabs a{margin-left:0}.cmcWebsiteSectionHeader{display:block;padding:28px 20px 20px}.cmcWebsiteStatus{text-align:left;margin-top:18px}.cmcWebsiteWorkspace>.cmcAdminMessage{margin:0 20px 10px}.cmcWebsiteEditor{padding:0 20px}.cmcWebsiteFieldGrid,.cmcWebsiteSettings,.cmcWebsiteImageField,.cmcWebsitePositionFields{grid-template-columns:1fr}.cmcWebsiteFieldGrid label.full,.cmcWebsiteSettings h3,.cmcWebsiteSettings label:has(textarea),.cmcWebsiteImageField,.cmcWebsitePositionFields{grid-column:1}.cmcWebsiteItem,.cmcWebsiteSettings{padding:18px}.cmcWebsiteActions{padding:22px 20px 30px;display:grid;grid-template-columns:1fr}.cmcWebsiteActions button{width:100%}}
+.cmcFormGrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:6px 18px}
+.cmcFormGrid .wide{grid-column:1/-1}
+.cmcCandidateInfoCard>h2{margin:5px 0 4px;font-size:32px}
+.cmcCandidateInfoCard>.cmcEyebrow{margin:0;color:var(--cmcEmber)}
+.cmcFormBody .progressTrack,
+.cmcFormBody .ministryStyleProgressTrack,
+.cmcFormBody .applicationProgressBar{border:0;background:rgba(41,61,72,.1)}
+.cmcFormBody .progressBar,
+.cmcFormBody .ministryStyleProgressTrack span,
+.cmcFormBody .applicationProgressBar span{background:linear-gradient(90deg,var(--cmcEmber),var(--cmcSage))}
+.cmcFormBody .qnum,
+.cmcFormBody .scaleNum{background:rgba(77,167,156,.12);color:#236f68}
+.cmcFormBody .scale label,
+.cmcFormBody .isaChoice{
+  border-color:rgba(41,61,72,.16);
+  background:#fffaf1;
+  color:var(--cmcSlate);
+  box-shadow:none;
+}
+.cmcFormBody .scale label:hover,
+.cmcFormBody .scale label.selected,
+.cmcFormBody .isaChoice:hover,
+.cmcFormBody .isaChoice.selected{
+  border-color:var(--cmcSage);
+  background:rgba(77,167,156,.09);
+  color:var(--cmcSlate)!important;
+  box-shadow:0 0 0 3px rgba(77,167,156,.09);
+}
+.cmcFormBody .questionSlide{min-height:270px}
+.cmcFormBody .questionSlide .questionText{color:var(--cmcSlate);font-family:Montserrat,Arial,sans-serif}
+.cmcFormBody .assessmentCompleteCard{text-align:center}
+
+/* Discernment application uses the same CMC shell while retaining its long-form sections. */
+.cmcApplicationMain .applicationLayout{grid-template-columns:245px minmax(0,1fr);gap:22px}
+.cmcApplicationMain .applicationSidebar{top:110px;padding:16px}
+.cmcApplicationMain .applicationProgressBox{border-color:rgba(41,61,72,.13);background:rgba(77,167,156,.07);box-shadow:none}
+.cmcApplicationMain .applicationSectionNav a{color:var(--cmcSlate);font-family:Montserrat,Arial,sans-serif}
+.cmcApplicationMain .applicationSectionNav a:hover,
+.cmcApplicationMain .applicationSectionNav a:focus-visible{background:rgba(77,167,156,.11);color:#236f68}
+.cmcApplicationMain .applicationSection{overflow:hidden}
+.cmcApplicationMain .applicationSectionHead{padding:22px 24px;border-color:rgba(41,61,72,.12);background:rgba(41,61,72,.035)}
+.cmcApplicationMain .applicationSectionHead h2{font-size:25px}
+.cmcApplicationMain .applicationSectionBody{padding:24px}
+.cmcApplicationMain .applicationUpload,
+.cmcApplicationMain .repeatRow,
+.cmcApplicationMain .checkCard,
+.cmcApplicationMain .applicationReviewBlock{border-color:rgba(41,61,72,.13);background:rgba(255,255,255,.58)}
+.cmcApplicationMain .waiverBox{border-color:rgba(234,159,67,.38);background:rgba(234,159,67,.08)}
+.cmcApplicationMain .smallButton{background:rgba(77,167,156,.12);color:#236f68}
+.cmcApplicationMain .removeRow{background:rgba(207,119,103,.13);color:#8d4137}
+.cmcApplicationMain .applicationActions{position:sticky;bottom:14px;z-index:5;padding:12px;border:1px solid rgba(41,61,72,.13);border-radius:17px;background:rgba(251,240,222,.92);backdrop-filter:blur(14px)}
+
+/* Ministry Style inventory follows the shared form system without losing its unique choice model. */
+.cmcFormBody .ministryStyleHeroCard{border-color:rgba(251,240,222,.16);background:rgba(255,250,241,.08);box-shadow:none}
+.cmcFormBody .ministryStyleHeroCard strong{color:var(--cmcSand)}
+.cmcFormBody .ministryStyleHeroCard span{color:rgba(251,240,222,.66)}
+.cmcFormBody .ministryStyleNotice{padding:25px}
+.cmcFormBody .ministryStyleNotice .cmcEyebrow{margin:0 0 7px;color:var(--cmcEmber)}
+.cmcFormBody .ministryStyleNotice h2{margin:0 0 8px;font-size:29px}
+.cmcFormBody .ministryStyleProgress{grid-template-columns:260px 1fr}
+.cmcFormBody .ministryQuestionHead{border-color:rgba(41,61,72,.12);background:rgba(41,61,72,.045)}
+.cmcFormBody .ministryQuestionHead strong,
+.cmcFormBody .ministryStatementText span{color:var(--cmcSlate)}
+.cmcFormBody .ministryQuestionMeta span,
+.cmcFormBody .ministryStatementCard,
+.cmcFormBody .ministryChoiceBtn{border-color:rgba(41,61,72,.14);background:#fffaf1;color:var(--cmcSlate)}
+.cmcFormBody .ministryChoiceBtn:hover,
+.cmcFormBody .ministryChoiceBtn:focus-visible{background:var(--cmcSlate);color:#fff!important}
+.cmcFormBody .ministryChoiceBtn.isMost.active{border-color:var(--cmcSage);background:rgba(77,167,156,.18);color:#236f68!important}
+.cmcFormBody .ministryChoiceBtn.isLeast.active{border-color:#cf7767;background:rgba(207,119,103,.13);color:#8d4137!important}
+.cmcFormBody .ministryStyleActions{background:rgba(251,240,222,.92)}
+
+@media(max-width:900px){
+  .cmcApplicationMain .applicationLayout{grid-template-columns:1fr}
+  .cmcApplicationMain .applicationSidebar{position:relative;top:auto}
+}
+@media(max-width:720px){
+  .cmcNav .cmcMobileNavToggle{display:inline-flex}
+  .cmcCourseSidebarRail,
+  .cmcCourseMain.sidebar-collapsed .cmcCourseSidebarRail{top:82px;right:12px;left:auto}
+  .cmcFormMain,
+  .ministryStyleMain.cmcFormMain,
+  .cmcApplicationMain{width:calc(100% - 28px);padding:28px 0 72px!important}
+  .cmcFormBody .cmcFormHero,
+  .cmcFormBody .ministryStyleHero.cmcFormHero{grid-template-columns:1fr;padding:27px 22px;border-radius:23px}
+  .cmcFormBody .cmcFormHero .cmcEyebrow{grid-column:auto;margin:0}
+  .cmcFormBody .cmcFormHero h1{font-size:clamp(37px,11vw,48px)}
+  .cmcFormBody .cmcFormHero>p:not(.cmcEyebrow),
+  .cmcFormBody .cmcFormHero>div>p:not(.cmcEyebrow){font-size:14px}
+  .cmcFormGrid{grid-template-columns:1fr}
+  .cmcFormGrid .wide{grid-column:auto}
+  .cmcFormBody .card,
+  .cmcFormBody .report{padding:19px;border-radius:20px}
+  .cmcFormBody .ministryStyleProgress{grid-template-columns:1fr}
+  .cmcApplicationMain .applicationSectionHead,
+  .cmcApplicationMain .applicationSectionBody{padding:19px}
+  .cmcApplicationMain .applicationActions{display:grid}
+  .cmcApplicationMain .applicationActions button{margin:0}
+}
+
+/* v119 unified assessment color and interaction system */
+.cmcFormBody .cmcFormHero{
+  grid-template-columns:minmax(0,1.2fr) minmax(280px,.8fr);
+  align-items:center;
+}
+.cmcFormBody .cmcFormHero h1{font-size:clamp(42px,5vw,60px)}
+.cmcFormBody .card,
+.cmcFormBody .report,
+.cmcFormBody .ministryStyleNotice,
+.cmcFormBody .ministryStyleProgress,
+.cmcFormBody .ministryQuestionCard,
+.cmcFormBody .ministryResultPreview,
+.cmcFormBody .applicationSidebar,
+.cmcFormBody .applicationSection,
+.cmcFormBody .applicationReview{background:#fffaf1}
+
+.cmcFormBody .questionSlide{
+  border:1px solid rgba(41,61,72,.16);
+  background:var(--cmcSand);
+  box-shadow:none;
+}
+.cmcFormBody button.isaChoice,
+.cmcFormBody .scale label{
+  border:1px solid rgba(41,61,72,.24);
+  background:#fffaf1;
+  color:var(--cmcSlate)!important;
+  box-shadow:none;
+}
+.cmcFormBody button.isaChoice:hover,
+.cmcFormBody button.isaChoice:focus-visible,
+.cmcFormBody .scale label:hover,
+.cmcFormBody .scale label:focus-within{
+  border-color:var(--cmcSlate)!important;
+  background:var(--cmcSlate)!important;
+  color:var(--cmcSand)!important;
+  box-shadow:0 0 0 3px rgba(41,61,72,.12)!important;
+  outline:0;
+}
+.cmcFormBody button.isaChoice.selected,
+.cmcFormBody .scale label.selected{
+  border-color:var(--cmcSage)!important;
+  background:var(--cmcSlate)!important;
+  color:var(--cmcSand)!important;
+  box-shadow:0 0 0 3px rgba(77,167,156,.24)!important;
+}
+.cmcFormBody button.isaChoice:hover .scaleNum,
+.cmcFormBody button.isaChoice:focus-visible .scaleNum,
+.cmcFormBody button.isaChoice.selected .scaleNum,
+.cmcFormBody .scale label:hover .scaleNum,
+.cmcFormBody .scale label:focus-within .scaleNum,
+.cmcFormBody .scale label.selected .scaleNum{
+  background:var(--cmcEmber);
+  color:var(--cmcSlate);
+}
+.cmcFormBody .secondaryBtn,
+.cmcFormBody .secondaryButton{
+  border:1px solid rgba(41,61,72,.34);
+  background:#fffaf1;
+  color:var(--cmcSlate);
+}
+.cmcFormBody .secondaryBtn:hover,
+.cmcFormBody .secondaryBtn:focus-visible,
+.cmcFormBody .secondaryButton:hover,
+.cmcFormBody .secondaryButton:focus-visible{
+  border-color:var(--cmcSlate)!important;
+  background:var(--cmcSlate)!important;
+  color:#fff!important;
+}
+.cmcFormBody #isaAutosaveStatus{
+  display:inline-flex;
+  min-height:32px;
+  align-items:center;
+  gap:8px;
+  margin:0 0 10px;
+  color:#4e6465;
+  font:750 11px Montserrat,Arial,sans-serif;
+}
+.cmcFormBody #isaAutosaveStatus:before{
+  width:8px;
+  height:8px;
+  border-radius:50%;
+  background:var(--cmcSage);
+  content:"";
+}
+@media(max-width:720px){
+  .cmcFormBody .cmcFormHero{grid-template-columns:1fr}
+  .cmcFormBody .cmcFormHero h1{font-size:clamp(36px,10vw,46px)}
+}
+
+/* v120 warm reports, reliable dialog controls, and centered course reading rhythm */
+.cmcFormBody .report,
+.cmcFormBody .reportHeader,
+.cmcFormBody .isaReportTitle,
+.cmcFormBody .isaReportHeroV44,
+.cmcFormBody .isaScoreStripV44{
+  border-color:rgba(41,61,72,.16)!important;
+  background:var(--cmcPaper)!important;
+  box-shadow:none!important;
+}
+.cmcFormBody .reportSection,
+.cmcFormBody .isaReportBlock{
+  border-color:rgba(41,61,72,.16)!important;
+  background:var(--cmcSand)!important;
+  box-shadow:none!important;
+}
+.cmcFormBody .overallCard,
+.cmcFormBody .isaOverall{
+  border-color:rgba(41,61,72,.16)!important;
+  background:var(--cmcSand)!important;
+  box-shadow:none!important;
+}
+.cmcFormBody .isaScoreCard,
+.cmcFormBody .isaGuideCard,
+.cmcFormBody .isaLegendList>div,
+.cmcFormBody .isaInterpretCard,
+.cmcFormBody .isaReflectionBox,
+.cmcFormBody .isaCategoryCard,
+.cmcFormBody .qualityCard{
+  border-color:rgba(41,61,72,.16)!important;
+  background:var(--cmcPaper)!important;
+  box-shadow:none!important;
+}
+.cmcFormBody .isaCompareRow,
+.cmcFormBody .isaComparisonGrid,
+.cmcFormBody .isaComparisonGridV2,
+.cmcFormBody .isaComparisonGridV44,
+.cmcFormBody .isaRowLabel,
+.cmcFormBody .isaGridCell,
+.cmcFormBody .referenceRow,
+.cmcFormBody .referenceCell,
+.cmcFormBody .planterRow,
+.cmcFormBody .planterCell,
+.cmcFormBody .isaDepthTable td{
+  border-color:rgba(41,61,72,.14)!important;
+  background:var(--cmcPaper)!important;
+}
+.cmcFormBody .isaBar,
+.cmcFormBody .isaMiniBar,
+.cmcFormBody .isaScoreTrack{background:rgba(41,61,72,.12)!important}
+
+.cmcEventEditorDialog .cmcReviewDialogClose{
+  border-color:rgba(41,61,72,.22);
+  background:var(--cmcPaper)!important;
+  color:var(--cmcInk)!important;
+  box-shadow:0 8px 22px rgba(32,50,59,.1);
+}
+.cmcEventEditorDialog .cmcReviewDialogClose:hover,
+.cmcEventEditorDialog .cmcReviewDialogClose:focus-visible{
+  border-color:var(--cmcSlate)!important;
+  background:var(--cmcSlate)!important;
+  color:var(--cmcSand)!important;
+  outline:0;
+  box-shadow:0 0 0 3px rgba(77,167,156,.25),0 10px 24px rgba(32,50,59,.18);
+}
+
+.cmcCourseMain{--cmc-course-sidebar-width:300px}
+.cmcCourseMain.sidebar-collapsed{--cmc-course-sidebar-width:72px}
+.cmcLessonContent{
+  width:min(1100px,calc(100% - 80px));
+  padding:58px 0 90px;
+}
+.cmcLessonMeta,
+.cmcLessonContent>h2,
+.cmcLessonSummary,
+.cmcLessonProse,
+.cmcLessonResource,
+.cmcReflection,
+.cmcLessonFooter{box-sizing:border-box;width:min(100%,800px);margin-right:auto;margin-left:auto}
+.cmcLessonMeta{margin-bottom:25px}
+.cmcLessonContent>h2{max-width:none;margin-bottom:20px}
+.cmcLessonSummary{max-width:none;margin-bottom:34px}
+.cmcLessonProse{max-width:none;margin-top:35px}
+.cmcLessonResource{max-width:none;margin-top:40px;margin-bottom:40px}
+.cmcReflection{margin-top:46px;margin-bottom:46px}
+.cmcLessonFooter{margin-top:56px}
+.cmcVideoFrame,
+.cmcLessonImage{box-sizing:border-box;width:min(100%,1060px);max-width:none;margin-right:auto;margin-left:auto}
+
+@media(max-width:1050px){
+  .cmcCourseMain{--cmc-course-sidebar-width:280px}
+  .cmcCourseMain.sidebar-collapsed{--cmc-course-sidebar-width:68px}
+  .cmcLessonContent{width:calc(100% - 48px)}
+}
+@media(max-width:720px){
+  .cmcLessonContent{width:calc(100% - 34px);padding:42px 0 70px}
+  .cmcLessonMeta,
+  .cmcLessonContent>h2,
+  .cmcLessonSummary,
+  .cmcLessonProse,
+  .cmcLessonResource,
+  .cmcReflection,
+  .cmcLessonFooter,
+  .cmcVideoFrame,
+  .cmcLessonImage{width:100%}
+}
+

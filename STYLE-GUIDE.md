@@ -16,7 +16,7 @@ The recognizable CMC experience is **warm cream + confident slate + purposeful a
 
 ## 2. Canonical tokens
 
-The variables below are defined on `.cmcPathwayBody` in `style.css`. Prefer them over new hex colors and one-off dimensions.
+The variables below are defined on `.cmcPathwayBody` in `styles/01-design-foundation.css` and compiled into `style.css`. Prefer them over new hex colors and one-off dimensions.
 
 ### Brand colors and their jobs
 
@@ -180,15 +180,23 @@ The page family determines layout **density**, not a new color palette, typeface
 ## 6. Source-of-truth and contribution workflow
 
 1. **Read this document before styling a new component.** For historical references, `TYPOGRAPHY-GUIDE.md` now points here.
-2. **Use current tokens from `style.css`** under `.cmcPathwayBody`. Avoid new arbitrary colors, sizes, border radii, shadows, and special breakpoints unless needed for a real component.
-3. **Respect CSS ownership:** `style.css` = shared Pathway system and app layout. `forms.css` = form/assessment layer loaded *after* `style.css`. `ministry-style.css` = legacy inventory behavior. Don't build a second, competing theme in the latter two.
-4. **Prefer editing an existing scoped component rule**, not appending another override of the same selector. Legacy stylesheet history contains overlapping overrides; incremental fixes should reduce that pattern, not compound it.
+2. **Use current tokens in `styles/01-design-foundation.css`** under `.cmcPathwayBody`. The generated `style.css` serves the exact same tokens. Avoid new arbitrary colors, sizes, border radii, shadows, and special breakpoints unless needed for a real component.
+3. **Respect CSS ownership:** `styles/*.css` = ordered, authored shared Pathway modules; `style.css` = generated single-file browser asset. `forms.css` = form/assessment layer loaded *after* `style.css`. `ministry-style.css` = legacy inventory behavior. Don't build a second, competing theme in the latter two.
+4. **Edit the relevant file under `styles/`**, never generated `style.css` directly. Prefer editing an existing scoped component rule instead of appending another override. Legacy overrides are intentionally preserved until a visually verified cleanup; do not reorder them or remove duplicate selectors automatically.
 5. **Keep class names scoped** (e.g., `.cmc...Body`, `.cmc...Main` or a named component). Don't apply broad `h1`, `button`, `p` changes to the whole app.
 6. Update the shared CSS cache version on **all** affected HTML pages when style files change; versions must match the CSS contract tests. Avoid piecemeal cache versions.
 7. Run `npm test` (including `tests/design-harmony.test.js` and `tests/design-system-contract.test.js`) and manually check the responsive table above before publishing.
 8. Use a preview deploy before releasing visual changes. Verify role-based pages while signed in, including empty/error/loading states and long real-world names. Never claim live visual QA from source-only checks.
 9. Avoid changes to account authorization, database schema, course data, or progress as part of a styling patch.
 
-### Deferred, larger refactor
+### Ordered CSS source modules (completed structural refactor)
 
-The main legacy stylesheet is ~9,690 lines and contains numerous repeated component selectors. Splitting it into a token layer and reviewed component files could improve long-term maintenance, but this is **not** a safe incidental formatting change. Perform it only as a dedicated project with visual-regression screenshots at all breakpoints and a controlled release. The current style-guide consolidation deliberately preserves existing layouts and the functioning cascade.
+The shared CSS source is split into **15 purpose-labelled files** in `styles/`, sequenced by `styles/manifest.json`. The `01-design-foundation.css` module owns tokens; subsequent files preserve the historical cascade and page-family rules. The production `style.css` is a **generated, single-file asset**: browsers still make exactly one shared stylesheet request.
+
+- Edit the appropriate `styles/*.css` file, keeping intentional tablet/mobile and state overrides in place.
+- Run `npm run build:styles` after every source edit; commit the regenerated `style.css` with its source file.
+- Run `npm run build:styles:check` and `npm test` before review. CI enforces byte-for-byte equality between source and served CSS, plus typography, contrast and page-shell contracts.
+- Use `npm run audit:css` to inventory repeated selectors **for review only**. Automatic removal or reordering is prohibited; intentional responsive overrides often share selectors.
+- Validate key roles and pages at the responsive widths in §4, including 200% text zoom, before publishing visual changes.
+
+The initial source split deliberately **does not change any served CSS bytes**. Historical repeated selector rules remain a separate, tightly tested follow-up, not a precondition for managing the stylesheet safely.

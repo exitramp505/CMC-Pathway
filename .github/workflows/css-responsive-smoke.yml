@@ -1,0 +1,37 @@
+name: CMC responsive CSS visual review
+
+on:
+  pull_request:
+    paths:
+      - 'styles/**'
+      - 'style.css'
+      - 'STYLE-GUIDE.md'
+      - 'tests/css-responsive-screenshots.js'
+      - '.github/workflows/css-responsive-smoke.yml'
+  workflow_dispatch:
+
+jobs:
+  screenshots:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: npm
+      - run: npm ci
+      - name: Verify no CSS source-output drift
+        run: npm run build:styles:check
+      - name: Install browser test driver
+        run: npm install --no-save --package-lock=false playwright-core@1.56.1
+      - name: Capture phone, tablet, and desktop page shells
+        run: node tests/css-responsive-screenshots.js
+      - name: Save responsive screenshots and metrics for review
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: cmc-responsive-style-review
+          path: artifacts/responsive-css/
+          retention-days: 14

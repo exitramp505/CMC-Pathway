@@ -20,4 +20,5 @@ jobs:
       - run: npm ci
       - name: Review dependency security advisories
         run: npm audit --omit=dev --audit-level=high || true
+      - run: npm run build:styles:check
       - run: npm test

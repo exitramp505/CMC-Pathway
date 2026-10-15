@@ -1,0 +1,1109 @@
+/* v40 ISA report explanation and static reference styling */
+.isaHowToRead p{
+  margin:0 0 12px;
+  color:#52617a;
+  line-height:1.55;
+}
+.isaHowToRead p:last-child{
+  margin-bottom:0;
+}
+.isaReferenceNote{
+  margin-top:-2px;
+  margin-bottom:14px;
+}
+.isaComparisonGridV2 .referenceRow,
+.isaComparisonGridV2 .referenceCell{
+  background:#fffaf1;
+}
+.isaComparisonGridV2 .referenceRow{
+  color:#64748b;
+  font-style:italic;
+}
+.isaComparisonGridV2 .planterRow{
+  background:#ffffff;
+  color:#1f2933;
+}
+.isaComparisonGridV2 .planterCell{
+  background:#ffffff;
+}
+.isaRowLabel span{
+  display:block;
+  font-size:10px;
+  text-transform:uppercase;
+  letter-spacing:.08em;
+  color:#64748b;
+  font-weight:800;
+  margin-top:3px;
+  font-style:normal;
+}
+.isaComparisonGridV2 .referenceCell .isaMiniBar{
+  opacity:.72;
+  filter:saturate(.75);
+}
+.isaComparisonGridV2 .referenceCell .isaMiniBar em{
+  color:#475569;
+}
+
+
+/* v42/v44 ISA report HTML-mirrored redesign */
+.isaReportV44{
+  display:grid;
+  gap:18px;
+}
+.isaReportHeroV44{
+  padding:30px!important;
+  border-radius:28px!important;
+  display:grid!important;
+  grid-template-columns:1fr auto;
+  gap:24px;
+  align-items:center;
+}
+.isaReportHeroV44 .eyebrow{
+  font-size:12px;
+  letter-spacing:.14em;
+  text-transform:uppercase;
+  color:#64748b;
+  font-weight:850;
+}
+.isaReportHeroV44 h2{
+  font-size:36px!important;
+  letter-spacing:-.035em;
+  margin:6px 0 6px!important;
+}
+.isaScoreStripV44{
+  background:#fff;
+  border:1px solid #d9e2ec;
+  border-radius:24px;
+  padding:18px;
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  gap:12px;
+  box-shadow:0 10px 24px rgba(15,23,42,.04);
+}
+.isaScoreCard{
+  border:1px solid #eef2f6;
+  border-radius:18px;
+  padding:14px;
+  background:#fffaf1;
+}
+.isaScoreCard strong{
+  display:block;
+  font-size:14px;
+  margin-bottom:8px;
+}
+.isaScoreTrack{
+  height:9px;
+  background:#edf2f7;
+  border-radius:999px;
+  overflow:hidden;
+  margin-bottom:8px;
+}
+.isaScoreTrack span{
+  display:block;
+  height:100%;
+  border-radius:999px;
+}
+.isaScoreCard em{
+  font-style:normal;
+  font-weight:900;
+  font-size:20px;
+}
+.isaGuideBlock h3,
+.isaReportBlock h3{
+  font-size:24px;
+  letter-spacing:-.02em;
+}
+.isaSectionLead{
+  font-size:15px;
+  color:#52617a;
+  max-width:900px;
+  margin:0 0 18px;
+}
+.isaGuideGrid{
+  display:grid;
+  grid-template-columns:1.05fr .95fr;
+  gap:16px;
+}
+.isaGuideCard{
+  border:1px solid #eef2f6;
+  border-radius:18px;
+  padding:18px;
+  background:#fffaf1;
+}
+.isaGuideCard h4{
+  margin:0 0 12px;
+  font-size:18px;
+}
+.isaDefinitionList{
+  display:grid;
+  gap:10px;
+}
+.isaDefinitionList > div{
+  display:grid;
+  grid-template-columns:150px 1fr;
+  gap:12px;
+  border-top:1px solid #eef2f6;
+  padding-top:10px;
+}
+.isaDefinitionList > div:first-child{
+  border-top:none;
+  padding-top:0;
+}
+.isaDefinitionList strong{
+  color:#0f172a;
+}
+.isaDefinitionList p,
+.isaLegendList p{
+  margin:0;
+  color:#52617a;
+  font-size:14px;
+}
+.isaLegendList{
+  display:grid;
+  gap:10px;
+}
+.isaLegendList > div{
+  border:1px solid #eef2f6;
+  border-radius:16px;
+  padding:14px;
+  background:#fff;
+}
+.isaLegendList strong{
+  display:block;
+  margin-bottom:4px;
+}
+.isaInterpretGrid{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:12px;
+  margin-top:16px;
+}
+.isaInterpretCard{
+  border:1px solid #eef2f6;
+  border-radius:18px;
+  padding:16px;
+  background:#fff;
+}
+.isaInterpretCard strong{
+  display:block;
+  margin-bottom:6px;
+  font-size:16px;
+}
+.isaInterpretCard p{
+  margin:0;
+  color:#52617a;
+  font-size:14px;
+}
+.isaInterpretCard.green{
+  background:#fbfffd;
+  border-color:#bee8cf;
+}
+.isaInterpretCard.gold{
+  background:#fffdf5;
+  border-color:#f8e3a2;
+}
+.isaInterpretCard.blue{
+  background:#fffaf1;
+  border-color:#cfe1fa;
+}
+.isaReflectionBox{
+  margin-top:16px;
+  background:#fffaf1;
+  border:1px solid #eef2f6;
+  border-radius:18px;
+  padding:18px;
+}
+.isaReflectionBox strong{
+  display:block;
+  margin-bottom:8px;
+}
+.isaReflectionBox ul{
+  margin:0;
+  padding-left:20px;
+  color:#52617a;
+}
+.isaReferenceNote{
+  margin:0 0 14px;
+  color:#52617a;
+}
+.isaComparisonWrap{
+  overflow-x:auto;
+}
+.isaComparisonGridV44{
+  min-width:830px;
+  border-radius:18px;
+}
+.isaComparisonGridV44 .referenceRow,
+.isaComparisonGridV44 .referenceCell{
+  background:#fffaf1;
+}
+.isaComparisonGridV44 .referenceRow{
+  color:#64748b;
+  font-style:italic;
+}
+.isaComparisonGridV44 .planterRow,
+.isaComparisonGridV44 .planterCell{
+  background:#fff;
+}
+.isaRowLabel span{
+  display:block;
+  margin-top:3px;
+  font-size:10px;
+  text-transform:uppercase;
+  letter-spacing:.08em;
+  color:#64748b;
+  font-weight:800;
+  font-style:normal;
+}
+.isaSoftReferenceBar span{
+  opacity:.62;
+}
+.isaSoftReferenceBar{
+  opacity:.88;
+}
+.isaSuggestionGrid{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:14px;
+}
+.isaSuggestionCard{
+  border:1px solid #eef2f6;
+  border-radius:18px;
+  padding:18px;
+  background:#fffaf1;
+}
+.isaSuggestionCard h4{
+  margin:0 0 8px;
+  font-size:18px;
+}
+.isaSuggestionCard p{
+  margin:0;
+  color:#52617a;
+}
+.isaSuggestionCard.strength{
+  border-color:#bee8cf;
+  background:#fbfffd;
+}
+.isaSuggestionCard.conversation{
+  border-color:#f8e3a2;
+  background:#fffdf5;
+}
+.isaSuggestionCard.development{
+  border-color:#cfe1fa;
+  background:#fffaf1;
+}
+.isaTag{
+  display:inline-block;
+  border-radius:999px;
+  padding:5px 9px;
+  font-size:11px;
+  font-weight:900;
+  text-transform:uppercase;
+  letter-spacing:.06em;
+  margin-bottom:10px;
+}
+.isaTag.green{
+  background:#e7f6ee;
+  color:#16834a;
+}
+.isaTag.gold{
+  background:#fff6dc;
+  color:#a16207;
+}
+.isaTag.blue{
+  background:#e8f1fb;
+  color:#1e40af;
+}
+.isaDepthTableV44{
+  font-size:13px;
+}
+.isaDepthTableV44 th{
+  background:#0f172a!important;
+}
+.isaDepthTableV44 td:first-child{
+  width:52px;
+  font-weight:850;
+  color:#64748b;
+}
+.isaDepthTableV44 td:nth-child(3){
+  width:150px;
+  font-weight:700;
+}
+.isaDepthTableV44 td:nth-child(4){
+  width:70px;
+  text-align:center;
+  font-weight:850;
+}
+@media(max-width:900px){
+  .isaReportHeroV44{grid-template-columns:1fr!important}
+  .isaScoreStripV44{grid-template-columns:1fr 1fr}
+  .isaGuideGrid,.isaSuggestionGrid{grid-template-columns:1fr}
+  .isaInterpretGrid{grid-template-columns:1fr}
+}
+@media print{
+  body{background:#fff!important}
+  .reportSection,.isaReportTitle,.isaScoreStripV44{
+    box-shadow:none!important;
+    break-inside:avoid;
+  }
+  .isaDepthTableV44 tr{
+    break-inside:avoid;
+  }
+}
+
+
+/* v43 browser print/export from real HTML */
+.reportPrintActions{
+  display:flex;
+  justify-content:flex-end;
+  gap:10px;
+  margin:18px 0;
+}
+.reportPrintActions button{
+  border:none;
+  border-radius:14px;
+  background:#0f172a;
+  color:#fff;
+  padding:12px 18px;
+  font-weight:850;
+  cursor:pointer;
+}
+@media print{
+  @page{
+    size: Letter;
+    margin: 0.45in;
+  }
+  html, body{
+    background:#ffffff!important;
+    color:#1f2933!important;
+    -webkit-print-color-adjust: exact!important;
+    print-color-adjust: exact!important;
+  }
+  nav,
+  .portalNav,
+  .adminTop,
+  .adminControls,
+  .adminHeader,
+  .adminFilters,
+  .adminLogin,
+  .adminSummary,
+  .adminSubmissions,
+  .actions,
+  .reportPrintActions,
+  .noPrint,
+  button{
+    display:none!important;
+  }
+  main{
+    max-width:none!important;
+    width:100%!important;
+    margin:0!important;
+    padding:0!important;
+  }
+  #adminReport,
+  .isaReport,
+  .isaReportV44{
+    display:block!important;
+    width:100%!important;
+    max-width:none!important;
+    margin:0!important;
+    padding:0!important;
+    background:#fff!important;
+  }
+  .reportSection,
+  .isaReportTitle,
+  .isaReportHeroV44,
+  .isaScoreStripV44{
+    box-shadow:none!important;
+    border:1px solid #d9e2ec!important;
+    break-inside:avoid;
+    page-break-inside:avoid;
+  }
+  .isaReportHeroV44{
+    padding:22px!important;
+    margin-bottom:14px!important;
+  }
+  .isaReportHeroV44 h2{
+    font-size:25px!important;
+    line-height:1.1!important;
+  }
+  .isaOverall{
+    width:96px!important;
+    min-width:96px!important;
+    padding:12px!important;
+  }
+  .isaOverall strong{
+    font-size:30px!important;
+  }
+  .isaScoreStripV44{
+    grid-template-columns:repeat(4,1fr)!important;
+    gap:8px!important;
+    padding:12px!important;
+    margin-bottom:14px!important;
+  }
+  .isaScoreCard{
+    padding:10px!important;
+  }
+  .isaScoreCard strong{
+    font-size:9px!important;
+  }
+  .isaScoreCard em{
+    font-size:14px!important;
+  }
+  .reportSection{
+    padding:16px!important;
+    margin:0 0 14px!important;
+    border-radius:16px!important;
+  }
+  .reportSection h3,
+  .isaGuideBlock h3,
+  .isaReportBlock h3{
+    font-size:18px!important;
+    margin-bottom:8px!important;
+  }
+  .isaSectionLead,
+  .isaHowToRead p,
+  .muted{
+    font-size:9.5px!important;
+    line-height:1.35!important;
+  }
+  .isaGuideGrid{
+    grid-template-columns:1fr 1fr!important;
+    gap:10px!important;
+  }
+  .isaGuideCard{
+    padding:12px!important;
+    break-inside:avoid;
+  }
+  .isaGuideCard h4{
+    font-size:12px!important;
+  }
+  .isaDefinitionList > div{
+    grid-template-columns:92px 1fr!important;
+    gap:8px!important;
+    padding-top:7px!important;
+  }
+  .isaDefinitionList strong,
+  .isaLegendList strong{
+    font-size:8px!important;
+  }
+  .isaDefinitionList p,
+  .isaLegendList p{
+    font-size:7.5px!important;
+    line-height:1.25!important;
+  }
+  .isaLegendList{
+    gap:7px!important;
+  }
+  .isaLegendList > div{
+    padding:9px!important;
+  }
+  .isaInterpretGrid{
+    grid-template-columns:repeat(3,1fr)!important;
+    gap:8px!important;
+  }
+  .isaInterpretCard{
+    padding:10px!important;
+  }
+  .isaInterpretCard strong{
+    font-size:9px!important;
+  }
+  .isaInterpretCard p{
+    font-size:7.5px!important;
+  }
+  .isaReflectionBox{
+    padding:10px!important;
+    font-size:8px!important;
+  }
+  .isaComparisonWrap{
+    overflow:visible!important;
+  }
+  .isaComparisonGrid,
+  .isaComparisonGridV44{
+    min-width:0!important;
+    width:100%!important;
+    grid-template-columns:105px repeat(4,1fr)!important;
+    font-size:8px!important;
+  }
+  .isaGridHeader{
+    font-size:7px!important;
+    padding:8px!important;
+  }
+  .isaRowLabel{
+    font-size:8px!important;
+    padding:8px!important;
+  }
+  .isaRowLabel span{
+    font-size:5.5px!important;
+  }
+  .isaGridCell{
+    padding:8px!important;
+  }
+  .isaMiniBar{
+    grid-template-columns:1fr 28px!important;
+    gap:5px!important;
+  }
+  .isaMiniBar em{
+    font-size:7px!important;
+  }
+  .isaSuggestionGrid{
+    grid-template-columns:1fr 1fr!important;
+    gap:9px!important;
+  }
+  .isaSuggestionCard{
+    padding:12px!important;
+    break-inside:avoid;
+  }
+  .isaSuggestionCard h4{
+    font-size:11px!important;
+  }
+  .isaSuggestionCard p{
+    font-size:8px!important;
+    line-height:1.3!important;
+  }
+  .isaTag{
+    font-size:6px!important;
+    padding:4px 7px!important;
+  }
+  .isaCategoryCards{
+    grid-template-columns:1fr 1fr!important;
+    gap:9px!important;
+  }
+  .isaCategoryCard{
+    break-inside:avoid;
+    padding:10px!important;
+  }
+  .isaCategoryCard h4{
+    font-size:10px!important;
+  }
+  .isaCategoryCard p,
+  .isaCategoryCard small{
+    font-size:7.5px!important;
+  }
+  .isaDepthTable,
+  .isaDepthTableV44{
+    width:100%!important;
+    font-size:7px!important;
+    border-collapse:collapse!important;
+    break-inside:auto;
+  }
+  .isaDepthTable th,
+  .isaDepthTableV44 th{
+    font-size:7px!important;
+    padding:6px!important;
+  }
+  .isaDepthTable td,
+  .isaDepthTableV44 td{
+    padding:5px 6px!important;
+    line-height:1.2!important;
+  }
+  .isaDepthTable tr,
+  .isaDepthTableV44 tr{
+    break-inside:avoid;
+    page-break-inside:avoid;
+  }
+  .isaDepthTable thead,
+  .isaDepthTableV44 thead{
+    display:table-header-group;
+  }
+}
+
+
+/* v47 print/export support for Discernment Center Candidate Assessment Report */
+@media print{
+  .characterReport,
+  .candidateAssessmentReport,
+  .reportShell,
+  .reportPanel,
+  .reportSection,
+  .introPanel,
+  .profileChart,
+  .profileRow,
+  .qualityCard,
+  .scoreExplanationCard{
+    overflow:visible!important;
+  }
+
+  .profileChart,
+  .qualityGrid,
+  .scoreDetails,
+  .reportSection{
+    break-inside:auto;
+    page-break-inside:auto;
+  }
+
+  .profileRow,
+  .qualityCard,
+  .scoreExplanationCard{
+    break-inside:avoid;
+    page-break-inside:avoid;
+  }
+
+  .reportSection h3,
+  .introPanel h3{
+    break-after:avoid;
+    page-break-after:avoid;
+  }
+}
+
+
+/* v48 Cleaner Character Assessment report header */
+.characterReportV48{
+  display:grid;
+  gap:18px;
+}
+
+.characterReportHeroV48{
+  background:#fff;
+  border:1px solid #d9e2ec;
+  border-radius:28px;
+  padding:30px;
+  box-shadow:0 14px 34px rgba(15,23,42,.06);
+  display:grid;
+  grid-template-columns:1fr auto;
+  gap:24px;
+  align-items:center;
+}
+
+.characterReportHeroV48 .eyebrow{
+  font-size:12px;
+  letter-spacing:.14em;
+  text-transform:uppercase;
+  color:#64748b;
+  font-weight:850;
+}
+
+.characterReportHeroV48 h2{
+  font-size:36px;
+  line-height:1.08;
+  letter-spacing:-.035em;
+  margin:6px 0 10px;
+  color:#1e88c9;
+}
+
+.characterReportHeroV48 p{
+  margin:0;
+  color:#64748b;
+  font-weight:650;
+}
+
+.characterOverallV48{
+  width:132px;
+  min-height:112px;
+  border-radius:28px;
+  display:grid;
+  place-items:center;
+  text-align:center;
+  background:#fffdf5;
+  border:3px solid #9bbf2f;
+  padding:18px 14px;
+}
+
+.characterOverallV48 strong{
+  display:block;
+  font-size:42px;
+  line-height:1;
+  color:#0f172a;
+}
+
+.characterOverallV48 span{
+  display:block;
+  margin-top:6px;
+  font-weight:850;
+  color:#52617a;
+}
+
+@media(max-width:820px){
+  .characterReportHeroV48{
+    grid-template-columns:1fr;
+  }
+}
+
+@media print{
+  .characterReportV48{
+    display:block!important;
+    width:100%!important;
+    max-width:none!important;
+    margin:0!important;
+    padding:0!important;
+    background:#fff!important;
+    overflow:visible!important;
+  }
+
+  .characterReportHeroV48{
+    box-shadow:none!important;
+    border:1px solid #d9e2ec!important;
+    break-inside:avoid!important;
+    page-break-inside:avoid!important;
+    padding:22px!important;
+    margin-bottom:14px!important;
+    grid-template-columns:1fr auto!important;
+  }
+
+  .characterReportHeroV48 h2{
+    font-size:25px!important;
+    line-height:1.1!important;
+  }
+
+  .characterOverallV48{
+    width:96px!important;
+    min-width:96px!important;
+    min-height:80px!important;
+    padding:12px!important;
+  }
+
+  .characterOverallV48 strong{
+    font-size:30px!important;
+  }
+
+  .characterOverallV48 span{
+    font-size:10px!important;
+  }
+}
+
+
+/* v49 Character report print pagination fix
+   Browser print does not handle multi-column/grid cards reliably.
+   For print only, character descriptions become a clean single-column list so cards do not get sliced off. */
+@media print{
+  .characterReportV48 .qualityGrid{
+    display:block!important;
+    grid-template-columns:none!important;
+    column-count:1!important;
+    gap:0!important;
+  }
+
+  .characterReportV48 .qualityCard{
+    display:block!important;
+    width:100%!important;
+    max-width:none!important;
+    margin:0 0 12px!important;
+    padding:14px!important;
+    min-height:auto!important;
+    height:auto!important;
+    overflow:visible!important;
+    break-inside:avoid!important;
+    page-break-inside:avoid!important;
+  }
+
+  .characterReportV48 .qualityCardTop{
+    display:flex!important;
+    align-items:flex-start!important;
+    justify-content:space-between!important;
+    gap:14px!important;
+  }
+
+  .characterReportV48 .qualityCard h4{
+    font-size:13px!important;
+    line-height:1.15!important;
+    margin:0 0 6px!important;
+  }
+
+  .characterReportV48 .qualityCard p{
+    font-size:10px!important;
+    line-height:1.38!important;
+    margin:10px 0 0!important;
+  }
+
+  .characterReportV48 .qualityScore{
+    min-width:78px!important;
+    max-width:92px!important;
+    padding:8px 10px!important;
+    font-size:15px!important;
+    flex:0 0 auto!important;
+  }
+
+  .characterReportV48 .qualityScore em{
+    display:block!important;
+    font-size:8px!important;
+    line-height:1.1!important;
+  }
+
+  .characterReportV48 .knockoutBadge{
+    font-size:7px!important;
+    padding:4px 7px!important;
+  }
+
+  .characterReportV48 .reportSection:has(.qualityGrid){
+    break-inside:auto!important;
+    page-break-inside:auto!important;
+    overflow:visible!important;
+  }
+
+  .characterReportV48 .reportSection:has(.qualityGrid) h3,
+  .characterReportV48 .reportSection:has(.qualityGrid) > p{
+    break-after:avoid!important;
+    page-break-after:avoid!important;
+  }
+}
+
+
+/* v52 Application report header and printable review */
+.applicationReviewV52{
+  display:grid;
+  gap:18px;
+}
+
+.applicationHeroV52{
+  background:#fff;
+  border:1px solid #d9e2ec;
+  border-radius:28px;
+  padding:30px;
+  box-shadow:0 14px 34px rgba(15,23,42,.06);
+  display:grid;
+  grid-template-columns:1fr auto;
+  gap:24px;
+  align-items:center;
+}
+
+.applicationHeroV52 .eyebrow{
+  font-size:12px;
+  letter-spacing:.14em;
+  text-transform:uppercase;
+  color:#64748b;
+  font-weight:850;
+}
+
+.applicationHeroV52 h2{
+  font-size:36px;
+  line-height:1.08;
+  letter-spacing:-.035em;
+  margin:6px 0 10px;
+  color:#1e88c9;
+}
+
+.applicationHeroV52 p{
+  margin:0;
+  color:#64748b;
+  font-weight:650;
+}
+
+.applicationStatusV52{
+  width:132px;
+  min-height:112px;
+  border-radius:28px;
+  display:grid;
+  place-items:center;
+  text-align:center;
+  background:#fffdf5;
+  border:3px solid #9bbf2f;
+  padding:18px 14px;
+}
+
+.applicationStatusV52 strong{
+  display:block;
+  font-size:24px;
+  line-height:1;
+  color:#0f172a;
+}
+
+.applicationStatusV52 span{
+  display:block;
+  margin-top:6px;
+  font-weight:850;
+  color:#52617a;
+  font-size:12px;
+}
+
+.applicationReviewGrid{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:16px;
+}
+
+.applicationReviewBlock{
+  background:#fff;
+  border:1px solid #d9e2ec;
+  border-radius:22px;
+  padding:20px;
+  box-shadow:0 10px 24px rgba(15,23,42,.04);
+}
+
+.applicationReviewBlock h3{
+  margin:0 0 12px;
+  font-size:21px;
+}
+
+.reviewRow{
+  border-top:1px solid #eef2f6;
+  padding:11px 0;
+}
+
+.reviewRow:first-of-type{
+  border-top:none;
+}
+
+.reviewRow strong{
+  display:block;
+  font-size:12px;
+  text-transform:uppercase;
+  letter-spacing:.08em;
+  color:#64748b;
+  margin-bottom:5px;
+}
+
+.reviewRow p{
+  margin:0;
+  white-space:pre-wrap;
+  color:#334155;
+}
+
+.reviewRow ul{
+  margin:0;
+  padding-left:18px;
+}
+
+@media(max-width:820px){
+  .applicationHeroV52{
+    grid-template-columns:1fr;
+  }
+  .applicationReviewGrid{
+    grid-template-columns:1fr;
+  }
+}
+
+@media print{
+  .applicationHeroV52{
+    box-shadow:none!important;
+  }
+  .applicationReviewBlock{
+    box-shadow:none!important;
+  }
+}
+
+
+/* v53 Candidate photo in application admin report and print/PDF */
+.applicationHeroIdentityV53{
+  display:flex;
+  align-items:center;
+  gap:18px;
+  min-width:0;
+}
+
+.applicationCandidatePhotoV53,
+.applicationPhotoPlaceholderV53{
+  width:92px;
+  height:92px;
+  border-radius:24px;
+  border:1px solid #d9e2ec;
+  flex:0 0 auto;
+}
+
+.applicationCandidatePhotoV53{
+  object-fit:cover;
+  background:#fffaf1;
+}
+
+.applicationPhotoPlaceholderV53{
+  display:grid;
+  place-items:center;
+  background:#e8f1fb;
+  color:#1e40af;
+  font-weight:900;
+  font-size:24px;
+}
+
+.applicationPhotoBlockV53{
+  display:grid;
+  gap:12px;
+  align-content:start;
+}
+
+.applicationPhotoBlockV53 img{
+  width:180px;
+  max-width:100%;
+  border-radius:22px;
+  border:1px solid #d9e2ec;
+  object-fit:cover;
+  background:#fffaf1;
+}
+
+@media(max-width:820px){
+  .applicationHeroIdentityV53{
+    align-items:flex-start;
+  }
+}
+
+@media print{
+  .applicationHeroIdentityV53{
+    display:flex!important;
+    align-items:center!important;
+    gap:14px!important;
+  }
+
+  .applicationCandidatePhotoV53,
+  .applicationPhotoPlaceholderV53{
+    width:70px!important;
+    height:70px!important;
+    border-radius:18px!important;
+  }
+
+  .applicationPhotoPlaceholderV53{
+    font-size:18px!important;
+  }
+
+  .applicationPhotoBlockV53 img{
+    width:130px!important;
+    border-radius:16px!important;
+  }
+}
+
+
+/* v55 Application report cleanup */
+.applicationStatusV52{
+  width:auto!important;
+  min-width:142px!important;
+  min-height:0!important;
+  border-radius:999px!important;
+  display:flex!important;
+  flex-direction:column!important;
+  justify-content:center!important;
+  align-items:center!important;
+  background:#f7fbf4!important;
+  border:1px solid #b8d779!important;
+  padding:11px 17px!important;
+  box-shadow:none!important;
+}
+
+.applicationStatusV52 strong{
+  display:block!important;
+  font-size:18px!important;
+  line-height:1.1!important;
+  color:#0f172a!important;
+  letter-spacing:-.02em!important;
+}
+
+.applicationStatusV52 span{
+  display:block!important;
+  margin-top:5px!important;
+  font-size:11px!important;
+  font-weight:800!important;
+  color:#64748b!important;
+  white-space:nowrap!important;
+}
+
+.applicationPhotoBlockV53{
+  display:none!important;
+}
+
+@media print{
+  .applicationStatusV52{
+    min-width:118px!important;
+    padding:8px 12px!important;
+    border-radius:999px!important;
+  }
+
+  .applicationStatusV52 strong{
+    font-size:14px!important;
+  }
+
+  .applicationStatusV52 span{
+    font-size:8px!important;
+  }
+
+  .applicationPhotoBlockV53{
+    display:none!important;
+  }
+}
+
+

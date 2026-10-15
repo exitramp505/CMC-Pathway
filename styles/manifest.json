@@ -1,0 +1,20 @@
+{
+  "description": "Ordered CMC Pathway stylesheet sources. Order is critical for historical cascade behavior.",
+  "files": [
+    "00-legacy-assessments.css",
+    "01-design-foundation.css",
+    "02-task-plan-workspace.css",
+    "03-shared-header-navigation.css",
+    "04-leadership-events-courses.css",
+    "05-people-events-legacy.css",
+    "06-assessment-reports-print.css",
+    "07-assignments-participant-records.css",
+    "08-onboarding-and-profile.css",
+    "09-participant-dashboard.css",
+    "10-responsive-admin-and-forms.css",
+    "11-management-and-builder-workspaces.css",
+    "12-coaching-and-course-editor.css",
+    "13-account-and-accessibility.css",
+    "14-final-design-contract.css"
+  ]
+}

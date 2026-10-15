@@ -9295,3 +9295,45 @@ body.cmcAuthBody button.oauthBtn:focus-visible .oauthIcon{background:var(--cmcSl
 }
 
 .profilePageMain .cmcProfileSetupActions[hidden]{display:none!important}
+
+
+/* Readable form defaults for admins and participants. The older compact 9px
+   labels are too small to scan, especially while building longer courses. */
+.cmcPathwayBody .cmcBuilderSettings label>span,
+.cmcPathwayBody .cmcModuleFields label>span,
+.cmcPathwayBody .cmcLessonFields label>span,
+.cmcPathwayBody .cmcEventFieldGrid label,
+.cmcPathwayBody .cmcProfileFieldGrid label {
+  font-size:13px;
+  line-height:1.45;
+  letter-spacing:.045em;
+}
+.cmcPathwayBody .cmcBuilderSettings label>small,
+.cmcPathwayBody .cmcCourseDetailsHeading .cmcEditorToggle small,
+.cmcPathwayBody .cmcRichField>small {
+  font-size:12px;
+  line-height:1.6;
+}
+.cmcPathwayBody .cmcAutosaveStatus {
+  font-size:12px;
+  line-height:1.35;
+}
+.cmcPathwayBody .cmcBuilderSettings :is(input:not([type="checkbox"]),textarea,select),
+.cmcPathwayBody .cmcModuleFields :is(input:not([type="checkbox"]),textarea,select),
+.cmcPathwayBody .cmcLessonFields :is(input:not([type="checkbox"]),textarea,select),
+.cmcPathwayBody .cmcEventFieldGrid :is(input:not([type="checkbox"]),textarea,select),
+.cmcPathwayBody .cmcProfileFieldGrid :is(input:not([type="checkbox"]),textarea,select) {
+  font-size:15px;
+  line-height:1.55;
+}
+@media (max-width:720px) {
+  /* On iPhones, type smaller than 16px causes Safari to zoom into form fields. */
+  .cmcPathwayBody .cmcBuilderSettings :is(input:not([type="checkbox"]),textarea,select),
+  .cmcPathwayBody .cmcModuleFields :is(input:not([type="checkbox"]),textarea,select),
+  .cmcPathwayBody .cmcLessonFields :is(input:not([type="checkbox"]),textarea,select),
+  .cmcPathwayBody .cmcEventFieldGrid :is(input:not([type="checkbox"]),textarea,select),
+  .cmcPathwayBody .cmcProfileFieldGrid :is(input:not([type="checkbox"]),textarea,select),
+  .cmcAuthBody .authForm input {
+    font-size:16px;
+  }
+}

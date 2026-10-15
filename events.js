@@ -1,21 +1,17 @@
 (async function(){
   const localPreview = ['127.0.0.1', 'localhost'].includes(window.location.hostname)
     && new URLSearchParams(window.location.search).get('preview') === '1';
-  let profile = { id:'preview-admin', full_name:'George Williams', email:'george@openbibleeast.org', region:'East', account_role:'cmc_admin' };
+  // events-admin returns its verified viewer; don't repeat a profile read
+  // before requesting the same data. The server enforces region access.
+  let profile = localPreview
+    ? { id:'preview-admin', full_name:'Preview Admin', region:'East', account_role:'cmc_admin' }
+    : null;
   let token = '';
   if (!localPreview) {
-    const user = await dcAuth.requireUser();
-    if (!user) return;
-    profile = await dcAuth.getProfile(user.id).catch(() => null);
-    if (!['regional_leader', 'cmc_admin'].includes(profile?.account_role)) {
-      window.location.replace('dashboard.html');
-      return;
-    }
-    const sb = await dcAuth.getSupabaseClient();
-    const session = await sb.auth.getSession();
-    token = session.data?.session?.access_token || '';
+    const session = await dcAuth.getCurrentSession().catch(() => null);
+    if (!session?.user) { window.location.href = 'login.html'; return; }
+    token = session.access_token || '';
   }
-  dcAuth.renderRoleNavigation(profile, 'events');
   const editor = document.getElementById('eventEditorDialog');
   const editorForm = document.getElementById('eventEditorForm');
   const inviteDialog = document.getElementById('eventInviteDialog');
@@ -39,11 +35,11 @@
   document.getElementById('eventInviteSearch').addEventListener('input', renderInvitees);
   document.getElementById('selectAllInvitees').addEventListener('click', selectVisibleInvitees);
   document.getElementById('eventList').addEventListener('click', handleEventAction);
+  if (!await load()) return;
+  dcAuth.renderRoleNavigation(profile, 'events');
   if (profile.account_role === 'regional_leader') {
     document.getElementById('eventRegionField').classList.add('hidden');
   }
-
-  await load();
 
   async function load() {
     setPageMessage('Loading events…');
@@ -53,21 +49,29 @@
         renderStats();
         renderEvents();
         setPageMessage('Local preview · No changes are sent or published.');
-        return;
+        return true;
       }
       const response = await fetch('/.netlify/functions/events-admin', {
         headers:{ Authorization:`Bearer ${token}` }
       });
       const data = await response.json().catch(() => ({}));
+      if (response.status === 401) { window.location.href = 'login.html'; return false; }
+      if (response.status === 403) { window.location.replace('dashboard.html'); return false; }
       if (!response.ok || !data.ok) throw new Error(data.error || 'Could not load events.');
+      if (!['regional_leader','cmc_admin'].includes(data.viewer?.account_role)) {
+        throw new Error('Your event management permissions could not be verified.');
+      }
+      profile = data.viewer;
       events = data.events || [];
       participants = data.participants || [];
       invitations = data.invitations || [];
       renderStats();
       renderEvents();
       setPageMessage('');
+      return true;
     } catch (error) {
       setPageMessage(error.message || 'Could not load events.', true);
+      return false;
     }
   }
 

@@ -8,7 +8,7 @@ const pages=fs.readdirSync(path.join(__dirname,'..')).filter(file=>file.endsWith
 const styled=pages.filter(page=>read(page).includes('style.css?v='));
 assert.ok(styled.length>=30,'All user and admin pages must share the stylesheet');
 for(const page of styled){
-  assert.match(read(page),/style\.css\?v=139/,page+' must use the latest shared visual rules');
+  assert.match(read(page),/style\.css\?v=140/,page+' must use the latest shared visual rules');
 }
 const formsCss=read('forms.css');
 for(const page of pages){
@@ -36,4 +36,9 @@ assert.match(guide,/Inputs, selects, and textareas should use Body/);
 for(const page of ['login.html','signup.html','course.html','participant.html','leader.html','events.html','course-builder.html','task-plan-builder.html']){
   assert.match(read(page),/cmcPathwayBody/,page+' must use the shared design system');
 }
+assert.match(css,/\/\* v140: Final small-type fixes/);
+assert.match(css,/\.cmcParticipantRow \.cmcPerson strong\{[\s\S]*?font-size:var\(--cmc-type-body\)/);
+assert.match(css,/\.cmcParticipantStats span,[\s\S]*?font-size:var\(--cmc-type-label\)/);
+assert.match(css,/\.cmcBackLink\{[\s\S]*?min-height:44px/);
+assert.match(css,/\.cmcRowAction\{[\s\S]*?font-size:var\(--cmc-type-body-sm\)/);
 console.log('Shared visual system, responsive navigation, accessible type and touch rules passed.');

@@ -259,18 +259,19 @@
   }
 
   function saveEditorSnapshot(payload) {
-    const modules = [...document.querySelectorAll('[data-module]')];
-    modules.forEach((module, moduleIndex) => {
-      [...module.querySelectorAll('[data-lesson]')].forEach((node, lessonIndex) => {
-        const content = payload.modules?.[moduleIndex]?.lessons?.[lessonIndex]?.content;
-        if (content !== undefined && getStoredLessonContent(node) === content) {
-          node._savedStoredContent = content;
-          node._savedContent = CMCLessonContent.lessonBody(content);
-          node._initialFormats = selectedLessonFormats(node);
-          node._legacyType = payload.modules[moduleIndex].lessons[lessonIndex].lesson_type;
-          node._richDirty = false;
-        }
-      });
+    // A lesson can move while a save is in flight. Match stable IDs rather
+    // than indexes to avoid falsely marking a different lesson as saved.
+    const savedById = new Map((payload.modules || [])
+      .flatMap(module => module.lessons || [])
+      .map(lesson => [lesson.id, lesson]));
+    document.querySelectorAll('[data-lesson]').forEach(node => {
+      const saved = savedById.get(node.dataset.id);
+      if (!saved || getStoredLessonContent(node) !== saved.content) return;
+      node._savedStoredContent = saved.content;
+      node._savedContent = CMCLessonContent.lessonBody(saved.content);
+      node._initialFormats = selectedLessonFormats(node);
+      node._legacyType = saved.lesson_type;
+      node._richDirty = false;
     });
   }
 
@@ -568,7 +569,7 @@
       setAutosaveStatus(autosaveQueued ? 'More changes waiting to save…' : 'All changes saved');
       return true;
     } catch (error) {
-      const conflict = error.statusCode === 409 && /administrator|course URL|item ID/i.test(error.message);
+      const conflict = error.statusCode === 409;
       const unready = error.statusCode === 503 || error.statusCode === 428;
       if (conflict || unready) {
         saveBlocked = true;

@@ -534,6 +534,9 @@
 .cmcApplicationMain .removeRow{background:rgba(207,119,103,.13);color:#8d4137}
 .cmcApplicationMain .applicationActions{position:sticky;bottom:14px;z-index:5;padding:12px;border:1px solid rgba(41,61,72,.13);border-radius:17px;background:rgba(251,240,222,.92);backdrop-filter:blur(14px)}
 
+/* Keep uploaded-document pickers as readable as other application inputs. */
+.cmcApplicationMain input[type="file"]{font-size:var(--cmc-type-body);max-width:100%;min-width:0}
+
 /* Ministry Style inventory follows the shared form system without losing its unique choice model. */
 .cmcFormBody .ministryStyleHeroCard{border-color:rgba(251,240,222,.16);background:rgba(255,250,241,.08);box-shadow:none}
 .cmcFormBody .ministryStyleHeroCard strong{color:var(--cmcSand)}

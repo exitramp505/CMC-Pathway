@@ -106,5 +106,17 @@ async function main(){
     console.log('  REVIEW '+row.page+' / '+row.viewport+': '+row.inputsBelow16+' inputs below 16px; '+JSON.stringify(row.smallInputs.slice(0,5)));
   }
   console.log('Note: JavaScript-disabled shells are not a substitute for signed-in role QA.');
+  // Safety gates for already-observed, user-visible issues. The browser
+  // screenshot report still captures the other responsive observations.
+  const sitePhones=overflow.filter(row=>row.page==='website.html'&&
+    ['small-phone','phone','large-phone'].includes(row.viewport));
+  const inputScreens=tiny.filter(row=>[
+    'application.html','leader.html','course-builder.html','task-plan-builder.html'
+  ].includes(row.page));
+  if(sitePhones.length||inputScreens.length){
+    throw new Error('Responsive CMC regressions: '+sitePhones.length+
+      ' website mobile overflows; '+inputScreens.length+' pages have undersized form inputs.');
+  }
+
 }
 main().catch(error=>{console.error(error);process.exitCode=1;});

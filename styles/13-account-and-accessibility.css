@@ -178,7 +178,7 @@
 .cmcPathwayBody .cmcLessonFields :is(input:not([type="checkbox"]),textarea,select),
 .cmcPathwayBody .cmcEventFieldGrid :is(input:not([type="checkbox"]),textarea,select),
 .cmcPathwayBody .cmcProfileFieldGrid :is(input:not([type="checkbox"]),textarea,select) {
-  font-size:15px;
+  font-size:var(--cmc-type-body);
   line-height:1.55;
 }
 @media (max-width:720px) {

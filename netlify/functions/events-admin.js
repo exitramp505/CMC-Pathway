@@ -70,7 +70,7 @@ async function loadAdminData(supabase, viewer, query) {
     if (viewer.account_role === 'regional_leader') {
       participantQuery = participantQuery.eq('region', viewer.region);
     }
-    }
+  }
   const participantPromise = participantId && isUuid(participantId)
     ? loadParticipant(supabase, viewer, participantId)
     : null;

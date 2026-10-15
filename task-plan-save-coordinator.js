@@ -2,6 +2,27 @@
  * This dependency has no DOM access and can be race-tested without a browser. */
 (function(){
   'use strict';
+  function flattenSnapshot(items,output=[]){
+    for(const item of items||[]){
+      output.push(item);
+      flattenSnapshot(item.tasks||[],output);
+    }
+    return output;
+  }
+  function buildIdMap(savedSections,submittedSections){
+    const idMap=new Map();
+    (submittedSections||[]).forEach((submitted,index)=>{
+      const saved=(savedSections||[])[index];
+      if(!saved)return;
+      idMap.set(submitted.client_id,saved.id);
+      const oldTasks=flattenSnapshot(submitted.tasks||[]);
+      const savedTasks=flattenSnapshot(saved.tasks||[]);
+      oldTasks.forEach((item,i)=>{
+        if(savedTasks[i])idMap.set(item.client_id,savedTasks[i].id);
+      });
+    });
+    return idMap;
+  }
   function create({getPayload,write,applyResponse,setStatus,hasExisting}){
     let revision=0;
     let savedRevision=hasExisting()?0:-1;
@@ -103,5 +124,5 @@
 
     return {markDirty,flush,publish,needsSave:dirty,isPublishing:()=>publishing};
   }
-  window.CMCTaskPlanSave={create};
+  window.CMCTaskPlanSave={create,buildIdMap};
 })();

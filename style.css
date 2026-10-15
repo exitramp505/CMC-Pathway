@@ -9337,3 +9337,49 @@ body.cmcAuthBody button.oauthBtn:focus-visible .oauthIcon{background:var(--cmcSl
     font-size:16px;
   }
 }
+
+
+/* v139: Mobile/readability harmonization. Keep existing colors and layouts. */
+.cmcPathwayBody .cmcNav a,.cmcPathwayBody .cmcNav button{min-height:44px;font-size:var(--cmc-type-body-sm);line-height:1.35}
+.cmcPathwayBody .cmcNav .cmcMobileNavToggle{min-height:44px;font:800 var(--cmc-type-body-sm)/1.3 Montserrat,Arial,sans-serif}
+.cmcPathwayBody .cmcNav .cmcNavMenu a,.cmcPathwayBody .cmcNav .cmcNavMenu button{font-size:var(--cmc-type-body-sm)}
+.cmcPathwayBody .cmcParticipantRow .cmcPerson strong{font-size:var(--cmc-type-body);line-height:1.4}
+.cmcPathwayBody .cmcParticipantStats span,.cmcPathwayBody .cmcParticipantStats small,
+.cmcPathwayBody .cmcLeaderStats span,.cmcPathwayBody .cmcLeaderStats small{
+  font-size:var(--cmc-type-label);line-height:1.45;letter-spacing:.025em;
+}
+.cmcPathwayBody .cmcActionPill{font-size:var(--cmc-type-label);line-height:1.25;letter-spacing:.025em}
+.cmcPathwayBody .cmcBackLink{display:inline-flex;min-height:44px;align-items:center;font-size:var(--cmc-type-body-sm);line-height:1.35}
+.cmcPathwayBody .cmcRowAction{min-height:44px;font-size:var(--cmc-type-body-sm);line-height:1.3}
+.cmcPathwayBody .cmcBuilderSettings label>span,.cmcPathwayBody .cmcModuleFields label>span,
+.cmcPathwayBody .cmcLessonFields label>span,.cmcPathwayBody .cmcEventFieldGrid label,
+.cmcPathwayBody .cmcProfileFieldGrid label{
+  font-size:var(--cmc-type-body-sm);letter-spacing:.025em;line-height:1.45;
+}
+.cmcPathwayBody .cmcBuilderSettings :is(input:not([type="checkbox"]),textarea,select),
+.cmcPathwayBody .cmcModuleFields :is(input:not([type="checkbox"]),textarea,select),
+.cmcPathwayBody .cmcLessonFields :is(input:not([type="checkbox"]),textarea,select),
+.cmcPathwayBody .cmcEventFieldGrid :is(input:not([type="checkbox"]),textarea,select),
+.cmcPathwayBody .cmcProfileFieldGrid :is(input:not([type="checkbox"]),textarea,select){
+  box-sizing:border-box;min-width:0;max-width:100%;font-size:var(--cmc-type-body);
+}
+.cmcPathwayBody .cmcPlanRailStatus span,
+.cmcPathwayBody .cmcCourseMain.sidebar-collapsed .cmcCourseRailStatus span,
+.cmcPathwayBody .cmcBuilderRailStatus{font-size:var(--cmc-type-micro);line-height:1.3}
+.cmcPathwayBody .cmcPasswordToggle{min-height:44px;font-size:var(--cmc-type-body-sm)}
+.cmcPathwayBody :is(a,button,input,textarea,select):focus-visible{outline:2px solid var(--cmcSage);outline-offset:3px}
+.cmcPathwayBody :is(.cmcCourseSidebarToggle,.cmcBuilderSidebarToggle,.cmcPlanSidebarToggle){min-width:44px;min-height:44px}
+@media(max-width:720px){
+  .cmcPathwayBody .cmcNav .cmcMobileNavToggle{min-height:48px;padding-inline:15px}
+  .cmcPathwayBody .cmcNav .cmcNavMenu a,.cmcPathwayBody .cmcNav .cmcNavMenu button{
+    min-height:48px;font-size:var(--cmc-type-body-sm);
+  }
+  .cmcPathwayBody :is(.cmcWelcome h1,.cmcAdminPageHero h1,.cmcParticipantIdentity h1,
+     .cmcLessonHeading,.cmcCourseSidebarContent h1,.cmcTaskPlanFocus h2){
+    overflow-wrap:break-word;hyphens:auto;
+  }
+  .cmcPathwayBody :is(.cmcPerson strong,.cmcParticipantInfoCard dd,.cmcPersonMetric strong,
+    .cmcModuleFields label,.cmcLessonFields label){min-width:0;overflow-wrap:anywhere}
+  .cmcPathwayBody :is(.cmcParticipantRow,.cmcParticipantMainPanel,.cmcParticipantInfoCard,
+    .cmcUtilityCard,.cmcRegionCard){min-width:0}
+}

@@ -113,6 +113,20 @@ Do not stretch ordinary paragraphs across the full width of a large desktop card
 - Page and Display roles scale through their approved `clamp()` values. Other roles remain stable across breakpoints.
 - A mobile layout should never require horizontal scrolling to preserve a heading.
 
+## Consistent navigation and mobile ergonomics
+
+These rules apply to participant, leader, and administrator screens. They do not change the established color palette or type scale.
+
+- Use the same header, branding, navigation patterns, and approved type roles across every screen. The navigation should collapse before the available width becomes crowded; don't compress labels to make a long menu fit on a tablet.
+- Maintain a minimum **44 × 44px touch target** for common buttons, tabs, navigation toggles, dialog controls, and important links on touch screens.
+- Standard navigation and action text uses Small body (14px) or larger. Compact navigation may use Caption (13px) when constrained; never use Micro for an action.
+- Primary introductory copy and lesson summaries must remain at least Body (16px) on a phone. Essential dashboard status labels and lesson metadata must be at least Label (12px).
+- Inputs, selects, and textareas should use Body (16px) on phones to prevent unexpected zooming in iOS Safari.
+- Tab sets with many choices should scroll horizontally or reflow on narrow screens. Keep controls large enough to read and tap, preserve visible keyboard focus, and never clip a selected label.
+- Keep the same cream, slate, amber, and sage hierarchy across participant and administrative pages. Reserve dark panels for intentional emphasis rather than introducing a different surface treatment for each screen.
+- Respect reduced-motion preferences. Animation must never be required to understand progress or navigate the website.
+- Before releasing layout changes, check 320–390px phones, a 430px large phone, tablet widths around 768–1024px, and desktop. Check 200% text zoom for clipping and horizontal scrolling. Do not rely on desktop-only screenshots.
+
 ## Duplication and hierarchy
 
 Do not stack an eyebrow and heading that repeat the same word or idea. For example, use one heading that says “Assigned work,” not an eyebrow saying “Assigned work” followed by a heading saying “Assigned.” Eyebrows should add context, not repeat it.

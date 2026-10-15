@@ -40,6 +40,16 @@ create table public.cmc_course_lessons (
  is_required boolean not null default true,position integer not null default 0,
  updated_at timestamptz not null default now()
 );
+create table public.cmc_course_enrollments (
+ id uuid primary key default gen_random_uuid(),
+ user_id uuid not null,
+ course_id uuid not null references public.cmc_courses(id) on delete cascade,
+ progress integer not null default 0,
+ started_at timestamptz not null default now(),
+ last_opened_at timestamptz not null default now(),
+ completed_at timestamptz,
+ unique(user_id,course_id)
+);
 create table public.cmc_course_lesson_progress (
  id uuid primary key default gen_random_uuid(),
  user_id uuid not null,

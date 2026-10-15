@@ -14,6 +14,10 @@
   const params = new URLSearchParams(window.location.search);
   let courseId = params.get('id') || '';
   let currentCourse = null;
+  const draftCourseId = window.crypto.randomUUID();
+  let lastSavedPayload = null;
+  let saveBlocked = false;
+  let publishQueued = false;
   let autosaveTimer = 0;
   let saveInFlight = false;
   let autosaveQueued = false;
@@ -26,6 +30,11 @@
   document.getElementById('collapseAllBtn').addEventListener('click', toggleAllModules);
   document.getElementById('courseDetailsToggle').addEventListener('click', toggleCourseDetails);
   document.getElementById('publishBtn').addEventListener('click', () => save('published'));
+  document.getElementById('reloadCourseBtn').addEventListener('click', () => {
+    if (window.confirm('Reload the latest saved course? Unsaved edits in this tab will be lost. Copy important text before continuing.')) {
+      window.location.reload();
+    }
+  });
   document.getElementById('courseTitle').addEventListener('input', suggestSlug);
   document.getElementById('courseAccess').addEventListener('change', updateAccessHelp);
   document.getElementById('courseBuilderForm').addEventListener('input', handleBuilderChange);
@@ -36,8 +45,9 @@
   isHydrating = false;
   updateCourseDetailsSummary();
   refreshBuilderSidebar();
-  lastSavedSignature = currentCourse ? JSON.stringify(buildPayload(currentCourse.status)) : '';
-  setAutosaveStatus(currentCourse ? 'All changes saved' : 'Autosave starts when you begin typing');
+  lastSavedPayload = currentCourse ? buildPayload(currentCourse.status) : null;
+  lastSavedSignature = lastSavedPayload ? JSON.stringify(lastSavedPayload) : '';
+  if (!saveBlocked) setAutosaveStatus(currentCourse ? 'All changes saved' : 'Autosave starts when you begin typing');
 
   async function loadCourse() {
     setMessage('Loading course…');
@@ -48,6 +58,9 @@
       const data = await response.json().catch(() => ({}));
       if (!response.ok || !data.ok) throw new Error(data.error || 'Could not load course.');
       currentCourse = data.course;
+      if (!Number.isSafeInteger(Number(currentCourse.save_revision))) {
+        throw new Error('Safe Course Builder saving is not enabled yet. A database update is required.');
+      }
       document.getElementById('builderTitle').textContent = 'Edit the course.';
       setValue('courseTitle', currentCourse.title);
       setValue('courseSubtitle', currentCourse.subtitle);
@@ -70,13 +83,15 @@
       refreshBuilderSidebar();
       setMessage('');
     } catch (error) {
+      saveBlocked = true;
       setMessage(error.message, true);
+      setAutosaveStatus('Course could not be loaded. Saving is paused.', true);
     }
   }
 
   function addModule(data = {}, options = {}) {
     const node = document.getElementById('moduleTemplate').content.firstElementChild.cloneNode(true);
-    node.dataset.id = data.id || '';
+    node.dataset.id = data.id || newUuid();
     node.querySelector('[data-module-title]').value = data.title || '';
     node.querySelector('[data-module-description]').value = data.description || '';
     node.querySelector('[data-toggle-module]').addEventListener('click', () => setCollapsed(node, !node.classList.contains('collapsed')));
@@ -106,7 +121,7 @@
 
   function addLesson(moduleNode, data = {}, options = {}) {
     const node = document.getElementById('lessonTemplate').content.firstElementChild.cloneNode(true);
-    node.dataset.id = data.id || '';
+    node.dataset.id = data.id || newUuid();
     setNodeValue(node, '[data-lesson-title]', data.title);
     setNodeValue(node, '[data-lesson-summary]', data.summary);
     node._legacyType = data.lesson_type || 'article';
@@ -390,7 +405,7 @@
   function escapeHtml(value) { return String(value ?? '').replace(/[&<>"']/g, character => ({ '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#039;' }[character])); }
 
   function queueAutosave() {
-    if (isHydrating) return;
+    if (isHydrating || saveBlocked) return;
     clearTimeout(autosaveTimer);
     setAutosaveStatus('Changes waiting to save…');
     autosaveTimer = window.setTimeout(runAutosave, 1200);
@@ -423,6 +438,8 @@
       .some(input => input.value.trim());
   }
 
+  function newUuid() { return window.crypto.randomUUID(); }
+
   function buildPayload(status) {
     const modules = [...document.querySelectorAll('[data-module]')].map(module => ({
       id:module.dataset.id || '',
@@ -446,14 +463,14 @@
       }))
     }));
     return {
-      id:currentCourse?.id || '',
+      id:currentCourse?.id || draftCourseId,
       published_at:currentCourse?.published_at || null,
       title:document.getElementById('courseTitle').value,
       subtitle:document.getElementById('courseSubtitle').value,
-      slug:document.getElementById('courseSlug').value,
+      slug:document.getElementById('courseSlug').value.trim().toLowerCase().replace(/[^a-z0-9-]+/g, '-').replace(/^-|-$/g, '') || 'draft-' + draftCourseId.slice(0,12),
       description:document.getElementById('courseDescription').value,
-      stage_key:document.getElementById('courseStage').value,
-      access_mode:document.getElementById('courseAccess').value,
+      stage_key:document.getElementById('courseStage').value || 'discover',
+      access_mode:document.getElementById('courseAccess').value || 'assigned',
       navigation_mode:document.getElementById('courseNavigation').value,
       estimated_minutes:Number(document.getElementById('courseMinutes').value || 0),
       status,
@@ -461,19 +478,11 @@
     };
   }
 
-  function syncSavedIds(savedCourse) {
-    const moduleNodes = [...document.querySelectorAll('[data-module]')];
-    moduleNodes.forEach((moduleNode, moduleIndex) => {
-      const savedModule = savedCourse.modules?.[moduleIndex];
-      if (!savedModule) return;
-      moduleNode.dataset.id = savedModule.id || '';
-      [...moduleNode.querySelectorAll('[data-lesson]')].forEach((lessonNode, lessonIndex) => {
-        lessonNode.dataset.id = savedModule.lessons?.[lessonIndex]?.id || '';
-      });
-    });
-  }
-
   async function save(status, options = {}) {
+    if (saveBlocked) {
+      setAutosaveStatus('Saving is paused to protect your edits. Please reload after copying any unsaved text.', true);
+      return false;
+    }
     const form = document.getElementById('courseBuilderForm');
     const requiresCompleteCourse = status === 'published' && !options.automatic;
     if (requiresCompleteCourse && !form.checkValidity()) {
@@ -488,59 +497,88 @@
       return false;
     }
     if (saveInFlight) {
-      autosaveQueued = true;
+      if (options.automatic) autosaveQueued = true;
+      else publishQueued = true;
       return false;
     }
-    let payload;
-    try { payload = buildPayload(status); }
-    catch (error) { setAutosaveStatus(error.message, true); return false; }
+    let payload, patch;
+    try {
+      payload = buildPayload(status);
+      patch = CMCCoursePatch.diff(lastSavedPayload, payload, currentCourse?.save_revision ?? 0);
+    } catch (error) {
+      setAutosaveStatus(error.message, true);
+      return false;
+    }
+    if (!CMCCoursePatch.hasChanges(patch)) {
+      if (status === 'published' && !options.automatic) setMessage('Course is already published.');
+      setAutosaveStatus('All changes saved');
+      return true;
+    }
     saveInFlight = true;
-    payload.autosave = Boolean(options.automatic);
     setWorking(true);
     if (options.automatic) setAutosaveStatus('Saving changes…');
     else setMessage(status === 'published' ? 'Publishing course…' : 'Saving draft…');
+
     try {
       const response = await fetch('/.netlify/functions/course-admin', {
         method:'POST',
-        headers:{'Content-Type':'application/json', Authorization:`Bearer ${token}`},
-        body:JSON.stringify(payload)
+        headers:{'Content-Type':'application/json', Authorization:'Bearer ' + token},
+        body:JSON.stringify(patch)
       });
       const data = await response.json().catch(() => ({}));
-      if (!response.ok || !data.ok) throw new Error(data.error || 'Could not save course.');
-      currentCourse = data.course;
+      if (!response.ok || !data.ok) {
+        const error = new Error(data.error || 'Could not save course.');
+        error.statusCode = response.status;
+        throw error;
+      }
+      const saved = data.course;
+      if (!saved?.id || !Number.isSafeInteger(Number(saved.save_revision))) {
+        throw new Error('The server did not confirm a safe save.');
+      }
+
+      // Only a successful database transaction advances the revision/snapshot.
+      currentCourse = { ...(currentCourse || {}), ...saved };
       courseId = currentCourse.id;
-      document.getElementById('courseSlug').value = currentCourse.slug;
-      document.getElementById('courseSlug').dataset.generatedDraft =
+      lastSavedPayload = payload;
+      lastSavedSignature = JSON.stringify(payload);
+      saveEditorSnapshot(payload);
+      const slugElement = document.getElementById('courseSlug');
+      if (!slugElement.value.trim() || slugElement.value.trim() === payload.slug) {
+        slugElement.value = currentCourse.slug;
+      }
+      slugElement.dataset.generatedDraft =
         String(currentCourse.slug || '').startsWith('draft-') ? 'true' : '';
-      history.replaceState(null, '', `course-builder.html?id=${encodeURIComponent(currentCourse.id)}`);
-      document.getElementById('courseStatus').textContent = status === 'published' ? 'Published' : 'Draft';
+      history.replaceState(null, '', 'course-builder.html?id=' + encodeURIComponent(currentCourse.id));
+      document.getElementById('courseStatus').textContent = currentCourse.status === 'published' ? 'Published' : 'Draft';
       document.getElementById('builderTitle').textContent = 'Edit the course.';
       const preview = document.getElementById('previewCourseLink');
       preview.href = previewUrl(currentCourse.slug);
       preview.classList.remove('hidden');
-      if (options.automatic) {
-        syncSavedIds(currentCourse);
-        saveEditorSnapshot(payload);
-      } else {
-        isHydrating = true;
-        document.getElementById('moduleList').innerHTML = '';
-        currentCourse.modules.forEach((module, index) => addModule(module, { collapsed:index > 0 }));
-        isHydrating = false;
-        setMessage(status === 'published' ? 'Course published.' : 'Draft saved.');
-      }
-      lastSavedSignature = JSON.stringify(Object.assign({}, payload, {autosave:undefined}));
-      if (JSON.stringify(buildPayload(currentCourse.status)) !== lastSavedSignature) autosaveQueued = true;
+      if (!options.automatic) setMessage(status === 'published' ? 'Course published.' : 'Draft saved.');
       updateCourseDetailsSummary();
-      setAutosaveStatus('All changes saved');
+
+      if (JSON.stringify(buildPayload(currentCourse.status)) !== lastSavedSignature) autosaveQueued = true;
+      setAutosaveStatus(autosaveQueued ? 'More changes waiting to save…' : 'All changes saved');
       return true;
     } catch (error) {
-      if (options.automatic) setAutosaveStatus('Autosave paused. Keep editing to retry.', true);
-      else setMessage(error.message, true);
+      const conflict = error.statusCode === 409 && /administrator|course URL|item ID/i.test(error.message);
+      const unready = error.statusCode === 503 || error.statusCode === 428;
+      if (conflict || unready) {
+        saveBlocked = true;
+        clearTimeout(autosaveTimer);
+        if (conflict) document.getElementById('reloadCourseBtn').classList.remove('hidden');
+      }
+      const message = error.message || 'Save failed. Your unsaved edits remain in this browser.';
+      setAutosaveStatus(message, true);
+      if (!options.automatic) setMessage(message, true);
       return false;
     } finally {
       saveInFlight = false;
       setWorking(false);
-      if (autosaveQueued) {
+      if (!saveBlocked && publishQueued) {
+        publishQueued = false;
+        await save('published');
+      } else if (!saveBlocked && autosaveQueued) {
         autosaveQueued = false;
         queueAutosave();
       }

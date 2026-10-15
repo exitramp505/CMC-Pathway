@@ -59,7 +59,7 @@ async function run(){
   assert.deepEqual(result.events.map(x=>x.id),['east-event']);
   assert.ok(db.started.some(q=>q.table==='cmc_event_invitations'));
   assert.equal(db.started[0].table,'cmc_events');
-  assert.rejects(
+  await assert.rejects(
     ()=>load(fakeDb(),viewer,{participant_id:'not-a-uuid'}),
     e=>e.statusCode===400
   );

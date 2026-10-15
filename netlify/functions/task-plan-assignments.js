@@ -320,6 +320,12 @@ async function fetchPagedByIds(supabase,table,field,ids,sortFields=[]){
     while(true){
       let query=supabase.from(table).select('*').in(field,batch);
       for(const orderField of sortFields)query=query.order(orderField);
+      // Stable tie-breakers prevent missing or duplicated rows at page edges.
+      if(table==='cmc_participant_plan_dependencies'){
+        query=query.order('task_id').order('depends_on_task_id');
+      }else{
+        query=query.order('plan_id').order('id');
+      }
       const {data,error}=await query.range(offset,offset+899);
       if(error)throw error;
       const page=data||[];

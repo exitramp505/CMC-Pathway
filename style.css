@@ -9293,3 +9293,5 @@ body.cmcAuthBody button.oauthBtn:focus-visible .oauthIcon{background:var(--cmcSl
   outline:2px solid #287d72;
   outline-offset:3px;
 }
+
+.profilePageMain .cmcProfileSetupActions[hidden]{display:none!important}

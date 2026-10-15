@@ -279,10 +279,11 @@ begin
       delete from public.candidate_assignments
       where item_key=v_new_key and assignment_source='automatic';
     else
+      -- Keep leader-assigned access marked as leader-assigned. Otherwise
+      -- changing a course back to "assigned" would delete manual assignments.
       update public.candidate_assignments
-      set assignment_source='automatic', status='assigned',
-          hidden_at=null, updated_at=v_now
-      where item_key=v_new_key;
+      set status='assigned', hidden_at=null, updated_at=v_now
+      where item_key=v_new_key and assignment_source='automatic';
 
       insert into public.candidate_assignments
         (user_id,candidate_email,candidate_name,item_key,item_type,

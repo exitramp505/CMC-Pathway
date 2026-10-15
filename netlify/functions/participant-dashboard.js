@@ -103,13 +103,13 @@ exports.handler = async (event) => {
         .map(([, row]) => row);
       const keysToReactivate = assignments
         .filter(item => automaticByKey.has(item.item_key)
-          && (item.assignment_source !== 'automatic' || item.status !== 'assigned' || item.hidden_at))
+          && (item.status !== 'assigned' || item.hidden_at))
         .map(item => item.item_key);
       const writes = [];
       if (keysToReactivate.length) {
         writes.push(supabase
           .from('candidate_assignments')
-          .update({ assignment_source:'automatic', status:'assigned', hidden_at:null })
+          .update({ status:'assigned', hidden_at:null })
           .eq('user_id', user.id)
           .in('item_key', keysToReactivate));
       }
@@ -122,7 +122,7 @@ exports.handler = async (event) => {
       const insertResultIndex = keysToReactivate.length ? 1 : 0;
       const inserted = missingRows.length ? (writeResults[insertResultIndex]?.data || []) : [];
       assignments = [...assignments, ...inserted].map(item => automaticByKey.has(item.item_key)
-        ? { ...item, assignment_source:'automatic', status:'assigned', hidden_at:null }
+        ? { ...item, status:'assigned', hidden_at:null }
         : item);
     }
 

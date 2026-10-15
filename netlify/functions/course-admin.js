@@ -231,15 +231,21 @@ async function requireAdmin(event) {
 }
 
 async function loadCourse(supabase, id) {
-  const { data:course, error } = await supabase.from('cmc_courses').select('*').eq('id', id).maybeSingle();
-  if (error) throw error;
-  if (!course) return null;
-  const [{ data:modules, error:moduleError }, { data:lessons, error:lessonError }] = await Promise.all([
+  // All three reads use the same known course ID. Avoid loading the
+  // modules and lessons only after the course metadata has finished.
+  const [
+    { data:course, error },
+    { data:modules, error:moduleError },
+    { data:lessons, error:lessonError }
+  ] = await Promise.all([
+    supabase.from('cmc_courses').select('*').eq('id', id).maybeSingle(),
     supabase.from('cmc_course_modules').select('*').eq('course_id', id).order('position'),
     supabase.from('cmc_course_lessons').select('*').eq('course_id', id).order('position')
   ]);
+  if (error) throw error;
   if (moduleError) throw moduleError;
   if (lessonError) throw lessonError;
+  if (!course) return null;
   return {
     ...course,
     modules:(modules || []).map(module => ({

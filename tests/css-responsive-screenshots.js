@@ -60,7 +60,25 @@ async function main(){
               inputsBelow16:inputs
                 .filter(el=>el.getClientRects().length&&parseFloat(getComputedStyle(el).fontSize)<16)
                 .length,
-              visibleInputs:inputs.filter(el=>el.getClientRects().length).length
+              visibleInputs:inputs.filter(el=>el.getClientRects().length).length,
+              smallInputs:inputs.filter(el=>el.getClientRects().length&&parseFloat(getComputedStyle(el).fontSize)<16)
+                .slice(0,10).map(el=>({
+                  selector:el.tagName.toLowerCase()+(el.id?'#'+el.id:'')+
+                    (el.classList.length?'.'+[...el.classList].join('.'):''),
+                  fontSize:getComputedStyle(el).fontSize
+                })),
+              overflowElements:[...document.querySelectorAll('body *')]
+                .filter(el=>el.getClientRects().length)
+                .map(el=>({el,rect:el.getBoundingClientRect()}))
+                .filter(item=>item.rect.right>document.documentElement.clientWidth+3)
+                .sort((a,b)=>b.rect.right-a.rect.right)
+                .slice(0,8).map(item=>({
+                  selector:item.el.tagName.toLowerCase()+
+                    (item.el.id?'#'+item.el.id:'')+
+                    (item.el.classList.length?'.'+[...item.el.classList].join('.'):''),
+                  right:Math.round(item.rect.right),
+                  width:Math.round(item.rect.width)
+                }))
             };
           });
           const overflow=Math.max(metrics.pageWidth,metrics.bodyWidth)-metrics.viewport;
@@ -81,11 +99,11 @@ async function main(){
   console.log('Captured '+records.length+' responsive screenshots across '+families.length+' page families.');
   console.log('Static shell overflow observations: '+overflow.length);
   for(const row of overflow.slice(0,30)){
-    console.log('  REVIEW '+row.page+' / '+row.viewport+': '+row.overflowPx+'px overflow');
+    console.log('  REVIEW '+row.page+' / '+row.viewport+': '+row.overflowPx+'px overflow; elements '+JSON.stringify(row.overflowElements.slice(0,5)));
   }
   console.log('Static shell small input observations: '+tiny.length);
   for(const row of tiny.slice(0,20)){
-    console.log('  REVIEW '+row.page+' / '+row.viewport+': '+row.inputsBelow16+' inputs below 16px');
+    console.log('  REVIEW '+row.page+' / '+row.viewport+': '+row.inputsBelow16+' inputs below 16px; '+JSON.stringify(row.smallInputs.slice(0,5)));
   }
   console.log('Note: JavaScript-disabled shells are not a substitute for signed-in role QA.');
 }

@@ -9,3 +9,7 @@
   for = "/cmc-public-config.json"
   [headers.values]
     Cache-Control = "public, max-age=60, must-revalidate"
+
+# First isolated esbuild experiment: no changes to private, admin or write handlers.
+[functions."public-site-content"]
+  node_bundler = "esbuild"

@@ -35,6 +35,18 @@ exports.handler = async (event) => {
       if (!id) return json(400, { ok:false, error:'Course id is required.' });
       const course = await loadCourse(supabase, id);
       if (course) {
+        // Deleting a parent course cascades into progress and responses. Never
+        // destroy participant work through the administrative delete action.
+        const activity = await Promise.all([
+          supabase.from('cmc_course_enrollments').select('id', { count:'exact', head:true }).eq('course_id', id),
+          supabase.from('cmc_course_lesson_progress').select('id', { count:'exact', head:true }).eq('course_id', id),
+          supabase.from('cmc_course_lesson_responses').select('id', { count:'exact', head:true }).eq('course_id', id)
+        ]);
+        const firstError = activity.find(item => item.error)?.error;
+        if (firstError) throw firstError;
+        if (activity.some(item => (item.count || 0) > 0)) {
+          throw httpError(409, 'This course contains participant enrollments, progress, or responses and cannot be deleted.');
+        }
         const { error:assignmentError } = await supabase
           .from('candidate_assignments')
           .delete()

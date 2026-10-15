@@ -51,7 +51,7 @@
     if(state.active==='resources')renderResources(data);
     if(state.active==='models')renderModels(data);
     if(state.active==='discern')renderDiscern(data);
-    setStatus('Draft saved');
+    setStatus(savedStatus(state.content[state.active]));
     document.getElementById('websitePublishedAt').textContent=item.published_at?`Published ${formatDate(item.published_at)}`:'Not published yet';
     message('');
   }
@@ -96,7 +96,7 @@
     const data=currentData();const button=document.getElementById(action==='publish'?'publishWebsiteSection':'saveWebsiteDraft');button.disabled=true;
     message(action==='publish'?'Publishing changes…':'Saving draft…');
     if(localPreview){state.content[state.active]={draft_data:clone(data),published_data:action==='publish'?clone(data):state.content[state.active]?.published_data||{},published_at:action==='publish'?new Date().toISOString():state.content[state.active]?.published_at};state.dirty=false;render();message(action==='publish'?'Preview published locally. Nothing was sent to the live website.':'Preview draft saved locally.');button.disabled=false;return}
-    try{const response=await fetch('/.netlify/functions/site-content-admin',{method:'POST',headers:{'Content-Type':'application/json',Authorization:`Bearer ${token}`},body:JSON.stringify({content_key:state.active,data,action})});const result=await response.json().catch(()=>({}));if(!response.ok||!result.ok)throw new Error(result.error||'Could not save changes.');state.content[state.active]=result.item;state.dirty=false;setStatus('Draft saved');document.getElementById('websitePublishedAt').textContent=result.item.published_at?`Published ${formatDate(result.item.published_at)}`:'Not published yet';message(action==='publish'?'Published. The public website will update within a few minutes.':'Draft saved.')}catch(error){message(error.message,true)}finally{button.disabled=false}
+    try{const response=await fetch('/.netlify/functions/site-content-admin',{method:'POST',headers:{'Content-Type':'application/json',Authorization:`Bearer ${token}`},body:JSON.stringify({content_key:state.active,data,action})});const result=await response.json().catch(()=>({}));if(!response.ok||!result.ok)throw new Error(result.error||'Could not save changes.');state.content[state.active]=result.item;state.dirty=false;setStatus(savedStatus(result.item));document.getElementById('websitePublishedAt').textContent=result.item.published_at?`Published ${formatDate(result.item.published_at)}`:'Not published yet';message(action==='publish'?'Published. The public website will update within a few minutes.':'Draft saved.')}catch(error){message(error.message,true)}finally{button.disabled=false}
   }
   function currentData(){try{return JSON.parse(editor.dataset.value||'{}')}catch{return defaults(state.active)}}
   function sync(data){editor.dataset.value=JSON.stringify(data);state.dirty=true;setStatus('Unsaved changes')}
@@ -109,6 +109,13 @@
   function addButton(label){return `<button class="cmcWebsiteAdd" type="button" data-add-item>Add ${label} ＋</button>`}
   function value(el){return el.type==='checkbox'?el.checked:el.type==='number'?Number(el.value):el.value}
   function message(text,error){const el=document.getElementById('websiteMessage');el.textContent=text||'';el.classList.toggle('error',Boolean(error))}
+  function savedStatus(item){
+    if(!item) return 'Not saved yet';
+    if(!item.published_at || !item.published_data || typeof item.published_data!=='object') return 'Draft saved';
+    return JSON.stringify(item.draft_data||{})===JSON.stringify(item.published_data)
+      ? 'Published'
+      : 'Draft saved · Unpublished edits';
+  }
   function setStatus(text){document.getElementById('websiteDraftStatus').textContent=text}
   function defaults(key){return key==='team'?{team:[]}:key==='resources'?{heroEyebrow:'',heroTitle:'',heroDescription:'',featuredTitle:'',featuredDescription:'',resources:[]}:key==='models'?{models:[]}:{heroEyebrow:'',heroTitle:'',heroDescription:'',whatToExpectTitle:'',whatToExpectParagraphOne:'',whatToExpectParagraphTwo:'',dates:'',location:'',applicationUrl:''}}
   function previewContent(){return {

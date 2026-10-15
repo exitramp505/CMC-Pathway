@@ -1,24 +1,41 @@
 (async function(){
-  const user = await dcAuth.requireUser();
-  if (!user) return;
-  const profile = await dcAuth.getProfile(user.id).catch(() => null);
+  // Authenticate once, then overlap independent profile and course-list reads.
+  // The server enforces cmc_admin permission on course-admin; never render
+  // protected content until the browser has also checked the role.
+  const session = await dcAuth.getCurrentSession().catch(() => null);
+  if (!session?.user) {
+    window.location.href = 'login.html';
+    return;
+  }
+  const user = session.user;
+  const token = session.access_token || '';
+  const library = document.getElementById('courseLibrary');
+  const message = document.getElementById('courseLibraryMessage');
+  const profilePromise = dcAuth.getProfile(user.id).catch(() => null);
+  const coursesPromise = (async () => {
+    try {
+      const response = await fetch('/.netlify/functions/course-admin', {
+        headers:{ Authorization:`Bearer ${token}` }
+      });
+      const data = await response.json().catch(() => ({}));
+      if (!response.ok || !data.ok) throw new Error(data.error || 'Could not load courses.');
+      return { data };
+    } catch (error) {
+      // Always resolve so a rejected admin fetch cannot become an unhandled
+      // rejection while the profile is still being checked.
+      return { error };
+    }
+  })();
+  const profile = await profilePromise;
   if (profile?.account_role !== 'cmc_admin') {
     window.location.replace(profile?.account_role === 'regional_leader' ? 'leader.html' : 'dashboard.html');
     return;
   }
   dcAuth.renderRoleNavigation(profile, 'courses');
-  const sb = await dcAuth.getSupabaseClient();
-  const session = await sb.auth.getSession();
-  const token = session.data?.session?.access_token || '';
-  const library = document.getElementById('courseLibrary');
-  const message = document.getElementById('courseLibraryMessage');
 
   try {
-    const response = await fetch('/.netlify/functions/course-admin', {
-      headers:{ Authorization:`Bearer ${token}` }
-    });
-    const data = await response.json().catch(() => ({}));
-    if (!response.ok || !data.ok) throw new Error(data.error || 'Could not load courses.');
+    const {data,error} = await coursesPromise;
+    if (error) throw error;
     message.textContent = '';
     library.innerHTML = data.courses.length ? data.courses.map(courseCard).join('') :
       '<div class="cmcCourseEmpty"><strong>No courses yet.</strong><p>Create the first course to begin.</p></div>';

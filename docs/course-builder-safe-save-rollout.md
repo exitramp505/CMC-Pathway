@@ -1,6 +1,10 @@
 # CMC Pathway — Safe Course Builder saving rollout
 
-**Status:** Prepared and integration-tested, **NOT deployed** until the CMC Pathway Supabase project is accessible.
+**Status (2026-10-15):** The production CMC Pathway Supabase migration is **installed and verified**. Server-side role privileges, synthetic course save/update/deletion tests, and data fingerprints were checked. The corresponding Netlify website code must still be released and tested in an authenticated browser; production is currently pinned to an earlier deployment.
+
+**Completed database changes:** `cmc_atomic_course_builder_saving_20261015`, `cmc_protect_trigger_rpc_access_20261015`, and `cmc_course_indexes_and_rls_performance_20261015`. The last two migrations are mirrored in `db/` for review.
+
+**Backup limitation:** Supabase is on the Free plan. A managed restorable backup was not confirmed, so the production changes were deliberately additive and tested without retaining synthetic data. For greater disaster recovery protection, evaluate a managed backup strategy before a large rollout.
 
 This upgrade protects existing courses and participant data. It never reseeds Discover 101.
 

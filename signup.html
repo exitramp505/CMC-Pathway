@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <title>Create Account | CMC Pathway</title>
-  <link rel="stylesheet" href="style.css?v=130">
+  <link rel="stylesheet" href="style.css?v=136">
 </head>
 <body class="cmcPathwayBody cmcAuthBody">
 <header class="cmcHeader">
@@ -51,7 +51,7 @@
         </label>
 
         <label>Password
-          <input name="password" type="password" autocomplete="new-password" minlength="8" required>
+          <span class="cmcPasswordInputWrap"><input id="signupPassword" name="password" type="password" autocomplete="new-password" minlength="8" required><button type="button" class="cmcPasswordToggle" data-password-toggle aria-controls="signupPassword" aria-pressed="false" aria-label="Show password" title="Show password"><span data-password-toggle-text>Show</span></button></span>
         </label>
 
         <div class="profileNotice">
@@ -70,6 +70,7 @@
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="auth.js?v=131"></script>
-<script src="signup.js?v=118"></script>
+<script src="password-toggle.js?v=1"></script>
+<script src="signup.js?v=119"></script>
 </body>
 </html>

@@ -1,5 +1,16 @@
 const assert = require('node:assert/strict');
 const Patch = require('../course-save-patch');
+const fs = require('node:fs');
+const path = require('node:path');
+const html = fs.readFileSync(path.join(__dirname, '../course-builder.html'), 'utf8');
+const script = fs.readFileSync(path.join(__dirname, '../course-builder.js'), 'utf8');
+for (const id of ['retrySaveBtn', 'reloadCourseBtn', 'autosaveStatus']) {
+  assert.match(html, new RegExp('id="' + id + '"'), 'Course Builder must render ' + id);
+}
+assert.match(html, /course-save-patch\.js\?v=1/, 'Course Builder must load safe patch helper.');
+assert.ok(script.includes("document.getElementById('retrySaveBtn')"), 'Retry button must be handled.');
+assert.doesNotThrow(() => new Function(script), 'Course Builder JavaScript should parse.');
+
 
 const a = '11111111-1111-4111-8111-111111111111';
 const m1 = '22222222-2222-4222-8222-222222222222';

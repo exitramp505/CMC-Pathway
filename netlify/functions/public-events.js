@@ -5,14 +5,15 @@ exports.handler = async (event) => {
     'Access-Control-Allow-Origin': '*',
     'Access-Control-Allow-Methods': 'GET, OPTIONS',
     'Access-Control-Allow-Headers': 'Content-Type',
-    'Cache-Control': 'public, max-age=60, s-maxage=300, stale-while-revalidate=86400',
+    'Cache-Control': 'public, max-age=30, must-revalidate',
+    'Netlify-CDN-Cache-Control': 'public, s-maxage=60, stale-while-revalidate=60, durable',
     'Content-Type': 'application/json; charset=utf-8',
     Vary: 'Origin'
   };
 
   if (event.httpMethod === 'OPTIONS') return { statusCode:204, headers, body:'' };
   if (event.httpMethod !== 'GET') {
-    return { statusCode:405, headers, body:JSON.stringify({ ok:false, error:'Method not allowed.' }) };
+    return { statusCode:405, headers:{...headers,'Cache-Control':'no-store','Netlify-CDN-Cache-Control':'no-store'}, body:JSON.stringify({ ok:false, error:'Method not allowed.' }) };
   }
 
   try {
@@ -47,6 +48,6 @@ exports.handler = async (event) => {
     return { statusCode:200, headers, body:JSON.stringify({ ok:true, events }) };
   } catch (error) {
     console.error('Public event feed error:', error);
-    return { statusCode:500, headers, body:JSON.stringify({ ok:false, error:'Could not load public events.' }) };
+    return { statusCode:500, headers:{...headers,'Cache-Control':'no-store','Netlify-CDN-Cache-Control':'no-store'}, body:JSON.stringify({ ok:false, error:'Could not load public events.' }) };
   }
 };

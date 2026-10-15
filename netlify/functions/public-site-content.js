@@ -16,7 +16,7 @@ exports.handler = async event => {
     const content = Object.fromEntries((data || []).map(row => [row.content_key, row.published_data]));
     return {
       statusCode:200,
-      headers:{'Content-Type':'application/json','Cache-Control':'public, max-age=60, s-maxage=300, stale-while-revalidate=86400','Access-Control-Allow-Origin':'*'},
+      headers:{'Content-Type':'application/json','Cache-Control':'public, max-age=30, must-revalidate','Netlify-CDN-Cache-Control':'public, s-maxage=60, stale-while-revalidate=60, durable','Access-Control-Allow-Origin':'*'},
       body:JSON.stringify({ok:true, content})
     };
   } catch (error) {

@@ -65,6 +65,7 @@
     function publish(){
       if(publishing)return Promise.resolve(false);
       publishing=true;
+      let confirmedPublished=false;
       return enqueue(async()=>{
         // Previously scheduled autosaves finish first; changes arriving during
         // a network request are included in the next serial save.
@@ -85,6 +86,7 @@
           applyResponse(response,payload);
           lastTemplate=response.template;
           savedRevision=attemptedRevision;
+          confirmedPublished=true;
           setStatus(dirty()?'Unpublished edits after publishing':`Published · version ${response.template.version}`);
           return true;
         }catch(error){
@@ -95,7 +97,7 @@
         publishing=false;
         // A person may keep typing while the publish request is in flight.
         // Persist those new edits *after* publication as an unpublished draft.
-        if(dirty()&&hasExisting())void flush();
+        if(confirmedPublished&&dirty()&&hasExisting())void flush();
       });
     }
 

@@ -234,6 +234,58 @@
     return html;
   }
 
+
+  // Reflection prompts are plain text stored in the existing lesson column.
+  // Interpret *only* emphasis markers; never inject author-supplied HTML,
+  // links, attributes or scripts. The presentation uses white-space:pre-wrap
+  // so original single and blank lines remain visible exactly as typed.
+  function renderReflectionPrompt(value) {
+    const raw = String(value == null ? '' : value).replace(/\r\n?/g, '\n');
+    const formats = [
+      ['***', '<strong><em>', '</em></strong>'],
+      ['___', '<strong><em>', '</em></strong>'],
+      ['**', '<strong>', '</strong>'],
+      ['__', '<strong>', '</strong>'],
+      ['*', '<em>', '</em>'],
+      ['_', '<em>', '</em>']
+    ];
+    function closingAt(source, delimiter, after) {
+      for (let index = after; index <= source.length - delimiter.length; index++) {
+        if (source[index] === '\\') { index++; continue; }
+        if (source.startsWith(delimiter, index)) return index;
+      }
+      return -1;
+    }
+    function inline(source) {
+      let result = '';
+      for (let i = 0; i < source.length;) {
+        if (source[i] === '\\' && /[*_\\]/.test(source[i + 1] || '')) {
+          result += escapeHtml(source[i + 1]);
+          i += 2;
+          continue;
+        }
+        let formatted = false;
+        for (const [delimiter, open, close] of formats) {
+          if (!source.startsWith(delimiter, i)) continue;
+          // Underscores inside words (e.g. file_name) are not emphasis.
+          if (delimiter[0] === '_' && /[A-Za-z0-9]/.test(source[i - 1] || '')) continue;
+          const end = closingAt(source, delimiter, i + delimiter.length);
+          if (end < 0) continue;
+          const content = source.slice(i + delimiter.length, end);
+          if (!content || /^\s|\s$/.test(content)) continue;
+          if (delimiter[0] === '_' && /[A-Za-z0-9]/.test(source[end + delimiter.length] || '')) continue;
+          result += open + inline(content) + close;
+          i = end + delimiter.length;
+          formatted = true;
+          break;
+        }
+        if (!formatted) { result += escapeHtml(source[i]); i++; }
+      }
+      return result;
+    }
+    return raw.split('\n').map(inline).join('\n');
+  }
+
   function renderInline(parts) {
     if (!parts.length) return '<br>';
     return parts.map(function (part) {
@@ -322,6 +374,6 @@
     LESSON_FORMATS:LESSON_FORMATS, isRichText:isRichText, isLessonEnvelope:isLessonEnvelope,
     readDelta:readDelta, serializeDelta:serializeDelta, validateContent:validateContent,
     lessonBody:lessonBody, lessonFormats:lessonFormats, serializeLesson:serializeLesson,
-    render:render, renderMarkdown:renderMarkdown, safeUrl:safeUrl
+    render:render, renderMarkdown:renderMarkdown, renderReflectionPrompt:renderReflectionPrompt, safeUrl:safeUrl
   };
 });

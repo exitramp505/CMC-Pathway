@@ -38,14 +38,17 @@ assert.match(formCss,/--formLine:var\(--cmcBorder\)/);
 assert.match(formCss,/--formSurface:var\(--cmcPaper\)/);
 for(const page of styled){
   const html=read(page);
-  assert.match(html,/style\.css\?v=144/,page+' must use the current shared CSS');
+  const expectedCssVersion = page === 'course.html' ? 145 : 144;
+  assert.match(html,new RegExp('style\\.css\\?v=' + expectedCssVersion),page+' must use the correct shared CSS');
   assert.match(html,/<body[^>]*class="[^"]*\bcmcPathwayBody\b/i,
     page+' must use the CMC design shell');
-  assert.match(html,/class="cmcSkipLink" href="#main-content"/,
-    page+' must include a keyboard skip link');
-  assert.equal((html.match(/id="main-content"/g)||[]).length,1,
+  // The course reader renders into #courseApp; all other pages use #main-content.
+  const target = page === 'course.html' ? 'courseApp' : 'main-content';
+  assert.ok(html.includes('class="cmcSkipLink" href="#' + target + '"'),
+    page+' must include a working keyboard skip link');
+  assert.equal((html.match(new RegExp('id="' + target + '"','g'))||[]).length,1,
     page+' must have exactly one main-content target');
-  assert.match(html,/<main id="main-content" tabindex="-1"/,
+  assert.ok(html.includes('<main id="' + target + '" tabindex="-1"'),
     page+' must support focus transfer into content');
   assert.ok(html.indexOf('class="cmcSkipLink"')<html.indexOf('<header'),
     page+' skip link must precede header navigation');

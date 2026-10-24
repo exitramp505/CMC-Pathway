@@ -276,7 +276,7 @@
     if (!lesson.reflection_prompt && !lesson.response_required) return '';
     return `<aside class="cmcReflection">
       <p class="cmcEyebrow">REFLECT</p>
-      ${lesson.reflection_prompt ? `<h3>${escapeHtml(lesson.reflection_prompt)}</h3>` : ''}
+      ${lesson.reflection_prompt ? `<div class="cmcReflectionPrompt">${CMCLessonContent.renderReflectionPrompt(lesson.reflection_prompt)}</div>` : ''}
       ${lesson.response_required ? `<label class="cmcReflectionResponse">
         <span>Your response</span>
         <textarea id="lessonResponse" rows="5" maxlength="5000" placeholder="Write your reflection here…">${escapeHtml(lesson.response_text || '')}</textarea>

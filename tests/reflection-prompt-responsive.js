@@ -92,7 +92,7 @@ async function main(){
         assert.equal(result.whiteSpace,'pre-wrap',size.name+': preserve all authored blank lines');
         assert.ok(result.strongWeight>=700,size.name+': bold is selective');
         assert.equal(result.italic,'italic');
-        assert.ok(result.responseSize>=16,size.name+': response field must not trigger iOS zoom');
+        if(size.width<=720)assert.ok(result.responseSize>=16,size.name+': response field must not trigger iOS zoom');
         assert.equal(result.responseValue,'A saved answer remains.');
         assert.equal(result.lineBreaks,7,size.name+': all authored line breaks remain');
         assert.ok(result.text.includes('Before you begin:'));

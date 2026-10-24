@@ -28,6 +28,8 @@ jobs:
         run: npm install --no-save --package-lock=false playwright-core@1.56.1
       - name: Capture phone, tablet, and desktop page shells
         run: node tests/css-responsive-screenshots.js
+      - name: Verify reflection formatting on phone, tablet and desktop
+        run: node tests/reflection-prompt-responsive.js
       - name: Save responsive screenshots and metrics for review
         if: always()
         uses: actions/upload-artifact@v4

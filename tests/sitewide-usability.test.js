@@ -19,6 +19,17 @@ for (const file of files) {
     assert.ok(html.includes('@supabase/supabase-js@2.105.4'),file + ' must pin its browser SDK');
   }
 }
+// The course page is rendered by course.js into #courseApp. Duplicate id
+// attributes are silently discarded by browsers and leave the page blank.
+const coursePage = read('course.html');
+const courseMain = coursePage.match(/<main\b[^>]*>/i)?.[0] || '';
+assert.equal((courseMain.match(/\bid\s*=/gi) || []).length, 1,
+  'Course main must have one id attribute, not duplicates');
+assert.match(courseMain, /\bid=["']courseApp["']/i,
+  'Course main must expose #courseApp for course.js');
+assert.match(coursePage, /class=["']cmcSkipLink["']\s+href=["']#courseApp["']/,
+  'Course skip link must target the rendering container');
+assert.match(read('course.js'), /getElementById\(['"]courseApp['"]\)/);
 const css = read('style.css');
 assert.match(css, /\.cmcPathwayBody \.cmcBuilderSettings label>span/);
 assert.match(css, /\.cmcPathwayBody \.cmcEventFieldGrid label/);

@@ -5,7 +5,7 @@
  const token=session.access_token;
  const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
  const REGIONS=['Central','East','Mountain Plains','Pacific','Southeast'];
- let config,data,year=new Date().getFullYear();
+ let config,data,year=new Date().getFullYear()<=2026?new Date().getFullYear():new Date().getFullYear()-1;
  const score=s=>typeof s==='number'&&Number.isFinite(s)&&s>=0&&s<=25?s:null;
  const sum=entry=>config.sections.reduce((n,s)=>n+(score(entry.scores?.[s.id])||0),0);
  const mean=values=>values.length?values.reduce((a,b)=>a+b,0)/values.length:null;
@@ -85,6 +85,36 @@
    $('reportsList').querySelectorAll('[data-report]').forEach(b=>b.addEventListener('click',()=>openDetail(b.dataset.report)));
  }
  function render(){renderSummary();renderSystems();renderCoverage();renderMatrix();renderList();$('exportReports').disabled=!current().length;}
+ async function showMyRegion(){
+   const viewer=data?.viewer;
+   const allowed=viewer?.account_role==='cmc_admin'&&
+     ['Central','East','Mountain Plains','Pacific','Southeast'].includes(viewer.region);
+   $('myRegionAssessment').classList.toggle('hidden',!allowed);
+   $('regionalHealthViews').classList.toggle('hidden',!allowed);
+   if(!allowed)return;
+   $('myRegionTitle').textContent=viewer.region+' Region · '+year+' Annual Systems Assessment';
+   const link=$('myRegionAssessmentAction');
+   link.href='regional-assessment.html?year='+year;
+   $('myRegionAssessmentStatus').textContent='Checking assessment progress…';
+   try{
+     const mine=await api('?mode=mine&year='+year);
+     const record=mine.record;
+     const status=record?.status||'not_started';
+     if(status==='submitted'){
+       $('myRegionAssessmentStatus').textContent='Submitted '+date(record.submitted_at)+' · Available in national reporting.';
+       link.textContent='View submitted assessment →';
+     }else if(status==='draft'){
+       $('myRegionAssessmentStatus').textContent='Draft saved · Continue where you left off.';
+       link.textContent='Continue Assessment →';
+     }else{
+       $('myRegionAssessmentStatus').textContent='Your region can start this assessment at any time.';
+       link.textContent='Start Assessment →';
+     }
+   }catch(err){
+     $('myRegionAssessmentStatus').textContent='You can open the assessment here. '+err.message;
+     link.textContent='Open Assessment →';
+   }
+ }
  async function load(){
    status('Loading '+year+' national assessment results…');$('reportDashboard').classList.add('hidden');
    try{
@@ -92,6 +122,7 @@
      dcAuth.renderRoleNavigation(data.viewer,'health');
      render();
      status('');$('reportDashboard').classList.remove('hidden');
+     await showMyRegion();
    }catch(err){status(err.message,true);}
  }
  function sectionDetail(section,answers,scores){

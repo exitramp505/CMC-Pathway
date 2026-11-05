@@ -1,10 +1,10 @@
 // Netlify Scheduled Function. Runs at 8 AM Eastern during February (13:00 UTC).
 // The campaign engine decides whether the invitation or reminder is due, and logs
 // each notice uniquely so reruns never create duplicate assignments or messages.
-import {createRequire} from 'node:module';
-const require=createRequire(import.meta.url);
-const {adminClient}=require('./_auth.js');
-const {runCycle}=require('./_annual-assessment-campaign.js');
+import auth from './_auth.js';
+import campaign from './_annual-assessment-campaign.js';
+const {adminClient}=auth;
+const {runCycle}=campaign;
 export default async ()=>{
   if(process.env.CONTEXT && process.env.CONTEXT!=='production'){
     console.info('Annual CMC assessment: skipping non-production execution.');

@@ -28,8 +28,8 @@
 
   async function routeSignedInUser(user){
     const profile = await dcAuth.getProfile(user.id).catch(() => null);
-    window.location.href = ['regional_leader','cmc_admin'].includes(profile?.account_role)
-      ? 'leader.html'
+    window.location.href = ['regional_leader','cmc_admin','cmc_viewer'].includes(profile?.account_role)
+      ? 'leadership-home.html'
       : 'dashboard.html';
   }
 

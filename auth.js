@@ -108,9 +108,12 @@ function renderRoleNavigation(profile,activeKey){
  if(!nav)return;
  const role=profile?.account_role||'participant';
  const isCoach=Boolean(profile?.is_coach);
+ const nationalAccess=profile?.cmc_national_access||
+   (role==='cmc_admin'?'admin':role==='cmc_viewer'?'viewer':'none');
+ const nationalReports=nationalAccess==='viewer'||nationalAccess==='admin';
  const items=[
   {key:'home',label:'Home',href:'leadership-home.html',show:['regional_leader','cmc_admin','cmc_viewer'].includes(role)},
-  {key:'health',label:'Regional Health',href:role==='regional_leader'?'regional-assessment.html':'regional-reports.html',show:['regional_leader','cmc_admin','cmc_viewer'].includes(role)},
+  {key:'health',label:'Regional Health',href:nationalReports?'regional-reports.html':'regional-assessment.html',show:['regional_leader','cmc_admin','cmc_viewer'].includes(role)},
   {key:'pathway',label:'My Pathway',href:role==='participant'?'dashboard.html':'dashboard.html?view=participant',show:role!=='cmc_viewer'},
  {key:'people',label:'People',href:'leader.html',show:['regional_leader','cmc_admin'].includes(role)},
  {key:'events',label:'Events',href:'events.html',show:['regional_leader','cmc_admin'].includes(role)},

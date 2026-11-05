@@ -1,42 +1,173 @@
-/* Leadership Home uses CMC's existing design tokens and type scale. */
-.cmcLeadershipHome{max-width:1300px;margin:0 auto;padding-bottom:64px}
-.cmcLeadershipHero{margin-bottom:22px}
-.cmcHomeGrid{display:grid;grid-template-columns:minmax(0,1.32fr) minmax(290px,1fr);gap:24px;align-items:start}
-.cmcHomeColumn{display:grid;gap:24px;min-width:0}
-.cmcHomePanel{background:var(--cmcPaper,#fffaf1);border:1px solid var(--cmcBorder,rgba(41,61,72,.16));border-radius:var(--cmcRadiusCard,24px);padding:24px;min-width:0}
-.cmcHomePanelHeading{display:flex;align-items:start;justify-content:space-between;gap:15px;margin-bottom:14px}
-.cmcHomePanelHeading h2,.cmcHomePanel h2{font-size:clamp(21px,2vw,25px);margin:4px 0 0;color:var(--cmcSlate,#293d48);line-height:1.25}
-.cmcHomePanelHeading .cmcEyebrow,.cmcHomeAssessment .cmcEyebrow{margin:0}
-.cmcHomePanel .cmcHomeTextButton{font-size:14px;font-weight:700;text-decoration:underline;text-underline-offset:3px;color:var(--cmcSlate,#293d48);border:0;background:none;white-space:nowrap;padding:8px 0;cursor:pointer}
-.cmcHomeList{display:grid;gap:0}
-.cmcHomeItem{border-top:1px solid var(--cmcBorder,rgba(41,61,72,.16));padding:16px 0;display:flex;gap:12px;align-items:center;justify-content:space-between}
-.cmcHomeItem:first-child{border-top:0;padding-top:6px}
-.cmcHomeItemCopy{display:grid;gap:5px;min-width:0;overflow-wrap:anywhere}
-.cmcHomeItemCopy strong{font-size:16px;line-height:1.4;color:var(--cmcInk,#151616)}
-.cmcHomeItemCopy small,.cmcHomeFine{font-size:13px;line-height:1.55;color:var(--cmcTextMuted,#607078)}
-.cmcHomeItemCopy p{margin:0;color:var(--cmcTextMuted,#607078);font-size:14px;line-height:1.5}
-.cmcHomeItem>button,.cmcHomeItemActions button{background:transparent;border:1px solid var(--cmcBorderStrong,rgba(41,61,72,.26));border-radius:11px;color:var(--cmcSlate,#293d48);font-size:14px;font-weight:700;padding:10px 12px;cursor:pointer;min-height:44px}
-.cmcHomeItemActions{display:flex;gap:6px;flex-shrink:0}
-.cmcHomeEmpty{margin:8px 0 3px;font-size:15px;color:var(--cmcTextMuted,#607078);line-height:1.55}
-.cmcHomeAssessment{background:var(--cmcSlate,#293d48);color:var(--cmcSand,#fbf0de)}
-.cmcHomeAssessment h2,.cmcHomeAssessment .cmcEyebrow{color:var(--cmcSand,#fbf0de)}
-.cmcHomeAssessment p{font-size:15px;line-height:1.65;max-width:58ch}
-.cmcHomeAssessment .cmcHomeFine{color:#e0e7e9;margin-bottom:0}
-.cmcHomeAssessment .cmcPrimaryButton{display:inline-block;text-decoration:none;margin-top:12px}
-.cmcHomeDialog{width:min(710px,calc(100vw - 28px));max-height:min(90vh,940px);padding:0;border:0;border-radius:22px;background:var(--cmcPaper,#fffaf1);color:var(--cmcInk,#151616);box-shadow:0 22px 68px rgba(25,35,42,.28)}
-.cmcHomeDialog::backdrop{background:rgba(23,37,44,.62)}
-.cmcHomeEditor{display:flex;flex-direction:column;max-height:min(90vh,940px)}
-.cmcHomeEditorHead,.cmcHomeEditorActions{display:flex;justify-content:space-between;align-items:center;gap:14px;padding:22px 26px;border-bottom:1px solid var(--cmcBorder,rgba(41,61,72,.16))}
-.cmcHomeEditorHead h2{font-size:25px;margin:2px 0 0}
-.cmcHomeEditorHead .cmcEyebrow{margin:0}
-.cmcHomeClose{border:0;background:transparent;font-size:30px;line-height:1;cursor:pointer;min-width:44px;min-height:44px}
-.cmcHomeEditorFields{overflow:auto;display:grid;gap:18px;padding:22px 26px}
-.cmcHomeEditorFields label{font-size:14px;font-weight:700;display:grid;gap:7px}
-.cmcHomeEditorFields input,.cmcHomeEditorFields select,.cmcHomeEditorFields textarea{font:inherit;font-size:16px;line-height:1.5;border-radius:12px;border:1px solid var(--cmcBorderStrong,rgba(41,61,72,.26));background:#fff;color:var(--cmcInk,#151616);width:100%;min-height:44px;padding:10px 12px;box-sizing:border-box}
+/* CMC Leadership Home v2 — warm, accessible, task-first workspace. */
+.cmcLeadershipBody .cmcPathwayMain.cmcLeadershipHome{
+  width:min(1216px,calc(100% - 64px));max-width:1216px;
+  margin:0 auto;padding:38px 0 88px;
+}
+.cmcLeadershipHome .hidden,.cmcLeadershipBody .cmcHomeDialog .hidden,.cmcLeadershipBody .hidden{display:none!important}
+.cmcLeadershipHome{--home-line:rgba(41,61,72,.15);--home-shadow:0 5px 30px rgba(34,55,65,.035)}
+.cmcHomeHero{display:flex;justify-content:space-between;align-items:center;gap:28px;padding:3px 0 26px;margin-bottom:18px;border-bottom:1px solid var(--home-line)}
+.cmcHomeHeroText{min-width:0}
+.cmcHomeHero .cmcEyebrow{font-size:12px;letter-spacing:.14em;color:var(--cmcEmberText,#935312);margin:0 0 7px}
+.cmcHomeHero h1{font-size:clamp(34px,4vw,54px)!important;line-height:1.06;letter-spacing:-.055em;margin:0 0 9px;color:var(--cmcInk,#151616);font-weight:900}
+.cmcHomeSubtitle{font-size:16px;line-height:1.55;margin:0;color:#4e6069;max-width:660px;font-weight:500}
+.cmcHomeHeroAside{display:flex;align-items:flex-end;flex-direction:column;gap:12px}
+.cmcHomeToday{font-size:13px;color:#42545b;font-weight:700}
+.cmcLeadershipBody .cmcHomeNewMeeting{font-size:14px;min-height:46px;min-width:156px;border-radius:13px;padding:0 18px;color:var(--cmcInk,#151616)!important;white-space:nowrap;display:flex;justify-content:space-between;gap:14px;align-items:center}
+.cmcHomeStatus{font-size:14px;color:#43545c;margin:0 0 15px;padding:12px 16px;border:1px solid var(--home-line);border-radius:13px;background:#fffaf1}
+.cmcHomeStatus[hidden]{display:none}
+.cmcHomeStatus.error{background:#fff1ed;border-color:#ba564c;color:#8d3026}
+.cmcHomeOverview{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px;margin:0 0 20px}
+.cmcHomeMetric{display:flex;align-items:center;gap:15px;border:1px solid var(--home-line);border-radius:18px;background:rgba(255,250,241,.86);padding:18px 19px;min-height:86px;box-sizing:border-box}
+.cmcHomeMetricIcon{width:42px;height:42px;display:grid;place-items:center;flex:0 0 42px;background:#eef3ef;border:1px solid #d6e1df;border-radius:12px;color:#28554e;font-size:24px;font-weight:800}
+.cmcHomeMetric:nth-child(2) .cmcHomeMetricIcon{background:#f6eee2;border-color:#ecdbbd;color:#745323}
+.cmcHomeMetric:nth-child(3) .cmcHomeMetricIcon{background:#e8eef1;border-color:#d5dfe3;color:#314f5e}
+.cmcHomeMetric>div{display:flex;flex-direction:column;min-width:0}
+.cmcHomeMetric strong{font-size:29px;line-height:1.1;color:var(--cmcSlate,#293d48);font-weight:900}
+.cmcHomeMetric span:last-child{font-size:13px;line-height:1.45;color:#50616a;font-weight:650}
+.cmcHomeGrid{display:grid;grid-template-columns:minmax(0,1.42fr) minmax(315px,1fr);gap:20px;align-items:start}
+.cmcHomeColumn{display:grid;gap:20px;min-width:0}
+.cmcHomePanel{background:var(--cmcPaper,#fffaf1);border:1px solid var(--home-line);border-radius:22px;padding:24px;min-width:0;box-shadow:var(--home-shadow)}
+.cmcHomePanel .cmcEyebrow{font-size:11px;letter-spacing:.13em;color:var(--cmcEmberText,#935312);margin:0 0 5px}
+.cmcHomeSectionHead{display:flex;gap:18px;align-items:flex-start;justify-content:space-between;margin-bottom:18px}
+.cmcHomeSectionHead>div{min-width:0}
+.cmcHomeSectionHead h2,.cmcHomeAssessment h2{font-size:clamp(21px,2.1vw,25px)!important;line-height:1.24;letter-spacing:-.035em;color:var(--cmcSlate,#293d48);margin:0;border:0!important;padding:0!important;white-space:normal}
+.cmcHomePanel h2::after{display:none!important;content:none!important}
+.cmcHomeSectionHead p:not(.cmcEyebrow){font-size:14px;line-height:1.6;color:#576971;margin:7px 0 0;max-width:55ch;font-weight:500}
+.cmcHomeSectionHead .cmcSecondaryButton{font-size:13px;font-weight:800;padding:0 13px;min-height:44px;white-space:nowrap;border-radius:11px;background:#fffdf8;color:var(--cmcSlate,#293d48)}
+.cmcHomeTextButton{font-size:13px;font-weight:750;border:0;background:transparent;color:#274752!important;cursor:pointer;min-height:44px;padding:5px 0;white-space:nowrap;text-decoration:underline;text-underline-offset:4px}
+.cmcHomeTabs{display:flex;flex-wrap:wrap;gap:8px;margin:2px 0 10px;padding-bottom:13px;border-bottom:1px solid var(--home-line)}
+.cmcHomeTabs button{border:1px solid transparent;border-radius:10px;background:transparent;color:#53646c;font-size:13px;font-weight:750;min-height:40px;padding:8px 11px;cursor:pointer}
+.cmcHomeTabs button.active{border-color:#d6dfdf;background:#ecf3f0;color:#244c44}
+.cmcHomeTabs button span{font-variant-numeric:tabular-nums;font-size:12px;margin-left:5px;opacity:.76}
+.cmcHomeList{display:grid;gap:0;min-width:0}
+.cmcHomeTask,.cmcHomeMeetingRow,.cmcHomeCalendarRow{border-bottom:1px solid var(--home-line);display:flex;justify-content:space-between;gap:14px;padding:16px 0;align-items:center;min-width:0}
+.cmcHomeTask:last-child,.cmcHomeMeetingRow:last-child,.cmcHomeCalendarRow:last-child{border-bottom:0;padding-bottom:4px}
+.cmcHomeTask:first-child,.cmcHomeMeetingRow:first-child,.cmcHomeCalendarRow:first-child{padding-top:5px}
+.cmcHomeTaskCopy,.cmcHomeMeetingCopy,.cmcHomeCalendarCopy{flex:1;min-width:0}
+.cmcHomeTaskCopy strong,.cmcHomeMeetingCopy strong,.cmcHomeCalendarCopy strong{font-size:15px;line-height:1.42;font-weight:800;color:var(--cmcInk,#151616);display:block;overflow-wrap:anywhere}
+.cmcHomeTaskMeta,.cmcHomeMeetingMeta,.cmcHomeCalendarMeta{font-size:13px;line-height:1.55;color:#50616a;margin:4px 0 0;overflow-wrap:anywhere}
+.cmcHomeMeetingCopy p{font-size:13px;line-height:1.55;margin:4px 0 0;color:#607078;overflow-wrap:anywhere}
+.cmcHomeRowActions{display:flex;gap:6px;flex:0 0 auto;align-items:center}
+.cmcHomeRowButton{min-height:42px;border-radius:10px;border:1px solid var(--home-line);background:#fffdf8;color:#25414d;font-size:13px;font-weight:750;padding:7px 12px;cursor:pointer}
+.cmcHomeTick{display:grid;place-items:center;width:42px;min-height:42px;border:1px solid #d0dcd7;background:#eef5ef;border-radius:10px;color:#245f4f;font-size:17px;cursor:pointer}
+.cmcHomeTick.isDone{background:#def0e8}
+.cmcHomeTag{display:inline-block;font-size:11px;line-height:1.25;border-radius:6px;padding:3px 7px;background:#e7f2ed;color:#285a4a;font-weight:800}
+.cmcHomeTag.isOverdue{background:#fff0e6;color:#914d16}
+.cmcHomeEmptyState{background:#f8f7f2;border:1px dashed #d4dcd9;border-radius:15px;padding:22px;display:grid;justify-items:start;gap:6px}
+.cmcHomeEmptyState .cmcHomeEmptyIcon{display:grid;place-items:center;width:36px;height:36px;border:1px solid #d5dfdf;border-radius:10px;color:#3a6159;background:#edf3f0;font-size:20px}
+.cmcHomeEmptyState strong{font-size:15px;line-height:1.5;color:#263d47}
+.cmcHomeEmptyState p{font-size:14px;line-height:1.6;color:#53666e;margin:0;max-width:48ch}
+.cmcHomeEmptyState button{font-size:13px;font-weight:750;min-height:42px;background:#fff;border:1px solid #c8d5d0;border-radius:10px;color:#284b45;padding:6px 14px;cursor:pointer;margin-top:5px}
+.cmcHomeHelper{font-size:12px;line-height:1.5;color:#586b73;margin:12px 0 0}
+.cmcHomeNextMeeting{margin:0 0 15px}
+.cmcHomeNextMeeting:empty{display:none}
+.cmcHomeFeature{background:#edf3f0;border:1px solid #d3e1dc;border-radius:16px;padding:17px 18px;display:flex;gap:16px;align-items:center;justify-content:space-between}
+.cmcHomeFeature .cmcEyebrow{color:#2b6b5c;font-size:10px;margin-bottom:3px}
+.cmcHomeFeature strong{display:block;font-size:17px;font-weight:850;color:#203c34}
+.cmcHomeFeature p{margin:5px 0 0;color:#37594f;line-height:1.55;font-size:13px}
+.cmcHomeFeature .cmcHomeRowButton{background:#fff;border-color:#c7dad3}
+.cmcHomeMeetingListHeading{font-size:13px;font-weight:800;letter-spacing:.01em;color:#617178;margin:4px 0 7px}
+.cmcHomeDateBadge{display:grid;place-items:center;flex:0 0 54px;width:54px;padding:8px 0;border:1px solid #d4dcdb;border-radius:12px;background:#f4f6f2;box-sizing:border-box}
+.cmcHomeDateBadge small{font-size:11px;font-weight:900;text-transform:uppercase;color:#3e625b;line-height:1.4}
+.cmcHomeDateBadge strong{font-size:23px;color:#2a4752;line-height:1.2}
+.cmcHomeCalendarRow{justify-content:flex-start;gap:12px}
+.cmcHomeCalendarRow .cmcHomeTextButton{margin-left:auto;font-size:12px}
+.cmcHomeCalendarCopy{padding-right:2px}
+.cmcHomeActivity .cmcHomeSectionHead{margin-bottom:16px}
+.cmcHomeProgress{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:9px}
+.cmcHomeProgressStat{background:#f3f6f3;border-radius:12px;padding:12px 9px}
+.cmcHomeProgressStat strong{display:block;font-size:23px;line-height:1.25;color:#284450;font-weight:900;font-variant-numeric:tabular-nums}
+.cmcHomeProgressStat span{font-size:11px;line-height:1.5;color:#50636a;display:block;font-weight:700}
+.cmcHomeProgressNote{grid-column:1/-1;font-size:13px;line-height:1.5;color:#53656c;margin:5px 0 0}
+.cmcHomeAssessment{background:#f4eee1;border:1px solid #e4d7be}
+.cmcHomeAssessmentIntro{display:flex;align-items:center;gap:12px}
+.cmcHomeAssessmentIcon{width:44px;height:44px;flex:0 0 44px;background:#e9d8bb;border:1px solid #d9bc8f;color:#6a4a21;border-radius:13px;display:grid;place-items:center;font-size:26px}
+.cmcHomeAssessment>p{font-size:14px;line-height:1.65;color:#4c5f68;margin:13px 0 12px}
+.cmcHomeAssessmentLink{display:inline-flex;align-items:center;gap:12px;min-height:42px;font-weight:850;font-size:14px;color:#213d49;text-decoration:underline;text-underline-offset:4px}
+.cmcHomeDialog{width:min(800px,calc(100vw - 30px));max-height:90vh;padding:0;border-radius:22px;border:1px solid #bdc9c7;background:var(--cmcPaper,#fffaf1);color:var(--cmcInk,#151616);box-shadow:0 22px 70px rgba(23,35,42,.3);overflow:hidden}
+.cmcHomeDialog::backdrop{background:rgba(20,36,43,.6)}
+.cmcHomeEditor{max-height:90vh;display:flex;flex-direction:column}
+.cmcHomeEditorHead{display:flex;justify-content:space-between;gap:22px;padding:23px 28px 18px;border-bottom:1px solid var(--home-line,rgba(41,61,72,.15))}
+.cmcHomeEditorHead .cmcEyebrow{font-size:11px;letter-spacing:.14em;color:#935312;margin:0 0 6px}
+.cmcHomeEditorHead h2{font-size:26px;line-height:1.2;margin:0 0 5px;color:#293d48}
+.cmcHomeEditorHead p:last-child{font-size:13px;line-height:1.6;color:#566770;margin:0}
+.cmcHomeClose{background:transparent;border:0;font-size:30px;line-height:1;color:#4a6269;width:44px;height:44px;cursor:pointer}
+.cmcHomeEditorFields{padding:23px 28px;overflow:auto;display:grid;gap:17px}
+.cmcHomeEditorFields label{font-size:14px;font-weight:750;color:#283c45;display:grid;gap:7px;min-width:0}
+.cmcHomeEditorTwo{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
+.cmcHomeEditorFields input,.cmcHomeEditorFields textarea,.cmcHomeEditorFields select{font:inherit;font-size:16px;line-height:1.5;border:1px solid #b9c9c8;border-radius:11px;background:#fffefb;color:#1c3038;padding:11px 13px;width:100%;box-sizing:border-box;min-height:46px}
 .cmcHomeEditorFields textarea{resize:vertical}
-.cmcHomeEditorActions{border-top:1px solid var(--cmcBorder,rgba(41,61,72,.16));border-bottom:0;justify-content:flex-end;flex-wrap:wrap}
-.cmcHomeEditor .cmcAdminMessage{margin:0 26px;color:#9f2f22}
-.cmcHomeEditor .hidden,.cmcLeadershipHome .hidden{display:none!important}
-.cmcHomeDialog :focus-visible,.cmcLeadershipHome :focus-visible{outline:2px solid var(--cmcSage,#4da79c);outline-offset:3px}
-@media(max-width:850px){.cmcHomeGrid{grid-template-columns:minmax(0,1fr)}}
-@media(max-width:550px){.cmcHomePanel{padding:18px}.cmcHomePanelHeading{align-items:start}.cmcHomeItem{align-items:start;flex-wrap:wrap}.cmcHomeItemActions{margin-left:auto}.cmcHomeEditorHead,.cmcHomeEditorActions{padding:17px}.cmcHomeEditorFields{padding:17px}.cmcHomeEditor .cmcAdminMessage{margin:0 17px}.cmcHomePanelHeading .cmcSecondaryButton{font-size:13px}}
+.cmcHomeEditorFields input:disabled,.cmcHomeEditorFields textarea:disabled,.cmcHomeEditorFields select:disabled{opacity:.75;background:#f3f5f2}
+.cmcHomeFollowups{border:1px solid #d5dfdc;border-radius:15px;background:#f3f7f4;padding:15px}
+.cmcHomeFollowupsHead{display:flex;justify-content:space-between;gap:12px;align-items:center}
+.cmcHomeFollowupsHead h3{font-size:16px;line-height:1.4;color:#28454b;margin:0}
+.cmcHomeFollowupsHead button{min-height:40px;font-size:13px;padding:6px 12px;color:#253c45}
+.cmcHomeFollowupsItem{font-size:13px;padding:10px 0;border-top:1px solid #d5dfdc;display:flex;gap:9px;align-items:center;justify-content:space-between}
+.cmcHomeFollowupsItem:first-child{margin-top:9px}
+.cmcHomeFollowupsItem span{font-weight:700}
+.cmcHomeFollowupsItem small{color:#5a6a71}
+.cmcHomeEditorMessage{color:#903f36;font-size:14px;line-height:1.5;margin:0 28px}
+.cmcHomeEditorActions{display:flex;gap:10px;align-items:center;padding:16px 28px;border-top:1px solid #d3dcda}
+.cmcHomeEditorActions .cmcPrimaryButton{min-height:46px;font-size:14px}
+.cmcHomeEditorActions .cmcSecondaryButton{min-height:46px}
+.cmcHomeEditorSpacer{flex:1}
+.cmcHomeDelete{background:transparent;border:0;text-decoration:underline;color:#8a3e36;font-size:13px;font-weight:750;cursor:pointer;min-height:44px}
+.cmcHomeToast{position:fixed;z-index:45;bottom:24px;right:24px;background:#253d45;color:#fff;font-size:14px;font-weight:700;line-height:1.5;padding:14px 19px;border-radius:13px;box-shadow:0 16px 35px rgba(17,30,38,.2);max-width:min(320px,calc(100vw - 32px))}
+.cmcLeadershipBody :is(.cmcLeadershipHome,.cmcHomeDialog) :focus-visible{outline:2px solid #2b7b71;outline-offset:3px}
+@media(max-width:1270px) and (min-width:721px){
+ .cmcLeadershipBody .cmcHeader{padding:12px 26px;min-height:77px}
+ .cmcLeadershipBody .cmcNav{margin-left:auto;position:relative}
+ .cmcLeadershipBody .cmcNavMenu{position:absolute;top:calc(100% + 11px);right:0;display:none;width:min(292px,calc(100vw - 32px));padding:10px;border:1px solid #d4dcd7;border-radius:16px;background:#fbf0de;box-shadow:0 18px 50px rgba(24,38,44,.2)}
+ .cmcLeadershipBody .cmcNav.cmcNavOpen .cmcNavMenu{display:grid;gap:2px}
+ .cmcLeadershipBody .cmcNav .cmcNavMenu a,.cmcLeadershipBody .cmcNav .cmcNavMenu button{display:flex;width:100%;min-height:45px;box-sizing:border-box;justify-content:flex-start;padding:0 13px;border-radius:10px;font-size:14px}
+ .cmcLeadershipBody .cmcNav .cmcNavMenu a.active{background:rgba(234,159,67,.13)}
+ .cmcLeadershipBody .cmcNavDivider{display:block;width:100%;height:1px;margin:5px 0;background:rgba(41,61,72,.14)}
+ .cmcLeadershipBody .cmcNav .cmcMobileNavToggle{display:inline-flex;align-items:center;gap:8px;min-height:46px;padding:0 13px;border:1px solid #bdc9c7;border-radius:12px;background:#fffaf1;color:#293d48;font-size:13px}
+ .cmcLeadershipBody .cmcMobileNavIcon{display:grid;gap:3px}
+ .cmcLeadershipBody .cmcMobileNavIcon i{display:block;width:16px;height:2px;background:currentColor;border-radius:4px}
+}
+@media(max-width:980px){
+ .cmcLeadershipBody .cmcPathwayMain.cmcLeadershipHome{width:min(100% - 38px,1216px)}
+ .cmcHomeGrid{grid-template-columns:minmax(0,1fr)}
+ .cmcHomeAside{grid-template-columns:repeat(2,minmax(0,1fr));align-items:start}
+ .cmcHomeCalendar{grid-row:span 2}
+ .cmcHomeHero h1{font-size:clamp(34px,5vw,46px)!important}
+}
+@media(max-width:720px){
+ .cmcLeadershipBody .cmcPathwayMain.cmcLeadershipHome{width:min(100% - 28px,1216px);padding:24px 0 64px}
+ .cmcHomeHero{gap:15px;align-items:flex-start;flex-direction:column;padding-bottom:17px}
+ .cmcHomeHeroAside{width:100%;align-items:flex-start;flex-direction:row;justify-content:space-between;gap:10px;flex-wrap:wrap}
+ .cmcHomeToday{padding-top:10px}
+ .cmcHomeHero h1{font-size:clamp(33px,8.5vw,42px)!important}
+ .cmcHomeSubtitle{font-size:15px}
+ .cmcHomeOverview{gap:8px}
+ .cmcHomeMetric{padding:12px;min-height:74px;gap:8px}
+ .cmcHomeMetricIcon{width:32px;height:32px;flex-basis:32px;font-size:17px}
+ .cmcHomeMetric strong{font-size:22px}
+ .cmcHomeMetric span:last-child{font-size:11px}
+ .cmcHomeAside{grid-template-columns:minmax(0,1fr)}
+ .cmcHomeCalendar{grid-row:auto}
+ .cmcHomePanel{padding:19px;border-radius:19px}
+ .cmcHomeSectionHead{gap:10px}
+ .cmcHomeSectionHead h2{font-size:22px!important}
+ .cmcHomeSectionHead p:not(.cmcEyebrow){font-size:13px}
+ .cmcHomeDialog{max-height:94vh}
+ .cmcHomeEditor{max-height:94vh}
+ .cmcHomeEditorHead,.cmcHomeEditorActions{padding:16px 18px}
+ .cmcHomeEditorFields{padding:16px 18px}
+ .cmcHomeEditorMessage{margin:0 18px}
+ .cmcHomeEditorTwo{grid-template-columns:minmax(0,1fr)}
+}
+@media(max-width:440px){
+ .cmcHomeOverview{grid-template-columns:repeat(3,minmax(0,1fr))}
+ .cmcHomeMetric{display:block;padding:10px}
+ .cmcHomeMetricIcon{display:none}
+ .cmcHomeMetric strong{font-size:24px}
+ .cmcHomeMetric span:last-child{font-size:11px}
+ .cmcHomeSectionHead{flex-wrap:wrap}
+ .cmcHomeSectionHead .cmcSecondaryButton{margin-left:auto}
+ .cmcHomeTask,.cmcHomeMeetingRow{align-items:flex-start}
+ .cmcHomeRowActions{flex-wrap:wrap;justify-content:flex-end}
+ .cmcHomeProgressStat{padding:9px 6px}
+ .cmcHomeProgressStat span{font-size:10px}
+}

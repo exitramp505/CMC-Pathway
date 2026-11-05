@@ -1,7 +1,7 @@
 const { createClient } = require('@supabase/supabase-js');
 
 const REGIONS = ['Central', 'East', 'Mountain Plains', 'Pacific', 'Southeast'];
-const ACCOUNT_ROLES = ['participant', 'regional_leader', 'cmc_admin'];
+const ACCOUNT_ROLES = ['participant', 'regional_leader', 'cmc_admin', 'cmc_viewer'];
 
 function accessError(statusCode, message) {
   const error = new Error(message);
@@ -16,7 +16,7 @@ function resolveRoleChange({ viewer, target, accountRole, region }) {
   if (target.archived_at) throw accessError(400, 'Restore this person before changing leadership access.');
 
   if (viewer.account_role === 'regional_leader') {
-    if (target.account_role === 'cmc_admin' || accountRole === 'cmc_admin') {
+    if (['cmc_admin','cmc_viewer'].includes(target.account_role) || ['cmc_admin','cmc_viewer'].includes(accountRole)) {
       throw accessError(403, 'Only a full administrator can manage full administrator access.');
     }
     if (target.region !== viewer.region) {
@@ -109,7 +109,7 @@ exports.handler = async (event) => {
       .from('candidate_profiles')
       .select('id,full_name,email,region,account_role,created_at,archived_at')
       .in('account_role', viewer.account_role === 'cmc_admin'
-        ? ['participant', 'regional_leader', 'cmc_admin']
+        ? ['participant', 'regional_leader', 'cmc_admin', 'cmc_viewer']
         : ['participant', 'regional_leader'])
       .is('archived_at', null)
       .order('full_name', { ascending:true });

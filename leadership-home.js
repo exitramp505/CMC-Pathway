@@ -4,7 +4,7 @@
   const token=session.access_token;
   const $=id=>document.getElementById(id);
   let state={viewer:null,items:[],events:[],leaders:[]},allMeetings=false;
-  const esc=s=>String(s??'').replace(/[&<>"']/g,ch=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;','"':'&quot;'}[ch]));
+  const esc=s=>String(s??'').replace(/[&<>\"']/g,ch=>({'&':'&amp;','<':'&lt;','>':'&gt;','\"':'&quot;',"'":'&#039;'}[ch]));
   const date=s=>s?new Intl.DateTimeFormat(undefined,{month:'short',day:'numeric',year:'numeric'}).format(new Date(s)):'No date';
   const dateTime=s=>s?new Intl.DateTimeFormat(undefined,{month:'short',day:'numeric',hour:'numeric',minute:'2-digit'}).format(new Date(s)):'';
   const leadershipRole=role=>['regional_leader','cmc_admin','cmc_viewer'].includes(role);

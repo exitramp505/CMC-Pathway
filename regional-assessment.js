@@ -6,7 +6,7 @@
   const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
   const yearNow=new Date().getFullYear();
   const requestedYear=Number(new URLSearchParams(location.search).get('year'));
-  const defaultYear=new Date().getMonth()<2?yearNow-1:yearNow;
+  const defaultYear=yearNow<=2026?yearNow:yearNow-1;
   const initialYear=Number.isInteger(requestedYear)&&requestedYear>=2022&&requestedYear<=yearNow?requestedYear:defaultYear;
   const app={config:null,viewer:null,year:initialYear,record:null,answers:{},scores:{},reflections:{},history:[],step:0,dirty:false,saving:null,timer:null,locked:false,version:0};
   function status(message,error=false){

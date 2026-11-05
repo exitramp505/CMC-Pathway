@@ -19,7 +19,7 @@
   const national=()=>role()==='cmc_admin'||role()==='cmc_viewer';
   const readonly=()=>role()==='cmc_viewer';
   const canEdit=item=>!readonly()&&(!item||item.visibility==='personal'?(!item||item.created_by===state.viewer.id):(role()==='cmc_admin'||item.region===state.viewer.region));
-  const ownerName=id=>state.leaders.find(p=>p.id===id)?.full_name||state.leaders.find(p=>p.id===id)?.email||'Unassigned';
+  const ownerName=id=>state.leaders.find(p=>p.id===id)?.full_name||state.leaders.find(p=>p.id===id)?.email||(id?'Assigned leader':'Unassigned');
   const isMine=item=>item.visibility==='personal'||item.assigned_to===state.viewer.id||(!item.assigned_to&&item.created_by===state.viewer.id);
   const openTasks=()=>state.items.filter(x=>x.kind==='task'&&!x.completed_at);
   const allMeetings=()=>state.items.filter(x=>x.kind==='meeting');
@@ -180,7 +180,7 @@
       document.querySelector('[data-task-filter="mine"]').classList.toggle('hidden',readonly());
       $('itemRegion').disabled=role()==='regional_leader';
       renderAll();
-      notice('');
+      notice(Array.isArray(data.warnings)&&data.warnings.length?data.warnings.join(' '):'',Boolean(data.warnings?.length));
       loadPeople();
     }catch(err){
       notice(err.message||'Unable to load your leadership workspace.',true);

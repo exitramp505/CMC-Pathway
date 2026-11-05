@@ -192,15 +192,16 @@
       const assessmentLink=$('regionalAssessmentLink');
       const annual=state.annual;
       const annualYear=annual?.reporting_year||new Date().getFullYear();
-      assessmentLink.href=readonly()?'regional-reports.html':'regional-assessment.html?year='+annualYear;
-      assessmentLink.firstChild.textContent=readonly()?'View national reports ':
+      const canAssess=Boolean(regionalDirector)&&!readonly();
+      assessmentLink.href=canAssess?'regional-assessment.html?year='+annualYear:'regional-reports.html';
+      assessmentLink.firstChild.textContent=!canAssess?'View national reports ':
         annual?.status==='submitted'?'View submitted assessment ':
         annual?.status==='draft'?'Continue Assessment ':'Start Assessment ';
       const annualStatus=annual?.assigned?
         annual.status==='submitted'?'Your '+annualYear+' assessment is complete.':
         'Your '+annualYear+' assessment is due '+shortDate(annual.due_date)+'.':
         'Your region can complete the assessment at any time.';
-      setText('assessmentDueStatus',readonly()?'Review regional progress and system strengths.':annualStatus);
+      setText('assessmentDueStatus',canAssess?annualStatus:'Review regional progress and system strengths.');
       $('newMeeting').classList.toggle('hidden',readonly());
       $('newReminder').classList.toggle('hidden',readonly());
       $('allEventsLink').classList.toggle('hidden',readonly());

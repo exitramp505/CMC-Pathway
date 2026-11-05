@@ -172,7 +172,7 @@ async function runCycle(sb,{
   if(!sendEmails)return result;
   const noticeRows=await noticesFor(sb,assignments.map(a=>a.id));
   const existing=new Map(noticeRows.map(x=>[x.assignment_id+':'+x.kind,x]));
-  const canRemind=mode==='manual'||(day.month===2&&day.day>=settings.reminder_day);
+  const canRemind=day.month===2&&day.day>=settings.reminder_day;
   for(const assignment of assignments){
     if(submitted.has(assignment.director_id))continue;
     const director=directorById.get(assignment.director_id);

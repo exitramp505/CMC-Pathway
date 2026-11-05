@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Regional Health Reports | CMC Pathway</title>
+<link rel="stylesheet" href="style.css?v=144"><link rel="stylesheet" href="regional-health.css?v=1">
+<link rel="icon" type="image/svg+xml" href="cmc-logo-mark.svg">
+</head>
+<body class="cmcPathwayBody cmcHealthBody">
+<a class="cmcSkipLink" href="#main-content">Skip to main content</a>
+<header class="cmcHeader"><a class="cmcBrand" href="leadership-home.html"><img class="cmcLogoImage" src="cmc-logo-mark.svg" alt=""><span><strong>CMC Pathway</strong><small>Church Multiplication Collective</small></span></a><nav id="cmcRoleNav" class="cmcNav"></nav></header>
+<main id="main-content" tabindex="-1" class="cmcPathwayMain cmcHealthMain">
+ <section class="cmcHealthHero"><div><p class="cmcEyebrow">NATIONAL LEADERSHIP / REPORTING</p><h1>Regional health</h1><p class="cmcHealthIntro">See annual assessment participation, compare multiplication systems, and follow progress year over year.</p></div>
+ <div class="cmcHealthReportControls"><label for="reportYear">Reporting year</label><select id="reportYear"></select><button id="exportReports" type="button" class="cmcSecondaryButton" disabled>Export CSV</button></div></section>
+ <p id="reportMessage" class="cmcHealthMessage" role="status">Loading national reports…</p>
+ <div id="reportDashboard" class="cmcHealthReportDashboard hidden">
+   <section class="cmcHealthStatGrid" aria-label="Report summary">
+     <article><span>Submitted assessments</span><strong id="submissionCount">—</strong><small id="submissionDetail">Across all regions</small></article>
+     <article><span>Completion rate</span><strong id="completionRate">—</strong><small>Active regional directors</small></article>
+     <article><span>Average total score</span><strong id="nationalAverage">—</strong><small>Out of 200 points</small></article>
+     <article><span>Change from prior year</span><strong id="nationalChange">—</strong><small>Comparable submitted assessments</small></article>
+   </section>
+   <section class="cmcHealthReportLayout">
+      <article class="cmcHealthReportCard">
+        <div class="cmcHealthCardHead"><div><p class="cmcEyebrow">NATIONAL SYSTEMS</p><h2>Strengths &amp; opportunities</h2></div><p>Average self-assessed score / 25</p></div>
+        <div id="systemsChart" class="cmcHealthBars"></div>
+      </article>
+      <article class="cmcHealthReportCard">
+        <div class="cmcHealthCardHead"><div><p class="cmcEyebrow">REGIONAL PARTICIPATION</p><h2>Annual submissions</h2></div></div>
+        <div id="regionCoverage" class="cmcHealthCoverage"></div>
+      </article>
+   </section>
+   <section class="cmcHealthReportCard">
+     <div class="cmcHealthCardHead"><div><p class="cmcEyebrow">REGIONAL COMPARISON</p><h2>Compare system scores</h2></div><p>Each cell is the region's average score / 25</p></div>
+     <div class="cmcHealthScrollTable"><table id="regionMatrix"><thead></thead><tbody></tbody></table></div>
+     <p class="cmcHealthTableNote">Comparisons are descriptive. Smaller regions may have fewer completed assessments.</p>
+   </section>
+   <section class="cmcHealthReportCard">
+      <div class="cmcHealthCardHead"><div><p class="cmcEyebrow">SUBMITTED ASSESSMENTS</p><h2>Individual reports</h2></div>
+      <label>Filter region <select id="reportRegion"><option value="">All regions</option><option>Central</option><option>East</option><option>Mountain Plains</option><option>Pacific</option><option>Southeast</option></select></label></div>
+      <div id="reportsList" class="cmcHealthReportList"></div>
+   </section>
+ </div>
+</main>
+<dialog id="reportDetailDialog" class="cmcHealthDetailDialog" aria-labelledby="detailTitle">
+ <section><header><div><p class="cmcEyebrow">SUBMITTED ANNUAL ASSESSMENT</p><h2 id="detailTitle">Assessment details</h2><p id="detailSubtitle"></p></div><button id="closeDetail" type="button" aria-label="Close report">×</button></header><div id="detailContent" class="cmcHealthDetailContent"></div></section>
+</dialog>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.105.4"></script><script src="auth.js?v=133"></script><script src="regional-reports.js?v=1"></script>
+</body></html>

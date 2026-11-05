@@ -5,7 +5,7 @@
   const token=session.access_token||'';
   const ROLES=['regional_leader','cmc_admin','cmc_viewer'];
   const state={viewer:null,items:[],events:[],leaders:[]};
-  let taskFilter='mine',meetingExpanded=false,peopleLoaded=false,toaster=null,currentRelatedMeeting=null;
+  let taskFilter='mine',meetingExpanded=false,allTasksExpanded=false,peopleLoaded=false,toaster=null,currentRelatedMeeting=null;
   const esc=s=>String(s??'').replace(/[&<>"']/g,ch=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]));
   const title=s=>String(s||'').replace(/\s+[-–—]\s*$/,'').trim();
   const pad=n=>String(n).padStart(2,'0');
@@ -70,7 +70,7 @@
       elHtml('reminderList',empty('✓',copy[0],copy[1],copy[2],copy[3]));
       return;
     }
-    const rendered=items.slice(0,12).map(item=>{
+    const rendered=(allTasksExpanded?items:items.slice(0,12)).map(item=>{
       const doneFlag=Boolean(item.completed_at),overdue=!doneFlag&&item.due_date&&item.due_date<todayKey();
       const due=item.due_date?(doneFlag?'Completed · ':overdue?'Overdue · ':'Due ')+shortDate(item.due_date):
         doneFlag?'Completed '+dateTime(item.completed_at):'No due date';
@@ -83,7 +83,7 @@
         (overdue?'<span class="cmcHomeTag isOverdue">Overdue</span> ':'')+esc(due+' · '+scope+who)+
         '</p></div><div class="cmcHomeRowActions">'+action+'<button type="button" class="cmcHomeRowButton" data-open="'+esc(item.id)+'">'+(taskEditable?'Edit':'View')+'</button></div></article>';
     }).join('');
-    elHtml('reminderList',rendered+(items.length>12?'<button type="button" class="cmcHomeTextButton" data-more-tasks>Show all '+items.length+' action items</button>':''));
+    elHtml('reminderList',rendered+(items.length>12?'<button type="button" class="cmcHomeTextButton" data-more-tasks>'+(allTasksExpanded?'Show fewer':'Show all '+items.length+' action items')+'</button>':''));
   }
   function renderMeetings(){
     const upcoming=futureMeetings();
@@ -277,7 +277,7 @@
   $('viewAllMeetings').addEventListener('click',()=>{meetingExpanded=!meetingExpanded;renderMeetings();});
   $('meetingSearch').addEventListener('input',()=>{meetingExpanded=false;renderMeetings();});
   document.querySelectorAll('[data-task-filter]').forEach(button=>{
-    button.addEventListener('click',()=>{taskFilter=button.dataset.taskFilter;renderTasks();});
+    button.addEventListener('click',()=>{taskFilter=button.dataset.taskFilter;allTasksExpanded=false;renderTasks();});
   });
   $('closeEditor').addEventListener('click',closeEditor);
   $('cancelEditor').addEventListener('click',closeEditor);
@@ -285,9 +285,21 @@
   $('itemVisibility').addEventListener('change',adjustTaskScope);
   $('addMeetingFollowup').addEventListener('click',()=>{
     const id=$('itemId').value;if(!id)return;
+    const saved=state.items.find(x=>x.id===id);
+    if(saved && (
+      $('itemTitle').value!==saved.title ||
+      $('itemBody').value!==(saved.body||'') ||
+      $('itemNotes').value!==(saved.notes||'') ||
+      $('itemDecisions').value!==(saved.decisions||'') ||
+      $('itemStart').value!==localInput(saved.starts_at)
+    )){
+      $('editorMessage').textContent='Save changes to this meeting before adding a follow-up.';
+      return;
+    }
     closeEditor();openEditor('task',null,id);
   });
   document.addEventListener('click',async event=>{
+    const moreTasks=event.target.closest('[data-more-tasks]');if(moreTasks){allTasksExpanded=!allTasksExpanded;renderTasks();return;}
     const quick=event.target.closest('[data-quick]');if(quick){openEditor(quick.dataset.quick);return;}
     const open=event.target.closest('[data-open]');if(open){
       const item=state.items.find(x=>x.id===open.dataset.open);

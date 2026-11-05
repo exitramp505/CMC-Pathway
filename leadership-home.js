@@ -4,7 +4,7 @@
   if(!session?.user){window.location.replace('login.html');return;}
   const token=session.access_token||'';
   const ROLES=['regional_leader','cmc_admin','cmc_viewer'];
-  const state={viewer:null,items:[],events:[],leaders:[],calendar:null};
+  const state={viewer:null,items:[],events:[],leaders:[],calendar:null,annual:null};
   let taskFilter='mine',meetingExpanded=false,allTasksExpanded=false,peopleLoaded=false,toaster=null,currentRelatedMeeting=null;
   const esc=s=>String(s??'').replace(/[&<>"']/g,ch=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]));
   const title=s=>String(s||'').replace(/\s+[-–—]\s*$/,'').trim();
@@ -48,7 +48,7 @@
   }
 
   function renderOverview(){
-    setText('openActionsCount',openTasks().length);
+    setText('openActionsCount',openTasks().length+(state.annual?.assigned&&state.annual.status!=='submitted'?1:0));
     setText('upcomingMeetingsCount',futureMeetings().length);
     setText('upcomingEventsCount',state.events.length);
   }
@@ -56,14 +56,17 @@
     const mine=openTasks().filter(isMine);
     const team=openTasks().filter(x=>x.visibility==='team');
     const done=state.items.filter(x=>x.kind==='task'&&x.completed_at);
-    setText('mineTaskCount',mine.length);
+    const annual=state.annual;
+    const annualOpen=Boolean(annual?.assigned&&annual.status!=='submitted'&&taskFilter==='mine');
+    const annualDone=Boolean(annual?.assigned&&annual.status==='submitted'&&taskFilter==='done');
+    setText('mineTaskCount',mine.length+(annual?.assigned&&annual.status!=='submitted'?1:0));
     setText('teamTaskCount',team.length);
     const tabs=document.querySelectorAll('[data-task-filter]');
     tabs.forEach(b=>{const active=b.dataset.taskFilter===taskFilter;b.classList.toggle('active',active);b.setAttribute('aria-pressed',String(active));});
     const items=(taskFilter==='mine'?mine:taskFilter==='team'?team:done)
       .slice().sort((a,b)=>taskFilter==='done'?String(b.completed_at).localeCompare(String(a.completed_at)):
         String(a.due_date||'9999').localeCompare(String(b.due_date||'9999'))||String(a.created_at).localeCompare(String(b.created_at)));
-    if(!items.length){
+    if(!items.length&&!annualOpen&&!annualDone){
       const copy=taskFilter==='mine'?['No actions assigned to you','Personal and assigned follow-ups will appear here.','Add your first action','task']:
         taskFilter==='team'?['No shared actions yet','Add a team action or create follow-ups from a meeting.','Add a team action','task']:
           ['No completed actions yet','Completed reminders stay in this history so you can refer back to them.',null,null];
@@ -83,7 +86,17 @@
         (overdue?'<span class="cmcHomeTag isOverdue">Overdue</span> ':'')+esc(due+' · '+scope+who)+
         '</p></div><div class="cmcHomeRowActions">'+action+'<button type="button" class="cmcHomeRowButton" data-open="'+esc(item.id)+'">'+(taskEditable?'Edit':'View')+'</button></div></article>';
     }).join('');
-    elHtml('reminderList',rendered+(items.length>12?'<button type="button" class="cmcHomeTextButton" data-more-tasks>'+(allTasksExpanded?'Show fewer':'Show all '+items.length+' action items')+'</button>':''));
+    const annualMarkup=annualOpen?
+      '<article class="cmcHomeTask cmcHomeAnnualTask"><div class="cmcHomeTaskCopy">'+
+        '<strong>'+esc(annual.reporting_year+' Annual Systems Assessment')+'</strong>'+
+        '<p class="cmcHomeTaskMeta">'+esc('Due '+shortDate(annual.due_date))+
+        (annual.status==='draft'?' · Draft saved':' · Assigned')+'</p></div>'+
+        '<a class="cmcHomeRowButton" href="regional-assessment.html?year='+annual.reporting_year+'">'+
+        (annual.status==='draft'?'Continue':'Start')+' assessment →</a></article>':
+        annualDone?'<article class="cmcHomeTask cmcHomeAnnualTask"><div class="cmcHomeTaskCopy"><strong>'+
+        esc(annual.reporting_year+' Annual Systems Assessment')+'</strong><p class="cmcHomeTaskMeta">Submitted · Complete</p></div>'+
+        '<a class="cmcHomeRowButton" href="regional-assessment.html?year='+annual.reporting_year+'">View →</a></article>':'';
+    elHtml('reminderList',annualMarkup+rendered+(items.length>12?'<button type="button" class="cmcHomeTextButton" data-more-tasks>'+(allTasksExpanded?'Show fewer':'Show all '+items.length+' action items')+'</button>':''));
   }
   function renderMeetings(){
     const upcoming=futureMeetings();
@@ -165,17 +178,26 @@
     try{
       const data=await api();
       if(!ROLES.includes(data.viewer?.account_role)){window.location.replace('dashboard.html');return;}
-      state.viewer=data.viewer;state.items=data.items||[];state.events=data.events||[];state.leaders=data.leaders||[];state.calendar=data.calendar||null;
+      state.viewer=data.viewer;state.items=data.items||[];state.events=data.events||[];state.leaders=data.leaders||[];state.calendar=data.calendar||null;state.annual=data.annual_assessment||null;
       dcAuth.renderRoleNavigation(state.viewer,'home');
       const isNational=national();
       setText('leadershipRegion',isNational?'NATIONAL LEADERSHIP':'OPEN BIBLE '+String(state.viewer.region||'').toUpperCase()+' REGION');
       const givenName=String(state.viewer.full_name||'').trim().split(/\s+/)[0];
       setText('leadershipGreeting','Welcome back'+(givenName?', '+givenName:'')+'.');
       setText('homeToday',new Intl.DateTimeFormat(undefined,{weekday:'long',month:'long',day:'numeric',year:'numeric'}).format(new Date()));
-      if(isNational){taskFilter='team';}else{taskFilter='mine';}
+      taskFilter=readonly()?'team':'mine';
       const assessmentLink=$('regionalAssessmentLink');
-      assessmentLink.href=role()==='regional_leader'?'regional-assessment.html':'regional-reports.html';
-      assessmentLink.firstChild.textContent=role()==='regional_leader'?'Open assessment ':'View national reports ';
+      const annual=state.annual;
+      const annualYear=annual?.reporting_year||new Date().getFullYear();
+      assessmentLink.href=readonly()?'regional-reports.html':'regional-assessment.html?year='+annualYear;
+      assessmentLink.firstChild.textContent=readonly()?'View national reports ':
+        annual?.status==='submitted'?'View submitted assessment ':
+        annual?.status==='draft'?'Continue Assessment ':'Start Assessment ';
+      const annualStatus=annual?.assigned?
+        annual.status==='submitted'?'Your '+annualYear+' assessment is complete.':
+        'Your '+annualYear+' assessment is due '+shortDate(annual.due_date)+'.':
+        'Your region can complete the assessment at any time.';
+      setText('assessmentDueStatus',readonly()?'Review regional progress and system strengths.':annualStatus);
       $('newMeeting').classList.toggle('hidden',readonly());
       $('newReminder').classList.toggle('hidden',readonly());
       $('allEventsLink').classList.toggle('hidden',readonly());

@@ -5,7 +5,10 @@
   const token=session.access_token;
   const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
   const yearNow=new Date().getFullYear();
-  const app={config:null,viewer:null,year:yearNow,record:null,answers:{},scores:{},reflections:{},history:[],step:0,dirty:false,saving:null,timer:null,locked:false,version:0};
+  const requestedYear=Number(new URLSearchParams(location.search).get('year'));
+  const defaultYear=yearNow<=2026?yearNow:yearNow-1;
+  const initialYear=Number.isInteger(requestedYear)&&requestedYear>=2022&&requestedYear<=yearNow?requestedYear:defaultYear;
+  const app={config:null,viewer:null,year:initialYear,record:null,answers:{},scores:{},reflections:{},history:[],step:0,dirty:false,saving:null,timer:null,locked:false,version:0};
   function status(message,error=false){
     $('healthMessage').textContent=message||'';
     $('healthMessage').classList.toggle('error',error);
@@ -98,6 +101,11 @@
     $('nextSection').textContent=app.step===8?(app.locked?'Submitted':'Review & submit'):'Next section →';
     $('nextSection').disabled=app.locked&&app.step===8;
     $('saveDraft').classList.toggle('hidden',app.locked);
+    const jump=$('assessmentJump');
+    if(jump){
+      jump.textContent=app.locked?'Review submitted assessment':app.record?.id?'Continue assessment':'Start assessment';
+      jump.classList.remove('hidden');
+    }
     feedback('');
     renderTop();renderNav();
   }
@@ -155,6 +163,7 @@
       app.reflections={...(data.record?.reflections||{})};
       app.locked=data.record?.status==='submitted';app.dirty=false;
       $('reportYear').value=String(app.year);
+    history.replaceState(null,'',location.pathname+'?year='+app.year);
       $('regionName').textContent='Open Bible '+app.viewer.region+' Region';
       dcAuth.renderRoleNavigation(app.viewer,'health');
       renderHistory();renderSection();renderTop();

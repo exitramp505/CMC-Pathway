@@ -4,7 +4,7 @@
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Annual Systems Assessment | CMC Pathway</title>
 <link rel="stylesheet" href="style.css?v=144">
-<link rel="stylesheet" href="regional-health.css?v=1">
+<link rel="stylesheet" href="regional-health.css?v=2">
 <link rel="icon" type="image/svg+xml" href="cmc-logo-mark.svg">
 </head>
 <body class="cmcPathwayBody cmcHealthBody">
@@ -13,7 +13,7 @@
 <main id="main-content" tabindex="-1" class="cmcHealthMain cmcPathwayMain">
   <section class="cmcHealthHero">
     <div><p class="cmcEyebrow">REGIONAL HEALTH / ANNUAL ASSESSMENT</p><h1>Systems Assessment</h1><p class="cmcHealthIntro">A thoughtful yearly review of the systems supporting church multiplication in your region.</p></div>
-    <div class="cmcHealthYear"><label for="reportYear">Reporting year</label><select id="reportYear" aria-label="Reporting year"></select><p id="regionName">Loading your region…</p></div>
+    <div class="cmcHealthYear"><label for="reportYear">Reporting year</label><select id="reportYear" aria-label="Reporting year"></select><p id="regionName">Loading your region…</p><a id="assessmentJump" class="cmcPrimaryButton hidden" href="#assessmentEditor">Start assessment</a></div>
   </section>
   <p id="healthMessage" class="cmcHealthMessage" role="status" aria-live="polite">Loading your assessment…</p>
   <section id="assessmentApp" class="cmcHealthApp hidden">
@@ -27,7 +27,7 @@
         <h2>Your assessment</h2><nav id="stepNav" class="cmcHealthSteps" aria-label="Assessment progress"></nav>
         <div class="cmcHealthHistory"><h3>Previous years</h3><div id="assessmentHistory"></div></div>
       </aside>
-      <section class="cmcHealthEditor">
+      <section id="assessmentEditor" class="cmcHealthEditor" tabindex="-1">
         <div class="cmcHealthEditorIntro"><span id="sectionCount">SECTION 1 OF 9</span><h2 id="sectionTitle">Spiritual Dynamics</h2><p id="sectionSubtitle"></p></div>
         <div id="sectionBody"></div>
         <p id="editorFeedback" class="cmcHealthFeedback" role="status" aria-live="polite"></p>
@@ -47,5 +47,5 @@
 </div></dialog>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.105.4"></script>
 <script src="auth.js?v=133"></script>
-<script src="regional-assessment.js?v=1"></script>
+<script src="regional-assessment.js?v=2"></script>
 </body></html>

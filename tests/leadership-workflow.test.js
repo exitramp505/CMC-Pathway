@@ -12,7 +12,7 @@ new vm.Script(script,{filename:'leadership-home.js'});
 for(const id of ['homeMessage','newMeeting','newReminder','viewAllMeetings','meetingSearch','upcomingList','reminderList','meetingList',
   'itemId','itemKind','itemTitle','itemRegion','itemStart','itemDue','itemVisibility','itemAssignee','itemMeeting','itemBody','itemNotes',
   'itemDecisions','meetingFollowups','addMeetingFollowup','meetingFollowupList','leadershipForm','leadershipEditor','saveItem','deleteItem',
-  'closeEditor','cancelEditor','homeToast','peopleSummary','activityScope','leadershipGreeting','leadershipRegion','homeToday',
+  'closeEditor','cancelEditor','eventDetailsDialog','eventDetailsTitle','eventDetailsTime','eventDetailsLocation','eventDetailsDescription','eventDetailsLink','closeEventDetails','homeToast','peopleSummary','activityScope','leadershipGreeting','leadershipRegion','homeToday',
   'openActionsCount','upcomingMeetingsCount','upcomingEventsCount','mineTaskCount','teamTaskCount','editorMessage','editorDescription',
   'editorTitle','bodyLabel','agendaRow','meetingDateRow','dueDateRow','visibilityRow','notesRow','decisionsRow','assigneeRow',
   'parentMeetingRow','regionRow','eventCaveat','allEventsLink','nextMeeting']){
@@ -22,6 +22,7 @@ assert.match(script,/data-task-filter/,'Task filters must be wired');
 assert.match(script,/data-toggle/,'Task completion must be wired');
 assert.match(script,/data-related-task/,'Meeting follow-ups must open');
 assert.match(script,/loadPeople\(\)/,'People card must use real participant information');
+assert.match(script,/data-event-details/,'Calendar event details must open a real event record');
 assert.match(script,/starts_at:isMeeting\?new Date/,'Meeting start must be serialized');
 assert.match(html,/rel="icon" type="image\/svg\+xml" href="cmc-logo-mark\.svg"/);
 

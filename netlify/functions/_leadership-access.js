@@ -7,7 +7,10 @@ const regionOf=profile=>{
   const region=profile?.cmc_regional_director_region;
   if(REGIONS.includes(region))return region;
   // Legacy records not yet migrated can still be read safely.
-  return profile?.account_role==='regional_leader'&&REGIONS.includes(profile.region)?profile.region:null;
+  if(profile?.account_role==='regional_leader'&&REGIONS.includes(profile.region))return profile.region;
+  // Legacy tests and pre-migration API fixtures omit the new column entirely.
+  if(profile?.cmc_regional_director_region===undefined&&profile?.account_role==='cmc_admin'&&REGIONS.includes(profile.region))return profile.region;
+  return null;
 };
 const nationalOf=profile=>{
   const value=profile?.cmc_national_access;

@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Regional Health Reports | CMC Pathway</title>
-<link rel="stylesheet" href="style.css?v=144"><link rel="stylesheet" href="regional-health.css?v=1">
+<link rel="stylesheet" href="style.css?v=144"><link rel="stylesheet" href="regional-health.css?v=2">
 <link rel="icon" type="image/svg+xml" href="cmc-logo-mark.svg">
 </head>
 <body class="cmcPathwayBody cmcHealthBody">
@@ -12,6 +12,16 @@
 <main id="main-content" tabindex="-1" class="cmcPathwayMain cmcHealthMain">
  <section class="cmcHealthHero"><div><p class="cmcEyebrow">NATIONAL LEADERSHIP / REPORTING</p><h1>Regional health</h1><p class="cmcHealthIntro">See annual assessment participation, compare multiplication systems, and follow progress year over year.</p></div>
  <div class="cmcHealthReportControls"><label for="reportYear">Reporting year</label><select id="reportYear"></select><button id="exportReports" type="button" class="cmcSecondaryButton" disabled>Export CSV</button></div></section>
+ <div id="regionalHealthViews" class="cmcHealthViewLinks hidden"><a href="#myRegionAssessment">My Region</a><a href="#reportDashboard">National Overview</a></div>
+ <section id="myRegionAssessment" class="cmcHealthReportCard cmcHealthMyRegionCard hidden" aria-labelledby="myRegionTitle">
+   <div class="cmcHealthMyRegionContent">
+     <div><p class="cmcEyebrow">MY REGION / ANNUAL ASSESSMENT</p>
+       <h2 id="myRegionTitle">Complete your region's annual assessment</h2>
+       <p id="myRegionAssessmentStatus">Checking your progress…</p>
+     </div>
+     <a id="myRegionAssessmentAction" class="cmcPrimaryButton" href="regional-assessment.html">Start Assessment →</a>
+   </div>
+ </section>
  <p id="reportMessage" class="cmcHealthMessage" role="status">Loading national reports…</p>
  <div id="reportDashboard" class="cmcHealthReportDashboard hidden">
    <section class="cmcHealthStatGrid" aria-label="Report summary">
@@ -45,5 +55,5 @@
 <dialog id="reportDetailDialog" class="cmcHealthDetailDialog" aria-labelledby="detailTitle">
  <section><header><div><p class="cmcEyebrow">SUBMITTED ANNUAL ASSESSMENT</p><h2 id="detailTitle">Assessment details</h2><p id="detailSubtitle"></p></div><button id="closeDetail" type="button" aria-label="Close report">×</button></header><div id="detailContent" class="cmcHealthDetailContent"></div></section>
 </dialog>
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.105.4"></script><script src="auth.js?v=133"></script><script src="regional-reports.js?v=1"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.105.4"></script><script src="auth.js?v=133"></script><script src="regional-reports.js?v=2"></script>
 </body></html>

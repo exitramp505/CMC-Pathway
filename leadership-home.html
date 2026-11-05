@@ -161,6 +161,20 @@
     </footer>
   </form>
 </dialog>
+<dialog id="eventDetailsDialog" class="cmcHomeDialog cmcHomeEventDialog" aria-labelledby="eventDetailsTitle">
+  <div class="cmcHomeEventDetails">
+    <header class="cmcHomeEditorHead">
+      <div><p class="cmcEyebrow">CMC EVENT</p><h2 id="eventDetailsTitle">Event details</h2></div>
+      <button id="closeEventDetails" class="cmcHomeClose" type="button" aria-label="Close event details">×</button>
+    </header>
+    <div class="cmcHomeEventBody">
+      <p id="eventDetailsTime" class="cmcHomeEventMeta"></p>
+      <p id="eventDetailsLocation" class="cmcHomeEventMeta"></p>
+      <p id="eventDetailsDescription" class="cmcHomeEventDescription"></p>
+      <a id="eventDetailsLink" class="cmcPrimaryButton hidden" target="_blank" rel="noopener noreferrer">Event link ↗</a>
+    </div>
+  </div>
+</dialog>
 <div id="homeToast" class="cmcHomeToast hidden" role="status" aria-live="polite"></div>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.105.4"></script>
 <script src="auth.js?v=133"></script>

@@ -195,7 +195,7 @@
       'Regional director: '+next.region:'Remove regional director responsibility');
     if(previousNational!==next.national)changes.push('National access: '+(nationalLabel(next.national)||'None'));
     let confirmed=true;
-    if(previousNational!==next.national||previous&&!next.region){
+    if(previousNational!==next.national||(previous&&previous!==next.region)){
       const highImpact=next.national==='admin';
       const message=nameOf(p)+' will have these permissions after saving: '+
         changes.join('; ')+'. '+(highImpact?

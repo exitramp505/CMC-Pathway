@@ -14,7 +14,7 @@ for(const entry of ['annual-assessment-settings.html','national-settings.html','
 }
 const home=fs.readFileSync(path.join(root,'leadership-home.js'),'utf8');
 assert.match(home,/annual_assessment/);
-assert.match(home,/data\?\.annual_assessment/);
+assert.match(home,/data\.annual_assessment/);
 assert.match(home,/annual\.status!=='submitted'/);
 const national=fs.readFileSync(path.join(root,'regional-reports.html'),'utf8');
 assert.match(national,/id="myRegionAssessmentAction"/);

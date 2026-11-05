@@ -6,6 +6,7 @@
   <title>Leadership Home | CMC Pathway</title>
   <link rel="stylesheet" href="style.css?v=144">
   <link rel="stylesheet" href="leadership-home.css?v=2">
+  <link rel="stylesheet" href="calendar-settings.css?v=2">
   <link rel="icon" type="image/svg+xml" href="cmc-logo-mark.svg">
 </head>
 <body class="cmcPathwayBody cmcLeadershipBody">
@@ -84,7 +85,10 @@
           <div><p class="cmcEyebrow">UPCOMING</p><h2 id="eventsHeading">On the calendar</h2></div>
           <a id="allEventsLink" class="cmcHomeTextButton" href="events.html">All events</a>
         </div>
-        <div id="nationalCalendarActions" class="cmcHomeCalendarConnection hidden"><button type="button" id="viewGoogleCalendar" class="cmcHomeRowButton">View CMC Google Calendar ↗</button></div>
+        <div id="nationalCalendarActions" class="cmcHomeCalendarConnection hidden">
+          <button type="button" id="viewGoogleCalendar" class="cmcHomeRowButton">Open CMC leadership calendar ↗</button>
+          <p id="calendarSyncLabel" class="cmcHomeHelper"></p>
+        </div>
         <div id="upcomingList" class="cmcHomeList"><p class="cmcHomeEmpty">Loading scheduled events…</p></div>
         <p id="eventCaveat" class="cmcHomeHelper hidden">Times are displayed in your local time zone.</p>
       </section>
@@ -172,13 +176,17 @@
       <p id="eventDetailsTime" class="cmcHomeEventMeta"></p>
       <p id="eventDetailsLocation" class="cmcHomeEventMeta"></p>
       <p id="eventDetailsDescription" class="cmcHomeEventDescription"></p>
-      <a id="eventDetailsLink" class="cmcPrimaryButton hidden" target="_blank" rel="noopener noreferrer">Event link ↗</a>
+      <div class="cmcHomeEventExternalLinks">
+        <a id="eventJoinLink" class="cmcPrimaryButton hidden" target="_blank" rel="noopener noreferrer">Join Zoom ↗</a>
+        <a id="eventDetailsLink" class="cmcSecondaryButton hidden" target="_blank" rel="noopener noreferrer">Open in Google Calendar ↗</a>
+        <a id="eventMeetingNotesLink" class="cmcHomeTextButton hidden" href="leadership-home.html#meetings">Meeting notes</a>
+      </div>
     </div>
   </div>
 </dialog>
 <div id="homeToast" class="cmcHomeToast hidden" role="status" aria-live="polite"></div>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.105.4"></script>
 <script src="auth.js?v=133"></script>
-<script src="leadership-home.js?v=2"></script>
+<script src="leadership-home.js?v=3"></script>
 </body>
 </html>

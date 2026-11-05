@@ -4,7 +4,7 @@
   if(!session?.user){window.location.replace('login.html');return;}
   const token=session.access_token||'';
   const ROLES=['regional_leader','cmc_admin','cmc_viewer'];
-  const state={viewer:null,items:[],events:[],leaders:[]};
+  const state={viewer:null,items:[],events:[],leaders:[],calendar:null};
   let taskFilter='mine',meetingExpanded=false,allTasksExpanded=false,peopleLoaded=false,toaster=null,currentRelatedMeeting=null;
   const esc=s=>String(s??'').replace(/[&<>"']/g,ch=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]));
   const title=s=>String(s||'').replace(/\s+[-–—]\s*$/,'').trim();
@@ -125,7 +125,7 @@
       return;
     }
     elHtml('upcomingList',events.map(x=>{
-      const details=x._kind==='meeting'?'Meeting':'CMC event';
+      const details=x._kind==='meeting'?'Meeting':x.source==='google_calendar'?'Google Calendar':'CMC event';
       const name=title(x.title);
       const where=x.location_name?' · '+x.location_name:'';
       const button=x._kind==='meeting'?
@@ -165,7 +165,7 @@
     try{
       const data=await api();
       if(!ROLES.includes(data.viewer?.account_role)){window.location.replace('dashboard.html');return;}
-      state.viewer=data.viewer;state.items=data.items||[];state.events=data.events||[];state.leaders=data.leaders||[];
+      state.viewer=data.viewer;state.items=data.items||[];state.events=data.events||[];state.leaders=data.leaders||[];state.calendar=data.calendar||null;
       dcAuth.renderRoleNavigation(state.viewer,'home');
       const isNational=national();
       setText('leadershipRegion',isNational?'NATIONAL LEADERSHIP':'OPEN BIBLE '+String(state.viewer.region||'').toUpperCase()+' REGION');
@@ -182,6 +182,13 @@
       $('activity').classList.toggle('hidden',readonly());
       document.querySelector('[data-task-filter="mine"]').classList.toggle('hidden',readonly());
       $('itemRegion').disabled=role()==='regional_leader';
+      $('nationalCalendarActions').classList.toggle('hidden',!state.calendar?.calendar_id);
+      if(state.calendar?.calendar_id){
+        const synced=state.calendar.synced_at?dateTime(state.calendar.synced_at):'not yet';
+        setText('calendarSyncLabel',state.calendar.feed_enabled
+          ? 'Google Calendar sync · Last refreshed '+synced
+          : 'Google Calendar schedule · Last imported '+synced+' · Automatic refresh not enabled');
+      }
       renderAll();
       notice(Array.isArray(data.warnings)&&data.warnings.length?data.warnings.join(' '):'',Boolean(data.warnings?.length));
       loadPeople();
@@ -220,11 +227,20 @@
     setText('eventDetailsTime',dateTime(event.starts_at)+(event.ends_at?' – '+dateTime(event.ends_at):''));
     setText('eventDetailsLocation',[event.location_name,event.address].filter(Boolean).join(' · ')||'Location not listed');
     setText('eventDetailsDescription',event.description||event.summary||'No additional description was provided.');
-    const a=$('eventDetailsLink');
-    let valid=false;
-    if(event.public_url)try{const url=new URL(event.public_url);if(url.protocol==='https:'||url.protocol==='http:'){a.href=url.href;valid=true;}}catch(_){}
-    a.classList.toggle('hidden',!valid);
-    if(!valid)a.removeAttribute('href');
+    const safeLink=(id,value)=>{
+      const a=$(id);
+      let valid=false;
+      if(value)try{
+        const url=new URL(value,location.origin);
+        if(['http:','https:'].includes(url.protocol)){a.href=url.href;valid=true;}
+      }catch(_){}
+      a.classList.toggle('hidden',!valid);
+      if(!valid)a.removeAttribute('href');
+    };
+    safeLink('eventDetailsLink',event.public_url);
+    safeLink('eventJoinLink',event.join_url);
+    safeLink('eventMeetingNotesLink',event.notes_url);
+    $('eventDetailsLink').textContent=event.source==='google_calendar'?'Open in Google Calendar ↗':'View event ↗';
     $('eventDetailsDialog').showModal();
   }
   function renderMeetingFollowups(meeting){
@@ -291,9 +307,7 @@
   function closeEditor(){$('leadershipEditor').close();}
   $('newMeeting').addEventListener('click',()=>openEditor('meeting'));
   $('viewGoogleCalendar')?.addEventListener('click',()=>{window.location.href='national-calendar.html';});
-  fetch('/.netlify/functions/national-calendar').then(r=>r.json()).then(c=>{
-    if(c.ok && c.calendar?.calendar_id)$('nationalCalendarActions').classList.remove('hidden');
-  }).catch(()=>{});
+
   $('newReminder').addEventListener('click',()=>openEditor('task'));
   $('viewAllMeetings').addEventListener('click',()=>{meetingExpanded=!meetingExpanded;renderMeetings();});
   $('meetingSearch').addEventListener('input',()=>{meetingExpanded=false;renderMeetings();});

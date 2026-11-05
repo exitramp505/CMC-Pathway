@@ -130,7 +130,7 @@
       const where=x.location_name?' · '+x.location_name:'';
       const button=x._kind==='meeting'?
         '<button type="button" class="cmcHomeTextButton" data-open="'+esc(x.id)+'">Agenda</button>':
-        (readonly()?'':'<a class="cmcHomeTextButton" href="events.html">Details</a>');
+        '<button type="button" class="cmcHomeTextButton" data-event-details="'+esc(x.id)+'">Details</button>';
       return '<article class="cmcHomeCalendarRow">'+dateBadge(x.when)+'<div class="cmcHomeCalendarCopy"><strong>'+esc(name)+'</strong>'+
         '<p class="cmcHomeCalendarMeta">'+esc(dateTime(x.when))+'</p><p class="cmcHomeCalendarMeta">'+esc(details+where)+'</p></div>'+button+'</article>';
     }).join(''));
@@ -210,6 +210,20 @@
     $('parentMeetingRow').classList.toggle('hidden',isPrivate);
     if(isPrivate){$('itemAssignee').value='';$('itemMeeting').value='';}
   }
+  function openEventDetails(id){
+    const event=state.events.find(x=>x.id===id);
+    if(!event)return;
+    setText('eventDetailsTitle',title(event.title));
+    setText('eventDetailsTime',dateTime(event.starts_at)+(event.ends_at?' – '+dateTime(event.ends_at):''));
+    setText('eventDetailsLocation',[event.location_name,event.address].filter(Boolean).join(' · ')||'Location not listed');
+    setText('eventDetailsDescription',event.description||event.summary||'No additional description was provided.');
+    const a=$('eventDetailsLink');
+    let valid=false;
+    if(event.public_url)try{const url=new URL(event.public_url);if(url.protocol==='https:'||url.protocol==='http:'){a.href=url.href;valid=true;}}catch(_){}
+    a.classList.toggle('hidden',!valid);
+    if(!valid)a.removeAttribute('href');
+    $('eventDetailsDialog').showModal();
+  }
   function renderMeetingFollowups(meeting){
     if(!meeting||meeting.kind!=='meeting'){ $('meetingFollowups').classList.add('hidden');return;}
     $('meetingFollowups').classList.remove('hidden');
@@ -280,6 +294,7 @@
     button.addEventListener('click',()=>{taskFilter=button.dataset.taskFilter;allTasksExpanded=false;renderTasks();});
   });
   $('closeEditor').addEventListener('click',closeEditor);
+  $('closeEventDetails').addEventListener('click',()=>$('eventDetailsDialog').close());
   $('cancelEditor').addEventListener('click',closeEditor);
   $('itemRegion').addEventListener('change',()=>{assigneeOptions();meetingOptions();});
   $('itemVisibility').addEventListener('change',adjustTaskScope);
@@ -300,6 +315,7 @@
   });
   document.addEventListener('click',async event=>{
     const moreTasks=event.target.closest('[data-more-tasks]');if(moreTasks){allTasksExpanded=!allTasksExpanded;renderTasks();return;}
+    const eventButton=event.target.closest('[data-event-details]');if(eventButton){openEventDetails(eventButton.dataset.eventDetails);return;}
     const quick=event.target.closest('[data-quick]');if(quick){openEditor(quick.dataset.quick);return;}
     const open=event.target.closest('[data-open]');if(open){
       const item=state.items.find(x=>x.id===open.dataset.open);

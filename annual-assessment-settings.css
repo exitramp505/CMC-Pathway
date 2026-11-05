@@ -1,0 +1,59 @@
+.cmcAnnualSettingsMain{max-width:1160px}
+.cmcAnnualSettingsMain .hidden{display:none!important}
+.cmcAnnualStats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px;margin-bottom:20px}
+.cmcAnnualStats article{background:#fffaf1;border:1px solid #d4ded9;border-radius:16px;padding:18px 22px;display:grid;gap:7px}
+.cmcAnnualStats span{font-size:13px;font-weight:700;color:#52656e}
+.cmcAnnualStats strong{font-size:32px;color:#293d48}
+.cmcAnnualSettingsCard{margin-bottom:20px}
+.cmcAnnualScheduleStatus{font-size:12px;font-weight:750;color:#2e7157;background:#e6f1e8;padding:7px 11px;border-radius:999px}
+.cmcAnnualScheduleStatus.paused{color:#6e5132;background:#fff0d9}
+.cmcAnnualHelper{margin:0 0 19px;color:#57696f;font-size:13px;line-height:1.7;max-width:810px}
+.cmcAnnualSettingsForm{display:grid;gap:18px}
+.cmcAnnualSettingsForm input:not([type=checkbox]),.cmcAnnualSettingsForm select,.cmcAnnualSettingsForm textarea,
+.cmcAnnualYearSelect select,.cmcAnnualDialog textarea{width:100%;box-sizing:border-box;min-height:44px;background:#fff;border:1px solid #b7c9c2;border-radius:10px;font:inherit;font-size:15px;padding:9px 12px;color:#253b45}
+.cmcAnnualSettingsForm textarea{min-height:100px;resize:vertical}
+.cmcAnnualSettingsForm label,.cmcAnnualYearSelect,.cmcAnnualDialog label{display:grid;gap:8px;font-weight:750;font-size:13px;color:#354e56}
+.cmcAnnualToggle{display:flex!important;align-items:center;gap:11px!important;font-size:14px!important}
+.cmcAnnualToggle input{width:20px;height:20px;accent-color:#357865}
+.cmcAnnualFormGrid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px}
+.cmcAnnualEmailTemplate{border:1px solid #dce3dc;background:#f5f7f1;border-radius:14px;padding:15px}
+.cmcAnnualEmailTemplate summary{cursor:pointer;font-size:14px;font-weight:800;color:#293d48}
+.cmcAnnualEmailTemplate p{font-size:12px;color:#53656b;line-height:1.6}
+.cmcAnnualEmailTemplate label{margin-top:14px}
+.cmcAnnualFormActions{display:flex;align-items:center;gap:14px}
+.cmcAnnualFormActions span{font-size:13px;color:#436e59}
+.cmcAnnualYearSelect{min-width:145px}
+.cmcAnnualTrackingActions{display:flex;flex-wrap:wrap;gap:10px;margin-bottom:12px}
+.cmcAnnualTrackingActions button{min-height:44px}
+.cmcAnnualDirectorList{border:1px solid #dbe4dd;border-radius:14px;overflow:hidden}
+.cmcAnnualDirectorRow{display:flex;align-items:center;gap:14px;justify-content:space-between;padding:15px 17px;border-bottom:1px solid #dae3dd}
+.cmcAnnualDirectorRow:last-child{border-bottom:0}
+.cmcAnnualDirectorIdentity{display:grid;gap:4px;flex:1;min-width:150px}
+.cmcAnnualDirectorIdentity strong{font-size:14px;color:#293d48}
+.cmcAnnualDirectorIdentity span{font-size:12px;color:#586971}
+.cmcAnnualDirectorMeta{display:grid;gap:4px;min-width:165px;color:#54666d;font-size:12px;line-height:1.55}
+.cmcAnnualDirectorStatus{font-size:12px;font-weight:800;padding:6px 9px;border-radius:8px;color:#52645d;background:#eef1e8}
+.cmcAnnualDirectorStatus.submitted{background:#e5f1e7;color:#267259}
+.cmcAnnualDirectorStatus.draft{background:#fff1d9;color:#826223}
+.cmcAnnualDirectorRow button{border:1px solid #becdc5;border-radius:9px;background:#fffdf6;padding:9px 12px;font:750 12px Arial,sans-serif;cursor:pointer;color:#305346}
+.cmcAnnualDirectorRow button:hover{background:#e6f0e9}
+.cmcAnnualFeedback{font-size:13px;color:#53676c;line-height:1.55}
+.cmcAnnualDialog{border:0;border-radius:19px;background:#fffaf1;color:#293d48;width:min(510px,calc(100vw - 28px));padding:0;box-shadow:0 24px 65px #1b2f3b55}
+.cmcAnnualDialog::backdrop{background:#132d3aa6}
+.cmcAnnualDialog section{padding:26px}
+.cmcAnnualDialog h2{font-size:24px;line-height:1.3;margin:0 0 12px}
+.cmcAnnualDialog p{line-height:1.65;font-size:14px;color:#52656d}
+.cmcAnnualDialogActions{display:flex;justify-content:flex-end;align-items:center;flex-wrap:wrap;gap:12px;margin-top:20px}
+.cmcAnnualDialogActions button{min-height:44px}
+.cmcHealthMyRegionCard{border-color:#c8dbd0;background:linear-gradient(135deg,#edf4e9 0%,#fffaf1 70%)}
+.cmcHealthMyRegionContent{display:flex;justify-content:space-between;align-items:center;gap:22px}
+.cmcHealthMyRegionContent h2{font-size:22px;color:#293d48;margin:0 0 7px}
+.cmcHealthMyRegionContent p:not(.cmcEyebrow){font-size:14px;line-height:1.6;color:#52656e;margin:0}
+.cmcHealthMyRegionContent .cmcPrimaryButton{white-space:nowrap;min-height:46px;display:inline-flex;align-items:center;text-decoration:none}
+.cmcHealthViewLinks{display:flex;gap:8px;margin-bottom:15px}
+.cmcHealthViewLinks a{padding:10px 13px;background:#eaf2e9;border:1px solid #c6d8ce;border-radius:10px;font-size:13px;font-weight:800;color:#2c5c4c;text-decoration:none}
+.cmcHealthYear .cmcPrimaryButton{margin-top:8px;display:inline-flex;align-items:center;justify-content:center;text-decoration:none;min-height:45px;font-size:13px}
+.cmcHomeAnnualTask{background:#f3f8ee;border-left:3px solid #60a789}
+.cmcHomeAnnualTask .cmcHomeRowButton{display:inline-flex;min-height:42px;align-items:center;text-decoration:none;white-space:nowrap}
+@media(max-width:900px){.cmcAnnualFormGrid{grid-template-columns:repeat(2,minmax(0,1fr))}.cmcAnnualDirectorMeta{min-width:0}}
+@media(max-width:650px){.cmcAnnualStats{grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}.cmcAnnualStats article{padding:13px}.cmcAnnualStats strong{font-size:25px}.cmcAnnualFormGrid{grid-template-columns:1fr}.cmcAnnualDirectorRow{flex-wrap:wrap;align-items:flex-start}.cmcAnnualDirectorMeta{flex:1}.cmcHealthMyRegionContent{align-items:stretch;flex-direction:column}.cmcHealthMyRegionContent .cmcPrimaryButton{align-self:flex-start}.cmcAnnualSettingsMain .cmcHealthCardHead{align-items:flex-start}}

@@ -1,4 +1,5 @@
 const { json, requireUser, httpError } = require('./_auth');
+const {loadCalendar}=require('./_national-calendar-events');
 const REGIONS = ['Central','East','Mountain Plains','Pacific','Southeast'];
 const KINDS = ['task','meeting'];
 const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
@@ -124,17 +125,22 @@ exports.handler=async event=>{
   try{
     const {supabase,viewer}=await getViewer(event);
     if(event.httpMethod==='GET') {
-      const [itemResult,eventResult,leaderResult]=await Promise.allSettled([
-        loadItems(supabase,viewer),listEvents(supabase,viewer),loadProfiles(supabase,viewer)
+      const [itemResult,eventResult,leaderResult,calendarResult]=await Promise.allSettled([
+        loadItems(supabase,viewer),listEvents(supabase,viewer),loadProfiles(supabase,viewer),loadCalendar(supabase)
       ]);
       if(itemResult.status==='rejected')throw itemResult.reason;
       const warnings=[];
-      if(eventResult.status==='rejected')warnings.push('Upcoming events could not be loaded.');
+      if(eventResult.status==='rejected')warnings.push('Upcoming CMC events could not be loaded.');
       if(leaderResult.status==='rejected')warnings.push('Leader assignments could not be loaded.');
+      if(calendarResult.status==='rejected')warnings.push('Google Calendar meetings could not be loaded.');
+      if(calendarResult.status==='fulfilled'&&calendarResult.value.warning)warnings.push(calendarResult.value.warning);
+      const normalEvents=eventResult.status==='fulfilled'?eventResult.value:[];
+      const googleEvents=calendarResult.status==='fulfilled'?calendarResult.value.events:[];
+      const events=[...normalEvents,...googleEvents]
+        .sort((a,b)=>String(a.starts_at).localeCompare(String(b.starts_at))).slice(0,60);
       return json(200,{ok:true,viewer,items:itemResult.value,
-        events:eventResult.status==='fulfilled'?eventResult.value:[],
-        leaders:leaderResult.status==='fulfilled'?leaderResult.value:[],
-        warnings});
+        calendar:calendarResult.status==='fulfilled'?calendarResult.value.calendar:null,
+        events,leaders:leaderResult.status==='fulfilled'?leaderResult.value:[],warnings});
     }
     if(viewer.account_role==='cmc_viewer') throw httpError(403,'This account has read-only access.');
     const body=JSON.parse(event.body||'{}');

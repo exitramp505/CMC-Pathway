@@ -1,4 +1,4 @@
-const { json, requireLeader, requireUser, httpError } = require('./_auth');
+const { json, requireUser, httpError } = require('./_auth');
 const REGIONS = ['Central','East','Mountain Plains','Pacific','Southeast'];
 const KINDS = ['task','meeting'];
 const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
@@ -78,9 +78,9 @@ async function loadItems(supabase,viewer) {
 async function listEvents(supabase,viewer) {
   const now=new Date().toISOString();
   let query=supabase.from('cmc_events')
-    .select('id,title,starts_at,ends_at,location_name,region,status,public_url')
+    .select('id,title,summary,description,starts_at,ends_at,location_name,address,region,status,public_url')
     .eq('status','published')
-    .gte('starts_at',now)
+    .or('starts_at.gte.'+now+',and(ends_at.not.is.null,ends_at.gte.'+now+')')
     .order('starts_at',{ascending:true})
     .limit(60);
   const {data,error}=await query;
@@ -124,10 +124,17 @@ exports.handler=async event=>{
   try{
     const {supabase,viewer}=await getViewer(event);
     if(event.httpMethod==='GET') {
-      const [items,events,leaders]=await Promise.all([
+      const [itemResult,eventResult,leaderResult]=await Promise.allSettled([
         loadItems(supabase,viewer),listEvents(supabase,viewer),loadProfiles(supabase,viewer)
       ]);
-      return json(200,{ok:true,viewer,items,events,leaders});
+      if(itemResult.status==='rejected')throw itemResult.reason;
+      const warnings=[];
+      if(eventResult.status==='rejected')warnings.push('Upcoming events could not be loaded.');
+      if(leaderResult.status==='rejected')warnings.push('Leader assignments could not be loaded.');
+      return json(200,{ok:true,viewer,items:itemResult.value,
+        events:eventResult.status==='fulfilled'?eventResult.value:[],
+        leaders:leaderResult.status==='fulfilled'?leaderResult.value:[],
+        warnings});
     }
     if(viewer.account_role==='cmc_viewer') throw httpError(403,'This account has read-only access.');
     const body=JSON.parse(event.body||'{}');

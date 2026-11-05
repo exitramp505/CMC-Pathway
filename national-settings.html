@@ -1,0 +1,22 @@
+<!doctype html><html lang="en"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>National Settings | CMC Pathway</title>
+<link rel="stylesheet" href="style.css?v=144"><link rel="stylesheet" href="regional-health.css?v=1"><link rel="icon" type="image/svg+xml" href="cmc-logo-mark.svg"></head>
+<body class="cmcPathwayBody cmcHealthBody"><a class="cmcSkipLink" href="#main-content">Skip to main content</a>
+<header class="cmcHeader"><a class="cmcBrand" href="leadership-home.html"><img class="cmcLogoImage" src="cmc-logo-mark.svg" alt=""><span><strong>CMC Pathway</strong><small>Church Multiplication Collective</small></span></a><nav id="cmcRoleNav" class="cmcNav"></nav></header>
+<main id="main-content" tabindex="-1" class="cmcPathwayMain cmcHealthMain">
+<section class="cmcHealthHero"><div><p class="cmcEyebrow">NATIONAL ADMINISTRATION</p><h1>National Settings</h1><p class="cmcHealthIntro">Manage the shared systems that support CMC regional leadership.</p></div></section>
+<section class="cmcHealthReportCard cmcCalendarSettings">
+<p class="cmcEyebrow">OFFICIAL MEETING CALENDAR</p><h2>Google Calendar</h2>
+<p>Choose an organization-owned Google Calendar for CMC directors' meetings. All regional leaders can open this calendar from their dashboard. Only national administrators can change this connection.</p>
+<form id="calendarSettingsForm">
+<label>Calendar display name<input id="calendarLabel" maxlength="90" placeholder="Open Bible CMC Leadership" required></label>
+<label>Google Calendar ID<input id="calendarId" placeholder="example@group.calendar.google.com" autocomplete="off"></label>
+<p class="cmcHealthTableNote">Find this in Google Calendar → Settings for the dedicated calendar → Integrate calendar → Calendar ID. Share the calendar with authorized Google accounts. Do not paste a private iCal secret URL.</p>
+<div class="cmcCalendarSettingsActions"><button id="saveCalendarSettings" type="submit" class="cmcPrimaryButton">Save calendar connection</button><a id="previewCalendar" class="cmcSecondaryButton hidden" href="national-calendar.html">View calendar</a></div>
+</form>
+<p id="calendarSettingsStatus" class="cmcHealthFeedback" role="status"></p>
+<p class="cmcHealthTableNote">This connects the calendar for viewing. Live server-side synchronization of private Google Calendar events requires separate authenticated Google API credentials; until enabled, CMC events and Google events remain distinct sources.</p>
+</section></main>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.105.4"></script><script src="auth.js?v=133"></script><script src="national-settings.js?v=1"></script>
+</body></html>

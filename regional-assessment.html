@@ -1,0 +1,51 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Annual Systems Assessment | CMC Pathway</title>
+<link rel="stylesheet" href="style.css?v=144">
+<link rel="stylesheet" href="regional-health.css?v=1">
+<link rel="icon" type="image/svg+xml" href="cmc-logo-mark.svg">
+</head>
+<body class="cmcPathwayBody cmcHealthBody">
+<a class="cmcSkipLink" href="#main-content">Skip to main content</a>
+<header class="cmcHeader"><a class="cmcBrand" href="leadership-home.html" aria-label="CMC Pathway home"><img class="cmcLogoImage" src="cmc-logo-mark.svg" alt=""><span><strong>CMC Pathway</strong><small>Church Multiplication Collective</small></span></a><nav id="cmcRoleNav" class="cmcNav" aria-label="Main navigation"></nav></header>
+<main id="main-content" tabindex="-1" class="cmcHealthMain cmcPathwayMain">
+  <section class="cmcHealthHero">
+    <div><p class="cmcEyebrow">REGIONAL HEALTH / ANNUAL ASSESSMENT</p><h1>Systems Assessment</h1><p class="cmcHealthIntro">A thoughtful yearly review of the systems supporting church multiplication in your region.</p></div>
+    <div class="cmcHealthYear"><label for="reportYear">Reporting year</label><select id="reportYear" aria-label="Reporting year"></select><p id="regionName">Loading your region…</p></div>
+  </section>
+  <p id="healthMessage" class="cmcHealthMessage" role="status" aria-live="polite">Loading your assessment…</p>
+  <section id="assessmentApp" class="cmcHealthApp hidden">
+    <div class="cmcHealthTopline">
+      <div><strong id="assessmentStatus">Not started</strong><span id="assessmentProgressText">0 of 8 systems scored</span></div>
+      <div class="cmcHealthProgressTrack" role="progressbar" aria-label="System scoring progress" aria-valuemin="0" aria-valuemax="8" aria-valuenow="0" id="assessmentProgressBar"><span id="assessmentProgressFill"></span></div>
+      <div class="cmcHealthScorePreview">Total: <strong id="assessmentTotal">0</strong> / 200</div>
+    </div>
+    <div class="cmcHealthWorkspace">
+      <aside class="cmcHealthSidebar" aria-label="Assessment sections">
+        <h2>Your assessment</h2><nav id="stepNav" class="cmcHealthSteps" aria-label="Assessment progress"></nav>
+        <div class="cmcHealthHistory"><h3>Previous years</h3><div id="assessmentHistory"></div></div>
+      </aside>
+      <section class="cmcHealthEditor">
+        <div class="cmcHealthEditorIntro"><span id="sectionCount">SECTION 1 OF 9</span><h2 id="sectionTitle">Spiritual Dynamics</h2><p id="sectionSubtitle"></p></div>
+        <div id="sectionBody"></div>
+        <p id="editorFeedback" class="cmcHealthFeedback" role="status" aria-live="polite"></p>
+        <div class="cmcHealthActions">
+          <button id="previousSection" type="button" class="cmcSecondaryButton">Previous</button>
+          <div class="cmcHealthActionRight"><span id="saveStatus">Not saved yet</span><button id="saveDraft" type="button" class="cmcSecondaryButton">Save draft</button><button id="nextSection" type="button" class="cmcPrimaryButton">Next section <span aria-hidden="true">→</span></button></div>
+        </div>
+      </section>
+    </div>
+  </section>
+</main>
+<dialog id="submitDialog" class="cmcHealthSubmitDialog" aria-labelledby="submitTitle"><div class="cmcHealthSubmitInner">
+<h2 id="submitTitle">Submit this annual assessment?</h2>
+<p>Submitting locks this year's answers. National CMC administrators and authorized national leadership will be able to review the results.</p>
+<p id="submitSummary"></p>
+<div><button id="cancelSubmit" type="button" class="cmcSecondaryButton">Keep editing</button><button id="confirmSubmit" type="button" class="cmcPrimaryButton">Submit assessment</button></div>
+</div></dialog>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.105.4"></script>
+<script src="auth.js?v=133"></script>
+<script src="regional-assessment.js?v=1"></script>
+</body></html>

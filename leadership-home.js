@@ -173,6 +173,9 @@
       setText('leadershipGreeting','Welcome back'+(givenName?', '+givenName:'')+'.');
       setText('homeToday',new Intl.DateTimeFormat(undefined,{weekday:'long',month:'long',day:'numeric',year:'numeric'}).format(new Date()));
       if(isNational){taskFilter='team';}else{taskFilter='mine';}
+      const assessmentLink=$('regionalAssessmentLink');
+      assessmentLink.href=role()==='regional_leader'?'regional-assessment.html':'regional-reports.html';
+      assessmentLink.firstChild.textContent=role()==='regional_leader'?'Open assessment ':'View national reports ';
       $('newMeeting').classList.toggle('hidden',readonly());
       $('newReminder').classList.toggle('hidden',readonly());
       $('allEventsLink').classList.toggle('hidden',readonly());
@@ -287,6 +290,10 @@
   }
   function closeEditor(){$('leadershipEditor').close();}
   $('newMeeting').addEventListener('click',()=>openEditor('meeting'));
+  $('viewGoogleCalendar')?.addEventListener('click',()=>{window.location.href='national-calendar.html';});
+  fetch('/.netlify/functions/national-calendar').then(r=>r.json()).then(c=>{
+    if(c.ok && c.calendar?.calendar_id)$('nationalCalendarActions').classList.remove('hidden');
+  }).catch(()=>{});
   $('newReminder').addEventListener('click',()=>openEditor('task'));
   $('viewAllMeetings').addEventListener('click',()=>{meetingExpanded=!meetingExpanded;renderMeetings();});
   $('meetingSearch').addEventListener('input',()=>{meetingExpanded=false;renderMeetings();});

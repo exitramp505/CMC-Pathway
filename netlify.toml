@@ -13,3 +13,8 @@
 # First isolated esbuild experiment: no changes to private, admin or write handlers.
 [functions."public-site-content"]
   node_bundler = "esbuild"
+
+# February 1 invitations and February 15 outstanding-only reminders.
+# Runs daily at 13:00 UTC during February to catch new directors and retries.
+[functions."annual-assessment-cron"]
+  schedule = "0 13 * 2 *"

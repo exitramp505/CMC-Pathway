@@ -110,7 +110,7 @@ function renderRoleNavigation(profile,activeKey){
  const isCoach=Boolean(profile?.is_coach);
  const items=[
   {key:'home',label:'Home',href:'leadership-home.html',show:['regional_leader','cmc_admin','cmc_viewer'].includes(role)},
-  {key:'pathway',label:'My Pathway',href:role==='participant'?'dashboard.html':'dashboard.html?view=participant',show:true},
+  {key:'pathway',label:'My Pathway',href:role==='participant'?'dashboard.html':'dashboard.html?view=participant',show:role!=='cmc_viewer'},
  {key:'people',label:'People',href:'leader.html',show:['regional_leader','cmc_admin'].includes(role)},
  {key:'events',label:'Events',href:'events.html',show:['regional_leader','cmc_admin'].includes(role)},
  {key:'courses',label:'Courses',href:'courses.html',show:role==='cmc_admin'},

@@ -109,6 +109,7 @@ function renderRoleNavigation(profile,activeKey){
  const role=profile?.account_role||'participant';
  const isCoach=Boolean(profile?.is_coach);
  const items=[
+  {key:'home',label:'Home',href:'leadership-home.html',show:['regional_leader','cmc_admin','cmc_viewer'].includes(role)},
   {key:'pathway',label:'My Pathway',href:role==='participant'?'dashboard.html':'dashboard.html?view=participant',show:true},
  {key:'people',label:'People',href:'leader.html',show:['regional_leader','cmc_admin'].includes(role)},
  {key:'events',label:'Events',href:'events.html',show:['regional_leader','cmc_admin'].includes(role)},
@@ -120,7 +121,7 @@ function renderRoleNavigation(profile,activeKey){
   {key:'profile',label:'Profile',href:'profile.html',show:true}
  ];
  const visibleItems=items.filter(item=>item.show);
- const managementKeys=['people','events','courses','plans','website','team','coaching'];
+ const managementKeys=['home','people','events','courses','plans','website','team','coaching'];
  const hasManagementTools=visibleItems.some(item=>managementKeys.includes(item.key));
  const menuItems=visibleItems.map(item=>{
   const dividerBefore=(item.key==='people'&&hasManagementTools)||item.key==='profile';

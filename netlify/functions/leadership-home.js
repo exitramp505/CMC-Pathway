@@ -78,7 +78,7 @@ async function loadItems(supabase,viewer) {
 async function listEvents(supabase,viewer) {
   const now=new Date().toISOString();
   let query=supabase.from('cmc_events')
-    .select('id,title,starts_at,ends_at,location_name,region,status,public_url')
+    .select('id,title,summary,description,starts_at,ends_at,location_name,address,region,status,public_url')
     .eq('status','published')
     .or('starts_at.gte.'+now+',and(ends_at.not.is.null,ends_at.gte.'+now+')')
     .order('starts_at',{ascending:true})

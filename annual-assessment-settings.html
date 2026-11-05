@@ -1,0 +1,71 @@
+<!doctype html>
+<html lang="en"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Annual Assessments | CMC Pathway</title>
+<link rel="stylesheet" href="style.css?v=144">
+<link rel="stylesheet" href="regional-health.css?v=2">
+<link rel="stylesheet" href="annual-assessment-settings.css?v=1">
+<link rel="icon" type="image/svg+xml" href="cmc-logo-mark.svg">
+</head>
+<body class="cmcPathwayBody cmcHealthBody">
+<a class="cmcSkipLink" href="#main-content">Skip to main content</a>
+<header class="cmcHeader"><a class="cmcBrand" href="leadership-home.html"><img class="cmcLogoImage" src="cmc-logo-mark.svg" alt=""><span><strong>CMC Pathway</strong><small>Church Multiplication Collective</small></span></a><nav id="cmcRoleNav" class="cmcNav" aria-label="Main navigation"></nav></header>
+<main id="main-content" tabindex="-1" class="cmcPathwayMain cmcHealthMain cmcAnnualSettingsMain">
+ <section class="cmcHealthHero"><div>
+ <p class="cmcEyebrow">NATIONAL SETTINGS / REGIONAL HEALTH</p>
+ <h1>Annual Assessments</h1>
+ <p class="cmcHealthIntro">Manage February assignments, reminders, and national completion tracking.</p></div>
+ <a href="national-settings.html" class="cmcSecondaryButton">Back to National Settings</a>
+ </section>
+ <p id="annualAdminMessage" class="cmcHealthMessage" role="status" aria-live="polite">Loading annual assessment schedule…</p>
+ <section id="annualSettingsApp" class="hidden" aria-label="Annual assessment administration">
+  <div class="cmcAnnualStats">
+   <article><span>Active directors</span><strong id="annualDirectorCount">—</strong></article>
+   <article><span>Assigned</span><strong id="annualAssignedCount">—</strong></article>
+   <article><span>Submitted</span><strong id="annualSubmittedCount">—</strong></article>
+   <article><span>Outstanding</span><strong id="annualOutstandingCount">—</strong></article>
+  </div>
+  <section class="cmcHealthReportCard cmcAnnualSettingsCard">
+   <div class="cmcHealthCardHead"><div><p class="cmcEyebrow">ANNUAL PROCESS</p><h2>February schedule</h2></div><span id="annualScheduleStatus" class="cmcAnnualScheduleStatus">Enabled</span></div>
+   <p class="cmcAnnualHelper">For example, February 2027 collects the 2026 regional systems assessments. Only directors who have not submitted receive reminders.</p>
+   <form id="annualScheduleForm" class="cmcAnnualSettingsForm">
+    <label class="cmcAnnualToggle"><input id="annualEnabled" type="checkbox" checked><span>Automatically assign and email directors each February</span></label>
+    <div class="cmcAnnualFormGrid">
+     <label>Initial assignment (February)<select id="annualInviteDay"></select></label>
+     <label>Reminder (February)<select id="annualReminderDay"></select></label>
+     <label>Due date (February)<select id="annualDueDay"></select></label>
+     <label>First automatic campaign year<input id="annualFirstYear" type="number" min="2027" max="2100" step="1"></label>
+    </div>
+    <details class="cmcAnnualEmailTemplate">
+     <summary>Email message</summary>
+     <p>Use <code>{year}</code> for the reporting year and <code>{due_date}</code> for the deadline in the subject.</p>
+     <label>Invitation subject<input id="annualSubject" type="text" maxlength="160" required></label>
+     <label>Invitation message<textarea id="annualIntro" rows="4" maxlength="1600" required></textarea></label>
+    </details>
+    <div class="cmcAnnualFormActions"><button id="annualSaveSettings" class="cmcPrimaryButton" type="submit">Save schedule</button><span id="annualSettingsSaveStatus" role="status"></span></div>
+   </form>
+  </section>
+  <section class="cmcHealthReportCard cmcAnnualTracking">
+   <div class="cmcHealthCardHead">
+    <div><p class="cmcEyebrow">COMPLETION TRACKING</p><h2>Director assessments</h2><p id="annualReportingSummary"></p></div>
+    <label class="cmcAnnualYearSelect">Reporting year<select id="annualReportingYear"></select></label>
+   </div>
+   <div class="cmcAnnualTrackingActions">
+    <button id="annualCreateTasks" class="cmcSecondaryButton" type="button">Assign tasks without email</button>
+    <button id="annualSendInvitations" class="cmcPrimaryButton" type="button">Send invitations now</button>
+   </div>
+   <p class="cmcAnnualHelper">These manual actions are optional. The scheduled February process runs automatically when enabled. Sending again never re-emails directors already notified for this cycle.</p>
+   <div id="annualDirectorList" class="cmcAnnualDirectorList"></div>
+   <p id="annualDirectorFeedback" class="cmcAnnualFeedback" role="status"></p>
+  </section>
+ </section>
+</main>
+<dialog id="annualConfirmDialog" class="cmcAnnualDialog" aria-labelledby="annualDialogTitle">
+ <section><h2 id="annualDialogTitle">Send annual assessment invitations?</h2><p id="annualDialogMessage"></p>
+ <label id="annualReopenReasonRow" class="hidden">Reason for reopening<textarea id="annualReopenReason" rows="3" maxlength="500" placeholder="Why does this submission need to be reopened?"></textarea></label>
+ <div class="cmcAnnualDialogActions"><button id="annualDialogCancel" class="cmcSecondaryButton" type="button">Cancel</button><button id="annualDialogConfirm" class="cmcPrimaryButton" type="button">Confirm</button></div>
+ </section>
+</dialog>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.105.4"></script>
+<script src="auth.js?v=133"></script><script src="annual-assessment-settings.js?v=1"></script>
+</body></html>

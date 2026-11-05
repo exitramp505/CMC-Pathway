@@ -1,0 +1,42 @@
+/* Leadership Home uses CMC's existing design tokens and type scale. */
+.cmcLeadershipHome{max-width:1300px;margin:0 auto;padding-bottom:64px}
+.cmcLeadershipHero{margin-bottom:22px}
+.cmcHomeGrid{display:grid;grid-template-columns:minmax(0,1.32fr) minmax(290px,1fr);gap:24px;align-items:start}
+.cmcHomeColumn{display:grid;gap:24px;min-width:0}
+.cmcHomePanel{background:var(--cmcPaper,#fffaf1);border:1px solid var(--cmcBorder,rgba(41,61,72,.16));border-radius:var(--cmcRadiusCard,24px);padding:24px;min-width:0}
+.cmcHomePanelHeading{display:flex;align-items:start;justify-content:space-between;gap:15px;margin-bottom:14px}
+.cmcHomePanelHeading h2,.cmcHomePanel h2{font-size:clamp(21px,2vw,25px);margin:4px 0 0;color:var(--cmcSlate,#293d48);line-height:1.25}
+.cmcHomePanelHeading .cmcEyebrow,.cmcHomeAssessment .cmcEyebrow{margin:0}
+.cmcHomePanel .cmcHomeTextButton{font-size:14px;font-weight:700;text-decoration:underline;text-underline-offset:3px;color:var(--cmcSlate,#293d48);border:0;background:none;white-space:nowrap;padding:8px 0;cursor:pointer}
+.cmcHomeList{display:grid;gap:0}
+.cmcHomeItem{border-top:1px solid var(--cmcBorder,rgba(41,61,72,.16));padding:16px 0;display:flex;gap:12px;align-items:center;justify-content:space-between}
+.cmcHomeItem:first-child{border-top:0;padding-top:6px}
+.cmcHomeItemCopy{display:grid;gap:5px;min-width:0;overflow-wrap:anywhere}
+.cmcHomeItemCopy strong{font-size:16px;line-height:1.4;color:var(--cmcInk,#151616)}
+.cmcHomeItemCopy small,.cmcHomeFine{font-size:13px;line-height:1.55;color:var(--cmcTextMuted,#607078)}
+.cmcHomeItemCopy p{margin:0;color:var(--cmcTextMuted,#607078);font-size:14px;line-height:1.5}
+.cmcHomeItem>button,.cmcHomeItemActions button{background:transparent;border:1px solid var(--cmcBorderStrong,rgba(41,61,72,.26));border-radius:11px;color:var(--cmcSlate,#293d48);font-size:14px;font-weight:700;padding:10px 12px;cursor:pointer;min-height:44px}
+.cmcHomeItemActions{display:flex;gap:6px;flex-shrink:0}
+.cmcHomeEmpty{margin:8px 0 3px;font-size:15px;color:var(--cmcTextMuted,#607078);line-height:1.55}
+.cmcHomeAssessment{background:var(--cmcSlate,#293d48);color:var(--cmcSand,#fbf0de)}
+.cmcHomeAssessment h2,.cmcHomeAssessment .cmcEyebrow{color:var(--cmcSand,#fbf0de)}
+.cmcHomeAssessment p{font-size:15px;line-height:1.65;max-width:58ch}
+.cmcHomeAssessment .cmcHomeFine{color:#e0e7e9;margin-bottom:0}
+.cmcHomeAssessment .cmcPrimaryButton{display:inline-block;text-decoration:none;margin-top:12px}
+.cmcHomeDialog{width:min(710px,calc(100vw - 28px));max-height:min(90vh,940px);padding:0;border:0;border-radius:22px;background:var(--cmcPaper,#fffaf1);color:var(--cmcInk,#151616);box-shadow:0 22px 68px rgba(25,35,42,.28)}
+.cmcHomeDialog::backdrop{background:rgba(23,37,44,.62)}
+.cmcHomeEditor{display:flex;flex-direction:column;max-height:min(90vh,940px)}
+.cmcHomeEditorHead,.cmcHomeEditorActions{display:flex;justify-content:space-between;align-items:center;gap:14px;padding:22px 26px;border-bottom:1px solid var(--cmcBorder,rgba(41,61,72,.16))}
+.cmcHomeEditorHead h2{font-size:25px;margin:2px 0 0}
+.cmcHomeEditorHead .cmcEyebrow{margin:0}
+.cmcHomeClose{border:0;background:transparent;font-size:30px;line-height:1;cursor:pointer;min-width:44px;min-height:44px}
+.cmcHomeEditorFields{overflow:auto;display:grid;gap:18px;padding:22px 26px}
+.cmcHomeEditorFields label{font-size:14px;font-weight:700;display:grid;gap:7px}
+.cmcHomeEditorFields input,.cmcHomeEditorFields select,.cmcHomeEditorFields textarea{font:inherit;font-size:16px;line-height:1.5;border-radius:12px;border:1px solid var(--cmcBorderStrong,rgba(41,61,72,.26));background:#fff;color:var(--cmcInk,#151616);width:100%;min-height:44px;padding:10px 12px;box-sizing:border-box}
+.cmcHomeEditorFields textarea{resize:vertical}
+.cmcHomeEditorActions{border-top:1px solid var(--cmcBorder,rgba(41,61,72,.16));border-bottom:0;justify-content:flex-end;flex-wrap:wrap}
+.cmcHomeEditor .cmcAdminMessage{margin:0 26px;color:#9f2f22}
+.cmcHomeEditor .hidden,.cmcLeadershipHome .hidden{display:none!important}
+.cmcHomeDialog :focus-visible,.cmcLeadershipHome :focus-visible{outline:2px solid var(--cmcSage,#4da79c);outline-offset:3px}
+@media(max-width:850px){.cmcHomeGrid{grid-template-columns:minmax(0,1fr)}}
+@media(max-width:550px){.cmcHomePanel{padding:18px}.cmcHomePanelHeading{align-items:start}.cmcHomeItem{align-items:start;flex-wrap:wrap}.cmcHomeItemActions{margin-left:auto}.cmcHomeEditorHead,.cmcHomeEditorActions{padding:17px}.cmcHomeEditorFields{padding:17px}.cmcHomeEditor .cmcAdminMessage{margin:0 17px}.cmcHomePanelHeading .cmcSecondaryButton{font-size:13px}}

@@ -1,0 +1,81 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Leadership Home | CMC Pathway</title>
+<link rel="stylesheet" href="style.css?v=144">
+<link rel="stylesheet" href="leadership-home.css?v=1">
+<link rel="icon" type="image/svg+xml" href="cmc-logo-mark.svg">
+</head>
+<body class="cmcPathwayBody">
+<a class="cmcSkipLink" href="#main-content">Skip to main content</a>
+<header class="cmcHeader">
+ <a class="cmcBrand" href="leadership-home.html" aria-label="CMC Pathway leadership home">
+ <img class="cmcLogoImage" src="cmc-logo-mark.svg" alt="">
+ <span><strong>CMC Pathway</strong><small>Church Multiplication Collective</small></span></a>
+ <nav id="cmcRoleNav" class="cmcNav"></nav>
+</header>
+<main id="main-content" tabindex="-1" class="cmcPathwayMain cmcLeadershipHome">
+ <section class="cmcAdminPageHero cmcLeadershipHero">
+   <div><p id="leadershipRegion" class="cmcEyebrow">LEADERSHIP WORKSPACE</p>
+   <h1 id="leadershipGreeting">Leadership Home</h1>
+   <p class="cmcIntro">The conversations, commitments, and upcoming work that matter.</p></div>
+   <button id="newMeeting" type="button" class="cmcPrimaryButton cmcAdminPageAction">New meeting <span>＋</span></button>
+ </section>
+ <p id="homeMessage" class="cmcAdminMessage" role="status">Loading leadership workspace…</p>
+ <section class="cmcHomeGrid">
+  <div class="cmcHomeColumn">
+   <section class="cmcHomePanel cmcHomeAttention" aria-labelledby="actionHeading">
+    <div class="cmcHomePanelHeading"><div><p class="cmcEyebrow">PRIORITIES</p><h2 id="actionHeading">Needs attention</h2></div><button id="newReminder" class="cmcSecondaryButton" type="button">Add reminder</button></div>
+    <div id="reminderList" class="cmcHomeList"><p class="cmcHomeEmpty">Loading reminders…</p></div>
+   </section>
+   <section class="cmcHomePanel" aria-labelledby="meetingHeading">
+    <div class="cmcHomePanelHeading"><div><p class="cmcEyebrow">CONVERSATIONS</p><h2 id="meetingHeading">Meetings &amp; notes</h2></div><button id="viewAllMeetings" class="cmcHomeTextButton" type="button">Meeting history</button></div>
+    <div id="meetingList" class="cmcHomeList"><p class="cmcHomeEmpty">Loading meeting records…</p></div>
+   </section>
+  </div>
+  <div class="cmcHomeColumn">
+   <section class="cmcHomePanel" aria-labelledby="eventsHeading">
+    <div class="cmcHomePanelHeading"><div><p class="cmcEyebrow">CALENDAR</p><h2 id="eventsHeading">Coming up</h2></div><a class="cmcHomeTextButton" href="events.html">All events</a></div>
+    <div id="upcomingList" class="cmcHomeList"><p class="cmcHomeEmpty">Loading events…</p></div>
+   </section>
+   <section class="cmcHomePanel cmcHomeAssessment" aria-labelledby="assessmentHeading">
+     <p class="cmcEyebrow">REGIONAL HEALTH</p>
+     <h2 id="assessmentHeading">Annual systems assessment</h2>
+     <p>Review the eight systems that support a healthy church planting movement and identify your priorities for the year.</p>
+     <a class="cmcPrimaryButton" href="https://form.jotform.com/220795443897067" target="_blank" rel="noopener noreferrer">Complete assessment ↗</a>
+     <p class="cmcHomeFine">Submissions currently live in Jotform. Completion status is not yet synchronized with Pathway.</p>
+   </section>
+   <section class="cmcHomePanel" aria-labelledby="peopleHeading">
+     <div class="cmcHomePanelHeading"><div><p class="cmcEyebrow">YOUR REGION</p><h2 id="peopleHeading">Pathway activity</h2></div><a class="cmcHomeTextButton" href="leader.html">Open People</a></div>
+     <p id="peopleSummary" class="cmcHomeFine">See participants and follow-ups in the existing People workspace.</p>
+   </section>
+  </div>
+ </section>
+</main>
+<dialog id="leadershipEditor" class="cmcHomeDialog">
+ <form id="leadershipForm" class="cmcHomeEditor">
+  <header class="cmcHomeEditorHead"><div><p class="cmcEyebrow" id="editorEyebrow">LEADERSHIP WORKSPACE</p><h2 id="editorTitle">New meeting</h2></div><button id="closeEditor" class="cmcHomeClose" type="button" aria-label="Close">×</button></header>
+  <div class="cmcHomeEditorFields">
+    <input id="itemId" type="hidden"><input id="itemKind" type="hidden">
+    <label>Title<input id="itemTitle" maxlength="160" autocomplete="off" required></label>
+    <label id="regionRow">Region<select id="itemRegion"><option value="">All regions</option><option>Central</option><option>East</option><option>Mountain Plains</option><option>Pacific</option><option>Southeast</option></select></label>
+    <label id="meetingDateRow">Meeting date &amp; time<input id="itemStart" type="datetime-local"></label>
+    <label id="dueDateRow" class="hidden">Due date<input id="itemDue" type="date"></label>
+    <label id="visibilityRow" class="hidden">Visibility<select id="itemVisibility"><option value="team">Shared with leadership</option><option value="personal">Private reminder</option></select></label>
+    <label id="assigneeRow" class="hidden">Assigned to<select id="itemAssignee"><option value="">Unassigned</option></select></label>
+    <label id="parentMeetingRow" class="hidden">Related meeting<select id="itemMeeting"><option value="">None</option></select></label>
+    <label id="agendaRow">Agenda<textarea id="itemBody" rows="6" maxlength="12000" placeholder="Topics to discuss, questions, and desired outcomes"></textarea></label>
+    <label id="notesRow">Meeting notes<textarea id="itemNotes" rows="6" maxlength="30000" placeholder="Discussion notes and important context"></textarea></label>
+    <label id="decisionsRow">Decisions<textarea id="itemDecisions" rows="4" maxlength="12000" placeholder="What was decided?"></textarea></label>
+  </div>
+  <p id="editorMessage" class="cmcAdminMessage" role="status"></p>
+  <footer class="cmcHomeEditorActions"><button id="deleteItem" type="button" class="cmcSecondaryButton hidden">Delete</button><button id="cancelEditor" type="button" class="cmcSecondaryButton">Cancel</button><button id="saveItem" type="submit" class="cmcPrimaryButton">Save</button></footer>
+ </form>
+</dialog>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.105.4"></script>
+<script src="auth.js?v=133"></script>
+<script src="leadership-home.js?v=1"></script>
+</body>
+</html>

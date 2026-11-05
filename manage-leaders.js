@@ -42,11 +42,12 @@
   function render(){
     const candidates = profiles.filter(item =>
       item.id !== viewer.id &&
-      item.account_role !== 'cmc_admin' &&
+      !['cmc_admin','cmc_viewer'].includes(item.account_role) &&
       (viewer.account_role === 'cmc_admin' || item.account_role === 'participant')
     );
     const leaders = profiles.filter(item => item.account_role === 'regional_leader');
     const administrators = profiles.filter(item => item.account_role === 'cmc_admin');
+    const reportViewers = profiles.filter(item => item.account_role === 'cmc_viewer');
     document.getElementById('leaderAccount').innerHTML =
       '<option value="">Choose an existing account</option>' +
       candidates.map(item => `<option value="${escapeHtml(item.id)}">${escapeHtml(item.full_name || item.email)} · ${escapeHtml(item.email)}${item.account_role === 'regional_leader' ? ` · ${escapeHtml(item.region || 'Regional leader')}` : ''}</option>`).join('');
@@ -58,18 +59,18 @@
       regionSelect.value = viewer.region || regions[0] || '';
     }
     document.getElementById('administratorSection').classList.toggle('hidden', viewer.account_role !== 'cmc_admin');
-    document.getElementById('administratorCount').textContent = String(administrators.length);
+    document.getElementById('administratorCount').textContent = String(administrators.length + reportViewers.length);
     document.getElementById('regionalLeaderCount').textContent = String(leaders.length);
 
     const administratorList = document.getElementById('administratorList');
-    administratorList.innerHTML = administrators.length ? administrators.map(item => `
+    administratorList.innerHTML = (administrators.length + reportViewers.length) ? [...administrators,...reportViewers].map(item => `
       <article>
         <span class="cmcAvatar cmcAdminAvatar">${initials(item.full_name)}</span>
         <div><strong>${escapeHtml(item.full_name || item.email)}</strong><small>${escapeHtml(item.email)}</small></div>
-        <span class="cmcLeaderRegion cmcFullAdminRegion">All regions</span>
+        <span class="cmcLeaderRegion cmcFullAdminRegion">${item.account_role === "cmc_viewer" ? "Read-only · All regions" : "All regions"}</span>
         ${item.id === viewer.id
           ? '<span class="cmcLeaderSelf">Your account</span>'
-          : `<button type="button" data-remove-admin="${escapeHtml(item.id)}" data-person-name="${escapeHtml(item.full_name || item.email)}">Remove full access</button>`}
+          : `<button type="button" data-remove-admin="${escapeHtml(item.id)}" data-person-name="${escapeHtml(item.full_name || item.email)}">Remove access</button>`}
       </article>`).join('') : '<p class="cmcLeaderEmpty">No full administrators were found.</p>';
 
     const list = document.getElementById('regionalLeaderList');
@@ -89,9 +90,9 @@
     administratorList.querySelectorAll('[data-remove-admin]').forEach(button => {
       button.addEventListener('click', async () => {
         const confirmed = await confirmChange(
-          'Remove full administrator access?',
+          'Remove leadership access?',
           `${button.dataset.personName} will return to participant access and will no longer be able to manage national content or leadership roles.`,
-          'Remove full access'
+          'Remove access'
         );
         if(confirmed) await updateRole(button.dataset.removeAdmin, 'participant', '');
       });
@@ -110,12 +111,14 @@
       : role === 'regional_leader' ? document.getElementById('leaderRegion').value : '';
     if(!id) return setMessage('Choose an account.', true);
     if(role === 'regional_leader' && !region) return setMessage('Choose an Open Bible region.', true);
-    if(role === 'cmc_admin'){
+    if(['cmc_admin','cmc_viewer'].includes(role)){
       const person = profiles.find(item => item.id === id);
       const confirmed = await confirmChange(
-        'Grant full administrator access?',
-        `${person?.full_name || person?.email || 'This person'} will be able to manage people across every region, publish courses and task plans, edit the public website, and assign other administrators.`,
-        'Grant full access'
+        role === 'cmc_viewer' ? 'Grant read-only national access?' : 'Grant full administrator access?',
+        role === 'cmc_viewer'
+          ? `${person?.full_name || person?.email || 'This person'} will see regional leadership meetings, reminders, and national reporting without editing access.`
+          : `${person?.full_name || person?.email || 'This person'} will be able to manage people across every region, publish courses and task plans, edit the public website, and assign other administrators.`,
+        role === 'cmc_viewer' ? 'Grant read-only access' : 'Grant full access'
       );
       if(!confirmed) return;
     }
@@ -123,7 +126,7 @@
   }
 
   async function updateRole(id, role, region){
-    const action = role === 'cmc_admin' ? 'Granting full administrator access…'
+    const action = role === 'cmc_viewer' ? 'Granting read-only national access…' : role === 'cmc_admin' ? 'Granting full administrator access…'
       : role === 'regional_leader' ? 'Assigning regional access…'
       : 'Removing leadership access…';
     setMessage(action);
@@ -144,7 +147,7 @@
         document.getElementById('leaderRegion').value = viewer.region || '';
       }
       updateAccessForm();
-      setMessage(role === 'cmc_admin' ? 'Full administrator access granted.' : role === 'regional_leader' ? 'Regional access assigned.' : 'Leadership access removed.');
+      setMessage(role === 'cmc_viewer' ? 'Read-only national access granted.' : role === 'cmc_admin' ? 'Full administrator access granted.' : role === 'regional_leader' ? 'Regional access assigned.' : 'Leadership access removed.');
     }catch(error){
       setMessage(error.message, true);
     }
@@ -168,13 +171,14 @@
     document.getElementById('leaderRegionField').classList.toggle('hidden', regional);
     const accessLevel = document.getElementById('leaderAccessLevel');
     accessLevel.querySelector('[value="cmc_admin"]').disabled = regional;
+    accessLevel.querySelector('[value="cmc_viewer"]').disabled = regional;
     accessLevel.value = 'regional_leader';
     updateAccessForm();
   }
 
   function updateAccessForm(){
     const role = viewer.account_role === 'regional_leader' ? 'regional_leader' : document.getElementById('leaderAccessLevel').value;
-    const fullAdmin = role === 'cmc_admin';
+    const fullAdmin = ['cmc_admin','cmc_viewer'].includes(role);
     document.getElementById('leaderRegionField').classList.toggle('hidden', fullAdmin || viewer.account_role === 'regional_leader');
     document.getElementById('leaderRegion').required = !fullAdmin && viewer.account_role !== 'regional_leader';
   }

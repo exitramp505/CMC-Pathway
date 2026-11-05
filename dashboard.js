@@ -35,10 +35,10 @@
   const profile = dashboardPayload?.profile || legacyPayload?.profile || null;
   const assignments = dashboardPayload?.assignments || legacyPayload?.assignments || [];
   const reports = dashboardPayload?.reports || legacyPayload?.reports || [];
-  const isLeader = ['regional_leader','cmc_admin'].includes(profile?.account_role);
+  const isLeader = ['regional_leader','cmc_admin','cmc_viewer'].includes(profile?.account_role);
   const participantView = new URLSearchParams(window.location.search).get('view') === 'participant';
   if (isLeader && !participantView) {
-    window.location.replace('leader.html');
+    window.location.replace('leadership-home.html');
     return;
   }
   dcAuth.renderRoleNavigation(profile, 'pathway');

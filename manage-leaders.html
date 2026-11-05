@@ -51,6 +51,7 @@
         <p>Everything above <span>·</span> Course and task-plan builders <span>·</span> Public website <span>·</span> Administrator access</p>
       </article>
     </div>
+    <p class="cmcLeaderAccessMessage">National report viewers can read leadership dashboard records across regions, but cannot edit them or manage people, events, courses, or site settings.</p>
     <form id="leaderAccessForm" class="cmcLeaderAccessForm">
       <label>
         <span>Account</span>
@@ -63,6 +64,7 @@
         <select id="leaderAccessLevel" required>
           <option value="regional_leader">Regional leader</option>
           <option value="cmc_admin">Full administrator</option>
+          <option value="cmc_viewer">National report viewer (read-only)</option>
         </select>
       </label>
       <label id="leaderRegionField">
@@ -77,7 +79,7 @@
 
     <div id="administratorSection" class="cmcAccessListSection hidden">
       <div class="cmcCurrentLeadersHeading">
-        <div><p class="cmcEyebrow">FULL ACCESS</p><h2>Full administrators</h2></div>
+        <div><p class="cmcEyebrow">NATIONAL LEADERSHIP</p><h2>National access</h2></div>
         <span id="administratorCount">0</span>
       </div>
       <div id="administratorList" class="cmcCurrentLeaderList cmcAdministratorList">

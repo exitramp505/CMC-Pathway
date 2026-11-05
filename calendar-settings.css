@@ -1,1 +1,37 @@
 .cmcCalendarSettings{max-width:760px}.cmcCalendarSettings h2{font-size:24px}.cmcCalendarSettings>p{font-size:14px;line-height:1.7;color:#53666b}.cmcCalendarSettings form{display:grid;gap:18px;margin:22px 0}.cmcCalendarSettings form label{display:grid;gap:8px;font-size:14px;font-weight:750}.cmcCalendarSettings input{font:inherit;font-size:16px;min-height:48px;background:#fff;border:1px solid #b6c7c2;border-radius:12px;padding:10px 14px;box-sizing:border-box;width:100%}.cmcCalendarSettingsActions{display:flex;align-items:center;gap:12px;flex-wrap:wrap}.cmcHealthReportCard iframe{width:100%;height:650px;border:1px solid #d4ded9;border-radius:12px;background:#f9faf7}
+.cmcCalendarSettings{max-width:790px}
+.cmcCalendarSettings h2{font-size:25px;color:var(--cmcSlate,#293d48)}
+.cmcCalendarSettings>p{font-size:14px;line-height:1.65;color:#52666b}
+.cmcCalendarSettings form{display:grid;gap:17px;margin:20px 0 22px}
+.cmcCalendarSettings form>label,.cmcCalendarSyncSettings>label:not(.cmcCalendarClearFeed){display:grid;gap:7px;font-size:14px;font-weight:750;color:#293d48}
+.cmcCalendarSettings input:not([type=checkbox]){box-sizing:border-box;width:100%;min-height:46px;padding:10px 13px;background:#fffefb;border:1px solid #b6c7c2;border-radius:11px;font:inherit;font-size:15px;color:#293d48}
+.cmcCalendarSettingsActions{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+.cmcCalendarSettingsActions>*{min-height:44px}
+.cmcCalendarSyncSettings{border:1px solid #d4ddd7;border-radius:15px;padding:20px;background:#f7f8f2;display:grid;gap:12px}
+.cmcCalendarSyncSettings h3{font-size:18px;margin:0;color:#2b4850}
+.cmcCalendarSyncSettings p{font-size:13px;line-height:1.6;color:#586b70;margin:0}
+.cmcCalendarClearFeed{display:flex;align-items:center;gap:9px;font-weight:700;font-size:13px;color:#41545b;cursor:pointer}
+.cmcCalendarClearFeed input{width:18px;height:18px;accent-color:#2b7967}
+.cmcNationalCalendar .cmcHealthReportCard{padding:26px}
+.cmcCalendarHeader{align-items:center}
+.cmcCalendarHeader h2{font-size:24px;color:#293d48}
+.cmcCalendarHeader p{font-size:13px;line-height:1.5;color:#607077;margin:6px 0 0}
+.cmcCalendarEventRow{display:flex;justify-content:space-between;gap:24px;align-items:center;padding:19px 2px;border-top:1px solid #d9e1dc}
+.cmcCalendarEventInfo{flex:1;min-width:0}
+.cmcCalendarEventInfo strong{font-size:16px;line-height:1.4;font-weight:800;color:#273e48}
+.cmcCalendarEventInfo p{font-size:13px;line-height:1.6;color:#4b6069;margin:5px 0 0}
+.cmcCalendarEventInfo .cmcCalendarEventLocation{font-size:12px;color:#65777b}
+.cmcCalendarEventActions{display:flex;flex-wrap:wrap;justify-content:flex-end;gap:9px;align-items:center}
+.cmcCalendarEventActions a{display:inline-flex;align-items:center;min-height:42px;border:1px solid #cfdbd4;padding:8px 11px;border-radius:10px;box-sizing:border-box;text-decoration:none;background:#fffdf8;font-size:12px;font-weight:800;color:#294d44}
+.cmcCalendarEventActions a:hover{background:#eaf3ed}
+.cmcHomeEventExternalLinks{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-top:18px}
+.cmcHomeEventExternalLinks a{min-height:44px;display:inline-flex;align-items:center;justify-content:center;font-size:13px}
+.cmcHomeEventExternalLinks .hidden{display:none!important}
+.cmcHomeCalendarConnection{display:grid;justify-items:start;gap:5px;padding-bottom:13px;border-bottom:1px solid rgba(41,61,72,.14);margin-bottom:12px}
+.cmcHomeCalendarConnection .cmcHomeHelper{margin:0;font-size:11px;line-height:1.55;color:#58676e}
+@media(max-width:720px){
+  .cmcCalendarSyncSettings{padding:16px}
+  .cmcCalendarEventRow{display:grid;gap:12px}
+  .cmcCalendarEventActions{justify-content:flex-start}
+  .cmcNationalCalendar .cmcHealthReportCard{padding:18px}
+}

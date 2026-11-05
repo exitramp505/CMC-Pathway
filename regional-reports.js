@@ -87,12 +87,13 @@
  function render(){renderSummary();renderSystems();renderCoverage();renderMatrix();renderList();$('exportReports').disabled=!current().length;}
  async function showMyRegion(){
    const viewer=data?.viewer;
-   const allowed=viewer?.account_role==='cmc_admin'&&
-     ['Central','East','Mountain Plains','Pacific','Southeast'].includes(viewer.region);
+   const ownRegion=viewer?.cmc_regional_director_region||
+      (viewer?.account_role==='regional_leader'?viewer.region:null);
+   const allowed=['Central','East','Mountain Plains','Pacific','Southeast'].includes(ownRegion);
    $('myRegionAssessment').classList.toggle('hidden',!allowed);
    $('regionalHealthViews').classList.toggle('hidden',!allowed);
    if(!allowed)return;
-   $('myRegionTitle').textContent=viewer.region+' Region · '+year+' Annual Systems Assessment';
+   $('myRegionTitle').textContent=ownRegion+' Region · '+year+' Annual Systems Assessment';
    const link=$('myRegionAssessmentAction');
    link.href='regional-assessment.html?year='+year;
    $('myRegionAssessmentStatus').textContent='Checking assessment progress…';

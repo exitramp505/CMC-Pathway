@@ -1,7 +1,7 @@
 <!doctype html><html lang="en"><head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>National Settings | CMC Pathway</title>
-<link rel="stylesheet" href="style.css?v=144"><link rel="stylesheet" href="regional-health.css?v=1"><link rel="icon" type="image/svg+xml" href="cmc-logo-mark.svg"></head>
+<link rel="stylesheet" href="style.css?v=144"><link rel="stylesheet" href="regional-health.css?v=1"><link rel="stylesheet" href="calendar-settings.css?v=2"><link rel="icon" type="image/svg+xml" href="cmc-logo-mark.svg"></head>
 <body class="cmcPathwayBody cmcHealthBody"><a class="cmcSkipLink" href="#main-content">Skip to main content</a>
 <header class="cmcHeader"><a class="cmcBrand" href="leadership-home.html"><img class="cmcLogoImage" src="cmc-logo-mark.svg" alt=""><span><strong>CMC Pathway</strong><small>Church Multiplication Collective</small></span></a><nav id="cmcRoleNav" class="cmcNav"></nav></header>
 <main id="main-content" tabindex="-1" class="cmcPathwayMain cmcHealthMain">
@@ -12,11 +12,21 @@
 <form id="calendarSettingsForm">
 <label>Calendar display name<input id="calendarLabel" maxlength="90" placeholder="Open Bible CMC Leadership" required></label>
 <label>Google Calendar ID<input id="calendarId" placeholder="example@group.calendar.google.com" autocomplete="off"></label>
-<p class="cmcHealthTableNote">Find this in Google Calendar → Settings for the dedicated calendar → Integrate calendar → Calendar ID. Share the calendar with authorized Google accounts. Do not paste a private iCal secret URL.</p>
+<p class="cmcHealthTableNote">The Calendar ID identifies your organization calendar. It is not a secret. The event schedule appears in leaders' Pathway dashboards.</p>
+<div class="cmcCalendarSyncSettings">
+  <h3>Keep the calendar automatically updated</h3>
+  <p>For a private calendar, Google provides a <strong>Secret address in iCal format</strong>. Paste it here once to update CMC Pathway when events change, without making the calendar public.</p>
+  <label>Secret address in iCal format (optional)
+    <input id="privateIcalUrl" type="password" autocomplete="new-password" placeholder="https://calendar.google.com/calendar/ical/…/private-…/basic.ics">
+  </label>
+  <p class="cmcHealthTableNote">Google Calendar → Calendar settings → Integrate calendar → Secret address in iCal format. This URL grants read access: keep it private. It is stored in a restricted server-side table and never returned to browsers.</p>
+  <label class="cmcCalendarClearFeed"><input id="removeCalendarFeed" type="checkbox"> Disconnect automatic updates</label>
+  <p id="calendarSyncStatus" class="cmcHealthTableNote" role="status"></p>
+</div>
 <div class="cmcCalendarSettingsActions"><button id="saveCalendarSettings" type="submit" class="cmcPrimaryButton">Save calendar connection</button><a id="previewCalendar" class="cmcSecondaryButton hidden" href="national-calendar.html">View calendar</a></div>
 </form>
 <p id="calendarSettingsStatus" class="cmcHealthFeedback" role="status"></p>
-<p class="cmcHealthTableNote">This connects the calendar for viewing. Live server-side synchronization of private Google Calendar events requires separate authenticated Google API credentials; until enabled, CMC events and Google events remain distinct sources.</p>
+<p class="cmcHealthTableNote">CMC Pathway uses Google Calendar as the schedule of record. Meeting notes, agendas, and follow-up tasks are managed separately inside CMC Pathway.</p>
 </section></main>
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.105.4"></script><script src="auth.js?v=133"></script><script src="national-settings.js?v=1"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.105.4"></script><script src="auth.js?v=133"></script><script src="national-settings.js?v=2"></script>
 </body></html>

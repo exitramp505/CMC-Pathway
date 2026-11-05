@@ -57,7 +57,7 @@ exports.handler=async event=>{
  const national=['cmc_admin','cmc_viewer'].includes(viewer.account_role);
  if(event.httpMethod==='GET'){
    if(mode==='mine'){
-     if(viewer.account_role!=='regional_leader')throw httpError(403,'Only regional directors complete annual assessments.');
+     if(!['regional_leader','cmc_admin'].includes(viewer.account_role))throw httpError(403,'Only CMC directors complete annual assessments.');
      if(!REGIONS.includes(viewer.region))throw httpError(403,'Your region must be set before starting the assessment.');
      const year=yearParam(event.queryStringParameters?.year||new Date().getUTCFullYear());
      const [current,history]=await Promise.all([
@@ -76,11 +76,11 @@ exports.handler=async event=>{
          .eq('status','submitted').gte('reporting_year',Math.max(2022,year-1)).lte('reporting_year',year)
          .order('submitted_at',{ascending:false}).limit(500),
        supabase.from('candidate_profiles').select('id,full_name,region')
-         .eq('account_role','regional_leader').is('archived_at',null)
+         .in('account_role',['regional_leader','cmc_admin']).is('archived_at',null)
          .order('full_name',{ascending:true})
      ]);
      if(entries.error)throw entries.error;if(roster.error)throw roster.error;
-     return json(200,{ok:true,viewer,year,entries:entries.data||[],roster:roster.data||[]});
+     return json(200,{ok:true,viewer,year,entries:entries.data||[],roster:(roster.data||[]).filter(p=>REGIONS.includes(p.region))});
    }
    if(mode==='detail'){
      const id=String(event.queryStringParameters?.id||'');
@@ -92,7 +92,7 @@ exports.handler=async event=>{
    }
    throw httpError(400,'Unknown assessment view.');
  }
- if(viewer.account_role!=='regional_leader')throw httpError(403,'Only regional directors can complete the assessment.');
+ if(!['regional_leader','cmc_admin'].includes(viewer.account_role))throw httpError(403,'Only CMC directors can complete the assessment.');
  if(!REGIONS.includes(viewer.region))throw httpError(403,'Your account needs a valid Open Bible region.');
  const body=JSON.parse(event.body||'{}');
  if(!['save','submit'].includes(body.action))throw httpError(400,'Choose save or submit.');

@@ -16,7 +16,7 @@
   const dateBadge=iso=>{const d=new Date(iso);return '<span class="cmcHomeDateBadge" aria-hidden="true"><small>'+esc(new Intl.DateTimeFormat(undefined,{month:'short'}).format(d))+'</small><strong>'+esc(new Intl.DateTimeFormat(undefined,{day:'numeric'}).format(d))+'</strong></span>';};
   const localInput=iso=>{if(!iso)return '';const d=new Date(iso);return d.getFullYear()+'-'+pad(d.getMonth()+1)+'-'+pad(d.getDate())+'T'+pad(d.getHours())+':'+pad(d.getMinutes());};
   const role=()=>state.viewer?.account_role||'';
-  const national=()=>role()==='cmc_admin'||role()==='cmc_viewer';
+  const national=()=>['viewer','admin'].includes(state.viewer?.cmc_national_access)||role()==='cmc_admin'||role()==='cmc_viewer';
   const readonly=()=>role()==='cmc_viewer';
   const canEdit=item=>!readonly()&&(!item||item.visibility==='personal'?(!item||item.created_by===state.viewer.id):(role()==='cmc_admin'||item.region===state.viewer.region));
   const ownerName=id=>state.leaders.find(p=>p.id===id)?.full_name||state.leaders.find(p=>p.id===id)?.email||(id?'Assigned leader':'Unassigned');
@@ -181,7 +181,10 @@
       state.viewer=data.viewer;state.items=data.items||[];state.events=data.events||[];state.leaders=data.leaders||[];state.calendar=data.calendar||null;state.annual=data.annual_assessment||null;
       dcAuth.renderRoleNavigation(state.viewer,'home');
       const isNational=national();
-      setText('leadershipRegion',isNational?'NATIONAL LEADERSHIP':'OPEN BIBLE '+String(state.viewer.region||'').toUpperCase()+' REGION');
+      const regionalDirector=state.viewer.cmc_regional_director_region||(role()==='regional_leader'?state.viewer.region:null);
+      const scope=isNational&&regionalDirector?'NATIONAL LEADERSHIP · '+regionalDirector.toUpperCase()+' REGION':
+        isNational?'NATIONAL LEADERSHIP':'OPEN BIBLE '+String(regionalDirector||state.viewer.region||'').toUpperCase()+' REGION';
+      setText('leadershipRegion',scope);
       const givenName=String(state.viewer.full_name||'').trim().split(/\s+/)[0];
       setText('leadershipGreeting','Welcome back'+(givenName?', '+givenName:'')+'.');
       setText('homeToday',new Intl.DateTimeFormat(undefined,{weekday:'long',month:'long',day:'numeric',year:'numeric'}).format(new Date()));
@@ -189,15 +192,16 @@
       const assessmentLink=$('regionalAssessmentLink');
       const annual=state.annual;
       const annualYear=annual?.reporting_year||new Date().getFullYear();
-      assessmentLink.href=readonly()?'regional-reports.html':'regional-assessment.html?year='+annualYear;
-      assessmentLink.firstChild.textContent=readonly()?'View national reports ':
+      const canAssess=Boolean(regionalDirector)&&!readonly();
+      assessmentLink.href=canAssess?'regional-assessment.html?year='+annualYear:'regional-reports.html';
+      assessmentLink.firstChild.textContent=!canAssess?'View national reports ':
         annual?.status==='submitted'?'View submitted assessment ':
         annual?.status==='draft'?'Continue Assessment ':'Start Assessment ';
       const annualStatus=annual?.assigned?
         annual.status==='submitted'?'Your '+annualYear+' assessment is complete.':
         'Your '+annualYear+' assessment is due '+shortDate(annual.due_date)+'.':
         'Your region can complete the assessment at any time.';
-      setText('assessmentDueStatus',readonly()?'Review regional progress and system strengths.':annualStatus);
+      setText('assessmentDueStatus',canAssess?annualStatus:'Review regional progress and system strengths.');
       $('newMeeting').classList.toggle('hidden',readonly());
       $('newReminder').classList.toggle('hidden',readonly());
       $('allEventsLink').classList.toggle('hidden',readonly());

@@ -1,133 +1,110 @@
-const { createClient } = require('@supabase/supabase-js');
+const {json,requireUser,httpError}=require('./_auth');
+const {REGIONS,NATIONAL_LEVELS,regionOf,nationalOf,nationalAdmin,effectiveRole}=require('./_leadership-access');
 
-const REGIONS = ['Central', 'East', 'Mountain Plains', 'Pacific', 'Southeast'];
-const ACCOUNT_ROLES = ['participant', 'regional_leader', 'cmc_admin', 'cmc_viewer'];
-
-function accessError(statusCode, message) {
-  const error = new Error(message);
-  error.statusCode = statusCode;
-  return error;
-}
-
-function resolveRoleChange({ viewer, target, accountRole, region }) {
-  if (!ACCOUNT_ROLES.includes(accountRole)) throw accessError(400, 'Choose a valid access level.');
-  if (!target) throw accessError(404, 'That account could not be updated.');
-  if (target.id === viewer.id) throw accessError(400, 'You cannot change your own administrator access here.');
-  if (target.archived_at) throw accessError(400, 'Restore this person before changing leadership access.');
-
-  if (viewer.account_role === 'regional_leader') {
-    if (['cmc_admin','cmc_viewer'].includes(target.account_role) || ['cmc_admin','cmc_viewer'].includes(accountRole)) {
-      throw accessError(403, 'Only a full administrator can manage full administrator access.');
+const PROFILE_FIELDS='id,full_name,email,region,account_role,cmc_regional_director_region,cmc_national_access,created_at,archived_at';
+function resolveAccessChange({viewer,target,regionalRegion,nationalAccess}){
+  if(!target)throw httpError(404,'That account could not be updated.');
+  if(target.id===viewer.id)throw httpError(400,'Your own leadership access cannot be changed here.');
+  if(target.archived_at)throw httpError(400,'Restore this account before changing its access.');
+  const region=regionalRegion==null||regionalRegion===''?null:String(regionalRegion);
+  if(region!==null&&!REGIONS.includes(region))throw httpError(400,'Choose a valid Open Bible region.');
+  const national=String(nationalAccess??'');
+  if(!NATIONAL_LEVELS.includes(national))throw httpError(400,'Choose a valid national access level.');
+  const administrator=nationalAdmin(viewer);
+  const ownRegion=regionOf(viewer);
+  if(!administrator){
+    if(!ownRegion)throw httpError(403,'Regional director access is required.');
+    if(national!=='none'||nationalOf(target)!=='none'){
+      throw httpError(403,'Only a national administrator can change accounts with national access.');
     }
-    if (target.region !== viewer.region) {
-      throw accessError(403, 'You can only manage leaders in your own region.');
+    if(target.region!==ownRegion){
+      throw httpError(403,'You can only manage accounts within your own region.');
+    }
+    if(region!==null&&region!==ownRegion){
+      throw httpError(403,'You can only assign directors within your own region.');
     }
   }
-
-  const requestedRegion = viewer.account_role === 'regional_leader' ? viewer.region : region;
-  if (accountRole === 'regional_leader' && !REGIONS.includes(requestedRegion)) {
-    throw accessError(400, 'Choose a valid Open Bible region.');
-  }
-
-  const update = { account_role: accountRole, updated_at: new Date().toISOString() };
-  if (accountRole === 'regional_leader') update.region = requestedRegion;
+  const update={
+    cmc_regional_director_region:region,
+    cmc_national_access:national,
+    account_role:effectiveRole(region,national),
+    updated_at:new Date().toISOString()
+  };
+  // Legacy regional tools still use profile.region. Change affiliation only
+  // when explicitly assigning regional responsibility, never on national grant.
+  if(region)update.region=region;
   return update;
 }
 
-function json(status, body) {
-  return {
-    statusCode: status,
-    headers: { 'Content-Type':'application/json' },
-    body: JSON.stringify(body)
-  };
-}
-
-exports.handler = async (event) => {
-  if (!['GET', 'POST'].includes(event.httpMethod)) {
-    return json(405, { ok:false, error:'Method not allowed.' });
+// Compatibility utility for established role-change regression tests.
+function resolveRoleChange({viewer,target,accountRole,region}){
+  if(!['participant','regional_leader','cmc_admin','cmc_viewer'].includes(accountRole))
+    throw httpError(400,'Choose a valid access level.');
+  if(!target)throw httpError(404,'That account could not be updated.');
+  if(target.id===viewer.id)throw httpError(400,'You cannot change your own administrator access here.');
+  if(target.archived_at)throw httpError(400,'Restore this person before changing leadership access.');
+  if(viewer.account_role==='regional_leader'){
+    if(['cmc_admin','cmc_viewer'].includes(target.account_role)||
+       ['cmc_admin','cmc_viewer'].includes(accountRole))
+      throw httpError(403,'Only a full administrator can manage full administrator access.');
+    if(target.region!==viewer.region)throw httpError(403,'You can only manage leaders in your own region.');
   }
-
-  try {
-    const auth = event.headers.authorization || event.headers.Authorization || '';
-    const token = auth.replace(/^Bearer\s+/i, '');
-    if (!token) return json(401, { ok:false, error:'Missing authorization token.' });
-
-    const supabase = createClient(
-      process.env.SUPABASE_URL,
-      process.env.SUPABASE_SERVICE_ROLE_KEY
-    );
-
-    const { data:userData, error:userError } = await supabase.auth.getUser(token);
-    if (userError || !userData?.user) {
-      return json(401, { ok:false, error:'Invalid session.' });
+  const requested=viewer.account_role==='regional_leader'?viewer.region:region;
+  if(accountRole==='regional_leader'&&!REGIONS.includes(requested))
+    throw httpError(400,'Choose a valid Open Bible region.');
+  const updates={account_role:accountRole,updated_at:new Date().toISOString()};
+  if(accountRole==='regional_leader')updates.region=requested;
+  return updates;
+}
+exports.handler=async event=>{
+  if(!['GET','POST'].includes(event.httpMethod))
+    return json(405,{ok:false,error:'Method not allowed.'});
+  try{
+    const {user,supabase}=await requireUser(event);
+    const {data:viewer,error:viewerError}=await supabase.from('candidate_profiles')
+      .select(PROFILE_FIELDS).eq('id',user.id).maybeSingle();
+    if(viewerError)throw viewerError;
+    if(!viewer||viewer.archived_at||(!nationalAdmin(viewer)&&!regionOf(viewer)))
+      throw httpError(403,'CMC director access is required.');
+    const fullAdmin=nationalAdmin(viewer);
+    if(event.httpMethod==='POST'){
+      const body=JSON.parse(event.body||'{}');
+      const profileId=String(body.profile_id||'');
+      if(!/^[0-9a-f-]{36}$/i.test(profileId))throw httpError(400,'Choose an existing account.');
+      const {data:target,error:targetError}=await supabase.from('candidate_profiles')
+        .select(PROFILE_FIELDS).eq('id',profileId).maybeSingle();
+      if(targetError)throw targetError;
+      const regional=body.regional_director_region;
+      const national=body.national_access;
+      const changes=resolveAccessChange({
+        viewer,target,regionalRegion:regional,nationalAccess:national
+      });
+      const {data:updated,error:updateError}=await supabase.from('candidate_profiles')
+        .update(changes).eq('id',profileId)
+        .eq('account_role',target.account_role)
+        .eq('cmc_national_access',target.cmc_national_access)
+        .select(PROFILE_FIELDS).maybeSingle();
+      if(updateError)throw updateError;
+      if(!updated)throw httpError(409,'This person’s access changed while you were editing. Refresh and try again.');
+      return json(200,{ok:true,profile:updated});
     }
-
-    const { data:viewer, error:viewerError } = await supabase
-      .from('candidate_profiles')
-      .select('id,full_name,email,region,account_role')
-      .eq('id', userData.user.id)
-      .maybeSingle();
-
-    if (viewerError) throw viewerError;
-    if (!viewer || !['regional_leader', 'cmc_admin'].includes(viewer.account_role)) {
-      return json(403, { ok:false, error:'Regional leader access is required.' });
-    }
-    if (viewer.account_role === 'regional_leader' && !REGIONS.includes(viewer.region)) {
-      return json(403, { ok:false, error:'Your leader account does not have a valid Open Bible region.' });
-    }
-
-    if (event.httpMethod === 'POST') {
-      const body = JSON.parse(event.body || '{}');
-      const profileId = String(body.profile_id || '');
-      const accountRole = String(body.account_role || '');
-      const region = String(body.region || '');
-
-      if (!profileId) return json(400, { ok:false, error:'Choose an account.' });
-      const { data:target, error:targetError } = await supabase
-        .from('candidate_profiles')
-        .select('id,region,account_role,archived_at')
-        .eq('id', profileId)
-        .maybeSingle();
-      if (targetError) throw targetError;
-      const update = resolveRoleChange({ viewer, target, accountRole, region });
-
-      const updateQuery = supabase
-        .from('candidate_profiles')
-        .update(update)
-        .eq('id', profileId)
-        .eq('account_role', target.account_role);
-      const { data:profile, error:updateError } = await updateQuery
-        .select('id,full_name,email,region,account_role,created_at,archived_at')
-        .maybeSingle();
-
-      if (updateError) throw updateError;
-      if (!profile) return json(409, { ok:false, error:'This account changed while you were editing it. Refresh and try again.' });
-      return json(200, { ok:true, profile });
-    }
-
-    let profileQuery = supabase
-      .from('candidate_profiles')
-      .select('id,full_name,email,region,account_role,created_at,archived_at')
-      .in('account_role', viewer.account_role === 'cmc_admin'
-        ? ['participant', 'regional_leader', 'cmc_admin', 'cmc_viewer']
-        : ['participant', 'regional_leader'])
-      .is('archived_at', null)
-      .order('full_name', { ascending:true });
-    if (viewer.account_role === 'regional_leader') {
-      profileQuery = profileQuery.eq('region', viewer.region);
-    }
-
-    const { data:profiles, error:profilesError } = await profileQuery;
-    if (profilesError) throw profilesError;
-    return json(200, {
-      ok:true,
-      viewer,
-      profiles:profiles || [],
-      regions:viewer.account_role === 'regional_leader' ? [viewer.region] : REGIONS
+    let query=supabase.from('candidate_profiles').select(PROFILE_FIELDS)
+      .is('archived_at',null).order('full_name',{ascending:true}).limit(1000);
+    if(!fullAdmin)query=query.eq('region',regionOf(viewer))
+      .in('account_role',['participant','regional_leader']);
+    const {data:profiles,error}=await query;
+    if(error)throw error;
+    const results=fullAdmin?profiles||[]:(profiles||[]).filter(x=>nationalOf(x)==='none');
+    return json(200,{
+      ok:true,viewer,profiles:results,
+      regions:fullAdmin?REGIONS:[regionOf(viewer)],
+      can_manage_national:fullAdmin
     });
-  } catch (error) {
-    return json(error.statusCode || 500, { ok:false, error:error.message || 'Could not manage leadership access.' });
+  }catch(error){
+    console.error('CMC leadership access update',error.statusCode||error.message);
+    return json(error.statusCode||500,{
+      ok:false,error:error.statusCode?error.message:'Could not manage CMC leadership access.'
+    });
   }
 };
-
-exports._test = { REGIONS, resolveRoleChange };
+exports._test={REGIONS,resolveRoleChange,resolveAccessChange};

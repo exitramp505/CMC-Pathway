@@ -1,4 +1,5 @@
 const {json,requireUser,httpError} = require('./_auth');
+const {regionOf,nationalReporting,leadershipAccount}=require('./_leadership-access');
 const config=require('../../regional-assessment-config.json');
 const REGIONS=['Central','East','Mountain Plains','Pacific','Southeast'];
 const VALID_SCORES=new Set(config.sections.map(s=>s.id));
@@ -41,9 +42,9 @@ function validateSubmission(scores,reflections) {
 async function viewerFor(event) {
  const {user,supabase}=await requireUser(event);
  const {data:viewer,error}=await supabase.from('candidate_profiles')
-   .select('id,full_name,email,region,account_role,archived_at').eq('id',user.id).maybeSingle();
+   .select('id,full_name,email,region,account_role,cmc_regional_director_region,cmc_national_access,archived_at').eq('id',user.id).maybeSingle();
  if(error)throw error;
- if(!viewer||viewer.archived_at||!['regional_leader','cmc_admin','cmc_viewer'].includes(viewer.account_role))throw httpError(403,'CMC leadership access is required.');
+ if(!viewer||viewer.archived_at||!leadershipAccount(viewer))throw httpError(403,'CMC leadership access is required.');
  return {viewer,supabase};
 }
 function handleError(error){
@@ -54,11 +55,11 @@ exports.handler=async event=>{
  try{
  const {viewer,supabase}=await viewerFor(event);
  const mode=event.queryStringParameters?.mode||'mine';
- const national=['cmc_admin','cmc_viewer'].includes(viewer.account_role);
+ const national=nationalReporting(viewer);
+ const region=regionOf(viewer);
  if(event.httpMethod==='GET'){
    if(mode==='mine'){
-     if(!['regional_leader','cmc_admin'].includes(viewer.account_role))throw httpError(403,'Only CMC directors complete annual assessments.');
-     if(!REGIONS.includes(viewer.region))throw httpError(403,'Your region must be set before starting the assessment.');
+     if(!region)throw httpError(403,'A regional director assignment is required to complete an assessment.');
      const year=yearParam(event.queryStringParameters?.year||new Date().getUTCFullYear());
      const [current,history]=await Promise.all([
        supabase.from('cmc_regional_assessments').select('*').eq('director_id',viewer.id).eq('reporting_year',year).maybeSingle(),
@@ -75,12 +76,12 @@ exports.handler=async event=>{
          .select('id,director_id,director_name,region,reporting_year,scores,submitted_at')
          .eq('status','submitted').gte('reporting_year',Math.max(2022,year-1)).lte('reporting_year',year)
          .order('submitted_at',{ascending:false}).limit(500),
-       supabase.from('candidate_profiles').select('id,full_name,region')
+       supabase.from('candidate_profiles').select('id,full_name,region,account_role,cmc_regional_director_region,cmc_national_access')
          .in('account_role',['regional_leader','cmc_admin']).is('archived_at',null)
          .order('full_name',{ascending:true})
      ]);
      if(entries.error)throw entries.error;if(roster.error)throw roster.error;
-     return json(200,{ok:true,viewer,year,entries:entries.data||[],roster:(roster.data||[]).filter(p=>REGIONS.includes(p.region))});
+     return json(200,{ok:true,viewer,year,entries:entries.data||[],roster:(roster.data||[]).filter(p=>Boolean(regionOf(p))).map(p=>({...p,region:regionOf(p)}))});
    }
    if(mode==='detail'){
      const id=String(event.queryStringParameters?.id||'');
@@ -92,8 +93,7 @@ exports.handler=async event=>{
    }
    throw httpError(400,'Unknown assessment view.');
  }
- if(!['regional_leader','cmc_admin'].includes(viewer.account_role))throw httpError(403,'Only CMC directors can complete the assessment.');
- if(!REGIONS.includes(viewer.region))throw httpError(403,'Your account needs a valid Open Bible region.');
+ if(!region)throw httpError(403,'A regional director assignment is required to complete the assessment.');
  const body=JSON.parse(event.body||'{}');
  if(!['save','submit'].includes(body.action))throw httpError(400,'Choose save or submit.');
  const year=yearParam(body.year||new Date().getUTCFullYear());
@@ -105,10 +105,10 @@ exports.handler=async event=>{
    .select('id,status,region').eq('director_id',viewer.id).eq('reporting_year',year).maybeSingle();
  if(readError)throw readError;
  if(existing?.status==='submitted')throw httpError(409,'This year’s assessment has already been submitted and is locked.');
- if(existing&&existing.region!==viewer.region)throw httpError(409,'Your region changed. Ask a national administrator to review this draft.');
+ if(existing&&existing.region!==region)throw httpError(409,'Your region changed. Ask a national administrator to review this draft.');
  const now=new Date().toISOString();
  const payload={director_name:viewer.full_name||viewer.email||'Regional CMC Director',
-   region:viewer.region,answers,scores,reflections,updated_at:now,
+   region,answers,scores,reflections,updated_at:now,
    status:body.action==='submit'?'submitted':'draft',
    submitted_at:body.action==='submit'?now:null};
  let result;

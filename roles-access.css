@@ -1,0 +1,165 @@
+/* Roles & Access — an intentional, contained design surface. */
+.cmcRolesBody{background:#f8f5ee;color:#293d48}
+.cmcRolesMain.cmcManageLeadersMain{width:min(1180px,calc(100% - 48px));margin:0 auto;padding:62px 0 112px}
+.cmcRolesBody .hidden{display:none!important}
+.cmcRolesBody button,.cmcRolesBody input,.cmcRolesBody select{font-family:inherit}
+.cmcRolesBody button{cursor:pointer}
+.cmcRolesBody button:disabled{opacity:.45;cursor:not-allowed}
+.cmcRolesBody :is(button,a,input,select):focus-visible{outline:3px solid #cf8e38;outline-offset:3px}
+.cmcRolesBody .sr-only{position:absolute!important;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
+.cmcRolesHero{display:flex;justify-content:space-between;align-items:flex-end;gap:28px;margin-bottom:25px}
+.cmcRolesHero .cmcEyebrow{color:#847355;font-size:11px;letter-spacing:.16em;font-weight:850}
+.cmcRolesHero h1{font-size:clamp(35px,4vw,52px);line-height:1.08;letter-spacing:-.048em;color:#283d46;margin:9px 0 10px;font-weight:850}
+.cmcRolesHero p:not(.cmcEyebrow){font-size:15px;line-height:1.65;color:#67777a;max-width:590px;margin:0}
+.cmcRolesStats{display:flex;gap:24px;flex-shrink:0;border-left:1px solid #d8ded8;padding-left:23px;padding-bottom:3px}
+.cmcRolesStats>div{display:grid;gap:3px;min-width:90px}
+.cmcRolesStats strong{font-size:30px;line-height:1.1;color:#2b514c;font-weight:850;letter-spacing:-.04em}
+.cmcRolesStats span{font-size:11px;line-height:1.4;color:#7a8887;font-weight:750}
+.cmcRolesMain .cmcTeamSectionTabs{margin:0 0 25px}
+.cmcRolesPageMessage{font-size:13px;font-weight:750;line-height:1.6;margin:0 0 18px;border:1px solid #d3e1d9;background:#edf4eb;color:#2c6555;border-radius:12px;padding:11px 15px}
+.cmcRolesPageMessage.error{border-color:#eac8be;background:#fff0ea;color:#983f30}
+.cmcRolesGrid{display:grid;grid-template-columns:minmax(310px,.88fr) minmax(0,1.12fr);align-items:start;gap:20px}
+.cmcRolesPanel{border:1px solid #d7dfd8;border-radius:20px;background:#fffcf7;box-shadow:0 8px 30px rgba(41,61,72,.045);min-width:0}
+.cmcRolesPanelHead{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:23px 23px 16px}
+.cmcRolesPanelHead .cmcEyebrow,.cmcRolesEditorHeader .cmcEyebrow{font-size:10px;letter-spacing:.13em;font-weight:900;color:#7f8e87;margin:0 0 6px}
+.cmcRolesPanelHead h2{font-size:22px;color:#293d48;line-height:1.2;letter-spacing:-.025em;font-weight:820;margin:0}
+.cmcRolesAddButton{display:inline-flex;align-items:center;justify-content:center;gap:4px;min-height:40px;padding:0 13px;border-radius:11px;background:#2e6558;color:#fff;border:1px solid #2e6558;font-size:12px;font-weight:850;white-space:nowrap;transition:background .18s ease}
+.cmcRolesAddButton:hover{background:#234d42}
+.cmcRolesSearch{display:flex;align-items:center;position:relative;margin:0 23px 16px;gap:9px;border:1px solid #d8dfd9;background:#fff;border-radius:11px;padding:0 12px;color:#8b9997}
+.cmcRolesSearch input{width:100%;min-width:0;height:45px;background:transparent;border:0;outline:none;font-size:13px;color:#293d48}
+.cmcRolesSearch input::placeholder{color:#92a09b}
+.cmcRolesSearch:focus-within{border-color:#8fafa0;box-shadow:0 0 0 3px #e6eee9}
+.cmcRolesSearch input:focus-visible{outline:0}
+.cmcRolesFilters{display:flex;align-items:center;gap:7px;padding:0 23px 14px;border-bottom:1px solid #edf0e9}
+.cmcRolesFilters button{min-height:33px;padding:0 13px;font-size:12px;font-weight:800;border:1px solid transparent;border-radius:9px;background:transparent;color:#7d8986}
+.cmcRolesFilters button.active{background:#e6eeea;color:#2c6857;border-color:#d6e4da}
+.cmcRolesFilters button:not(.active):hover{background:#f3f5f1}
+.cmcRolesRoster{padding:8px;max-height:575px;overflow-y:auto;scrollbar-width:thin}
+.cmcRolesPerson{display:flex;align-items:center;gap:12px;width:100%;border:1px solid transparent;border-radius:13px;padding:13px 11px;background:transparent;text-align:left;color:inherit;transition:background .15s,border-color .15s}
+.cmcRolesPerson:hover{background:#f6f7f0}
+.cmcRolesPerson.isSelected{border-color:#bfd9c9;background:#edf5ed;box-shadow:inset 3px 0 0 #629f80}
+.cmcRolesAvatar{display:grid;width:42px;height:42px;flex:0 0 42px;place-items:center;border-radius:13px;background:#e4ebe7;color:#326458;font-size:12px;letter-spacing:.025em;font-weight:900}
+.cmcRolesPerson.isSelected .cmcRolesAvatar{background:#cde3d4}
+.cmcRolesIdentity{flex:1;min-width:0;display:grid;gap:4px}
+.cmcRolesIdentity strong{font-size:13px;color:#2a4047;font-weight:850;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.cmcRolesIdentity small{font-size:11px;color:#7a8988;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.cmcRolesPills{display:flex;gap:5px;flex-wrap:wrap}
+.cmcRolesPill{border-radius:7px;border:1px solid #d7e3d8;background:#eaf2e8;color:#426b58;padding:5px 7px;font-size:10px;font-weight:800;line-height:1.2}
+.cmcRolesPill.isNational{background:#f5eddb;border-color:#ebdec5;color:#765b37}
+.cmcRolesPill.isMuted{background:#f0f1ed;border-color:#e0e2dd;color:#7b8684}
+.cmcRolesPersonArrow{flex:0 0 auto;color:#a9b4ad;font-size:21px;line-height:1}
+.cmcRolesListFoot{color:#8b9894;border-top:1px solid #eef0ea;margin:0;font-size:11px;line-height:1.65;padding:13px 23px 20px}
+.cmcRolesEditorPanel{position:sticky;top:22px;overflow:hidden}
+.cmcRolesEmpty{min-height:430px;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:32px}
+.cmcRolesEmptyIcon{width:70px;height:70px;display:grid;place-items:center;background:#edf2eb;color:#597968;border-radius:22px;margin-bottom:20px}
+.cmcRolesEmpty h2{margin:0 0 10px;font-size:22px;color:#293d48;letter-spacing:-.02em}
+.cmcRolesEmpty p{margin:0;max-width:290px;line-height:1.65;font-size:13px;color:#758580}
+.cmcRolesEditorHeader{display:flex;align-items:center;gap:14px;padding:24px 25px;border-bottom:1px solid #e5ebe4}
+.cmcRolesAvatarLarge{width:52px;height:52px;flex-basis:52px;font-size:15px;border-radius:16px;background:#dce9df}
+.cmcRolesSelectedIdentity{flex:1;min-width:0}
+.cmcRolesSelectedIdentity h2{font-size:21px;line-height:1.28;color:#293d48;font-weight:900;margin:0;letter-spacing:-.028em}
+.cmcRolesSelectedIdentity>p:last-child{color:#80908c;font-size:12px;margin:3px 0 0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.cmcRolesSelfPill{font-size:10px;font-weight:850;color:#687b76;border:1px solid #dce5de;border-radius:999px;padding:6px 9px;background:#f5f8f2;white-space:nowrap}
+.cmcRolesResponsibility{padding:23px 25px 21px;border-bottom:1px solid #e5ebe4}
+.cmcRolesSectionIntro{display:flex;align-items:flex-start;gap:11px;margin-bottom:18px}
+.cmcRolesSectionIcon{flex:0 0 35px;width:35px;height:35px;display:grid;place-items:center;border-radius:11px;background:#edf1e8;color:#567764}
+.cmcRolesSectionIntro h3{font-size:15px;line-height:1.4;color:#2b4148;font-weight:900;margin:0 0 2px}
+.cmcRolesSectionIntro p{font-size:12px;line-height:1.55;color:#7d8a88;margin:0}
+.cmcRolesToggle{position:relative;display:flex;align-items:center;justify-content:space-between;gap:18px;cursor:pointer;border:1px solid #dae3dc;background:#fafcf7;padding:13px 14px 13px 15px;border-radius:12px}
+.cmcRolesToggle>span:first-child{display:grid;gap:3px}
+.cmcRolesToggle strong{font-size:13px;font-weight:850;color:#314b4c}
+.cmcRolesToggle small{font-size:11px;color:#81918b;line-height:1.4}
+.cmcRolesToggle input{position:absolute;opacity:0;width:1px;height:1px}
+.cmcRolesSwitch{width:39px;height:23px;flex:0 0 39px;border-radius:999px;background:#c7d0ca;position:relative;transition:background .18s}
+.cmcRolesSwitch:before{content:'';position:absolute;left:3px;top:3px;width:17px;height:17px;border-radius:50%;background:white;box-shadow:0 1px 3px #0002;transition:transform .18s}
+.cmcRolesToggle input:checked~.cmcRolesSwitch{background:#337a64}
+.cmcRolesToggle input:checked~.cmcRolesSwitch:before{transform:translateX(16px)}
+.cmcRolesToggle:has(input:checked){border-color:#a9cdb6;background:#f1f7ed}
+.cmcRolesToggle:has(input:focus-visible){outline:3px solid #d4a159;outline-offset:2px}
+.cmcRolesRegionSelect{margin-top:12px}
+.cmcRolesRegionSelect label{display:block;margin-bottom:7px;color:#61746f;font-size:11px;font-weight:850}
+.cmcRolesRegionSelect select{width:100%;height:46px;box-sizing:border-box;padding:0 13px;border:1px solid #c7d4cb;border-radius:10px;background:#fff;color:#2f464b;font-size:13px;font-weight:650}
+.cmcRolesChoices{display:grid;gap:8px;margin:0;padding:0;border:0}
+.cmcRolesChoice{position:relative;display:flex;align-items:center;gap:13px;border:1px solid #dde4dd;border-radius:12px;background:#fff;padding:12px 14px;min-height:58px;box-sizing:border-box;cursor:pointer;transition:border-color .16s,background .16s}
+.cmcRolesChoice:hover{border-color:#b7cbbf}
+.cmcRolesChoice:has(input:checked){background:#f0f6f0;border-color:#a8cbb5;box-shadow:inset 3px 0 0 #4b9774}
+.cmcRolesChoice input{position:absolute;opacity:0;width:1px;height:1px}
+.cmcRolesChoice:has(input:focus-visible){outline:3px solid #d4a159;outline-offset:2px}
+.cmcRolesChoice:has(input:disabled){opacity:.56;cursor:not-allowed}
+.cmcRolesRadio{flex:0 0 18px;width:18px;height:18px;border-radius:50%;border:2px solid #b2c2b8;box-sizing:border-box;background:white;display:grid;place-items:center}
+.cmcRolesRadio:after{content:'';width:8px;height:8px;border-radius:50%;background:#3f866c;transform:scale(0);transition:transform .14s}
+.cmcRolesChoice input:checked+.cmcRolesRadio{border-color:#3f866c}
+.cmcRolesChoice input:checked+.cmcRolesRadio:after{transform:scale(1)}
+.cmcRolesChoice>span:last-child{display:grid;gap:3px}
+.cmcRolesChoice strong{font-size:12px;line-height:1.3;font-weight:850;color:#344d50}
+.cmcRolesChoice small{font-size:11px;line-height:1.4;color:#89958e}
+.cmcRolesRestriction{margin:11px 0 0;font-size:11px;color:#847767;line-height:1.5}
+.cmcRolesAccessPreview{margin:22px 25px 0;padding:16px;border:1px solid #dce7de;border-radius:13px;background:#f5f8f2}
+.cmcRolesAccessPreview>strong{display:block;color:#566d64;font-size:10px;font-weight:900;letter-spacing:.075em;text-transform:uppercase;margin-bottom:10px}
+.cmcRolesAccessPreview .cmcRolesPills{gap:7px}
+.cmcRolesAccessPreview .cmcRolesPill{font-size:11px;padding:7px 9px}
+.cmcRolesAccessPreview p{color:#788881;font-size:11px;line-height:1.55;margin:9px 0 0}
+.cmcRolesEditorFooter{padding:16px 25px 22px;display:grid;gap:10px}
+.cmcRolesEditorFooter>p{font-size:12px;color:#467861;line-height:1.5;margin:0;min-height:0}
+.cmcRolesEditorFooter>p.error{color:#9a473e}
+.cmcRolesEditorActions{display:flex;justify-content:flex-end;gap:10px}
+.cmcRolesPrimary,.cmcRolesSecondary{display:inline-flex;align-items:center;justify-content:center;min-height:44px;box-sizing:border-box;border-radius:11px;padding:0 18px;font-weight:850;font-size:12px;line-height:1.3}
+.cmcRolesPrimary{color:#fff;background:#2c6957;border:1px solid #2c6957}
+.cmcRolesPrimary:hover:not(:disabled){background:#225442}
+.cmcRolesSecondary{color:#405d58;background:white;border:1px solid #cddbd2}
+.cmcRolesSecondary:hover:not(:disabled){background:#eff5ee}
+.cmcRolesDialog{padding:0;border:0;border-radius:19px;box-shadow:0 30px 95px #20352e55;background:#fffcf7;color:#293d48;width:min(510px,calc(100% - 28px));max-height:min(80vh,780px);overflow-y:auto}
+.cmcRolesDialog::backdrop{background:#1b302db3;backdrop-filter:blur(3px)}
+.cmcRolesDialogBody{padding:26px}
+.cmcRolesDialogHead{display:flex;align-items:flex-start;justify-content:space-between;gap:12px}
+.cmcRolesDialogHead .cmcEyebrow{font-size:10px;color:#7b8d81;letter-spacing:.12em;margin:0 0 5px}
+.cmcRolesDialogHead h2{font-size:24px;color:#273d46;line-height:1.2;font-weight:850;margin:0;letter-spacing:-.025em}
+.cmcRolesDialogBody>p{margin:12px 0 19px;color:#71817d;font-size:13px;line-height:1.65}
+.cmcRolesClose{border:1px solid #dce5dd;border-radius:10px;background:white;color:#667872;display:grid;place-items:center;width:35px;height:35px;font-size:24px;line-height:1}
+.cmcRolesDialog .cmcRolesSearch{margin:0 0 15px}
+.cmcRolesPickerList{display:grid;gap:5px;max-height:340px;overflow-y:auto}
+.cmcRolesPickerPerson{display:flex;align-items:center;gap:11px;text-align:left;border:1px solid #ecf0e9;background:#fff;padding:11px;border-radius:11px;min-height:64px}
+.cmcRolesPickerPerson:hover{border-color:#b5d4c0;background:#f6faf5}
+.cmcRolesPickerPerson span:nth-child(2){display:grid;min-width:0;gap:3px}
+.cmcRolesPickerPerson strong{font-size:13px;color:#2c4848;font-weight:850}
+.cmcRolesPickerPerson small{font-size:11px;color:#7c8d87;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.cmcRolesDialog .cmcRolesMuted{margin:16px 4px;font-size:13px;color:#7d8b85}
+.cmcRolesConfirmActions{display:flex;justify-content:flex-end;gap:9px;margin-top:21px}
+.cmcRolesMuted{font-size:13px;color:#8a9991;line-height:1.6;padding:17px}
+@media(max-width:1060px){
+  .cmcRolesGrid{grid-template-columns:minmax(290px,.86fr) minmax(0,1.14fr);gap:14px}
+  .cmcRolesMain.cmcManageLeadersMain{width:min(1120px,calc(100% - 32px))}
+  .cmcRolesEditorHeader,.cmcRolesResponsibility{padding-left:20px;padding-right:20px}
+  .cmcRolesAccessPreview{margin-left:20px;margin-right:20px}
+  .cmcRolesEditorFooter{padding-left:20px;padding-right:20px}
+}
+@media(max-width:840px){
+  .cmcRolesHero{align-items:flex-start;flex-direction:column;gap:15px}
+  .cmcRolesStats{border-left:0;padding-left:0}
+  .cmcRolesGrid{grid-template-columns:1fr}
+  .cmcRolesEditorPanel{position:static}
+  .cmcRolesRoster{max-height:320px}
+  .cmcRolesEmpty{min-height:210px}
+}
+@media(max-width:520px){
+  .cmcRolesMain.cmcManageLeadersMain{width:calc(100% - 24px);padding:36px 0 70px}
+  .cmcRolesHero h1{font-size:36px}
+  .cmcRolesHero p:not(.cmcEyebrow){font-size:13px}
+  .cmcRolesMain .cmcTeamSectionTabs{margin-bottom:15px}
+  .cmcRolesPanel{border-radius:16px}
+  .cmcRolesPanelHead{padding:18px 16px 13px}
+  .cmcRolesPanelHead h2{font-size:19px}
+  .cmcRolesSearch{margin-left:16px;margin-right:16px}
+  .cmcRolesFilters{padding-left:16px;padding-right:16px}
+  .cmcRolesListFoot{padding:11px 16px 15px}
+  .cmcRolesEditorHeader,.cmcRolesResponsibility{padding:19px 16px}
+  .cmcRolesSelectedIdentity h2{font-size:18px}
+  .cmcRolesAvatarLarge{width:44px;height:44px;flex-basis:44px}
+  .cmcRolesChoice{padding:11px}
+  .cmcRolesAccessPreview{margin:16px}
+  .cmcRolesEditorFooter{padding:0 16px 17px}
+  .cmcRolesEditorActions>*{flex:1}
+  .cmcRolesDialogBody{padding:19px}
+  .cmcRolesConfirmActions{flex-direction:column-reverse}
+  .cmcRolesConfirmActions button{width:100%}
+}

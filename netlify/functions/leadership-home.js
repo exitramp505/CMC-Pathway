@@ -1,6 +1,7 @@
 const { json, requireUser, httpError } = require('./_auth');
 const {loadCalendar}=require('./_national-calendar-events');
 const {ownAssessmentStatus}=require('./_annual-assessment-campaign');
+const {regionOf,nationalReporting,nationalAdmin}=require('./_leadership-access');
 const REGIONS = ['Central','East','Mountain Plains','Pacific','Southeast'];
 const KINDS = ['task','meeting'];
 const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
@@ -8,14 +9,14 @@ const FIELDS = 'id,kind,title,region,visibility,body,notes,decisions,starts_at,d
 
 function canSee(viewer, item) {
   if(item.visibility === 'personal') return item.created_by === viewer.id;
-  if(viewer.account_role === 'cmc_admin' || viewer.account_role === 'cmc_viewer') return true;
-  return item.region === viewer.region || item.region === null;
+  if(nationalReporting(viewer)) return true;
+  return item.region === regionOf(viewer) || item.region === null;
 }
 function canEdit(viewer, item) {
   if(viewer.account_role === 'cmc_viewer') return false;
   if(item.visibility === 'personal') return item.created_by === viewer.id;
-  if(viewer.account_role === 'cmc_admin') return true;
-  return item.region === viewer.region;
+  if(nationalAdmin(viewer)) return true;
+  return Boolean(regionOf(viewer)) && item.region === regionOf(viewer);
 }
 function isLead(viewer) { return ['regional_leader','cmc_admin','cmc_viewer'].includes(viewer?.account_role); }
 function clean(value,max) { return String(value ?? '').trim().slice(0,max); }
@@ -63,10 +64,10 @@ function normalized(input,viewer,existing) {
 
 async function loadProfiles(supabase,viewer) {
   let q=supabase.from('candidate_profiles')
-    .select('id,full_name,email,region,account_role')
+    .select('id,full_name,email,region,account_role,cmc_national_access,cmc_regional_director_region')
     .in('account_role',['regional_leader','cmc_admin','cmc_viewer'])
     .order('full_name',{ascending:true});
-  if(viewer.account_role==='regional_leader') q=q.eq('region',viewer.region);
+  if(!nationalReporting(viewer)) q=q.eq('region',regionOf(viewer));
   const {data,error}=await q;
   if(error) throw error;
   return data || [];
@@ -87,12 +88,12 @@ async function listEvents(supabase,viewer) {
     .limit(60);
   const {data,error}=await query;
   if(error) throw error;
-  return (data||[]).filter(e=>viewer.account_role !== 'regional_leader' || !e.region || e.region===viewer.region).slice(0,10);
+  return (data||[]).filter(e=>nationalReporting(viewer) || !e.region || e.region===regionOf(viewer)).slice(0,10);
 }
 async function getViewer(event) {
   const auth=await requireUser(event);
   const {data:viewer,error}=await auth.supabase.from('candidate_profiles')
-    .select('id,full_name,email,region,account_role')
+    .select('id,full_name,email,region,account_role,cmc_national_access,cmc_regional_director_region')
     .eq('id',auth.user.id).maybeSingle();
   if(error) throw error;
   if(!isLead(viewer)) throw httpError(403,'Leadership access is required.');

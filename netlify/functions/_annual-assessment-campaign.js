@@ -1,4 +1,5 @@
 const {Resend}=require('resend');
+const {regionOf}=require('./_leadership-access');
 const REGIONS=['Central','East','Mountain Plains','Pacific','Southeast'];
 const EMAIL_KINDS=['invitation','reminder'];
 const DEFAULTS={
@@ -49,12 +50,12 @@ async function loadSettings(sb){
 }
 async function directors(sb){
   const {data,error}=await sb.from('candidate_profiles')
-    .select('id,full_name,email,region,account_role')
+    .select('id,full_name,email,region,account_role,cmc_regional_director_region,cmc_national_access')
     .in('account_role',['regional_leader','cmc_admin'])
     .is('archived_at',null)
     .order('full_name',{ascending:true}).limit(400);
   if(error)throw error;
-  return (data||[]).filter(p=>REGIONS.includes(p.region));
+  return (data||[]).filter(p=>Boolean(regionOf(p))).map(p=>({...p,region:regionOf(p)}));
 }
 async function submittedIds(sb,reportingYear){
   const {data,error}=await sb.from('cmc_regional_assessments')
@@ -198,7 +199,7 @@ async function runCycle(sb,{
   return result;
 }
 async function ownAssessmentStatus(sb,viewer,now=new Date()){
-  if(!viewer||!REGIONS.includes(viewer.region)||!['regional_leader','cmc_admin'].includes(viewer.account_role))return null;
+  if(!viewer||!regionOf(viewer))return null;
   const {data:assignment,error}=await sb.from('cmc_annual_assessment_assignments')
     .select('id,reporting_year,due_date,assigned_at')
     .eq('director_id',viewer.id).order('reporting_year',{ascending:false}).limit(1).maybeSingle();

@@ -3,117 +3,163 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
-  <title>Team Access | CMC Pathway</title>
+  <title>Roles &amp; Access | CMC Pathway</title>
   <link rel="stylesheet" href="style.css?v=144">
+  <link rel="stylesheet" href="roles-access.css?v=1">
   <link rel="icon" type="image/svg+xml" href="cmc-logo-mark.svg">
 </head>
-<body class="cmcPathwayBody">
-<a class="cmcSkipLink" href="#main-content">Skip to main content</a>
-<header class="cmcHeader">
-  <a class="cmcBrand" href="leader.html" aria-label="CMC Pathway national home">
-    <img class="cmcLogoImage" src="cmc-logo-mark.svg" alt="">
-    <span><strong>CMC Pathway</strong><small>Church Multiplication Collective</small></span>
-  </a>
-  <nav id="cmcRoleNav" class="cmcNav"></nav>
-</header>
+<body class="cmcPathwayBody cmcRolesBody">
+  <a class="cmcSkipLink" href="#main-content">Skip to main content</a>
+  <header class="cmcHeader">
+    <a class="cmcBrand" href="leadership-home.html" aria-label="CMC Pathway Home">
+      <img class="cmcLogoImage" src="cmc-logo-mark.svg" alt="">
+      <span><strong>CMC Pathway</strong><small>Church Multiplication Collective</small></span>
+    </a>
+    <nav id="cmcRoleNav" class="cmcNav" aria-label="Main navigation"></nav>
+  </header>
 
-<main id="main-content" tabindex="-1" class="cmcManageLeadersMain">
-  <section class="cmcManageLeadersIntro cmcAdminPageHero">
-    <div>
-      <p id="leaderScopeLabel" class="cmcEyebrow">LEADERSHIP ACCESS</p>
-      <h1 id="leaderManagementTitle">Leadership access</h1>
-      <p id="leaderManagementDescription">Assign the right level of access while keeping regional and national responsibilities clear.</p>
-      <span id="leaderScopeName" class="hidden"></span>
-      <span id="leaderScopeDescription" class="hidden"></span>
-    </div>
-  </section>
-
-  <nav class="cmcWebsiteTabs cmcTeamSectionTabs" aria-label="Team sections">
-    <a href="coaching.html"><span>01</span>Coaching</a>
-    <a class="active" href="manage-leaders.html" aria-current="page"><span>02</span>Roles &amp; Access</a>
-  </nav>
-
-  <section class="cmcLeaderManagement">
-    <div class="cmcLeaderManagementHeading">
+  <main id="main-content" tabindex="-1" class="cmcManageLeadersMain cmcRolesMain">
+    <section class="cmcRolesHero">
       <div>
-        <p class="cmcEyebrow">MANAGE ACCESS</p>
-        <h2>Assign leadership access</h2>
+        <p class="cmcEyebrow">TEAM / LEADERSHIP</p>
+        <h1>Roles &amp; access</h1>
+        <p>One account can serve a region and hold national responsibilities. Assign each independently.</p>
       </div>
-      <p>Choose someone who already has a CMC Pathway account, then select the access they need. Their profile and pathway work will remain intact.</p>
-    </div>
-    <div class="cmcAccessAtGlance" aria-label="Leadership access summary">
-      <article>
-        <div><span class="cmcAccessRoleMark" aria-hidden="true">RL</span><strong>Regional leader</strong><small>One region</small></div>
-        <p>People and reviews <span>·</span> Assignments <span>·</span> Regional events <span>·</span> Regional leader access</p>
-      </article>
-      <article class="administrator">
-        <div><span class="cmcAccessRoleMark" aria-hidden="true">FA</span><strong>Full administrator</strong><small>All regions</small></div>
-        <p>Everything above <span>·</span> Course and task-plan builders <span>·</span> Public website <span>·</span> Administrator access</p>
-      </article>
-    </div>
-    <p class="cmcLeaderAccessMessage">National report viewers can read leadership dashboard records across regions, but cannot edit them or manage people, events, courses, or site settings.</p>
-    <form id="leaderAccessForm" class="cmcLeaderAccessForm">
-      <label>
-        <span>Account</span>
-        <select id="leaderAccount" required>
-          <option value="">Choose an existing account</option>
-        </select>
-      </label>
-      <label id="leaderRoleField">
-        <span>Access level</span>
-        <select id="leaderAccessLevel" required>
-          <option value="regional_leader">Regional leader</option>
-          <option value="cmc_admin">Full administrator</option>
-          <option value="cmc_viewer">National report viewer (read-only)</option>
-        </select>
-      </label>
-      <label id="leaderRegionField">
-        <span>Open Bible region</span>
-        <select id="leaderRegion" required>
-          <option value="">Choose a region</option>
-        </select>
-      </label>
-      <button id="leaderAccessSubmit" type="submit">Assign access</button>
-    </form>
-    <p id="leaderAccessMessage" class="cmcLeaderAccessMessage" aria-live="polite"></p>
-
-    <div id="administratorSection" class="cmcAccessListSection hidden">
-      <div class="cmcCurrentLeadersHeading">
-        <div><p class="cmcEyebrow">NATIONAL LEADERSHIP</p><h2>National access</h2></div>
-        <span id="administratorCount">0</span>
+      <div class="cmcRolesStats" aria-label="Current leadership summary">
+        <div><strong id="regionalLeaderCount">—</strong><span>Regional directors</span></div>
+        <div><strong id="administratorCount">—</strong><span>National access</span></div>
       </div>
-      <div id="administratorList" class="cmcCurrentLeaderList cmcAdministratorList">
-        <p class="cmcLeaderEmpty">Loading full administrators…</p>
+    </section>
+
+    <nav class="cmcWebsiteTabs cmcTeamSectionTabs" aria-label="Team sections">
+      <a href="coaching.html"><span>01</span>Coaching</a>
+      <a class="active" href="manage-leaders.html" aria-current="page"><span>02</span>Roles &amp; Access</a>
+    </nav>
+
+    <div id="accessPageMessage" class="cmcRolesPageMessage hidden" role="status" aria-live="polite"></div>
+
+    <div class="cmcRolesGrid" id="accessWorkspace">
+      <section class="cmcRolesPanel cmcRolesDirectory" aria-labelledby="directoryTitle">
+        <div class="cmcRolesPanelHead">
+          <div><p class="cmcEyebrow">TEAM DIRECTORY</p><h2 id="directoryTitle">Leadership team</h2></div>
+          <button type="button" id="addLeaderButton" class="cmcRolesAddButton">+ Add person</button>
+        </div>
+        <label class="cmcRolesSearch">
+          <span class="sr-only">Search leadership team</span>
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" aria-hidden="true"><circle cx="11" cy="11" r="7"></circle><path d="m16 16 5 5"></path></svg>
+          <input id="leaderSearch" type="search" placeholder="Find a team member" autocomplete="off">
+        </label>
+        <div class="cmcRolesFilters" role="group" aria-label="Filter leadership team">
+          <button type="button" data-leader-filter="all" class="active" aria-pressed="true">All</button>
+          <button type="button" data-leader-filter="regional" aria-pressed="false">Regional</button>
+          <button type="button" data-leader-filter="national" aria-pressed="false">National</button>
+        </div>
+        <div id="leaderRoster" class="cmcRolesRoster" aria-live="polite"><p class="cmcRolesMuted">Loading your team…</p></div>
+        <p class="cmcRolesListFoot">Select a person to review or change their access. Existing pathway work is preserved.</p>
+      </section>
+
+      <section class="cmcRolesPanel cmcRolesEditorPanel" aria-label="Edit leadership access">
+        <div id="leaderEditorEmpty" class="cmcRolesEmpty">
+          <span class="cmcRolesEmptyIcon" aria-hidden="true">
+            <svg width="29" height="29" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="7" r="4"></circle><path d="M4.5 21v-2.1a7.5 7.5 0 0 1 11.2-6.5M16 19h6m-3-3v6"></path></svg>
+          </span>
+          <h2>Choose a team member</h2>
+          <p>Review regional responsibility and national permissions together in one place.</p>
+        </div>
+        <form id="leaderAccessForm" class="cmcRolesEditor hidden">
+          <div class="cmcRolesEditorHeader">
+            <span class="cmcRolesAvatar cmcRolesAvatarLarge" id="selectedLeaderAvatar" aria-hidden="true">CM</span>
+            <div class="cmcRolesSelectedIdentity">
+              <p class="cmcEyebrow">EDIT ACCESS</p>
+              <h2 id="selectedLeaderName">Team member</h2>
+              <p id="selectedLeaderEmail"></p>
+            </div>
+            <span id="selectedSelf" class="cmcRolesSelfPill hidden">Your account</span>
+          </div>
+          <div class="cmcRolesResponsibility">
+            <div class="cmcRolesSectionIntro">
+              <span class="cmcRolesSectionIcon" aria-hidden="true">
+                <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="m3 5 6-2 6 2 6-2v16l-6 2-6-2-6 2z"></path><path d="M9 3v16M15 5v16"></path></svg>
+              </span>
+              <div><h3>Regional responsibility</h3><p>Manage one region and complete its annual assessment.</p></div>
+            </div>
+            <label class="cmcRolesToggle">
+              <span><strong>Regional CMC Director</strong><small>Assign responsibility for a region</small></span>
+              <input id="hasRegionalAccess" type="checkbox" role="switch" aria-controls="regionalAccessRegion">
+              <span class="cmcRolesSwitch" aria-hidden="true"></span>
+            </label>
+            <div class="cmcRolesRegionSelect hidden" id="regionalAccessRegion">
+              <label for="leaderRegion">Assigned region</label>
+              <select id="leaderRegion"><option value="">Choose an Open Bible region</option></select>
+            </div>
+          </div>
+          <div class="cmcRolesResponsibility">
+            <div class="cmcRolesSectionIntro">
+              <span class="cmcRolesSectionIcon" aria-hidden="true">
+                <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M3 10h18M5 10V7l7-4 7 4v3M4 21h16M6 10v11m4-11v11m4-11v11m4-11v11"></path></svg>
+              </span>
+              <div><h3>National access</h3><p>Choose the level of visibility or control across CMC.</p></div>
+            </div>
+            <fieldset class="cmcRolesChoices" id="nationalAccessChoices">
+              <legend class="sr-only">National access level</legend>
+              <label class="cmcRolesChoice"><input type="radio" name="nationalAccess" value="none" checked>
+                <span class="cmcRolesRadio" aria-hidden="true"></span><span><strong>None</strong><small>Regional tools only, when assigned above</small></span>
+              </label>
+              <label class="cmcRolesChoice"><input type="radio" name="nationalAccess" value="viewer">
+                <span class="cmcRolesRadio" aria-hidden="true"></span><span><strong>National reporting</strong><small>View all regions' leadership data and assessments</small></span>
+              </label>
+              <label class="cmcRolesChoice"><input type="radio" name="nationalAccess" value="admin">
+                <span class="cmcRolesRadio" aria-hidden="true"></span><span><strong>National administrator</strong><small>Manage all regions, people, content, and settings</small></span>
+              </label>
+            </fieldset>
+            <p id="nationalAccessRestriction" class="cmcRolesRestriction hidden">Only a national administrator can change national access.</p>
+          </div>
+          <div class="cmcRolesAccessPreview">
+            <strong>Resulting access</strong>
+            <div id="leaderAccessPreview" class="cmcRolesPills" aria-live="polite"></div>
+            <p id="leaderAccessExplanation">Choose an assignment to see its capabilities.</p>
+          </div>
+          <div class="cmcRolesEditorFooter">
+            <p id="leaderAccessMessage" role="status" aria-live="polite"></p>
+            <div class="cmcRolesEditorActions">
+              <button type="button" id="cancelAccessEdits" class="cmcRolesSecondary">Reset</button>
+              <button type="submit" id="leaderAccessSubmit" class="cmcRolesPrimary">Save access</button>
+            </div>
+          </div>
+        </form>
+      </section>
+    </div>
+  </main>
+
+  <dialog id="selectLeaderDialog" class="cmcRolesDialog" aria-labelledby="selectLeaderTitle">
+    <section class="cmcRolesDialogBody">
+      <div class="cmcRolesDialogHead">
+        <div><p class="cmcEyebrow">ADD TO TEAM</p><h2 id="selectLeaderTitle">Choose an account</h2></div>
+        <button type="button" class="cmcRolesClose" id="closeLeaderPicker" aria-label="Close account picker">×</button>
       </div>
-    </div>
+      <p>Select someone with an existing CMC Pathway account. Their participant history stays intact.</p>
+      <label class="cmcRolesSearch"><span class="sr-only">Search accounts</span>
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" aria-hidden="true"><circle cx="11" cy="11" r="7"></circle><path d="m16 16 5 5"></path></svg>
+        <input type="search" id="accountSearch" placeholder="Search by name or email" autocomplete="off">
+      </label>
+      <div id="accountPickerResults" class="cmcRolesPickerList"></div>
+    </section>
+  </dialog>
 
-    <div class="cmcAccessListSection">
-    <div class="cmcCurrentLeadersHeading">
-      <div><p class="cmcEyebrow">REGIONAL ACCESS</p><h2>Regional leaders</h2></div>
-      <span id="regionalLeaderCount">0</span>
-    </div>
-    <div id="regionalLeaderList" class="cmcCurrentLeaderList">
-      <p class="cmcLeaderEmpty">Loading regional leaders…</p>
-    </div>
-    </div>
-  </section>
-</main>
-
-<dialog id="leaderAccessDialog" class="cmcAccessDialog">
-  <form method="dialog">
-    <span class="cmcAccessDialogMark" aria-hidden="true">!</span>
-    <p class="cmcEyebrow">CONFIRM ACCESS</p>
-    <h2 id="leaderAccessDialogTitle">Confirm leadership access</h2>
-    <p id="leaderAccessDialogMessage"></p>
-    <div class="cmcAccessDialogActions">
-      <button class="secondary" value="cancel">Cancel</button>
-      <button id="leaderAccessDialogConfirm" value="confirm">Confirm</button>
-    </div>
-  </form>
-</dialog>
-
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.105.4"></script>
-<script src="auth.js?v=133"></script>
-<script src="manage-leaders.js?v=118"></script>
+  <dialog id="leaderAccessDialog" class="cmcRolesDialog cmcRolesConfirm" aria-labelledby="leaderAccessDialogTitle">
+    <section class="cmcRolesDialogBody">
+      <div class="cmcRolesDialogHead">
+        <div><p class="cmcEyebrow">CONFIRM CHANGE</p><h2 id="leaderAccessDialogTitle">Review access change</h2></div>
+      </div>
+      <p id="leaderAccessDialogMessage"></p>
+      <div class="cmcRolesConfirmActions">
+        <button type="button" id="leaderAccessDialogCancel" class="cmcRolesSecondary">Cancel</button>
+        <button type="button" id="leaderAccessDialogConfirm" class="cmcRolesPrimary">Confirm access</button>
+      </div>
+    </section>
+  </dialog>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.105.4"></script>
+  <script src="auth.js?v=134"></script>
+  <script src="manage-leaders.js?v=120"></script>
 </body>
 </html>

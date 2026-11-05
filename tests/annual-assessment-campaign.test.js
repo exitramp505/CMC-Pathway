@@ -19,7 +19,7 @@ assert.match(home,/annual\.status!=='submitted'/);
 const national=fs.readFileSync(path.join(root,'regional-reports.html'),'utf8');
 assert.match(national,/id="myRegionAssessmentAction"/);
 const regionalApi=fs.readFileSync(path.join(root,'netlify/functions/regional-assessments.js'),'utf8');
-assert.match(regionalApi,/\['regional_leader','cmc_admin'\]\.includes/);
+assert.match(regionalApi,/regionOf\(viewer\)/,'Annual assessment uses explicit regional responsibility');
 assert.throws(()=>campaign.safeSettings({invitation_day:20}),/Choose February/);
 assert.equal(campaign.dueDate(2026),'2027-02-28');
 assert.equal(campaign.defaultYear(new Date('2027-02-15T15:00:00Z')),2026);

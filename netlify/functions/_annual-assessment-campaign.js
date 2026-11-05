@@ -17,7 +17,7 @@ function easternDate(date=new Date()){
 }
 function defaultYear(now=new Date()){
   const {year,month}=easternDate(now);
-  return month<=2?year-1:year;
+  return year<=2026?year:year-1;
 }
 function dueDate(reportingYear,settings=DEFAULTS){
   return (reportingYear+1)+'-02-'+String(settings.due_day||28).padStart(2,'0');

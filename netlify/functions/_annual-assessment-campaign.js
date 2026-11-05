@@ -157,12 +157,12 @@ async function runCycle(sb,{
   const day=easternDate(now);
   const campaignYear=reportingYear==null?day.year:Number(reportingYear)+1;
   const targetYear=campaignYear-1;
-  if(!Number.isInteger(targetYear)||targetYear<2026||targetYear>2100)throw new Error('Invalid reporting year.');
   if(mode==='automatic'){
     if(!settings.enabled||campaignYear<settings.first_campaign_year||day.month!==2||
        day.day<settings.invitation_day||day.day>settings.due_day)
       return {skipped:true,reason:'Outside active February campaign window.',reporting_year:targetYear};
   }
+  if(!Number.isInteger(targetYear)||targetYear<2026||targetYear>2100)throw new Error('Invalid reporting year.');
   const roster=await directors(sb);
   const {assignments,created}=await ensureAssignments(sb,targetYear,roster,settings);
   const directorById=new Map(roster.map(p=>[p.id,p]));

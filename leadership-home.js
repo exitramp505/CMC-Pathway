@@ -27,6 +27,8 @@
       const readOnly=role==='cmc_viewer';
       $('newMeeting').classList.toggle('hidden',readOnly);
       $('newReminder').classList.toggle('hidden',readOnly);
+      document.querySelector('.cmcHomePanel a[href="events.html"]')?.classList.toggle('hidden',readOnly);
+      document.querySelector('#peopleHeading')?.closest('section')?.classList.toggle('hidden',readOnly);
       $('itemRegion').disabled=role==='regional_leader';
       render();
       showMessage('');

@@ -65,6 +65,9 @@
     if (assessmentType === 'isa_readiness' && typeof isaReportHtml === 'function') {
       return isaReportHtml(record);
     }
+    if (assessmentType === 'ministry_style' && scores.instrumentVersion === 2 && window.MinistryStyleV2Report) {
+      return window.MinistryStyleV2Report.buildReportHtml(record, {audience:'coach'});
+    }
     if (assessmentType === 'ministry_style' && window.MinistryStyleReport) {
       return window.MinistryStyleReport.buildCoachReportHtml(record);
     }

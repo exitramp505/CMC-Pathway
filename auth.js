@@ -73,7 +73,7 @@ function setupAutoHideHeader(){
   const revealThreshold=mobile?170:120;
   const topRevealPoint=mobile?118:100;
   header.classList.toggle('cmcHeaderScrolled',y>12);
-  if(y<topRevealPoint||navigationFocused){
+  if(y<topRevealPoint||navigationFocused||header.querySelector('[aria-expanded="true"]')){
    reveal();
    lastY=y;
   }else if(Math.abs(delta)<noiseThreshold){
@@ -103,61 +103,114 @@ function setupAutoHideHeader(){
  header.addEventListener('focusin',reveal);
  window.addEventListener('pageshow',reveal);
 }
+// Visibility follows the existing page/API guards. National administrators are
+// stored as cmc_admin by effectiveRole, including regional + national admins.
+function roleNavigationItems(profile){
+ const role=profile?.account_role||'participant';
+ const nationalAccess=['none','viewer','admin'].includes(profile?.cmc_national_access)
+  ?profile.cmc_national_access:(role==='cmc_admin'?'admin':role==='cmc_viewer'?'viewer':'none');
+ const nationalReports=nationalAccess==='viewer'||nationalAccess==='admin';
+ const leader=['regional_leader','cmc_admin','cmc_viewer'].includes(role);
+ const manager=['regional_leader','cmc_admin'].includes(role);
+ const admin=role==='cmc_admin';
+ return [
+  {key:'home',label:'Home',href:'leadership-home.html',show:leader},
+  {key:'people',label:'People',href:'leader.html',show:manager},
+  {key:'health',label:'Regional Health',href:nationalReports?'regional-reports.html':'regional-assessment.html',show:leader},
+  {key:'pathway',label:'My Pathway',href:role==='participant'?'dashboard.html':'dashboard.html?view=participant',show:role!=='cmc_viewer'},
+  {key:'events',label:'Events',href:'events.html',group:'Planning',show:manager},
+  {key:'plans',label:'Task Plans',href:'task-plans.html',group:'Planning',show:admin},
+  {key:'courses',label:'Courses',href:'courses.html',group:'Content',show:admin},
+  {key:'website',label:'Website',href:'website.html',group:'Content',show:admin},
+  {key:'team',label:'Team',href:'coaching.html',group:'Administration',show:manager},
+  {key:'coaching',label:'My People',href:'coach.html',group:'Administration',show:Boolean(profile?.is_coach)},
+  {key:'settings',label:'National Settings',href:'national-settings.html',group:'Administration',show:admin}
+ ].filter(item=>item.show);
+}
+let navigationCleanup;
 function renderRoleNavigation(profile,activeKey){
  const nav=document.getElementById('cmcRoleNav');
  if(!nav)return;
- const role=profile?.account_role||'participant';
- const isCoach=Boolean(profile?.is_coach);
- const nationalAccess=profile?.cmc_national_access||
-   (role==='cmc_admin'?'admin':role==='cmc_viewer'?'viewer':'none');
- const nationalReports=nationalAccess==='viewer'||nationalAccess==='admin';
- const items=[
-  {key:'home',label:'Home',href:'leadership-home.html',show:['regional_leader','cmc_admin','cmc_viewer'].includes(role)},
-  {key:'health',label:'Regional Health',href:nationalReports?'regional-reports.html':'regional-assessment.html',show:['regional_leader','cmc_admin','cmc_viewer'].includes(role)},
-  {key:'pathway',label:'My Pathway',href:role==='participant'?'dashboard.html':'dashboard.html?view=participant',show:role!=='cmc_viewer'},
- {key:'people',label:'People',href:'leader.html',show:['regional_leader','cmc_admin'].includes(role)},
- {key:'events',label:'Events',href:'events.html',show:['regional_leader','cmc_admin'].includes(role)},
- {key:'courses',label:'Courses',href:'courses.html',show:role==='cmc_admin'},
-  {key:'plans',label:'Task Plans',href:'task-plans.html',show:role==='cmc_admin'},
- {key:'website',label:'Website',href:'website.html',show:role==='cmc_admin'},
-  {key:'team',label:'Team',href:'coaching.html',show:['regional_leader','cmc_admin'].includes(role)},
-  {key:'coaching',label:'My People',href:'coach.html',show:isCoach},
-  {key:'settings',label:'National Settings',href:'national-settings.html',show:role==='cmc_admin'},
-  {key:'profile',label:'Profile',href:'profile.html',show:true}
- ];
- const visibleItems=items.filter(item=>item.show);
- const managementKeys=['home','people','events','courses','plans','website','team','coaching'];
- const hasManagementTools=visibleItems.some(item=>managementKeys.includes(item.key));
- const menuItems=visibleItems.map(item=>{
-  const dividerBefore=(item.key==='people'&&hasManagementTools)||item.key==='profile';
-  return `${dividerBefore?'<span class="cmcNavDivider" aria-hidden="true"></span>':''}<a${item.key===activeKey?' class="active"':''} href="${item.href}">${item.label}</a>`;
- }).join('')+'<button id="logoutBtn" type="button">Logout</button>';
- nav.innerHTML=`<button class="cmcMobileNavToggle" type="button" aria-expanded="false" aria-controls="cmcNavMenu">
-   <span class="cmcMobileNavIcon" aria-hidden="true"><i></i><i></i><i></i></span><span>Menu</span>
- </button><div id="cmcNavMenu" class="cmcNavMenu">${menuItems}</div>`;
- const toggle=nav.querySelector('.cmcMobileNavToggle');
- const menu=nav.querySelector('.cmcNavMenu');
- const closeMenu=()=>{
-  nav.classList.remove('cmcNavOpen');
-  toggle?.setAttribute('aria-expanded','false');
+ navigationCleanup?.();
+ nav.setAttribute('aria-label','Main navigation');
+ const items=roleNavigationItems(profile);
+ const currentKey=activeKey==='calendar'?'home':activeKey;
+ const link=item=>`<a href="${item.href}"${item.key===currentKey?' class="active" aria-current="page"':''}>${item.label}</a>`;
+ const groups=['Planning','Content','Administration'].map(group=>{
+  const members=items.filter(item=>item.group===group);
+  return members.length?`<section class="cmcNavGroup" aria-label="${group}"><h2>${group}</h2>${members.map(link).join('')}</section>`:'';
+ }).join('');
+ const manageActive=items.some(item=>item.group&&item.key===currentKey);
+ const chevron='<span class="cmcNavChevron" aria-hidden="true">⌄</span>';
+ nav.innerHTML=`<button class="cmcCompactToggle" type="button" aria-expanded="false" aria-controls="cmcPrimaryLinks" aria-label="Open navigation"><span aria-hidden="true">☰</span><span>Menu</span></button>
+  <div id="cmcPrimaryLinks" class="cmcPrimaryLinks">${items.filter(item=>!item.group).map(link).join('')}
+  ${groups?`<div class="cmcNavDisclosure"><button id="cmcManageToggle" class="cmcDisclosureToggle${manageActive?' active':''}" type="button" aria-expanded="false" aria-controls="cmcManagePanel">Manage ${chevron}</button><div id="cmcManagePanel" class="cmcDisclosurePanel" hidden>${groups}</div></div>`:''}</div>
+  <div class="cmcNavDisclosure cmcAccount"><button id="cmcAccountToggle" class="cmcAccountToggle${activeKey==='profile'?' active':''}" type="button" aria-label="Account menu" aria-expanded="false" aria-controls="cmcAccountPanel"><span class="cmcAvatar" aria-hidden="true"></span>${chevron}</button><div id="cmcAccountPanel" class="cmcDisclosurePanel" hidden><div class="cmcAccountIdentity"></div><a href="profile.html"${activeKey==='profile'?' class="active" aria-current="page"':''}>Profile</a><button id="logoutBtn" type="button">Logout</button></div></div>`;
+ const name=profile?.full_name?.trim()||'Your account';
+ nav.querySelector('.cmcAccountIdentity').textContent=name;
+ nav.querySelector('.cmcAvatar').textContent=profile?.full_name?.trim().split(/\s+/).map(part=>Array.from(part)[0]).slice(0,2).join('').toUpperCase()||'CM';
+ nav.closest('.cmcHeader')?.classList.add('cmcCompactHeader');
+ const mobileToggle=nav.querySelector('.cmcCompactToggle');
+ const primary=nav.querySelector('.cmcPrimaryLinks');
+ const media=window.matchMedia('(max-width: 960px)');
+ const toggles=[...nav.querySelectorAll('.cmcNavDisclosure > button')];
+ const panel=button=>document.getElementById(button.getAttribute('aria-controls'));
+ const closeDisclosures=()=>toggles.forEach(button=>{button.setAttribute('aria-expanded','false');panel(button).hidden=true;});
+ const closeMobile=()=>{nav.classList.remove('cmcCompactOpen');mobileToggle.setAttribute('aria-expanded','false');mobileToggle.setAttribute('aria-label','Open navigation');};
+ toggles.forEach(button=>button.addEventListener('click',()=>{
+  const opening=button.getAttribute('aria-expanded')!=='true';
+  closeDisclosures();
+  if(button.id==='cmcAccountToggle')closeMobile();
+  button.setAttribute('aria-expanded',String(opening));panel(button).hidden=!opening;
+ }));
+ mobileToggle.addEventListener('click',()=>{
+  const opening=mobileToggle.getAttribute('aria-expanded')!=='true';
+  closeDisclosures();nav.classList.toggle('cmcCompactOpen',opening);
+  mobileToggle.setAttribute('aria-expanded',String(opening));
+  mobileToggle.setAttribute('aria-label',opening?'Close navigation':'Open navigation');
+ });
+ const onClick=event=>{if(!nav.contains(event.target)||event.target.closest('a,#logoutBtn')){closeDisclosures();closeMobile();}};
+ const onFocus=event=>{
+  toggles.forEach(button=>{if(!button.parentElement.contains(event.target)){button.setAttribute('aria-expanded','false');panel(button).hidden=true;}});
+  if(!nav.contains(event.target))closeMobile();
  };
- toggle?.addEventListener('click',event=>{
-  event.stopPropagation();
-  const open=!nav.classList.contains('cmcNavOpen');
-  nav.classList.toggle('cmcNavOpen',open);
-  toggle.setAttribute('aria-expanded',String(open));
- });
- menu?.addEventListener('click',event=>{
-  if(event.target.closest('a,#logoutBtn'))closeMenu();
- });
- document.addEventListener('click',event=>{
-  if(nav.classList.contains('cmcNavOpen')&&!nav.contains(event.target))closeMenu();
- });
- document.addEventListener('keydown',event=>{
-  if(event.key==='Escape')closeMenu();
- });
- setupLogout();
- setupAutoHideHeader();
+ const onKey=event=>{
+  if(!nav.contains(event.target))return;
+  const open=toggles.find(button=>button.getAttribute('aria-expanded')==='true');
+  if(event.key==='Escape'){
+   if(open){closeDisclosures();open.focus();event.preventDefault();}
+   else if(mobileToggle.getAttribute('aria-expanded')==='true'){closeMobile();mobileToggle.focus();event.preventDefault();}
+  }
+  // Native links + disclosure buttons retain normal Tab/Shift+Tab semantics.
+  // Arrow keys are an additional convenience, not an ARIA menu requirement.
+  const trigger=toggles.find(button=>button===event.target);
+  if(trigger&&['ArrowDown','ArrowUp'].includes(event.key)){
+   event.preventDefault();closeDisclosures();trigger.setAttribute('aria-expanded','true');panel(trigger).hidden=false;
+   const links=panel(trigger).querySelectorAll('a,button');links[event.key==='ArrowUp'?links.length-1:0]?.focus();
+  }else if(open&&panel(open).contains(event.target)&&['ArrowDown','ArrowUp','Home','End'].includes(event.key)){
+   event.preventDefault();const links=[...panel(open).querySelectorAll('a,button')];
+   let index=links.indexOf(event.target);
+   index=event.key==='Home'?0:event.key==='End'?links.length-1:(index+(event.key==='ArrowDown'?1:-1)+links.length)%links.length;
+   links[index]?.focus();
+  }
+ };
+ const onResize=()=>{
+  const focused=document.activeElement;
+  closeDisclosures();closeMobile();
+  if(media.matches&&primary.contains(focused))mobileToggle.focus();
+  else if(focused===mobileToggle)primary.querySelector('a,button')?.focus();
+  else if(focused?.closest('.cmcDisclosurePanel'))nav.querySelector('#cmcAccountToggle')?.focus();
+ };
+ document.addEventListener('click',onClick);
+ document.addEventListener('focusin',onFocus);
+ document.addEventListener('keydown',onKey);
+ media.addEventListener('change',onResize);
+ navigationCleanup=()=>{
+  document.removeEventListener('click',onClick);document.removeEventListener('focusin',onFocus);
+  document.removeEventListener('keydown',onKey);media.removeEventListener('change',onResize);
+ };
+ setupLogout();setupAutoHideHeader();
 }
-window.dcAuth={fillStateSelect,regionForState,getSupabaseClient,getCurrentSession,requireUser,signOut,getProfile,upsertProfile,setupLogout,setupAutoHideHeader,renderRoleNavigation,STATES,REGION_BY_STATE};
+
+window.dcAuth={fillStateSelect,regionForState,getSupabaseClient,getCurrentSession,requireUser,signOut,getProfile,upsertProfile,setupLogout,setupAutoHideHeader,renderRoleNavigation,roleNavigationItems,STATES,REGION_BY_STATE};
 })();

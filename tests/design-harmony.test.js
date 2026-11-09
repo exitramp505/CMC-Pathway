@@ -9,7 +9,7 @@ const pages=fs.readdirSync(path.join(__dirname,'..')).filter(file=>file.endsWith
 const styled=pages.filter(page=>read(page).includes('style.css?v='));
 assert.ok(styled.length>=30,'All user and admin pages must share the stylesheet');
 for(const page of styled){
-  const expectedCssVersion = page === 'course.html' ? 145 : 144;
+  const expectedCssVersion = 146;
   assert.match(read(page),new RegExp('style\\.css\\?v=' + expectedCssVersion),page+' must use the correct shared visual rules');
 }
 const formsCss=read('forms.css');

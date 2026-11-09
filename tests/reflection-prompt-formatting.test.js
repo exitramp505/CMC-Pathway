@@ -60,7 +60,7 @@ assert.match(editor,/data-lesson-reflection[\s\S]*?Line breaks and blank lines a
 assert.match(editor,/lesson-content\.js\?v=3/);
 assert.match(coursePage,/lesson-content\.js\?v=3/);
 assert.match(coursePage,/course\.js\?v=123/);
-assert.match(coursePage,/style\.css\?v=145/);
+assert.match(coursePage,/style\.css\?v=146/);
 assert.match(participant,/class="cmcReflectionPrompt">\$\{CMCLessonContent\.renderReflectionPrompt\(lesson\.reflection_prompt\)\}/);
 assert.doesNotMatch(participant,/<h3>\$\{escapeHtml\(lesson\.reflection_prompt\)\}<\/h3>/);
 assert.match(participant,/<p class="cmcEyebrow">REFLECT<\/p>/);

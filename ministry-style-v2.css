@@ -1,0 +1,52 @@
+/* Purpose-built Ministry Style Inventory v2 layout. */
+.msv2Main{width:min(100% - 32px,880px);margin:0 auto;padding:30px 0 80px;color:#1e293b}
+.msv2Header{margin:20px 0 28px}
+.msv2Header h1{font-size:clamp(32px,5vw,48px);line-height:1.1;letter-spacing:-.045em;margin:7px 0 12px}
+.msv2Header>p:last-child{font-size:17px;line-height:1.6;color:#64748b;max-width:670px}
+.msv2Panel{border:1px solid #e2e8f0;border-radius:23px;background:#fff;padding:clamp(18px,4vw,34px);box-shadow:0 12px 38px rgba(15,23,42,.04)}
+.msv2Panel h2{font-size:clamp(23px,3vw,31px);line-height:1.25;color:#1e293b;letter-spacing:-.025em;margin:4px 0 10px}
+.msv2Panel>p{line-height:1.65}
+.msv2Subtle{color:#64748b}
+.msv2Progress{padding:5px 3px 20px}
+.msv2Progress>div:first-child{display:flex;align-items:center;justify-content:space-between;gap:10px;color:#64748b;font-size:13px}
+.msv2Progress strong{color:#334155}
+.msv2Track{margin-top:11px;background:#e9eff5;height:7px;border-radius:999px;overflow:hidden}
+.msv2Track span{display:block;width:0;height:100%;border-radius:inherit;background:#2384bc;transition:width .2s ease}
+.msv2Question{padding:22px 0;border:0;border-bottom:1px solid #e8eef4;margin:0;min-width:0}
+.msv2Question:last-child{border-bottom:0;padding-bottom:3px}
+.msv2Question legend{font-weight:650;color:#1e293b;line-height:1.5;padding:0;font-size:16px;width:100%}
+.msv2Number{display:inline-grid;place-items:center;width:27px;height:27px;background:#eff6fb;color:#26648b;font-size:12px;font-weight:750;border-radius:9px;margin-right:7px;vertical-align:middle}
+.msv2Choices{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:7px;margin-top:16px}
+.msv2Choice{display:flex;position:relative;align-items:center;flex-direction:column;justify-content:flex-start;gap:9px;cursor:pointer;border:1px solid #dbe5ed;background:#fff;padding:13px 4px 10px;border-radius:13px;text-align:center;min-height:92px;font-size:11px;color:#475569;line-height:1.3}
+.msv2Choice:hover{background:#f8fbff;border-color:#a6c8dc}
+.msv2Choice:has(input:checked){background:#eaf5fb;border-color:#2584ba;color:#165b82;font-weight:750;box-shadow:inset 0 0 0 1px #2584ba}
+.msv2Choice:has(input:focus-visible){outline:3px solid #7dc3ec;outline-offset:3px}
+.msv2Choice input{position:absolute;width:1px;height:1px;opacity:0;pointer-events:none}
+.msv2Circle{display:block;width:20px;height:20px;border:2px solid #b5c5d2;border-radius:50%;flex:none}
+.msv2Choice input:checked+.msv2Circle{border:6px solid #2584ba;background:#fff}
+.msv2Actions{display:flex;justify-content:space-between;gap:16px;align-items:center;margin-top:16px}
+.msv2Right{display:flex;align-items:center;gap:15px}
+.msv2Right span{font-size:12px;color:#64748b;max-width:210px;text-align:right}
+.msv2Actions button,.msv2Panel button{min-height:46px}
+.msv2Actions button:disabled{opacity:.4;cursor:not-allowed}
+.msv2Error{color:#b42318;font-weight:650;margin-top:18px}
+.msv2Report{padding:10px 0}
+.msv2ReportIntro{border:1px solid #e0e8ed;border-radius:23px;padding:clamp(18px,4vw,32px);background:linear-gradient(140deg,#fff,#f4f9fc)}
+.msv2ReportIntro h2{font-size:clamp(30px,4vw,40px);line-height:1.15;margin:6px 0}
+.msv2Eyebrow{font-size:12px;font-weight:750;letter-spacing:.13em;text-transform:uppercase;color:#3b789c}
+.msv2Bars{display:grid;gap:18px;margin-top:22px}
+.msv2Bar{display:grid;grid-template-columns:90px 1fr;gap:14px;align-items:center;font-weight:650}
+.msv2BarTrack{height:11px;background:#eaf0f5;border-radius:999px;overflow:hidden}
+.msv2BarTrack span{display:block;height:100%;border-radius:inherit}
+.msv2ReportSection{margin:17px 0;border:1px solid #e4eaf0;border-radius:18px;padding:clamp(18px,3vw,25px);background:#fff}
+.msv2ReportSection h3{margin:0 0 10px;font-size:21px}
+.msv2ReportSection p{color:#475569;line-height:1.65;margin:6px 0 10px}
+.msv2ReportGrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
+.msv2ReportGrid article{padding:18px;background:#f8fbfd;border:1px solid #e3ebf2;border-radius:14px}
+.msv2ReportGrid h4{margin:0 0 8px}
+.msv2ReportGrid p{margin:0}
+.msv2List{padding-left:20px;line-height:1.75;color:#475569}
+.msv2ReportActions{display:flex;gap:12px;justify-content:flex-end;margin:20px 0}
+@media(max-width:680px){.msv2Main{width:min(100% - 24px,880px);padding-top:12px}.msv2Choices{gap:4px}.msv2Choice{padding:10px 2px;min-height:96px;font-size:10px}.msv2Choice span:last-child{overflow-wrap:anywhere}.msv2Actions{align-items:stretch}.msv2Right{flex-direction:column-reverse;align-items:flex-end;gap:8px}.msv2ReportGrid{grid-template-columns:1fr}}
+@media(max-width:390px){.msv2Progress>div:first-child{align-items:start;flex-direction:column;gap:4px}.msv2Choice{font-size:9px}.msv2Question legend{font-size:15px}}
+@media print{.cmcHeader,.msv2ReportActions,.msv2Header,.msv2Progress,.msv2Actions{display:none!important}.msv2Main{padding:0;width:100%}.msv2ReportSection,.msv2ReportIntro{break-inside:avoid;box-shadow:none}.msv2Report{padding:0}}

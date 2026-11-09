@@ -38,7 +38,7 @@ assert.match(formCss,/--formLine:var\(--cmcBorder\)/);
 assert.match(formCss,/--formSurface:var\(--cmcPaper\)/);
 for(const page of styled){
   const html=read(page);
-  const expectedCssVersion = page === 'course.html' ? 145 : 144;
+  const expectedCssVersion = 146;
   assert.match(html,new RegExp('style\\.css\\?v=' + expectedCssVersion),page+' must use the correct shared CSS');
   assert.match(html,/<body[^>]*class="[^"]*\bcmcPathwayBody\b/i,
     page+' must use the CMC design shell');

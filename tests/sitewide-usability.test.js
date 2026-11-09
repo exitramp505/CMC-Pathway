@@ -12,7 +12,7 @@ for (const file of files) {
   assert.match(html, /name=["']viewport["']/i, file + ' must be mobile responsive');
   assert.match(html, /<title>/i, file + ' must have a title');
   if (html.includes('style.css?v=')) {
-    const cssVersion = file === 'course.html' ? 145 : 144;
+    const cssVersion = 146;
     assert.match(html,new RegExp('style\\.css\\?v=' + cssVersion),file + ' must load the correct shared stylesheet version');
     assert.match(html,/rel="icon" type="image\/svg\+xml" href="cmc-logo-mark\.svg"/,file + ' must provide a favicon');
   }

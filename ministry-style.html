@@ -1,3 +1,52 @@
-<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Ministry Style Inventory | CMC Pathway</title><link rel="stylesheet" href="style.css?v=144"><link rel="stylesheet" href="ministry-style.css?v=144"><link rel="stylesheet" href="forms.css?v=128">  <link rel="icon" type="image/svg+xml" href="cmc-logo-mark.svg">
-</head><body class="cmcPathwayBody cmcFormBody">
-<a class="cmcSkipLink" href="#main-content">Skip to main content</a><header class="cmcHeader"><a class="cmcBrand" href="dashboard.html" aria-label="CMC Pathway home"><img class="cmcLogoImage" src="cmc-logo-mark.svg" alt=""><span><strong>CMC Pathway</strong><small>Church Multiplication Collective</small></span></a><nav id="cmcRoleNav" class="cmcNav"></nav></header><main id="main-content" tabindex="-1" class="ministryStyleMain cmcFormMain"><section class="ministryStyleHero cmcFormHero"><div><p class="cmcEyebrow">DISCERN · ASSESSMENT</p><h1>Ministry Style Inventory</h1><p>Understand how you tend to lead, communicate, build teams, and respond in ministry settings.</p></div><div class="ministryStyleHeroCard"><strong>48 ministry scenarios</strong><span>Choose the statement most like you and least like you.</span></div></section><section class="ministryStyleNotice"><p class="cmcEyebrow">HOW IT WORKS</p><h2>Choose what is most and least like you.</h2><p>Read all four statements in each set. Choose one as <strong>Most Like Me</strong> and one as <strong>Least Like Me</strong>. Answer according to how you typically behave in ministry, leadership, team, or pressure situations.</p></section><section class="ministryStyleProgress"><div><strong id="progressText">0 of 48 complete</strong><span id="saveText">Draft saves in this browser as you work.</span></div><div class="ministryStyleProgressTrack"><span id="progressBar"></span></div></section><form id="ministryStyleForm"><section id="questionList" class="ministryQuestionList"></section><div class="ministryStyleActions"><button type="button" id="saveDraftBtn" class="secondaryButton">Save Draft</button><button type="submit" id="submitBtn">Submit Inventory</button></div><p id="statusMessage" class="authMessage muted"></p></form><section id="resultPreview" class="ministryResultPreview hidden"></section></main><script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.105.4"></script><script src="auth.js?v=133"></script><script src="ministry-style-report.js?v=118"></script><script src="ministry-style.js?v=118"></script></body></html>
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Ministry Style Inventory | CMC Pathway</title>
+<link rel="stylesheet" href="style.css?v=144">
+<link rel="stylesheet" href="forms.css?v=128">
+<link rel="stylesheet" href="ministry-style.css?v=144">
+<link rel="stylesheet" href="ministry-style-v2.css?v=1">
+<link rel="icon" type="image/svg+xml" href="cmc-logo-mark.svg">
+</head>
+<body class="cmcPathwayBody cmcFormBody">
+<a class="cmcSkipLink" href="#main-content">Skip to main content</a>
+<header class="cmcHeader">
+ <a class="cmcBrand" href="dashboard.html" aria-label="CMC Pathway home"><img class="cmcLogoImage" src="cmc-logo-mark.svg" alt=""><span><strong>CMC Pathway</strong><small>Church Multiplication Collective</small></span></a>
+ <nav id="cmcRoleNav" class="cmcNav"></nav>
+</header>
+<main id="main-content" tabindex="-1" class="msv2Main">
+ <section class="msv2Header">
+   <p class="cmcEyebrow">DISCERN · SELF-REFLECTION</p>
+   <h1>Ministry Style Inventory</h1>
+   <p>Explore the ways you naturally lead, connect with people, build teams, and respond to change.</p>
+ </section>
+ <section id="msv2Welcome" class="msv2Panel">
+   <p class="cmcEyebrow">BEFORE YOU BEGIN</p>
+   <h2>There are no right or wrong answers.</h2>
+   <p>Respond based on your usual behavior, not on what you think a ministry leader should do. You’ll rate statements about how you lead, followed by activities that may feel easier or harder to you.</p>
+   <p class="msv2Subtle">64 short responses · About 10–15 minutes · Your progress is saved to your account when connected.</p>
+   <button type="button" id="msv2Start" class="cmcPrimaryButton">Begin inventory <span aria-hidden="true">→</span></button>
+ </section>
+ <section id="msv2Workflow" class="hidden" aria-label="Assessment questions">
+   <div class="msv2Progress"><div><span id="msv2Stage">Your leadership tendencies</span><strong id="msv2ProgressLabel">Step 1 of 16</strong></div><div class="msv2Track" role="progressbar" id="msv2ProgressTrack" aria-valuemin="0" aria-valuemax="64" aria-valuenow="0" aria-label="Inventory progress"><span id="msv2ProgressFill"></span></div></div>
+   <form id="msv2Form" novalidate>
+     <section class="msv2Panel">
+       <h2 id="msv2SectionTitle">How do you naturally lead?</h2>
+       <p id="msv2Prompt" class="msv2Subtle">Choose the response that best reflects your experience.</p>
+       <div id="msv2Questions"></div>
+       <p id="msv2Error" class="msv2Error" role="alert" hidden></p>
+     </section>
+     <div class="msv2Actions"><button type="button" id="msv2Back" class="cmcSecondaryButton">Previous</button><div class="msv2Right"><span id="msv2SaveStatus" role="status" aria-live="polite">Preparing your draft…</span><button type="submit" id="msv2Next" class="cmcPrimaryButton">Continue <span aria-hidden="true">→</span></button></div></div>
+   </form>
+ </section>
+ <section id="msv2Results" class="hidden" aria-live="polite"></section>
+</main>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.105.4"></script>
+<script src="auth.js?v=133"></script>
+<script src="ministry-style-v2-bank.js?v=1"></script>
+<script src="ministry-style-report.js?v=118"></script>
+<script src="ministry-style-v2-report.js?v=1"></script>
+<script src="ministry-style-v2.js?v=1"></script>
+</body>
+</html>
